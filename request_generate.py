@@ -74,21 +74,69 @@ def initailize_request():
     print("Request generation initialized.")
 # Example policy
 policy_input = '''
-{
-    "Statement": [
-        {
-            "Action": ["s3:GetObject", "s3:ListBucket"],
-            "Effect": "Allow",
-            "Principal": "arn:aws:iam::123456789:user/alice",
-            "Resource": "arn:aws:s3:::my-bucket/*",
-            "Condition": {
-                "NumericLessThanEquals": {
-                    "s3:MaxKeys": 100
-                }
-            }
-        }
-    ]
-}
+[
+  {
+    "Action": [
+      "s3:Get*",
+      "s3:List*",
+      "s3:PutObject",
+      "s3:DeleteObject"
+    ],
+    "Resource": "arn:aws:s3:::athena-query-results/*",
+    "Effect": "Allow",
+    "Sid": "AllowS3AccessToSaveAndReadQueryResults"
+  },
+  {
+    "Action": [
+      "s3:*"
+    ],
+    "Resource": "arn:aws:s3:::bkt_logs/*",
+    "Effect": "Allow",
+    "Sid": "AllowS3AccessForGlueToReadLogs"
+  },
+  {
+    "Action": [
+      "athena:GetQueryExecution",
+      "athena:StartQueryExecution",
+      "athena:StopQueryExecution",
+      "athena:GetWorkGroup",
+      "athena:GetDatabase",
+      "athena:BatchGetQueryExecution",
+      "athena:GetQueryResults",
+      "athena:GetQueryResultsStream",
+      "athena:GetTableMetadata"
+    ], 
+    "Resource": [
+      "*"
+    ],
+    "Effect": "Allow",
+    "Sid": "AllowAthenaAccess"
+  },
+  {
+    "Action": [
+      "glue:GetTable",
+      "glue:GetDatabase",
+      "glue:GetPartitions"
+    ],
+    "Resource": [
+      "*"
+    ],
+    "Effect": "Allow",
+    "Sid": "AllowGlueAccess"
+  },
+  {
+    "Action": [
+      "kms:CreateGrant",
+      "kms:DescribeKey",
+      "kms:Decrypt"
+    ],
+    "Resource": [
+      "*"
+    ],
+    "Effect": "Allow",
+    "Sid": "AllowKMSAccess"
+  }
+]
 '''
 
 generated = generate_labeled_requests(policy_input)

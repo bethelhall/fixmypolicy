@@ -17,9 +17,7 @@ Contains a conditional statement that allows access to Amazon EC2 resources if t
 Allows access to the ec2:Describe* actions for Amazon EC2 resources.
 Explicitly denies access to the ec2:CreateTags and ec2:DeleteTags actions to prevent users from creating or deleting tags. This prevents the user from taking control of an EC2 instance by adding the specific tag to it.
 7.t I want that the user is only allowed to add other IAM users starting with iot. to the group CUSTOMGROUP.
-8. I want the policy to:
-
-Allow general access to kms operations for unrestricted keys
+8. I want the policy to: Allow general access to kms operations for unrestricted keys
 Deny all access to keys that are restricted (have an alias matching restricted)
 
 9.allow a general user to create and manage access key on AWS console
@@ -41,3 +39,54 @@ I'm wondering if I can add the policy to only accept the role that's being assum
 15.  help me out with the idt error problem 'the Greengrass deployment is COMPLETED on the device after 180 seconds.
 16. switch role in AWS CLI when logged in as an Identity Center user
 17. Using 'aws:RequestTag' in policy not working as expected. We've created an IAM policy designed to allow creation of S3 buckets from the Service Catalog, but deny from S3 console unless a specific tag is used.
+19. I'm trying to create a policy that will allow an EC2 instance access to a s3 bucket and prefix controlled via the Name tag on the EC2 instance. It feels like I should be able to create a policy similar to the below, but it isn't working. I get a 'PutObject operation: Access Denied' when I try and create an object.
+20. I currently have an Account A that is calling account B (my current account) and assuming a role that gives it permissions to perform operations on SQS such as encrypt and publish messages.
+
+I had to manually modify the SQS permissions to get it to work and allow root access to the current account that the assume role is in.
+
+The issue is, this is overly permissive permissions and I do not want root account access to the SQS if I can avoid it.
+
+I'm wondering if I can add the policy to only accept the role that's being assumed, opposed to a root user credenetial. Is it possible to add a ROLE in place of the USER or will I need to create another user with the role that's being assumed for this to work?
+21. We are trying to setup a SCP which will deny some DynamoDB actions based on the **IP Ranes ** of our Network, the way that IAM Users for example can't Scan or Query a DynamoDB table outside of our Network.
+
+In this SCP we need to add an exception to some AWS Services (Like: EC2 or Lambda) which can freely Query/Scan a DynamoDB table if they have the necessary permissions.
+
+We tried with the following SCP and it worked fine for the first case "IAM Users" but failed for the Lambda case as we still recieving an AccessDenied Error trying to Query a DynamoDB table from a Lambda Function
+22. enable IAM policies for KMS keys in Chinese regions
+23. Let's say an organization has a policy that denies the CreateRole action for most users. However, this restriction hinders rapid development as it blocks users from using the console wizard's create role features for various AWS services.
+
+My goal is to allow users to create IAM roles using the console wizard, but restrict them from creating roles with trust policies that include external AWS account numbers or IAM users/roles from different accounts. The trust policies should only allow resources within the current AWS account
+24. help me out with the idt error problem 'the Greengrass deployment is COMPLETED on the device after 180 seconds'
+25. How to switch role in AWS CLI when logged in as an Identity Center user? The problem is I need to use an IAM role to perform some tasks via the CLI 
+26. Using 'aws:RequestTag' in policy not working as expected
+We've created an IAM policy designed to allow creation of S3 buckets from the Service Catalog, but deny from S3 console unless a specific tag is used.
+27. Allow AssumeRole from an assumed (SSO-generated) role
+28. I am looking to give a user access to the metrics tab of an S3 bucket.
+29. Getting error while modifying the EC2 Instance Profile role on management console. I have an EC2 instance running to which currently no IAM Instance Profile role is attached to it. I got one instance role created to which I'm trying to attach it to my existing EC2 instance.
+30. Is it possible use tags on AWS S3 objects in AWS IAM policies
+31. IoT custom authorizer not allowing subscribing and receiving messages
+We're using IoT as a communication channel for a web app. The clients are not registered things, but rather we authorize using tokens and custom lambda authorizer. Our clients that use the app only receive messages by subscribing to topics of interest.
+32. Bellow is what I have to to create an IAM role using terraform. Whenever I init it says that I am missing a field principal? Where/What am I missing?
+33. Access Denied error calling AWS Pinpoint API from EKS cluster
+I'm trying to send an SMS message from an EKS pod using the Java SDK. I've created a role with policy (shown below), associated that role with a ServiceAccount, and associated the ServiceAccount with my deployment. When I call the SendTextMessage API, I receive the following:
+34. Cannot exceed quota for ACLSizePerRole: 2048. I'm getting the error 'Cannot exceed quota for ACLSizePerRole: 2048'. According to the document, we request the quota to increase to 4096. Still, It won't be sufficient. I need to add more roles to the above trust policy.
+35. S3 Bucket Policy not working for SSO Federated user
+0
+Hi All , I want to restrict access to a particular s3 bucket for all the user who login through sso by assuming a particular iam role .
+36. AWS ECR Access Denied Error: Troubleshooting 'ecr:GetAuthorizationToken' Issue in EKS
+0
+I encountered an issue with AWS ECR where I'm getting an "ecr:GetAuthorizationToken" access denied error.Error: An error occurred (AccessDeniedException) when calling the GetAuthorizationToken operation: User: arn:aws:sts::{ACC-ID}:assumed-role/ecr-sa/botocore-session-1706359714 is not authorized to perform: ecr:GetAuthorizationToken on resource: * because no identity-based policy allows the ecr:GetAuthorizationToken action Access denied
+37. artifactory-user is not authorized to perform: amplify:CreateBackendEnvironment on resource
+0
+Hi guys, Trying to use amplify cli but I am getting error, but I have amplify:CreateBackendEnvironment in the permission
+38. Cannot access proxy resource even though authorized
+0
+I know this is the resource policy to be returned by a REST API authorizer to authorize endpoint arn:aws:execute-api:us-west-2:123456789012:ymy8tbxw7b/dev/GET/
+39. json code need to disallow Delete Domain by im user. "route53:DeleteDomain" ERROR
+40. When I launch an instance with AMI, I get an error: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state. In the CDK code, I created a custom KMSKey, and then configured the Image Recipe of EC2 Image Builder to use the KMSKey as the encryption key of EBS, after successfully creating the AMI, I used the AMI to launch the instance, and the consistent message failed to start, the error is as follows: Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state.
+KMSKey's state is enabled, otherwise the AMI would not be successfully generated, so I don't understand why the state Incorrect is still prompted.
+
+41. SCP to Block S3 Public Access at account level except for a lambda function
+0
+There is a SCP to Deny access to Block Public Access settings in S3. The policy was later updated to Allow a specific lambda function to perform this action. The updated policy is given below. The assumption is that this policy should only allow the specified lambda function to perform this operation. But this policy is allowing the management IAM Role to perform this action. Please clarify why the SCP is allowing the IAM role to perform the action if only the lambda function is Allowed.
+

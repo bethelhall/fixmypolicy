@@ -1,0 +1,75 @@
+{
+  "Requests": [
+    {
+      "Effect": "allow",
+      "Action": [
+        "lambda:DeleteFunction"
+      ],
+      "Resource": [
+        "arn:aws:greengrass/region/account-id/folder1/folder2/"
+      ],
+      "id": "allow_b8c72396"
+    },
+    {
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:greengrass:region:account-id/groups/"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      },
+      "id": "allow_606587e8"
+    },
+    {
+      "Effect": "allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:PublishVersion",
+        "lambda:DeleteFunction",
+        "lambda:GetFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:region:account-id:function:greengrass/"
+      ],
+      "id": "allow_f7769e02"
+    },
+    {
+      "Effect": "deny",
+      "Action": [
+        "iam:*"
+      ],
+      "Resource": [
+        "arn:aws:greengrass:region:account_id/groups/"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      },
+      "id": "deny_d20faed2"
+    },
+    {
+      "Effect": "deny",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        ".*"
+      ],
+      "id": "deny_b884af42"
+    }
+  ]
+}
