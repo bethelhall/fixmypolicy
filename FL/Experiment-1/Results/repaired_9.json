@@ -1,0 +1,49 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "allow_361f68d5",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "allow_7e80646a",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:ListGrants"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "allow_671c23ba",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:ListGrants",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "deny_b5566aee",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "deny_b5e3ed45",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "kms:DeleteAlias",
+        "kms:Encrypt"
+      ],
+      "Resource": "arn:aws:s3:::forbidden-bucket/*"
+    }
+  ]
+}

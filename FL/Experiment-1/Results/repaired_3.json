@@ -1,0 +1,46 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificIoTAndS3Actions",
+      "Effect": "Allow",
+      "Action": [
+        "iot:CreateThingGroup",
+        "iot:DescribeRoleAlias",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowIAMDeleteRole",
+      "Effect": "Allow",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowIoTDeviceTesterAndIoTActions",
+      "Effect": "Allow",
+      "Action": [
+        "iot-device-tester:SendMetrics",
+        "iot:DescribeJobExecution",
+        "iot:DetachThingPrincipal"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "DenyDynamoDBAndEC2Actions",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "DenyIoTDeleteThingGroup",
+      "Effect": "Deny",
+      "Action": "iot:DeleteThingGroup",
+      "Resource": "arn:aws:s3:::forbidden-bucket/*"
+    }
+  ]
+}

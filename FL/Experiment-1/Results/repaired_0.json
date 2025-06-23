@@ -1,0 +1,96 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3AccessToSaveAndReadQueryResults",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::athena-query-results",
+        "arn:aws:s3:::athena-query-results/*"
+      ]
+    },
+    {
+      "Sid": "AllowS3AccessForGlueToReadLogs",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs",
+        "arn:aws:s3:::bkt_logs/*"
+      ]
+    },
+    {
+      "Sid": "AllowS3CreateBucketSpecific",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs",
+        "arn:aws:s3:::athena-query-results"
+      ]
+    },
+    {
+      "Sid": "AllowAthenaAccess",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:StopQueryExecution",
+        "athena:GetWorkGroup",
+        "athena:GetDatabase",
+        "athena:BatchGetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
+        "athena:GetTableMetadata"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowGlueAccess",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable",
+        "glue:GetDatabase",
+        "glue:GetPartitions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKMSAccess",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:DescribeKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyKMSKeyDeletion",
+      "Effect": "Deny",
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "DenyForbiddenBucketCreation",
+      "Effect": "Deny",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": "arn:aws:s3:::athena-query-results-forbidden"
+    }
+  ]
+}

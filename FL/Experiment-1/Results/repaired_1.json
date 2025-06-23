@@ -1,0 +1,51 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGlueAndSageMakerOnSpecificTable",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateScript",
+        "sagemaker:DeleteNotebookInstance",
+        "sagemaker:ListTags"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowSageMakerListAndStartOnSpecificTable",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListTags",
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowSageMakerOnS3AndNotebook",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:StartNotebookInstance",
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
+      ]
+    },
+    {
+      "Sid": "DenyGlueActionsOnNotebookLogs",
+      "Effect": "Deny",
+      "Action": [
+        "glue:CreateTable",
+        "glue:DeleteDatabase"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/logs/app.log"
+    },
+    {
+      "Sid": "DenySageMakerDeleteOnForbiddenNotebooks",
+      "Effect": "Deny",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*-forbidden"
+    }
+  ]
+}
