@@ -1,0 +1,118 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3AccessToSaveAndReadQueryResults",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::athena-query-results",
+        "arn:aws:s3:::athena-query-results/*"
+      ]
+    },
+    {
+      "Sid": "AllowS3AccessForGlueToReadLogs",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs",
+        "arn:aws:s3:::bkt_logs/*"
+      ]
+    },
+    {
+      "Sid": "AllowAthenaAccess",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:StopQueryExecution",
+        "athena:GetWorkGroup",
+        "athena:GetDatabase",
+        "athena:BatchGetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowGlueAccess",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable",
+        "glue:GetDatabase",
+        "glue:GetPartitions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKMSAccess",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSpecificGluePartitionsAndS3Policy",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetPartitions",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowAthenaBatchQueryOnS3Resource",
+      "Effect": "Allow",
+      "Action": "athena:BatchGetQueryExecution",
+      "Resource": "arn:aws:s3:::bkt_logs/temp/upload.tmp"
+    },
+    {
+      "Sid": "AllowGlueDatabaseOnMultipleResources",
+      "Effect": "Allow",
+      "Action": "glue:GetDatabase",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:s3:::athena-query-results/data/file.json"
+      ]
+    },
+    {
+      "Sid": "DenyLambdaInvokeOnWorkgroup",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "DenyAthenaTableMetadataOnForbiddenBucket",
+      "Effect": "Deny",
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:s3:::bkt_logs-forbidden/*"
+    },
+    {
+      "Sid": "DenyEC2RunInstancesOnQueryResults",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::athena-query-results/document.txt"
+    },
+    {
+      "Sid": "DenyKMSCreateGrantOnForbiddenBucket",
+      "Effect": "Deny",
+      "Action": "kms:CreateGrant",
+      "Resource": "arn:aws:s3:::athena-query-results-forbidden/*"
+    }
+  ]
+}

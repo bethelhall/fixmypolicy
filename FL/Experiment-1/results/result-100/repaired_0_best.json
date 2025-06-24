@@ -1,0 +1,99 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificS3Actions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:CreateBucket",
+        "s3:PutBucketPolicy",
+        "s3:GetBucketAcl",
+        "s3:DeleteBucket",
+        "s3:ListBucket",
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:s3:::athena-query-results/logs/app.log",
+        "arn:aws:s3:::athena-query-results/temp/upload.tmp",
+        "arn:aws:s3:::bkt_logs/data/file.json",
+        "arn:aws:s3:::bkt_logs/temp/upload.tmp",
+        "arn:aws:s3:::bkt_logs/logs/app.log",
+        "arn:aws:s3:::bkt_logs/document.txt"
+      ]
+    },
+    {
+      "Sid": "AllowAthenaActions",
+      "Effect": "Allow",
+      "Action": [
+        "athena:BatchGetQueryExecution",
+        "athena:GetTableMetadata",
+        "athena:StopQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetDatabase"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:s3:::athena-query-results/logs/app.log",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::bkt_logs/temp/upload.tmp",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::bkt_logs/data/file.json",
+        "arn:aws:s3:::athena-query-results/temp/upload.tmp",
+        "arn:aws:s3:::bkt_logs/logs/app.log"
+      ]
+    },
+    {
+      "Sid": "AllowKMSActions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:s3:::athena-query-results/logs/app.log",
+        "arn:aws:s3:::athena-query-results/temp/upload.tmp",
+        "arn:aws:s3:::bkt_logs/logs/app.log"
+      ]
+    },
+    {
+      "Sid": "DenyForbiddenActions",
+      "Effect": "Deny",
+      "Action": [
+        "kms:GenerateDataKey",
+        "s3:GetBucketLocation",
+        "glue:DeleteDatabase",
+        "athena:GetQueryResultsStream",
+        "kms:CreateKey",
+        "dynamodb:DeleteItem",
+        "kms:ScheduleKeyDeletion",
+        "s3:ListBucket",
+        "athena:GetTableMetadata",
+        "dynamodb:PutItem",
+        "ec2:RunInstances",
+        "glue:DeleteTable",
+        "athena:GetQueryResults",
+        "athena:GetQueryExecution",
+        "s3:GetObject",
+        "athena:DeleteWorkGroup",
+        "glue:UpdateTable",
+        "athena:GetDatabase",
+        "s3:CreateBucket",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/*",
+        "arn:aws:s3:::bkt_logs-forbidden/*",
+        "arn:aws:s3:::different-athena-query-results/*",
+        "arn:aws:s3:::different-bkt_logs/*",
+        "arn:aws:s3:::athena-query-results-forbidden/*",
+        "arn:aws:s3:::completely-different-bucket/*",
+        "arn:aws:iam::123456789012:role/admin-role"
+      ]
+    }
+  ]
+}

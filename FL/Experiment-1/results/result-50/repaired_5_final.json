@@ -1,0 +1,40 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAssumeRoleWithWebIdentity",
+      "Principal": {
+        "Federated": "arn:aws:iam::{account id}:oidc-provider/gitlab.com"
+      },
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity",
+        "sts:TagSession"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/specific-file.txt",
+      "Condition": {
+        "StringLike": {
+          "gitlab.com:sub": "project_path:{redacted}/*:ref_type:branch:ref:*"
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedActions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:RunInstances",
+        "iam:CreateUser",
+        "iam:DeleteUser",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt",
+        "arn:aws:s3:::forbidden-bucket/file.txt"
+      ]
+    }
+  ]
+}

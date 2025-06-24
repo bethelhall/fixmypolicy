@@ -475,11 +475,11 @@ def main():
     
     # Set up file paths
     policy_file = f"original_policy/{args.file_number}.json"
-    output_file = f"requests/{args.file_number}.json"
+    output_file = f"requests/request-{args.requests}/{args.file_number}.json"
     
     # Create requests directory if it doesn't exist
-    os.makedirs("requests", exist_ok=True)
-    
+    os.makedirs(f"requests/request-{args.requests}", exist_ok=True)
+
     try:
         # Load policy from file
         print(f"Loading policy from: {policy_file}")
@@ -560,4 +560,4 @@ if __name__ == "__main__":
         print("  - Split combinations between allow/deny based on ratio")
         sys.exit(1)
     
-    sys.exit(main()).                                                                                                                                                                                                                           
+    sys.exit(main())                                                                                                                                                                                                              

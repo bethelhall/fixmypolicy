@@ -1,0 +1,61 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGenerateDataKeyGlueTable",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowDescribeKeyAthenaWorkgroup",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowCreateKeyS3Document",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "AllowDescribeKeyCreateGrantS3Document",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:CreateGrant"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "AllowListGrantsGlueTable",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:ListGrants",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "DenyNonKMSActionsS3Document",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "dynamodb:PutItem",
+        "iam:DeleteUser",
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "DenyScheduleKeyDeletionForbiddenKey",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+    }
+  ]
+}
