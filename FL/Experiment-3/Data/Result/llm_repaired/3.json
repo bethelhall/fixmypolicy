@@ -1,0 +1,74 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "glue:CreateScript",
+                "secretsmanager:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:ListTags",
+                "sagemaker:DeleteNotebookInstance",
+                "sagemaker:StopNotebookInstance",
+                "sagemaker:CreatePresignedNotebookInstanceUrl",
+                "sagemaker:Describe*",
+                "sagemaker:StartNotebookInstance",
+                "sagemaker:UpdateNotebookInstance",
+                "sagemaker:CreatePresignedDomainUrl"
+            ],
+            "Resource": "arn:aws:sagemaker:*:*:notebook-instance/*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/Owner": "${identitystore:UserId}"
+                }
+            }
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:ListTags",
+                "sagemaker:Describe*",
+                "sagemaker:StartNotebookInstance"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:DeleteNotebookInstance",
+                "sagemaker:UpdateNotebookInstance",
+                "sagemaker:StartNotebookInstance",
+                "sagemaker:CreatePresignedDomainUrl"
+            ],
+            "Resource": "arn:aws:s3:::my-bucket/document.txt"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:CreatePresignedNotebookInstanceUrl",
+                "sagemaker:ListTags"
+            ],
+            "Resource": [
+                "arn:aws:sagemaker:*:*:notebook-instance/data/file.json",
+                "arn:aws:sagemaker:*:*:notebook-instance/logs/app.log"
+            ]
+        },
+        {
+            "Effect": "Deny",
+            "Action": [
+                "sagemaker:CreatePresignedNotebookInstanceUrl",
+                "glue:CreateScript",
+                "sagemaker:ListTags"
+            ],
+            "Resource": [
+                "arn:aws:iam::123456789012:role/admin-role",
+                "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+            ]
+        }
+    ]
+}

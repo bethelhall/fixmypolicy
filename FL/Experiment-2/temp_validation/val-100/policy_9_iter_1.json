@@ -1,0 +1,68 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowKMSActionsOnGlueAndAthena",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:CreateKey",
+        "kms:DeleteAlias",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:GenerateDataKey",
+        "kms:ScheduleKeyDeletion",
+        "kms:RevokeGrant"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "AllowKMSActionsOnS3",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:ListGrants",
+        "kms:RevokeGrant",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:CreateKey",
+        "kms:DescribeKey",
+        "kms:DeleteAlias",
+        "kms:ScheduleKeyDeletion",
+        "kms:CreateGrant",
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "DenyNonKMSActionsOnAllowedResources",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction",
+        "iam:CreateUser",
+        "dynamodb:DeleteItem",
+        "ec2:DescribeInstances",
+        "ec2:RunInstances",
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "Sid": "DenyAllActionsOnForbiddenResources",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:s3:::forbidden-bucket/*"
+      ]
+    }
+  ]
+}

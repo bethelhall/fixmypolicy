@@ -1,0 +1,106 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EnableIAMUserPermissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowGenerateDataKeyWithoutPlaintextAthena",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "athena.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeKeyCreateGrantEncryptS3Glue",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "kms:Encrypt"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": [
+            "s3.us-east-1.amazonaws.com",
+            "glue.us-east-1.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteAliasDescribeKeyGenerateDataKeyS3",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:DeleteAlias",
+        "kms:DescribeKey",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDecryptGlue",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "glue.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "DenyNonKMSActions",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "lambda:CreateFunction",
+        "dynamodb:DeleteItem",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyForbiddenBucketOperations",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "kms:CreateKey",
+        "kms:DeleteAlias",
+        "kms:Encrypt"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "StringEquals": {
+          "kms:ViaService": "s3.us-east-1.amazonaws.com"
+        },
+        "ForAnyValue:StringLike": {
+          "aws:RequestTag/s3:x-amz-bucket-name": "forbidden-bucket"
+        }
+      }
+    }
+  ]
+}

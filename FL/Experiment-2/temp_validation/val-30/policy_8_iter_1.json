@@ -1,0 +1,125 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3PutObjectMyBucketDocument",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "AllowS3ListBucketSpecific",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::my-bucket"
+      ]
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicyGlue",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowS3GetBucketAclAndListAllMyBucketsAndCloudWatchMetrics",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketAcl",
+        "s3:ListAllMyBuckets",
+        "cloudwatch:GetMetricStatistics"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::my-bucket",
+        "*"
+      ]
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicyMultipleResources",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": [
+        "arn:aws:s3:::my-bucket",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::bucket"
+      ]
+    },
+    {
+      "Sid": "AllowS3GetBucketAclBucket",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::bucket"
+    },
+    {
+      "Sid": "AllowS3CreateDeleteGetBucketAclAthena",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:GetBucketAcl"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowS3PutObjectBucket",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::bucket/*"
+    },
+    {
+      "Sid": "DenyIAMDeleteUser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::bucket/data/file.json"
+      ]
+    },
+    {
+      "Sid": "DenyCloudWatchAndS3ForbiddenBucket",
+      "Effect": "Deny",
+      "Action": [
+        "cloudwatch:ListMetrics",
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl"
+      ],
+      "Resource": "arn:aws:s3:::forbidden-bucket/*"
+    },
+    {
+      "Sid": "DenyDynamoDBPutItemMyBucketDocument",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "DenyS3CreateBucketForbiddenResources",
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+        "arn:aws:s3:::completely-different-bucket/*"
+      ]
+    },
+    {
+      "Sid": "DenyDynamoDBPutItemBucketTemp",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::bucket/temp/upload.tmp"
+    },
+    {
+      "Sid": "DenyS3PutBucketPolicyCompletelyDifferentBucket",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*"
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunctionBucket",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::bucket"
+    }
+  ]
+}

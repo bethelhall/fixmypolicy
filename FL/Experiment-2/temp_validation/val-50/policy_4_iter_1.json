@@ -1,0 +1,68 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificS3Operations",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:PutBucketPolicy",
+        "s3:PutObject",
+        "s3:CreateBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::file1",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::data123/*",
+        "arn:aws:s3:::file1/*",
+        "arn:aws:s3:::document/*",
+        "arn:aws:s3:::*/temp/upload.tmp"
+      ]
+    },
+    {
+      "Sid": "DenyNonS3Actions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser",
+        "lambda:CreateFunction",
+        "dynamodb:PutItem",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyForbiddenBuckets",
+      "Effect": "Deny",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:PutBucketPolicy",
+        "s3:DeleteObject",
+        "s3:PutObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*-forbidden/*",
+        "arn:aws:s3:::different-*/*",
+        "arn:aws:s3:::completely-different-bucket/*"
+      ]
+    },
+    {
+      "Sid": "DenySpecificPaths",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "dynamodb:PutItem",
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/data/file.json"
+      ]
+    }
+  ]
+}

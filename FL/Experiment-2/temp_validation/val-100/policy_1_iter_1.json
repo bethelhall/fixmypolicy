@@ -1,0 +1,134 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGlueCreateScript",
+      "Effect": "Allow",
+      "Action": "glue:CreateScript",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerStartNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerUpdateNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:UpdateNotebookInstance",
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:sagemaker:::notebook-instance/logs/app.log"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerDeleteNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerStopNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:StopNotebookInstance",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerCreatePresignedNotebookInstanceUrl",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreatePresignedNotebookInstanceUrl",
+      "Resource": [
+        "arn:aws:sagemaker:::notebook-instance/logs/app.log",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerCreatePresignedDomainUrl",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreatePresignedDomainUrl",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/document.txt",
+        "arn:aws:sagemaker:::notebook-instance/logs/app.log",
+        "arn:aws:sagemaker:::notebook-instance/data/file.json"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerListTags",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListTags",
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:sagemaker:::notebook-instance/logs/app.log",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerDescribe",
+      "Effect": "Allow",
+      "Action": "sagemaker:Describe*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyUnauthorizedActions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances",
+        "glue:UpdateTable",
+        "glue:CreateTable",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "iam:CreateUser",
+        "lambda:CreateFunction",
+        "glue:GetPartitions"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyForbiddenResources",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": [
+        "unauthorized/arn:aws:sagemaker:::notebook-instance/*",
+        "arn:aws:s3:::forbidden-bucket/*",
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+        "arn:aws:sagemaker:::notebook-instance/*-forbidden",
+        "forbidden-arn:aws:sagemaker:::notebook-instance/*"
+      ]
+    }
+  ]
+}

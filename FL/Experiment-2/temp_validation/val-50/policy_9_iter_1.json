@@ -1,0 +1,106 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGlueTableOperations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:ListGrants",
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:RevokeGrant",
+        "kms:CreateGrant",
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowAthenaWorkgroupOperations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt",
+        "kms:DeleteAlias",
+        "kms:ListGrants",
+        "kms:DescribeKey",
+        "kms:CreateGrant"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowS3BucketOperations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:Decrypt",
+        "kms:RevokeGrant",
+        "kms:DescribeKey",
+        "kms:ScheduleKeyDeletion",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "DenyNonKMSActionsOnGlueTable",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "lambda:InvokeFunction",
+        "iam:DeleteUser",
+        "ec2:RunInstances",
+        "dynamodb:PutItem",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "DenyForbiddenBucketOperations",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "kms:DeleteAlias",
+        "kms:Encrypt",
+        "kms:ScheduleKeyDeletion",
+        "kms:CreateKey",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:s3:::forbidden-bucket/*"
+    },
+    {
+      "Sid": "DenyAdminRoleOperations",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "kms:DeleteAlias",
+        "kms:Encrypt"
+      ],
+      "Resource": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Sid": "DenyNonKMSActionsOnAthenaWorkgroup",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:CreateUser",
+        "dynamodb:PutItem",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "DenyForbiddenKeyOperations",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSageMakerListTagsStopDeleteNotebook",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListTags",
+        "sagemaker:StopNotebookInstance",
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerStartNotebookAthena",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerActionsMultipleResources",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:StopNotebookInstance",
+        "sagemaker:StartNotebookInstance",
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerListTagsGlue",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListTags"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "Sid": "AllowSageMakerPresignedUrlAthena",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "DenyGlueDeleteDatabase",
+      "Effect": "Deny",
+      "Action": [
+        "glue:DeleteDatabase"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "DenySageMakerPresignedDomainUrl",
+      "Effect": "Deny",
+      "Action": [
+        "sagemaker:CreatePresignedDomainUrl"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:sagemaker:::notebook-instance/*",
+        "arn:aws:iam::123456789012:role/admin-role"
+      ]
+    },
+    {
+      "Sid": "DenyDynamoDbPutItem",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "DenySageMakerDeleteNotebookIAM",
+      "Effect": "Deny",
+      "Action": [
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ]
+    },
+    {
+      "Sid": "DenyMultipleActionsMultipleResources",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem",
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    }
+  ]
+}

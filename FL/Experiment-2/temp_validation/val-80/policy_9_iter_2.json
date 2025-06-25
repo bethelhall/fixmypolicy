@@ -1,0 +1,87 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowKMSActionsOnAthenaWorkgroup",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListGrants",
+        "kms:CreateGrant",
+        "kms:CreateKey",
+        "kms:DescribeKey",
+        "kms:RevokeGrant",
+        "kms:Encrypt",
+        "kms:GenerateDataKey",
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowKMSActionsOnGlueTable",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:DeleteAlias",
+        "kms:CreateGrant",
+        "kms:CreateKey",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:ScheduleKeyDeletion",
+        "kms:ListGrants",
+        "kms:GenerateDataKey",
+        "kms:DescribeKey",
+        "kms:RevokeGrant",
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "AllowKMSActionsOnS3Object",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DescribeKey",
+        "kms:RevokeGrant",
+        "kms:GenerateDataKey",
+        "kms:CreateGrant",
+        "kms:Encrypt",
+        "kms:CreateKey",
+        "kms:ListGrants"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "DenyEC2ActionsOnAllowedResources",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances",
+        "iam:CreateUser",
+        "iam:DeleteUser",
+        "lambda:InvokeFunction",
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "DenyKMSActionsOnForbiddenResources",
+      "Effect": "Deny",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:CreateKey",
+        "kms:RevokeGrant",
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:ListGrants",
+        "kms:DeleteAlias"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:s3:::forbidden-bucket/*",
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+      ]
+    }
+  ]
+}

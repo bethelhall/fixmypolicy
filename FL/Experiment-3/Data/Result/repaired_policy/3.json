@@ -1,0 +1,39 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "glue:CreateScript",
+                "secretsmanager:*"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:ListNotebookInstances",
+                "sagemaker:DescribeNotebookInstance",
+                "sagemaker:DescribeNotebookInstanceLifecycleConfig"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "sagemaker:ListTags",
+                "sagemaker:DeleteNotebookInstance",
+                "sagemaker:StopNotebookInstance",
+                "sagemaker:CreatePresignedNotebookInstanceUrl",
+                "sagemaker:StartNotebookInstance",
+                "sagemaker:UpdateNotebookInstance"
+            ],
+            "Resource": "arn:aws:sagemaker:*:*:notebook-instance/*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceTag/Owner": "${identitystore:UserId}"
+                }
+            }
+        }
+    ]
+}

@@ -86,7 +86,7 @@ def merge_request_files():
 def list_available_files():
     """List all available request files to verify"""
     input_dir = Path("/home/bhall2/Documents/fixmypolicy/FL/Dataset/requests/version2")
-    skip_files = {15, 25, 45, 55, 65, 75, 85, 95}
+    skip_files = {15, 25, 45, 55, 65, 75, 85, 95} # these files are non-existent
     
     print("Available request files:")
     available = []

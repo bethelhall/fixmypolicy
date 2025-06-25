@@ -1,0 +1,56 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowFile1Access",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::file1"
+    },
+    {
+      "Sid": "AllowDocumentBucketAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::document"
+    },
+    {
+      "Sid": "AllowPutDocumentTxt",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::*/document.txt"
+    },
+    {
+      "Sid": "AllowDeleteDocumentTxt",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::*/document.txt"
+    },
+    {
+      "Sid": "DenyLambdaInvoke",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": [
+        "arn:aws:s3:::*/document.txt",
+        "arn:aws:s3:::*/temp/upload.tmp"
+      ]
+    },
+    {
+      "Sid": "DenyForbiddenBucketLocation",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::*-forbidden/*"
+    },
+    {
+      "Sid": "DenyLambdaCreate",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::document"
+    }
+  ]
+}

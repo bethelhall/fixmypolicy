@@ -1,0 +1,125 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowIoTActions",
+      "Effect": "Allow",
+      "Action": [
+        "iot:CreateThingGroup",
+        "iot:ListTargetsForPolicy",
+        "iot:DetachPolicy",
+        "iot:DescribeRoleAlias",
+        "iot:DescribeJobExecution",
+        "iot:TagResource",
+        "iot:RemoveThingFromThingGroup",
+        "iot:ListThingsInThingGroup",
+        "iot:DescribeJob",
+        "iot:Subscribe",
+        "iot:UpdateThingShadow",
+        "iot:CreateThing",
+        "iot:GetThingShadow",
+        "iot:DeleteCertificate"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketTagging",
+        "s3:ListBucketVersions",
+        "s3:ListMultipartUploadParts",
+        "s3:PutObjectTagging",
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole",
+        "iam:PassRole",
+        "iam:GetRole",
+        "iam:AttachRolePolicy",
+        "iam:TagPolicy"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "Sid": "AllowIoTDeviceTesterActions",
+      "Effect": "Allow",
+      "Action": [
+        "iot-device-tester:SendMetrics",
+        "iot-device-tester:SupportedVersion",
+        "iot-device-tester:CheckVersion"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "Sid": "DenyForbiddenActionsOnForbiddenResources",
+      "Effect": "Deny",
+      "Action": [
+        "iot:CreateRoleAlias",
+        "iot:AttachThingPrincipal",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+        "arn:aws:s3:::forbidden-bucket/*"
+      ]
+    },
+    {
+      "Sid": "DenySpecificActionsOnSpecificResources",
+      "Effect": "Deny",
+      "Action": [
+        "iam:ListUsers",
+        "dynamodb:DeleteItem",
+        "lambda:UpdateFunctionCode",
+        "lambda:InvokeFunction",
+        "iam:GetPolicy",
+        "s3:DeleteObject",
+        "ec2:RunInstances",
+        "iam:AttachUserPolicy",
+        "ec2:DescribeInstances",
+        "iot:DeleteThing",
+        "iam:DeleteUser",
+        "iot:ListThingPrincipals"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::forbidden-bucket/*",
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+      ]
+    },
+    {
+      "Sid": "DenyRemoveThingFromThingGroupOnAdminRole",
+      "Effect": "Deny",
+      "Action": [
+        "iot:RemoveThingFromThingGroup"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ]
+    }
+  ]
+}
