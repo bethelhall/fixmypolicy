@@ -1,109 +1,238 @@
 {
   "Requests": [
     {
-      "id": "allow_6bb34fec",
-      "Effect": "allow",
+      "id": "deny_d90330d6",
+      "Effect": "deny",
       "Action": [
-        "ec2:DescribeInstances"
+        "lambda:CreateFunction"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_529c414a",
+      "id": "allow_c79bf7cf",
       "Effect": "allow",
       "Action": [
-        "ec2:RunInstances",
-        "ec2:DescribeInstances"
+        "ec2:RunInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "allow_c85cd0d4",
-      "Effect": "allow",
+      "id": "deny_0e51e4cd",
+      "Effect": "deny",
       "Action": [
-        "ec2:TerminateInstances",
         "ec2:CreateSecurityGroup"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_bdb65f18",
+      "id": "allow_8a3ac09d",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_fc9e28ed",
       "Effect": "allow",
       "Action": [
         "ec2:RunInstances",
         "ec2:TerminateInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
     },
     {
-      "id": "allow_607cb3f2",
+      "id": "allow_e0806de3",
       "Effect": "allow",
       "Action": [
-        "ec2:TerminateInstances",
-        "ec2:RunInstances"
+        "ec2:DescribeInstances",
+        "ec2:TerminateInstances"
       ],
       "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_a3b52399",
+      "Effect": "allow",
+      "Action": [
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_9e83f27a",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_fb6ee79e",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_3276e5d0",
+      "Effect": "deny",
+      "Action": [
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_49847f32",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "allow_fe2b2d0b",
+      "id": "allow_24a29c8f",
       "Effect": "allow",
       "Action": [
-        "ec2:CreateSecurityGroup",
-        "ec2:TerminateInstances"
+        "ec2:CreateSecurityGroup"
       ],
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "allow_d0ec6f38",
+      "id": "allow_fe8aa782",
       "Effect": "allow",
       "Action": [
         "ec2:RunInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     },
     {
-      "id": "allow_5cf0af3a",
-      "Effect": "allow",
+      "id": "deny_73879587",
+      "Effect": "deny",
       "Action": [
-        "ec2:TerminateInstances",
-        "ec2:DescribeInstances"
+        "ec2:CreateSecurityGroup"
       ],
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
-    },
-    {
-      "id": "allow_1211ca1b",
-      "Effect": "allow",
-      "Action": [
-        "ec2:RunInstances",
-        "ec2:DescribeInstances"
       ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "allow_3127adbf",
+      "id": "allow_65cc38ce",
       "Effect": "allow",
       "Action": [
         "ec2:CreateSecurityGroup",
@@ -112,267 +241,480 @@
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:s3:::my-bucket/document.txt"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_5c5c534a",
-      "Effect": "allow",
+      "id": "deny_f9b7db88",
+      "Effect": "deny",
       "Action": [
-        "ec2:CreateSecurityGroup"
+        "ec2:TerminateInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
     },
     {
-      "id": "allow_f75ffeaa",
+      "id": "allow_c68ed003",
       "Effect": "allow",
       "Action": [
         "ec2:DescribeInstances",
         "ec2:CreateSecurityGroup"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
-    },
-    {
-      "id": "allow_fcfb70d8",
-      "Effect": "allow",
-      "Action": [
-        "ec2:RunInstances"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
-    },
-    {
-      "id": "allow_8fa35238",
-      "Effect": "allow",
-      "Action": [
-        "ec2:DescribeInstances"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:s3:::my-bucket/document.txt"
-      ]
-    },
-    {
-      "id": "allow_d6cdf0e2",
-      "Effect": "allow",
-      "Action": [
-        "ec2:RunInstances",
-        "ec2:CreateSecurityGroup"
       ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_dab9da6d",
-      "Effect": "allow",
-      "Action": [
-        "ec2:CreateSecurityGroup"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
-    },
-    {
-      "id": "allow_8ead7da8",
+      "id": "allow_29c3fc36",
       "Effect": "allow",
       "Action": [
         "ec2:TerminateInstances"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "allow_c1d5f431",
-      "Effect": "allow",
+      "id": "deny_7cc2ad5b",
+      "Effect": "deny",
       "Action": [
-        "ec2:DescribeInstances"
+        "dynamodb:DeleteItem"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
-    },
-    {
-      "id": "allow_6a114cee",
-      "Effect": "allow",
-      "Action": [
-        "ec2:CreateSecurityGroup"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
-    },
-    {
-      "id": "allow_4046fc54",
-      "Effect": "allow",
-      "Action": [
-        "ec2:DescribeInstances"
       ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "allow_543d24c5",
+      "id": "allow_81d1412d",
       "Effect": "allow",
       "Action": [
+        "ec2:DescribeInstances",
         "ec2:RunInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
     },
     {
-      "id": "deny_44583ae7",
+      "id": "deny_adb01397",
       "Effect": "deny",
       "Action": [
-        "iam:CreateUser"
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_7d08201f",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateSecurityGroup",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "deny_2b978966",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances"
       ],
       "Resource": [
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "deny_7329eb2d",
-      "Effect": "deny",
+      "id": "allow_3883e1f2",
+      "Effect": "allow",
       "Action": [
         "ec2:RunInstances",
-        "ec2:CreateSecurityGroup"
+        "ec2:DescribeInstances"
       ],
       "Resource": [
-        "arn:aws:iam::123456789012:role/admin-role",
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
-        "arn:aws:s3:::forbidden-bucket/*"
-      ]
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "deny_59151277",
+      "id": "deny_50814551",
       "Effect": "deny",
       "Action": [
         "lambda:CreateFunction"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "deny_1f6a0eb3",
-      "Effect": "deny",
+      "id": "allow_6c0b5838",
+      "Effect": "allow",
       "Action": [
-        "ec2:TerminateInstances",
-        "ec2:RunInstances"
+        "ec2:RunInstances",
+        "ec2:DescribeInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::forbidden-bucket/*",
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ]
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "deny_89484653",
+      "id": "deny_58b56a7a",
       "Effect": "deny",
       "Action": [
-        "dynamodb:PutItem"
+        "ec2:DescribeInstances"
       ],
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "deny_b04ba012",
+      "id": "allow_77c1f4e6",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_d7be771a",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_a2fd37ac",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "allow_9aa3a263",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "deny_416c808d",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "deny_230e4c3c",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "deny_f707f2e5",
       "Effect": "deny",
       "Action": [
         "ec2:CreateSecurityGroup",
         "ec2:DescribeInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::forbidden-bucket/*",
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ]
-    },
-    {
-      "id": "deny_461fb5ef",
-      "Effect": "deny",
-      "Action": [
-        "dynamodb:DeleteItem"
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
       ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     },
     {
-      "id": "deny_524ea779",
-      "Effect": "deny",
+      "id": "allow_166b9bb8",
+      "Effect": "allow",
       "Action": [
+        "ec2:DescribeInstances",
         "ec2:TerminateInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::forbidden-bucket/*",
-        "arn:aws:iam::123456789012:role/admin-role",
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ]
-    },
-    {
-      "id": "deny_706eb53b",
-      "Effect": "deny",
-      "Action": [
-        "dynamodb:DeleteItem"
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "deny_7bd52ae6",
-      "Effect": "deny",
-      "Action": [
-        "ec2:TerminateInstances",
-        "ec2:RunInstances"
-      ],
-      "Resource": [
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
-        "arn:aws:iam::123456789012:role/admin-role",
-        "arn:aws:s3:::forbidden-bucket/*"
-      ]
-    },
-    {
-      "id": "deny_ffa712b7",
-      "Effect": "deny",
-      "Action": [
-        "iam:CreateUser"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
-    },
-    {
-      "id": "deny_7781dcae",
+      "id": "deny_4f758db1",
       "Effect": "deny",
       "Action": [
         "ec2:DescribeInstances"
       ],
       "Resource": [
-        "arn:aws:s3:::forbidden-bucket/*",
-        "arn:aws:iam::123456789012:role/admin-role"
-      ]
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "deny_deb28aff",
+      "id": "deny_970353ed",
       "Effect": "deny",
       "Action": [
-        "dynamodb:PutItem"
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "allow_5563ea17",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_c3ec7ed9",
+      "Effect": "deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_7fb4dac1",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "id": "allow_b77b60c0",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances"
       ],
       "Resource": [
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_0e369ea5",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_6c6722e9",
+      "Effect": "deny",
+      "Action": [
+        "ec2:CreateSecurityGroup",
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
     }
   ]
 }

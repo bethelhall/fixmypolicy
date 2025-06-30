@@ -1,0 +1,696 @@
+Processing request object: allow_fbe4f950
+  Validating individual request: allow_fbe4f950_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fbe4f950_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fbe4f950_combo_3
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fbe4f950_combo_4
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_2803e9f7
+  Validating individual request: allow_2803e9f7_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_9b51a5d2
+  Validating individual request: deny_9b51a5d2_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9b51a5d2_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9b51a5d2_combo_3
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9b51a5d2_combo_4
+    Action: ec2:TerminateInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_0e4b014d
+  Validating individual request: allow_0e4b014d_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_0e4b014d_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_40cc10bd
+  Validating individual request: allow_40cc10bd_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_40cc10bd_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_40cc10bd_combo_3
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_40cc10bd_combo_4
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_cc962460
+  Validating individual request: allow_cc962460_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_985795ea
+  Validating individual request: allow_985795ea_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_985795ea_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_e9369665
+  Validating individual request: deny_e9369665_combo_1
+    Action: lambda:InvokeFunction, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_e9369665_combo_2
+    Action: lambda:InvokeFunction, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_424feff0
+  Validating individual request: allow_424feff0_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_424feff0_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_81579132
+  Validating individual request: allow_81579132_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_81579132_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e1255172
+  Validating individual request: allow_e1255172_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_e1255172_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_e1255172_combo_3
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_73316b3b
+  Validating individual request: allow_73316b3b_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_73316b3b_combo_2
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_73316b3b_combo_3
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_73316b3b_combo_4
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_0b60f35e
+  Validating individual request: allow_0b60f35e_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_0b60f35e_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_0b60f35e_combo_3
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_0b60f35e_combo_4
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_11740cad
+  Validating individual request: deny_11740cad_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::forbidden-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_11740cad_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::forbidden-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b066c0a1
+  Validating individual request: allow_b066c0a1_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_be52e775
+  Validating individual request: allow_be52e775_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_be52e775_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_26fbb239
+  Validating individual request: allow_26fbb239_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_26fbb239_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_528f37cc
+  Validating individual request: deny_528f37cc_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:kms:us-east-1:123456789012:key/forbidden-key, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_528f37cc_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:kms:us-east-1:123456789012:key/forbidden-key, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_7875090c
+  Validating individual request: allow_7875090c_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_3093520a
+  Validating individual request: deny_3093520a_combo_1
+    Action: iam:CreateUser, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_7ece551f
+  Validating individual request: deny_7ece551f_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_7ece551f_combo_2
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_bea805b4
+  Validating individual request: deny_bea805b4_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_49fa2a7a
+  Validating individual request: allow_49fa2a7a_combo_1
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_49fa2a7a_combo_2
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b8a71d71
+  Validating individual request: allow_b8a71d71_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_7d39fb38
+  Validating individual request: allow_7d39fb38_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_3ee3e2f0
+  Validating individual request: deny_3ee3e2f0_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_3ee3e2f0_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_3ee3e2f0_combo_3
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_3ee3e2f0_combo_4
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_3ee3e2f0_combo_5
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_3ee3e2f0_combo_6
+    Action: ec2:TerminateInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f6571fad
+  Validating individual request: deny_f6571fad_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_c4e6ec51
+  Validating individual request: deny_c4e6ec51_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_86a7ab33
+  Validating individual request: deny_86a7ab33_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_88ad7dd7
+  Validating individual request: deny_88ad7dd7_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_88ad7dd7_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_3dd06c41
+  Validating individual request: deny_3dd06c41_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_3dd06c41_combo_2
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_5e9c2ad0
+  Validating individual request: allow_5e9c2ad0_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_5e9c2ad0_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_4e6107e4
+  Validating individual request: deny_4e6107e4_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_4e6107e4_combo_2
+    Action: iam:DeleteUser, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_66d93bfc
+  Validating individual request: allow_66d93bfc_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_66d93bfc_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_d385b401
+  Validating individual request: deny_d385b401_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_6d6aa872
+  Validating individual request: deny_6d6aa872_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::forbidden-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_a25aa370
+  Validating individual request: deny_a25aa370_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_a25aa370_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_29f551ee
+  Validating individual request: allow_29f551ee_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_29f551ee_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_29f551ee_combo_3
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_29f551ee_combo_4
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_40f3b09d
+  Validating individual request: allow_40f3b09d_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_218f93d5
+  Validating individual request: deny_218f93d5_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_218f93d5_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_d5a64055
+  Validating individual request: allow_d5a64055_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d5a64055_combo_2
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d5a64055_combo_3
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d5a64055_combo_4
+    Action: ec2:CreateSecurityGroup, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_caad132b
+  Validating individual request: deny_caad132b_combo_1
+    Action: ec2:TerminateInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_caad132b_combo_2
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEqualsIfExists': {'ec2:ResourceTag/Username': '${aws:userid}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_84811bd5
+  Validating individual request: allow_84811bd5_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+
+============================================================
+INDIVIDUAL REQUEST ANALYSIS
+============================================================
+Total Individual Requests: 90
+Correct Classifications: 76
+Incorrect Classifications: 14
+Errors: 0
+Overall Accuracy: 84.4%
+
+Expected vs Actual:
+  Expected Allow -> Got Allow: 44
+  Expected Allow -> Got Deny: 9
+  Expected Deny -> Got Deny: 32
+  Expected Deny -> Got Allow: 5
+
+By Request Object ID Prefix:
+  'allow_' prefix -> Correctly Allowed: 44
+  'allow_' prefix -> Incorrectly Denied: 9
+  'deny_' prefix -> Correctly Denied: 32
+  'deny_' prefix -> Incorrectly Allowed: 5
+============================================================
+Error: Home directory /home/bhall2/Documents/fixmypolicy/FL/Quacky_outputs does not exist.
