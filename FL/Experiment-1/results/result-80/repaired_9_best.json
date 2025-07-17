@@ -1,0 +1,109 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EnableIAMUserPermissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowS3Operations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:RevokeGrant",
+        "kms:ScheduleKeyDeletion",
+        "kms:Decrypt",
+        "kms:DeleteAlias",
+        "kms:CreateKey",
+        "kms:GenerateDataKey",
+        "kms:Encrypt"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt"
+    },
+    {
+      "Sid": "AllowAthenaOperations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant",
+        "kms:DescribeKey",
+        "kms:ScheduleKeyDeletion",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:DeleteAlias",
+        "kms:CreateKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+    },
+    {
+      "Sid": "AllowGlueOperations",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant",
+        "kms:ScheduleKeyDeletion",
+        "kms:DeleteAlias",
+        "kms:CreateKey"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+    },
+    {
+      "Sid": "DenySpecificOperations",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:CreateGrant",
+        "kms:CreateKey",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:DeleteAlias",
+        "kms:Decrypt",
+        "kms:ScheduleKeyDeletion",
+        "kms:Encrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "deny-specific-cases"
+        }
+      }
+    },
+    {
+      "Sid": "DenyForbiddenResources",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt",
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+        "arn:aws:iam::123456789012:role/admin-role"
+      ]
+    },
+    {
+      "Sid": "DenyNonKMSActions",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "dynamodb:PutItem",
+        "lambda:CreateFunction",
+        "iam:CreateUser"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

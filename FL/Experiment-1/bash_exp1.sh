@@ -14,9 +14,10 @@ QUACKY_SRC_DIR="/home/bhall2/Documents/fixmypolicy/quacky/src"
 VALIDATOR_SCRIPT="${QUACKY_SRC_DIR}/validate_requests.py"
 BASE_EXPERIMENT_DIR="/home/bhall2/Documents/fixmypolicy/FL/Experiment-1"
 POLICY_DIR="${BASE_EXPERIMENT_DIR}/original_policy"
-REQUESTS_DIR="${BASE_EXPERIMENT_DIR}/requests/request-120"
-RESULTS_DIR="${BASE_EXPERIMENT_DIR}/results/result-120"
-LOGS_DIR="${BASE_EXPERIMENT_DIR}/logs/log-120"
+REQUESTS_DIR="${BASE_EXPERIMENT_DIR}/requests/request-80"
+RESULTS_DIR="${BASE_EXPERIMENT_DIR}/results/result-80"
+LOGS_DIR="${BASE_EXPERIMENT_DIR}/logs/log-80"
+TEMP_DIR="${BASE_EXPERIMENT_DIR}/temp_validation/val-80"
 
 # Colors for output
 RED='\033[0;31m'

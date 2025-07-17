@@ -1,0 +1,948 @@
+Processing request object: allow_a66514fe
+  Validating individual request: allow_a66514fe_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_4ba88e35
+  Validating individual request: allow_4ba88e35_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_509f0b96
+  Validating individual request: deny_509f0b96_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_1806f7b6
+  Validating individual request: deny_1806f7b6_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_1806f7b6_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_05293e75
+  Validating individual request: deny_05293e75_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_f9daecd7
+  Validating individual request: allow_f9daecd7_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_48dd3e52
+  Validating individual request: allow_48dd3e52_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_48dd3e52_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_b326e61f
+  Validating individual request: deny_b326e61f_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_b326e61f_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_b7952af8
+  Validating individual request: allow_b7952af8_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_6718c93b
+  Validating individual request: allow_6718c93b_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_6718c93b_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_1fdea7e3
+  Validating individual request: deny_1fdea7e3_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_5f781edd
+  Validating individual request: allow_5f781edd_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_5f781edd_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_010b50e2
+  Validating individual request: allow_010b50e2_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_010b50e2_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_ca98dfb8
+  Validating individual request: deny_ca98dfb8_combo_1
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_76bf4153
+  Validating individual request: allow_76bf4153_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_76bf4153_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_5a361b5d
+  Validating individual request: deny_5a361b5d_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_5a361b5d_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_15633253
+  Validating individual request: deny_15633253_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_780d970e
+  Validating individual request: allow_780d970e_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_780d970e_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_84892a46
+  Validating individual request: allow_84892a46_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_50fd2dde
+  Validating individual request: allow_50fd2dde_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e1dd4069
+  Validating individual request: allow_e1dd4069_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_90087cfd
+  Validating individual request: deny_90087cfd_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_06fbb538
+  Validating individual request: allow_06fbb538_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_21d019f2
+  Validating individual request: allow_21d019f2_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_21d019f2_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2c70347d
+  Validating individual request: deny_2c70347d_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_ff340883
+  Validating individual request: allow_ff340883_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_3231744b
+  Validating individual request: deny_3231744b_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_049e8aab
+  Validating individual request: deny_049e8aab_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_23c1efdf
+  Validating individual request: allow_23c1efdf_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_ce2402d2
+  Validating individual request: deny_ce2402d2_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_ce2402d2_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_9f591d27
+  Validating individual request: allow_9f591d27_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_d6294ff3
+  Validating individual request: deny_d6294ff3_combo_1
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_754df355
+  Validating individual request: allow_754df355_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_be27e757
+  Validating individual request: deny_be27e757_combo_1
+    Action: iam:CreateUser, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_812851e9
+  Validating individual request: allow_812851e9_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e47ea6cb
+  Validating individual request: allow_e47ea6cb_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_a049842a
+  Validating individual request: allow_a049842a_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_765fc31a
+  Validating individual request: allow_765fc31a_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_765fc31a_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_f3d8f62f
+  Validating individual request: allow_f3d8f62f_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_04664b2b
+  Validating individual request: allow_04664b2b_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_04664b2b_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2eb33f0b
+  Validating individual request: deny_2eb33f0b_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b483f893
+  Validating individual request: allow_b483f893_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_62b01537
+  Validating individual request: allow_62b01537_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_62b01537_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_bed49a7c
+  Validating individual request: deny_bed49a7c_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_bed49a7c_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_5e8edb33
+  Validating individual request: deny_5e8edb33_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_5b97bd72
+  Validating individual request: allow_5b97bd72_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_1f0a4bb7
+  Validating individual request: deny_1f0a4bb7_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_489ea24a
+  Validating individual request: deny_489ea24a_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_489ea24a_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_9e994707
+  Validating individual request: allow_9e994707_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_489cfc8e
+  Validating individual request: allow_489cfc8e_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_489cfc8e_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_bda56cb6
+  Validating individual request: deny_bda56cb6_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_10cc6023
+  Validating individual request: deny_10cc6023_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_549f3e65
+  Validating individual request: deny_549f3e65_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_98d33147
+  Validating individual request: allow_98d33147_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_cab9b0be
+  Validating individual request: allow_cab9b0be_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_971f86f0
+  Validating individual request: allow_971f86f0_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_da5b9e18
+  Validating individual request: allow_da5b9e18_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_86ee8c7a
+  Validating individual request: deny_86ee8c7a_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_61a37223
+  Validating individual request: allow_61a37223_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_61a37223_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_6b62e92a
+  Validating individual request: deny_6b62e92a_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_6b62e92a_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_36ef69fa
+  Validating individual request: allow_36ef69fa_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_36ef69fa_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_3d2144ee
+  Validating individual request: allow_3d2144ee_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::999888777666:oidc-provider/gitlab.com, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_7e4d3d0f
+  Validating individual request: deny_7e4d3d0f_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_7e4d3d0f_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_7a84d536
+  Validating individual request: deny_7a84d536_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_a227650b
+  Validating individual request: allow_a227650b_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_a227650b_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_847535e9
+  Validating individual request: allow_847535e9_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_da3ecf74
+  Validating individual request: allow_da3ecf74_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_da3ecf74_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_c05c8f7b
+  Validating individual request: deny_c05c8f7b_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_4bac10ad
+  Validating individual request: allow_4bac10ad_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_4bac10ad_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b176baee
+  Validating individual request: allow_b176baee_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_b176baee_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_370a9091
+  Validating individual request: allow_370a9091_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_370a9091_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f54dfd19
+  Validating individual request: deny_f54dfd19_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::forbidden-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_02a70a51
+  Validating individual request: deny_02a70a51_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_02a70a51_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_926cc30e
+  Validating individual request: deny_926cc30e_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_b344087d
+  Validating individual request: allow_b344087d_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_ccb0c287
+  Validating individual request: allow_ccb0c287_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_35391565
+  Validating individual request: allow_35391565_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_35391565_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_14a3d8e2
+  Validating individual request: allow_14a3d8e2_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_14a3d8e2_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_7c44f5ab
+  Validating individual request: deny_7c44f5ab_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_7c44f5ab_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_d7ca420a
+  Validating individual request: deny_d7ca420a_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_d7ca420a_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_27cf5e88
+  Validating individual request: deny_27cf5e88_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_27cf5e88_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_b80cd366
+  Validating individual request: allow_b80cd366_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_b80cd366_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_8f6f0959
+  Validating individual request: allow_8f6f0959_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_8f6f0959_combo_2
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_77199e5d
+  Validating individual request: deny_77199e5d_combo_1
+    Action: sts:TagSession, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_77199e5d_combo_2
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_3d81e6d0
+  Validating individual request: deny_3d81e6d0_combo_1
+    Action: sts:AssumeRoleWithWebIdentity, Resource: arn:aws:s3:::my-bucket/specific-file.txt, Principal: arn:aws:iam::{account id}:oidc-provider/gitlab.com, Condition: {'StringLike': {'gitlab.com:sub': 'project_path:{redacted}/*:ref_type:branch:ref:*'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+
+============================================================
+INDIVIDUAL REQUEST ANALYSIS
+============================================================
+Total Individual Requests: 120
+Correct Classifications: 36
+Incorrect Classifications: 84
+Errors: 0
+Overall Accuracy: 30.0%
+
+Expected vs Actual:
+  Expected Allow -> Got Allow: 21
+  Expected Allow -> Got Deny: 50
+  Expected Deny -> Got Deny: 15
+  Expected Deny -> Got Allow: 34
+
+By Request Object ID Prefix:
+  'allow_' prefix -> Correctly Allowed: 21
+  'allow_' prefix -> Incorrectly Denied: 50
+  'deny_' prefix -> Correctly Denied: 15
+  'deny_' prefix -> Incorrectly Allowed: 34
+============================================================
+Error: Home directory /home/bhall2/Documents/fixmypolicy/FL/Quacky_outputs does not exist.

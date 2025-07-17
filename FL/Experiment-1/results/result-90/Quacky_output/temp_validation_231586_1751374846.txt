@@ -1,0 +1,688 @@
+Processing request object: deny_0d0be972
+  Validating individual request: deny_0d0be972_combo_1
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0d0be972_combo_2
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0d0be972_combo_3
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0d0be972_combo_4
+    Action: s3:DeleteBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0d0be972_combo_5
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0d0be972_combo_6
+    Action: s3:GetBucketAcl, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_773b9d5a
+  Validating individual request: allow_773b9d5a_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:ResourceTag/Owner': 'not-${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_ad3315cd
+  Validating individual request: deny_ad3315cd_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_ad3315cd_combo_2
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_ad3315cd_combo_3
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_3078f14a
+  Validating individual request: allow_3078f14a_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_3078f14a_combo_2
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket/logs/app.log, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_3078f14a_combo_3
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_3078f14a_combo_4
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket/logs/app.log, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_3078f14a_combo_5
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_3078f14a_combo_6
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::bucket/logs/app.log, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_26283c9a
+  Validating individual request: allow_26283c9a_combo_1
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_26283c9a_combo_2
+    Action: s3:PutObject, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_26283c9a_combo_3
+    Action: s3:CreateBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f2e1b901
+  Validating individual request: deny_f2e1b901_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_82c5b39d
+  Validating individual request: deny_82c5b39d_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: allow_f6d17fc4
+  Validating individual request: allow_f6d17fc4_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_d23cb133
+  Validating individual request: allow_d23cb133_combo_1
+    Action: s3:GetObject, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_2
+    Action: s3:GetObject, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_3
+    Action: s3:GetObject, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_4
+    Action: s3:ListBucket, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_5
+    Action: s3:ListBucket, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_6
+    Action: s3:ListBucket, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_7
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    CORRECT: Expected=allow, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_8
+    Action: s3:CreateBucket, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_d23cb133_combo_9
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_1b839fc4
+  Validating individual request: deny_1b839fc4_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_331abd85
+  Validating individual request: deny_331abd85_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_c5cc5685
+  Validating individual request: allow_c5cc5685_combo_1
+    Action: s3:GetObject, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_aeda069e
+  Validating individual request: allow_aeda069e_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_accd8b75
+  Validating individual request: deny_accd8b75_combo_1
+    Action: cloudwatch:GetMetricStatistics, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_accd8b75_combo_2
+    Action: cloudwatch:GetMetricStatistics, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_accd8b75_combo_3
+    Action: s3:DeleteBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_accd8b75_combo_4
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_accd8b75_combo_5
+    Action: s3:DeleteObject, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_accd8b75_combo_6
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_078c49fc
+  Validating individual request: deny_078c49fc_combo_1
+    Action: cloudwatch:GetMetricStatistics, Resource: arn:aws:s3:::different-bucket/file.txt, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_078c49fc_combo_2
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::different-bucket/file.txt, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_078c49fc_combo_3
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::different-bucket/file.txt, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_d1cb3e45
+  Validating individual request: deny_d1cb3e45_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_91991e72
+  Validating individual request: deny_91991e72_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_91991e72_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_91991e72_combo_3
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_91991e72_combo_4
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_91991e72_combo_5
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_91991e72_combo_6
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_73da4a6b
+  Validating individual request: allow_73da4a6b_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': '${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_a415b386
+  Validating individual request: deny_a415b386_combo_1
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::bucket/logs/app.log, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+  Validating individual request: deny_a415b386_combo_2
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: sat
+    INCORRECT: Expected=deny, Got=allow
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: True
+
+Processing request object: deny_f06cc5ca
+  Validating individual request: deny_f06cc5ca_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:s3:::bucket/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f06cc5ca_combo_2
+    Action: iam:DeleteUser, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_a950c3ea
+  Validating individual request: deny_a950c3ea_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::forbidden-bucket/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_7eb3aa1c
+  Validating individual request: allow_7eb3aa1c_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:ResourceTag/Owner': 'not-${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_c29d0737
+  Validating individual request: allow_c29d0737_combo_1
+    Action: s3:PutObject, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_3
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_4
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_5
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_6
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_7
+    Action: s3:GetBucketLocation, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_8
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_c29d0737_combo_9
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_71da8ef2
+  Validating individual request: allow_71da8ef2_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_71da8ef2_combo_2
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_71da8ef2_combo_3
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_71da8ef2_combo_4
+    Action: s3:PutBucketPolicy, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_71da8ef2_combo_5
+    Action: s3:GetObject, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_71da8ef2_combo_6
+    Action: s3:GetObject, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_c7923f17
+  Validating individual request: allow_c7923f17_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:ResourceTag/Owner': 'not-${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_ab559cca
+  Validating individual request: allow_ab559cca_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket/logs/app.log, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_ab559cca_combo_2
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_1a5708fe
+  Validating individual request: allow_1a5708fe_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_1a5708fe_combo_2
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_8000abb5
+  Validating individual request: allow_8000abb5_combo_1
+    Action: cloudwatch:GetMetricStatistics, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': "not-['home/${aws:userid}/', 'home/${aws:username}']"}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_eee570b4
+  Validating individual request: allow_eee570b4_combo_1
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:s3:::my-bucket/document.txt, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_eee570b4_combo_2
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_f93e75f4
+  Validating individual request: allow_f93e75f4_combo_1
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:glue:us-east-1:123456789012:table/my-database/my-table, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_08926db6
+  Validating individual request: deny_08926db6_combo_1
+    Action: ec2:DescribeInstances, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:ResourceTag/Owner': 'not-${identitystore:UserId}'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_027ddaf7
+  Validating individual request: allow_027ddaf7_combo_1
+    Action: cloudwatch:ListMetrics, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_027ddaf7_combo_2
+    Action: s3:GetBucketAcl, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_027ddaf7_combo_3
+    Action: s3:ListAllMyBuckets, Resource: arn:aws:athena:us-east-1:123456789012:workgroup/primary, Principal: arn:aws:iam::${aws:admin:032}:root, Condition: {'StringEquals': {'s3:prefix': ['home/${aws:userid}/', 'home/${aws:username}']}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_838c79c0
+  Validating individual request: allow_838c79c0_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::bucket, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:ResourceTag/Owner': 'not-${identitystore:UserId}'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f12aa4dd
+  Validating individual request: deny_f12aa4dd_combo_1
+    Action: s3:GetObject, Resource: arn:aws:s3:::bucket-forbidden/file.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f12aa4dd_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::bucket-forbidden/file.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_568febbe
+  Validating individual request: allow_568febbe_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::bucket/temp/upload.tmp, Principal: arn:aws:iam::999888777666:admin:032}:root, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+
+============================================================
+INDIVIDUAL REQUEST ANALYSIS
+============================================================
+Total Individual Requests: 90
+Correct Classifications: 30
+Incorrect Classifications: 60
+Errors: 0
+Overall Accuracy: 33.3%
+
+Expected vs Actual:
+  Expected Allow -> Got Allow: 3
+  Expected Allow -> Got Deny: 50
+  Expected Deny -> Got Deny: 27
+  Expected Deny -> Got Allow: 10
+
+By Request Object ID Prefix:
+  'allow_' prefix -> Correctly Allowed: 3
+  'allow_' prefix -> Incorrectly Denied: 50
+  'deny_' prefix -> Correctly Denied: 27
+  'deny_' prefix -> Incorrectly Allowed: 10
+============================================================
+Error: Home directory /home/bhall2/Documents/fixmypolicy/FL/Quacky_outputs does not exist.

@@ -1,0 +1,918 @@
+Processing request object: deny_b592c4e6
+  Validating individual request: deny_b592c4e6_combo_1
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::*-forbidden/file.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_9725ba82
+  Validating individual request: deny_9725ba82_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9725ba82_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9725ba82_combo_3
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9725ba82_combo_4
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9725ba82_combo_5
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_9725ba82_combo_6
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2619fa04
+  Validating individual request: deny_2619fa04_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::completely-different-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_6723c38a
+  Validating individual request: deny_6723c38a_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::different-*/file.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f457aa91
+  Validating individual request: deny_f457aa91_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f457aa91_combo_2
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2be7d545
+  Validating individual request: deny_2be7d545_combo_1
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_a9e80b1c
+  Validating individual request: allow_a9e80b1c_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_5cf4baf4
+  Validating individual request: allow_5cf4baf4_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e00bf5ff
+  Validating individual request: allow_e00bf5ff_combo_1
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_4ac5cad4
+  Validating individual request: deny_4ac5cad4_combo_1
+    Action: iam:DeleteUser, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_06d80f9f
+  Validating individual request: allow_06d80f9f_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_78d8d22f
+  Validating individual request: deny_78d8d22f_combo_1
+    Action: s3:GetObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_1084e055
+  Validating individual request: deny_1084e055_combo_1
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_1084e055_combo_2
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e6bea325
+  Validating individual request: allow_e6bea325_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b7f65ebe
+  Validating individual request: allow_b7f65ebe_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_b9790223
+  Validating individual request: deny_b9790223_combo_1
+    Action: s3:GetObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2bbd55f2
+  Validating individual request: deny_2bbd55f2_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::completely-different-bucket/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_f449ad5c
+  Validating individual request: allow_f449ad5c_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_2
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_3
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_4
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_5
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_6
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_7
+    Action: s3:ListBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_8
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f449ad5c_combo_9
+    Action: s3:ListBucket, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_b09ae0ef
+  Validating individual request: deny_b09ae0ef_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_0c7cb1b6
+  Validating individual request: deny_0c7cb1b6_combo_1
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0c7cb1b6_combo_2
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0c7cb1b6_combo_3
+    Action: s3:PutObject, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_0c7cb1b6_combo_4
+    Action: s3:PutObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateLessThan': {'aws:CurrentTime': '2025-12-31T23:59:59Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_0eff19cb
+  Validating individual request: allow_0eff19cb_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_0eff19cb_combo_2
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_f21b3251
+  Validating individual request: deny_f21b3251_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f21b3251_combo_2
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f21b3251_combo_3
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_f21b3251_combo_4
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_638757b7
+  Validating individual request: allow_638757b7_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_638757b7_combo_2
+    Action: s3:ListBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_638757b7_combo_3
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_66694553
+  Validating individual request: deny_66694553_combo_1
+    Action: ec2:RunInstances, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_f66e29b3
+  Validating individual request: allow_f66e29b3_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_2264bd83
+  Validating individual request: deny_2264bd83_combo_1
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_2264bd83_combo_2
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_09c2fe49
+  Validating individual request: allow_09c2fe49_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::*/logs/app.log, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_09c2fe49_combo_2
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringLike': {'aws:userid': 'AIDAI'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_da1adb55
+  Validating individual request: allow_da1adb55_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_da1adb55_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_53ff4120
+  Validating individual request: deny_53ff4120_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_8a7f6b28
+  Validating individual request: allow_8a7f6b28_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_7fab2198
+  Validating individual request: allow_7fab2198_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_d3329d1c
+  Validating individual request: deny_d3329d1c_combo_1
+    Action: iam:CreateUser, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_388027f8
+  Validating individual request: deny_388027f8_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::different-*/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_388027f8_combo_2
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::different-*/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_388027f8_combo_3
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::different-*/file.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_a25fbf41
+  Validating individual request: deny_a25fbf41_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_9dce3ef4
+  Validating individual request: deny_9dce3ef4_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::555666777888:role/cross-account-role, Condition: {'IpAddress': {'aws:SourceIp': '203.0.113.0/24'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_5b1679eb
+  Validating individual request: allow_5b1679eb_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_5b1679eb_combo_2
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_5b1679eb_combo_3
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_c525679a
+  Validating individual request: deny_c525679a_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_7f970a68
+  Validating individual request: allow_7f970a68_combo_1
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_ab48c15b
+  Validating individual request: allow_ab48c15b_combo_1
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/logs/app.log, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_ab48c15b_combo_2
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::*/logs/app.log, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_222c9842
+  Validating individual request: allow_222c9842_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_4ce8c7a0
+  Validating individual request: allow_4ce8c7a0_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_4ce8c7a0_combo_2
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_4ce8c7a0_combo_3
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_4ce8c7a0_combo_4
+    Action: s3:PutObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_e3af66cd
+  Validating individual request: deny_e3af66cd_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_e3af66cd_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'s3:ExistingObjectTag/Department': 'Finance'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_e663243b
+  Validating individual request: allow_e663243b_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'Bool': {'aws:SecureTransport': 'true'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_e663243b_combo_2
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'Bool': {'aws:SecureTransport': 'true'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_e663243b_combo_3
+    Action: s3:ListBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'Bool': {'aws:SecureTransport': 'true'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_e663243b_combo_4
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'Bool': {'aws:SecureTransport': 'true'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_8f6ff83a
+  Validating individual request: allow_8f6ff83a_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_8f6ff83a_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_8f6ff83a_combo_3
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_8f6ff83a_combo_4
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_c28c76f1
+  Validating individual request: deny_c28c76f1_combo_1
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_c28c76f1_combo_2
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_c28c76f1_combo_3
+    Action: lambda:CreateFunction, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_f7063025
+  Validating individual request: allow_f7063025_combo_1
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_2
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_3
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_4
+    Action: s3:GetObject, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_5
+    Action: s3:GetObject, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_6
+    Action: s3:GetObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_7
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_8
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_f7063025_combo_9
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_296d325b
+  Validating individual request: allow_296d325b_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_38b55ba2
+  Validating individual request: allow_38b55ba2_combo_1
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_38b55ba2_combo_2
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_38b55ba2_combo_3
+    Action: s3:DeleteBucket, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_40b53ef6
+  Validating individual request: deny_40b53ef6_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_40b53ef6_combo_2
+    Action: s3:PutObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:role/admin-role, Condition: {'NumericLessThan': {'s3:max-keys': '10'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_87d3b607
+  Validating individual request: deny_87d3b607_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::*/logs/app.log, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_a98c5a0c
+  Validating individual request: allow_a98c5a0c_combo_1
+    Action: s3:GetBucketLocation, Resource: arn:aws:s3:::*/data/file.json, Principal: arn:aws:iam::987654321098:user/charlie, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_b917eca5
+  Validating individual request: allow_b917eca5_combo_1
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_b917eca5_combo_2
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/alice, Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_74055128
+  Validating individual request: allow_74055128_combo_1
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_74055128_combo_2
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_74055128_combo_3
+    Action: s3:PutBucketPolicy, Resource: arn:aws:s3:::file1, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+Processing request object: deny_bad4d670
+  Validating individual request: deny_bad4d670_combo_1
+    Action: s3:PutObject, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_bad4d670_combo_2
+    Action: s3:ListBucket, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+  Validating individual request: deny_bad4d670_combo_3
+    Action: s3:DeleteObject, Resource: arn:aws:s3:::*/document.txt, Principal: arn:aws:iam::123456789012:role/service-role, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    CORRECT: Expected=deny, Got=deny
+    Misclassified Allow->Deny: False
+    Misclassified Deny->Allow: False
+
+Processing request object: allow_fb104cbf
+  Validating individual request: allow_fb104cbf_combo_1
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fb104cbf_combo_2
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fb104cbf_combo_3
+    Action: s3:GetBucketAcl, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fb104cbf_combo_4
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::data123, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fb104cbf_combo_5
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::document, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+  Validating individual request: allow_fb104cbf_combo_6
+    Action: s3:CreateBucket, Resource: arn:aws:s3:::*/temp/upload.tmp, Principal: arn:aws:iam::123456789012:user/bob, Condition: {'DateGreaterThan': {'aws:CurrentTime': '2024-01-01T00:00:00Z'}}
+Solver result: unsat
+    INCORRECT: Expected=allow, Got=deny
+    Misclassified Allow->Deny: True
+    Misclassified Deny->Allow: False
+
+
+============================================================
+INDIVIDUAL REQUEST ANALYSIS
+============================================================
+Total Individual Requests: 120
+Correct Classifications: 49
+Incorrect Classifications: 71
+Errors: 0
+Overall Accuracy: 40.8%
+
+Expected vs Actual:
+  Expected Allow -> Got Allow: 0
+  Expected Allow -> Got Deny: 71
+  Expected Deny -> Got Deny: 49
+  Expected Deny -> Got Allow: 0
+
+By Request Object ID Prefix:
+  'allow_' prefix -> Correctly Allowed: 0
+  'allow_' prefix -> Incorrectly Denied: 71
+  'deny_' prefix -> Correctly Denied: 49
+  'deny_' prefix -> Incorrectly Allowed: 0
+============================================================
+Error: Home directory /home/bhall2/Documents/fixmypolicy/FL/Quacky_outputs does not exist.

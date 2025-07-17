@@ -1,0 +1,130 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificS3Actions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl",
+        "s3:ListBucket",
+        "s3:PutBucketPolicy",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::data123/*",
+        "arn:aws:s3:::file1",
+        "arn:aws:s3:::file1/*",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::document/*",
+        "arn:aws:s3:::*/temp/upload.tmp",
+        "arn:aws:s3:::*/logs/app.log",
+        "arn:aws:s3:::*/data/file.json",
+        "arn:aws:s3:::*/document.txt"
+      ]
+    },
+    {
+      "Sid": "DenySpecificActions",
+      "Effect": "Deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::*/document.txt",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::*/temp/upload.tmp",
+        "arn:aws:s3:::*/data/file.json",
+        "arn:aws:s3:::file1"
+      ]
+    },
+    {
+      "Sid": "DenySpecificPutBucketPolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::*/document.txt",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::file1"
+      ]
+    },
+    {
+      "Sid": "DenySpecificDeleteBucket",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::*/document.txt",
+        "arn:aws:s3:::file1"
+      ]
+    },
+    {
+      "Sid": "DenySpecificPutObject",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::different-*/file.txt",
+        "arn:aws:s3:::file1",
+        "arn:aws:s3:::*/logs/app.log"
+      ]
+    },
+    {
+      "Sid": "DenySpecificGetObject",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123"
+      ]
+    },
+    {
+      "Sid": "DenySpecificDeleteObject",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::file1",
+        "arn:aws:s3:::*/temp/upload.tmp"
+      ]
+    },
+    {
+      "Sid": "DenySpecificCreateBucket",
+      "Effect": "Deny",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::*/document.txt"
+      ]
+    },
+    {
+      "Sid": "DenyNonS3Actions",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:*",
+        "iam:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
