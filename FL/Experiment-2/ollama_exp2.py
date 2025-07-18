@@ -26,10 +26,10 @@ from tqdm import tqdm
 from ollama import chat, ChatResponse 
 
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
-REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-50"
-OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-50-ollama/"
-LOG_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-50-ollama"
-TEMP_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-50-ollama"
+REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-30"
+OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-30-ollama/"
+LOG_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-30-ollama"
+TEMP_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-30-ollama"
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
 
@@ -189,15 +189,15 @@ def resource_matches(test_resource, policy_resource):
 
 def generate_targeted_repair_prompt(current_policy, requirements, failed_analysis, iteration):
     """
-    Generate a targeted repair prompt based on detailed failure analysis.
+    Generate a targeted repair prompt with original policy context for structure preservation.
     """
     
-    prompt = f"""You are an AWS IAM policy expert. Analyze the current policy and fix it based on the specific failures identified.
+    prompt = f"""You are an AWS IAM policy expert. Fix the current policy while maintaining its structure.
 
-CURRENT POLICY:
+ORIGINAL POLICY (maintain similar structure and statement count):
 {json.dumps(current_policy, indent=2)}
 
-ORIGINAL REQUIREMENTS:
+REQUIREMENTS:
 {format_requirements_detailed(requirements)}
 
 ITERATION: {iteration}/{MAX_ITERATIONS}
@@ -217,7 +217,7 @@ FAILURE ANALYSIS:
             prompt += "\n"
     
     if failed_analysis['deny_to_allow_failures']:
-        prompt += f"\n WARNING: Currently ALLOWING {len(failed_analysis['deny_to_allow_failures'])} requests that should be DENIED:\n"
+        prompt += f"\nWARNING: Currently ALLOWING {len(failed_analysis['deny_to_allow_failures'])} requests that should be DENIED:\n"
         for i, failure in enumerate(failed_analysis['deny_to_allow_failures'][:5], 1):  # Show top 5
             prompt += f"   {i}. Action: {failure['action']}\n"
             prompt += f"      Resource: {failure['resource']}\n"
@@ -228,7 +228,7 @@ FAILURE ANALYSIS:
             prompt += "\n"
 
     if failed_analysis['missing_allow_statements']:
-        prompt += f"\n REQUIRED ALLOW STATEMENTS TO ADD:\n"
+        prompt += f"\nREQUIRED FIXES (modify existing statements to allow these):\n"
         for i, missing in enumerate(failed_analysis['missing_allow_statements'][:3], 1):
             req = missing['requirement']
             prompt += f"   {i}. Effect: Allow\n"
@@ -241,10 +241,10 @@ FAILURE ANALYSIS:
             prompt += "\n"
 
     if failed_analysis['incorrect_deny_statements']:
-        prompt += f"\n DENY STATEMENTS TO ADD:\n"
+        prompt += f"\nREQUIRED RESTRICTIONS (add conditions to existing statements):\n"
         for i, incorrect in enumerate(failed_analysis['incorrect_deny_statements'][:3], 1):
             fix = incorrect['suggested_fix']
-            prompt += f"   {i}. Effect: Deny\n"
+            prompt += f"   {i}. Add restriction for:\n"
             prompt += f"      Action: {fix['Action']}\n"
             prompt += f"      Resource: {fix['Resource']}\n"
             if fix.get('Principal'):
@@ -253,10 +253,18 @@ FAILURE ANALYSIS:
                 prompt += f"      Condition: {fix['Condition']}\n"
             prompt += "\n"
 
-    prompt += """
+    prompt += f"""
+
+REPAIR INSTRUCTIONS:
+1. MAINTAIN STRUCTURE: Keep the same number of statements as the original ({len(current_policy.get('Statement', []))})
+2. MODIFY EXISTING: Fix existing statements rather than adding new ones
+3. ADD CONSTRAINTS: Add Principal and Condition fields when specified in requirements
+4. MINIMAL CHANGES: Make the smallest changes necessary to fix the failures
 
 IMPORTANT RULES:
-- Add Principal and Condition constraints when specified in requirements
+- Keep the same number of statements ({len(current_policy.get('Statement', []))})
+- Modify existing statements to meet requirements
+- Add Principal and Condition constraints when specified
 - Deny statements take precedence over Allow statements
 
 OUTPUT FORMAT:
@@ -398,9 +406,10 @@ def retry(max_attempts=MAX_ATTEMPT, delay=DELAY):
 
 
 @retry()
+
 def repair_policy_with_targeted_approach(policy: dict, requirements: dict, iteration: int = 1, 
                                         erroneous_policy: dict = None, failed_examples: list = None) -> dict:
-    """Enhanced policy repair using erroneous policy from SMT solver"""
+    """Enhanced policy repair using erroneous policy from SMT solver with original policy context"""
     
     if erroneous_policy:
         # Extract analysis results and detailed failure information
@@ -424,7 +433,7 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
             principal = stmt.get('Principal', 'Not specified')
             condition = stmt.get('Condition', 'Not specified')
             
-            statement_analysis += f"\nSTATEMENT {i} ANALYSIS ({stmt_id}):\n"
+            statement_analysis += f"\nFAULTY STATEMENT {i} ({stmt_id}):\n"
             statement_analysis += f"  Current Effect: {effect}\n"
             statement_analysis += f"  Actions: {actions}\n"
             statement_analysis += f"  Resources: {resources}\n"
@@ -475,10 +484,13 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
                     if req.get('Condition'):
                         statement_analysis += f"      Condition: {req.get('Condition')}\n"
         
-        # Use ONLY the erroneous policy as input for repair with enhanced analysis
-        prompt = f"""You are an AWS IAM policy expert. You need to fix the erroneous policy statements identified by the SMT solver.
+        # Enhanced prompt with original policy context
+        prompt = f"""You are an AWS IAM policy expert. Fix the faulty statements while maintaining the original policy structure.
 
-ERRONEOUS POLICY (Contains only the faulty statements that need fixing):
+ORIGINAL POLICY (for context - maintain similar structure and statement count):
+{json.dumps(policy, indent=2)}
+
+FAULTY STATEMENTS TO FIX:
 {json.dumps(erroneous_policy, indent=2)}
 
 REQUIREMENTS TO SATISFY:
@@ -492,26 +504,20 @@ DETAILED FAILURE ANALYSIS:
 SOLVER ANALYSIS RESULTS:
 {chr(10).join(f"• {result}" for result in analysis_results)}
 
-ROOT CAUSE ANALYSIS:
-The statements above are failing because they lack proper constraints. Common issues:
-1. Missing Principal constraints - statements may be too broad without specifying WHO can perform actions
-2. Missing Condition constraints - statements may lack WHEN/WHERE restrictions
-3. Resource specificity - wildcards (*) may be too permissive
-4. Action specificity - action lists may be incomplete or too broad
-
-REPAIR STRATEGY:
-1. For each failing statement, add appropriate Principal constraints from requirements
-2. Add Condition constraints where specified in requirements  
-3. Ensure Resource ARNs match the specific resources in requirements
-4. Verify Action lists include all required actions from matching requirements
-5. Consider if statements need to be split for different principals/conditions
+REPAIR INSTRUCTIONS:
+1. MAINTAIN STRUCTURE: Keep the same number of statements as the original policy ({len(policy.get('Statement', []))})
+2. FIX FAULTY STATEMENTS: Modify only the problematic statements identified above
+3. PRESERVE WORKING STATEMENTS: Keep statements that are working correctly unchanged
+4. ADD CONSTRAINTS: Add Principal and Condition fields when specified in requirements
+5. MINIMAL CHANGES: Make the smallest changes necessary to fix the issues
 
 IMPORTANT RULES:
-- Add Principal field when specified in requirements (do NOT leave as wildcard if requirements specify principals)
-- Add Condition field when specified in requirements (temporal, regional, tag-based constraints)
-- Use specific Resource ARNs rather than wildcards where possible
-- Ensure Action arrays include all required actions for each use case
-- Deny statements take precedence over Allow statements
+- Return a policy with {len(policy.get('Statement', []))} statements (same as original)
+- Do NOT add new statements unless absolutely necessary
+- Do NOT remove working statements
+- Focus on fixing the specific faulty statements provided
+- Add Principal field when specified in requirements
+- Add Condition field when specified in requirements
 - Return a complete, valid IAM policy (with Version and Statement fields)
 
 OUTPUT FORMAT:
@@ -520,41 +526,41 @@ Return ONLY the complete corrected policy as valid JSON. No explanations.
 CORRECTED POLICY:"""
         
     elif failed_examples:
-        # Fallback to failed examples analysis
+        # Fallback to failed examples analysis with original context
         failed_analysis = analyze_failed_examples(failed_examples, requirements)
         prompt = generate_targeted_repair_prompt(policy, requirements, failed_analysis, iteration)
     else:
-        # Basic repair for first iteration
+        # Basic repair for first iteration with structure preservation
         policy_json = json.dumps(policy, indent=2)
         req_text = format_requirements_detailed(requirements)
-        prompt = f"""Fix this AWS IAM policy.
+        prompt = f"""Fix this AWS IAM policy while maintaining its structure.
 
-CURRENT POLICY:
+ORIGINAL POLICY:
 {policy_json}
 
 REQUIREMENTS:
 {req_text}
 
-Return ONLY the corrected policy as valid JSON. Do not hard code the requests into the policy.
+REPAIR INSTRUCTIONS:
+- Keep the same number of statements ({len(policy.get('Statement', []))})
+- Make minimal changes to fix the issues
+- Do not add unnecessary statements
+- Focus on modifying existing statements to meet requirements
+
+Return ONLY the corrected policy as valid JSON.
 
 CORRECTED POLICY:"""
 
-    system_prompt = """You are an AWS IAM expert specializing in policy repair. You will receive an erroneous policy containing only the faulty statements identified by the SMT solver.
-
-Your task is to fix these erroneous statements based on the requirements and detailed failure analysis provided.
+    system_prompt = """You are an AWS IAM expert specializing in policy repair. Your goal is to fix policies with minimal structural changes.
 
 Key principles:
-1. Principle of least privilege: Grant only what's required
-2. Deny statements override Allow statements
-3. Include Principal and Condition when specified in requirements
-4. Use arrays for multiple values
-5. Focus on fixing the specific erroneous statements provided
-6. Add missing constraints that are causing failures
-7. Return a complete IAM policy with proper Version and Statement structure
+1. STRUCTURE PRESERVATION: Maintain the same number of statements as the original
+2. MINIMAL CHANGES: Make only the necessary changes to fix failures
+3. TARGETED FIXES: Focus on the specific faulty statements identified
+4. CONSTRAINT ADDITION: Add Principal and Condition when specified in requirements
+5. WORKING PRESERVATION: Keep statements that work correctly unchanged
 
-Critical: Pay special attention to Principal and Condition constraints as these are often the root cause of failures.
-
-Output ONLY valid JSON policy. No explanations."""
+Output ONLY valid JSON policy. No explanations. No thinking steps."""
     
     response_text = call_ollama(prompt, system_prompt)
     
@@ -562,79 +568,6 @@ Output ONLY valid JSON policy. No explanations."""
         raise ValueError("Empty response from Ollama")
     
     return extract_and_validate_json(response_text)
-# def repair_policy_with_targeted_approach(policy: dict, requirements: dict, iteration: int = 1, 
-#                                       erroneous_policy: dict = None, failed_examples: list = None) -> dict:
-#     """Enhanced policy repair using erroneous policy from SMT solver"""
-    
-#     if erroneous_policy:
-#         # Use ONLY the erroneous policy as input for repair
-#         prompt = f"""You are an AWS IAM policy expert. You need to fix the erroneous policy statements identified by the SMT solver.
-
-# ERRONEOUS POLICY (Contains only the faulty statements that need fixing):
-# {json.dumps(erroneous_policy, indent=2)}
-
-# REQUIREMENTS:
-# {format_requirements_detailed(requirements)}
-
-# ITERATION: {iteration}/{MAX_ITERATIONS}
-
-# TASK: The erroneous policy above contains only the statements that are causing failures. You need to:
-# 1. Analyze why these statements are faulty based on the requirements
-# 2. Fix or replace these statements to meet the requirements
-# 3. Return a complete corrected policy with proper IAM structure
-
-# IMPORTANT RULES:
-# - Focus on fixing the erroneous statements shown above
-# - Add Principal and Condition constraints when specified in requirements
-# - Deny statements take precedence over Allow statements
-# - Don't just copy the requests into the policy - use proper IAM policy structure
-# - Return a complete, valid IAM policy (with Version and Statement fields)
-
-# OUTPUT FORMAT:
-# Return ONLY the complete corrected policy as valid JSON. No explanations.
-
-# CORRECTED POLICY:"""
-        
-#     elif failed_examples:
-#         # Fallback to failed examples analysis
-#         failed_analysis = analyze_failed_examples(failed_examples, requirements)
-#         prompt = generate_targeted_repair_prompt(policy, requirements, failed_analysis, iteration)
-#     else:
-#         # Basic repair for first iteration
-#         policy_json = json.dumps(policy, indent=2)
-#         req_text = format_requirements_detailed(requirements)
-#         prompt = f"""Fix this AWS IAM policy.
-
-# CURRENT POLICY:
-# {policy_json}
-
-# REQUIREMENTS:
-# {req_text}
-
-# Return ONLY the corrected policy as valid JSON. Do not hard code the requests into the policy.
-
-# CORRECTED POLICY:"""
-
-#     system_prompt = """You are an AWS IAM expert specializing in policy repair. You will receive an erroneous policy containing only the faulty statements identified by the SMT solver.
-
-# Your task is to fix these erroneous statements based on the requirements and return a complete, corrected IAM policy.
-
-# Key principles:
-# 1. Principle of least privilege: Grant only what's required
-# 2. Deny statements override Allow statements
-# 3. Include Principal and Condition when specified
-# 4. Use arrays for multiple values
-# 5. Focus on fixing the specific erroneous statements provided
-# 6. Return a complete IAM policy with proper Version and Statement structure
-
-# Output ONLY valid JSON policy. No explanations."""
-    
-#     response_text = call_ollama(prompt, system_prompt)
-    
-#     if not response_text:
-#         raise ValueError("Empty response from Ollama")
-    
-#     return extract_and_validate_json(response_text)
 
 
 def extract_failed_examples(output_content: str) -> list:
@@ -1144,7 +1077,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                 'policy_idx': idx,
                 'iteration': iteration,
                 'validation_type': 'repair',
-                'accuracy': 0.0,
+                'accuracy': 0.0,    
                 'baseline_accuracy': baseline_accuracy,
                 'improvement_from_baseline': -baseline_accuracy,
                 'failed_examples_count': 0,
@@ -1647,15 +1580,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-"""
-simplified_policy_repair.py
-Simplified counter-example guided policy repair using SMT validator feedback.
-
-Workflow:
-1. Run baseline validation (original policy + requests)
-2. Generate erroneous policy file (contains only faulty statements + analysis)
-3. Use LLM to repair the erroneous policy
-4. Test repaired policy against original requests
-5. Iterate up to 5 times until target accuracy (100%)
-"""
 
