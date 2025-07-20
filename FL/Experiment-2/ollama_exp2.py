@@ -26,10 +26,10 @@ from tqdm import tqdm
 from ollama import chat, ChatResponse 
 
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
-REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-30"
-OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-30-ollama/"
-LOG_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-30-ollama"
-TEMP_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-30-ollama"
+REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-25"
+OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-25-ollama/"
+LOG_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-25-ollama"
+TEMP_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-25-ollama"
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
 
@@ -37,10 +37,7 @@ MAX_ITERATIONS = 5
 MAX_ATTEMPT = 3
 DELAY = 5
 TARGET_ACCURACY = 100.0
-
-OLLAMA_MODEL = "codellama:7b"
-
-
+OLLAMA_MODEL = "codellama:13b"
 
 def setup_logging(log_dir: str = LOG_DIR):  
     """Configure logging"""
@@ -474,7 +471,7 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
                     matching_reqs.append(req)
             
             if matching_reqs:
-                statement_analysis += f"  📋 Matching Requirements:\n"
+                statement_analysis += f"  Matching Requirements:\n"
                 for req in matching_reqs[:2]:  # Show top 2 matches
                     statement_analysis += f"    - ID: {req.get('id')} | Effect: {req.get('Effect')}\n"
                     statement_analysis += f"      Actions: {req.get('Action')}\n"
@@ -623,204 +620,73 @@ def extract_failed_examples(output_content: str) -> list:
     
     logging.info(f"Extracted {len(failed_examples)} failed examples from validator output")
     return failed_examples
-def run_smt_validator(policy_file: str, requests_file: str) -> dict:
-    """Run the SMT validator and return parsed results including erroneous policy"""
-    try:
-        original_dir = os.getcwd()
-        os.chdir(QUACKY_SRC_DIR)
-        
-        quacky_output_dir = os.path.join(OUTPUT_DIR, "Quacky_output")
-        os.makedirs(quacky_output_dir, exist_ok=True)
-        
-        timestamp = int(time.time())
-        pid = os.getpid()
-        output_file_path = os.path.join(quacky_output_dir, f"temp_validation_{pid}_{timestamp}.txt")
-        erroneous_policy_path = os.path.join(quacky_output_dir, f"erroneous_policy_{pid}_{timestamp}.json")
-        
-        cmd = [
-            'python3', 'validate_requests.py',
-            '-p1', policy_file,
-            '--requests', requests_file,
-            '-s',
-            '--identify-faulty',
-            '-o', erroneous_policy_path,  # Path to save erroneous policy
-        ]
-        
-        logging.debug(f"Running SMT validator: cd {QUACKY_SRC_DIR} && {' '.join(cmd)}")
-        logging.debug(f"Output file: {output_file_path}")
-        logging.debug(f"Erroneous policy file: {erroneous_policy_path}")
-        
-        with open(output_file_path, 'w') as output_file:
-            result = subprocess.run(cmd, stdout=output_file, stderr=subprocess.PIPE, text=True, timeout=300)
-        
-        os.chdir(original_dir)
-        
-        if result.returncode != 0:
-            logging.error(f"SMT validator failed: {result.stderr}")
-            if os.path.exists(output_file_path):
-                os.unlink(output_file_path)
-            raise Exception(f"SMT validator failed: {result.stderr}")
-        
-        with open(output_file_path, 'r') as f:
-            output_content = f.read()
-        
-        # Load erroneous policy if it exists
-        erroneous_policy = None
-        
-        # Try multiple possible locations for erroneous policy
-        possible_erroneous_paths = [
-            erroneous_policy_path,  # Our specified path
-            os.path.join(quacky_output_dir, f"erroneous_{pid}_{timestamp}.json"),  # Alternative naming
-            os.path.join(QUACKY_SRC_DIR, f"erroneous_policy_{pid}_{timestamp}.json"),  # In src directory
-            os.path.join(QUACKY_SRC_DIR, "erroneous_policy.json"),  # Default name in src
-        ]
-        
-        # Also check for files with similar naming patterns in the quacky_output_dir
-        if os.path.exists(quacky_output_dir):
-            for filename in os.listdir(quacky_output_dir):
-                if filename.startswith("erroneous") and filename.endswith(".json"):
-                    possible_erroneous_paths.append(os.path.join(quacky_output_dir, filename))
-        
-        # Try to load from any of these locations
-        for path in possible_erroneous_paths:
-            if os.path.exists(path):
-                try:
-                    with open(path, 'r') as f:
-                        erroneous_policy = json.load(f)
-                    logging.info(f"Loaded erroneous policy from {path} with {len(erroneous_policy.get('Statement', []))} faulty statements")
-                    erroneous_policy_path = path  # Update the path to the actual location
-                    break
-                except Exception as e:
-                    logging.warning(f"Failed to load erroneous policy from {path}: {e}")
-                    continue
-        
-        if erroneous_policy is None:
-            logging.warning(f"Erroneous policy file not found in any of the expected locations:")
-            for path in possible_erroneous_paths:
-                logging.warning(f"  - {path}")
-            
-            # List all files in the quacky_output_dir for debugging
-            if os.path.exists(quacky_output_dir):
-                files = os.listdir(quacky_output_dir)
-                logging.debug(f"Files in {quacky_output_dir}: {files}")
-        
-        # Parse validation results
-        output_lines = output_content.split('\n')
-        accuracy = 0.0
-        total_requests = 0
-        correct_count = 0
-        incorrect_count = 0
-        misclassified_allow_to_deny = 0
-        misclassified_deny_to_allow = 0
-        
-        in_analysis_section = False
-        for i, line in enumerate(output_lines):
-            line = line.strip()
-            
-            if "INDIVIDUAL REQUEST ANALYSIS" in line:
-                in_analysis_section = True
-                continue
-            elif line.startswith("=") and in_analysis_section and len(line) > 10:
-                if any(phrase in ''.join(output_lines[i:i+5]) for phrase in ["Results saved", "saved to HOME"]):
-                    break
-            
-            if in_analysis_section:
-                if line.startswith("Total Individual Requests:"):
-                    total_match = re.search(r'(\d+)', line)
-                    if total_match:
-                        total_requests = int(total_match.group(1))
-                elif line.startswith("Correct Classifications:"):
-                    correct_match = re.search(r'(\d+)', line)
-                    if correct_match:
-                        correct_count = int(correct_match.group(1))
-                elif line.startswith("Incorrect Classifications:"):
-                    incorrect_match = re.search(r'(\d+)', line)
-                    if incorrect_match:
-                        incorrect_count = int(incorrect_match.group(1))
-                elif line.startswith("Overall Accuracy:"):
-                    accuracy_match = re.search(r'(\d+\.?\d*)%', line)
-                    if accuracy_match:
-                        accuracy = float(accuracy_match.group(1))
-                elif line.startswith("Expected Allow -> Got Deny:"):
-                    allow_deny_match = re.search(r'(\d+)', line)
-                    if allow_deny_match:
-                        misclassified_allow_to_deny = int(allow_deny_match.group(1))
-                elif line.startswith("Expected Deny -> Got Allow:"):
-                    deny_allow_match = re.search(r'(\d+)', line)
-                    if deny_allow_match:
-                        misclassified_deny_to_allow = int(deny_allow_match.group(1))
-        
-        failed_examples = extract_failed_examples(output_content)
-        
-        logging.info(f"Validation completed - Accuracy: {accuracy}%, Total: {total_requests}, Correct: {correct_count}, Incorrect: {incorrect_count}")
-        
-        return {
-            'accuracy': accuracy,
-            'total_requests': total_requests,
-            'correct': correct_count,
-            'incorrect': incorrect_count,
-            'misclassified_allow_to_deny': misclassified_allow_to_deny,
-            'misclassified_deny_to_allow': misclassified_deny_to_allow,
-            'failed_examples': failed_examples,
-            'erroneous_policy': erroneous_policy,  # ← Add this
-            'erroneous_policy_file': erroneous_policy_path,  # ← Add this
-            'raw_output': output_content,
-            'output_file': output_file_path
-        }
-        
-    except subprocess.TimeoutExpired:
-        try:
-            os.chdir(original_dir)
-        except:
-            pass
-        logging.error("SMT validator timed out")
-        raise Exception("SMT validator timed out")
-    except Exception as e:
-        try:
-            os.chdir(original_dir)
-        except:
-            pass
-        logging.error(f"Error running SMT validator: {e}")
-        raise
-    
-def run_smt_validator(policy_file: str, requests_file: str) -> dict:
-    """Run the SMT validator and return parsed results including erroneous policy"""
-    try:
-        original_dir = os.getcwd()
-        os.chdir(QUACKY_SRC_DIR)
-        
-        quacky_output_dir = os.path.join(OUTPUT_DIR, "Quacky_output")
-        os.makedirs(quacky_output_dir, exist_ok=True)
-        
-        timestamp = int(time.time())
-        pid = os.getpid()
-        output_file_path = os.path.join(quacky_output_dir, f"temp_validation_{pid}_{timestamp}.txt")
-        erroneous_policy_path = os.path.join(quacky_output_dir, f"erroneous_policy_{pid}_{timestamp}.json")
-        
-        cmd = [
-            'python3', 'validate_requests.py',
-            '-p1', policy_file,
-            '--requests', requests_file,
-            '-s',
-            '--identify-faulty',
-            '-o', erroneous_policy_path, 
-        ]
 
-        logging.debug(f"Running SMT validator: cd {QUACKY_SRC_DIR} && {' '.join(cmd)}")
+def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = None) -> dict:
+    """Run both validation methods - complete policy for accuracy, identify-faulty for repair guidance"""
+    try:
+        original_dir = os.getcwd()
+        os.chdir(QUACKY_SRC_DIR)
         
-        with open(output_file_path, 'w') as output_file:
-            result = subprocess.run(cmd, stdout=output_file, stderr=subprocess.PIPE, text=True, timeout=300)
+        # Create output directories
+        if policy_idx is not None:
+            policy_specific_dir = os.path.join(OUTPUT_DIR, "Quacky_output", f"policy_{policy_idx:03d}")
+            os.makedirs(policy_specific_dir, exist_ok=True)
+            
+            # File paths for both validations
+            accuracy_output_path = os.path.join(policy_specific_dir, f"policy_{policy_idx:03d}_accuracy_validation.txt")
+            faulty_output_path = os.path.join(policy_specific_dir, f"policy_{policy_idx:03d}_faulty_validation.txt")
+            erroneous_policy_path = os.path.join(policy_specific_dir, f"policy_{policy_idx:03d}_erroneous_policy.json")
+        else:
+            # Fallback naming
+            quacky_output_dir = os.path.join(OUTPUT_DIR, "Quacky_output")
+            os.makedirs(quacky_output_dir, exist_ok=True)
+            timestamp = int(time.time())
+            pid = os.getpid()
+            accuracy_output_path = os.path.join(quacky_output_dir, f"temp_accuracy_{pid}_{timestamp}.txt")
+            faulty_output_path = os.path.join(quacky_output_dir, f"temp_faulty_{pid}_{timestamp}.txt")
+            erroneous_policy_path = os.path.join(quacky_output_dir, f"erroneous_policy_{pid}_{timestamp}.json")
+        
+        # ===== VALIDATION 1: Complete Policy (for accurate accuracy measurement) =====
+        cmd_accuracy = [
+            'python3', 'validate_requests.py',
+            '-p1', policy_file,
+            '--requests', requests_file,
+            '-s'
+            # No --identify-faulty flag
+        ]
+        
+        logging.debug(f"Running accuracy validation: {' '.join(cmd_accuracy)}")
+        
+        with open(accuracy_output_path, 'w') as output_file:
+            result = subprocess.run(cmd_accuracy, stdout=output_file, stderr=subprocess.PIPE, text=True, timeout=300)
+        
+        if result.returncode != 0:
+            logging.error(f"Accuracy validation failed: {result.stderr}")
+            raise Exception(f"Accuracy validation failed: {result.stderr}")
+        
+        with open(accuracy_output_path, 'r') as f:
+            accuracy_output_content = f.read()
+        
+        # ===== VALIDATION 2: Identify Faulty (for repair guidance) =====
+        cmd_faulty = [
+            'python3', 'validate_requests.py',
+            '-p1', policy_file,
+            '--requests', requests_file,
+            '-s',
+            '--identify-faulty',
+            '-o', erroneous_policy_path
+        ]
+        
+        logging.debug(f"Running faulty identification: {' '.join(cmd_faulty)}")
+        
+        with open(faulty_output_path, 'w') as output_file:
+            result = subprocess.run(cmd_faulty, stdout=output_file, stderr=subprocess.PIPE, text=True, timeout=300)
         
         os.chdir(original_dir)
         
         if result.returncode != 0:
-            logging.error(f"SMT validator failed: {result.stderr}")
-            if os.path.exists(output_file_path):
-                os.unlink(output_file_path)
-            raise Exception(f"SMT validator failed: {result.stderr}")
-        
-        with open(output_file_path, 'r') as f:
-            output_content = f.read()
+            logging.warning(f"Faulty identification failed: {result.stderr}")
+            # Don't throw error - we still have accuracy results
         
         # Load erroneous policy if it exists
         erroneous_policy = None
@@ -834,8 +700,8 @@ def run_smt_validator(policy_file: str, requests_file: str) -> dict:
         else:
             logging.warning(f"Erroneous policy file not found at {erroneous_policy_path}")
         
-        # Parse validation results
-        output_lines = output_content.split('\n')
+        # ===== PARSE ACCURACY RESULTS (from complete policy validation) =====
+        accuracy_lines = accuracy_output_content.split('\n')
         accuracy = 0.0
         total_requests = 0
         correct_count = 0
@@ -844,58 +710,71 @@ def run_smt_validator(policy_file: str, requests_file: str) -> dict:
         misclassified_deny_to_allow = 0
         
         in_analysis_section = False
-        for i, line in enumerate(output_lines):
+        for i, line in enumerate(accuracy_lines):
             line = line.strip()
             
             if "INDIVIDUAL REQUEST ANALYSIS" in line:
                 in_analysis_section = True
                 continue
             elif line.startswith("=") and in_analysis_section and len(line) > 10:
-                if any(phrase in ''.join(output_lines[i:i+5]) for phrase in ["Results saved", "saved to HOME"]):
+                if any(phrase in ''.join(accuracy_lines[i:i+5]) for phrase in ["Results saved", "saved to HOME"]):
                     break
             
             if in_analysis_section:
                 if line.startswith("Total Individual Requests:"):
+                    import re
                     total_match = re.search(r'(\d+)', line)
                     if total_match:
                         total_requests = int(total_match.group(1))
                 elif line.startswith("Correct Classifications:"):
+                    import re
                     correct_match = re.search(r'(\d+)', line)
                     if correct_match:
                         correct_count = int(correct_match.group(1))
                 elif line.startswith("Incorrect Classifications:"):
+                    import re
                     incorrect_match = re.search(r'(\d+)', line)
                     if incorrect_match:
                         incorrect_count = int(incorrect_match.group(1))
                 elif line.startswith("Overall Accuracy:"):
+                    import re
                     accuracy_match = re.search(r'(\d+\.?\d*)%', line)
                     if accuracy_match:
                         accuracy = float(accuracy_match.group(1))
                 elif line.startswith("Expected Allow -> Got Deny:"):
+                    import re
                     allow_deny_match = re.search(r'(\d+)', line)
                     if allow_deny_match:
                         misclassified_allow_to_deny = int(allow_deny_match.group(1))
                 elif line.startswith("Expected Deny -> Got Allow:"):
+                    import re
                     deny_allow_match = re.search(r'(\d+)', line)
                     if deny_allow_match:
                         misclassified_deny_to_allow = int(deny_allow_match.group(1))
         
-        failed_examples = extract_failed_examples(output_content)
+        # Extract failed examples from accuracy validation
+        failed_examples = extract_failed_examples(accuracy_output_content)
         
         logging.info(f"Validation completed - Accuracy: {accuracy}%, Total: {total_requests}, Correct: {correct_count}, Incorrect: {incorrect_count}")
         
+        # Clean up temporary files
+        if os.path.exists(accuracy_output_path):
+            os.unlink(accuracy_output_path)
+        if os.path.exists(faulty_output_path):
+            os.unlink(faulty_output_path)
+        
         return {
-            'accuracy': accuracy,
-            'total_requests': total_requests,
+            'accuracy': accuracy,  # ← From complete policy validation
+            'total_requests': total_requests,  # ← Should be 10, not 60
             'correct': correct_count,
             'incorrect': incorrect_count,
             'misclassified_allow_to_deny': misclassified_allow_to_deny,
             'misclassified_deny_to_allow': misclassified_deny_to_allow,
             'failed_examples': failed_examples,
-            'erroneous_policy': erroneous_policy,  # ← Add this
-            'erroneous_policy_file': erroneous_policy_path,  # ← Add this
-            'raw_output': output_content,
-            'output_file': output_file_path
+            'erroneous_policy': erroneous_policy,  # ← From identify-faulty for repair guidance
+            'erroneous_policy_file': erroneous_policy_path,
+            'raw_output': accuracy_output_content,
+            'output_file': accuracy_output_path
         }
         
     except subprocess.TimeoutExpired:
@@ -912,8 +791,6 @@ def run_smt_validator(policy_file: str, requests_file: str) -> dict:
             pass
         logging.error(f"Error running SMT validator: {e}")
         raise
-
-
 def load_json_file(path: str) -> dict:
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -989,8 +866,12 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     final_accuracy = baseline_accuracy
     iteration_accuracies = [baseline_accuracy]
     
-    for iteration in range(1, MAX_ITERATIONS + 1):
+    for iteration in range(0, MAX_ITERATIONS):
         logging.info(f"Policy {idx} - Iteration {iteration}/{MAX_ITERATIONS} (Previous: {final_accuracy:.1f}%)")
+        
+        iteration_success = False
+        iteration_accuracy = 0.0
+        iteration_policy_file = None
         
         try:
             logging.info(f"Repairing policy with erroneous policy guidance (iteration {iteration})...")
@@ -1010,12 +891,16 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             save_json_file(repaired_policy, temp_policy_file)
             
             logging.info(f"Validating with SMT solver (iteration {iteration})...")
-            validation_results = run_smt_validator(temp_policy_file, req_file)
+            validation_results = run_smt_validator(temp_policy_file, req_file, policy_idx=idx)
             
             accuracy = validation_results['accuracy']
-            current_failed_examples = validation_results.get('failed_examples', [])
-            current_erroneous_policy = validation_results.get('erroneous_policy')  # Get new erroneous policy
+            iteration_accuracy = accuracy  # Store for tracking
+            iteration_policy_file = temp_policy_file  # Store for tracking
             
+            current_failed_examples = validation_results.get('failed_examples', [])
+            current_erroneous_policy = validation_results.get('erroneous_policy')
+            
+            # ALWAYS append iteration accuracy before any potential exceptions
             iteration_accuracies.append(accuracy)
             improvement = accuracy - baseline_accuracy
             
@@ -1025,6 +910,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             if current_erroneous_policy:
                 logging.info(f"  New erroneous policy has {len(current_erroneous_policy.get('Statement', []))} faulty statements")
             
+            # Create iteration record BEFORE success check
             iteration_record = {
                 'policy_idx': idx,
                 'iteration': iteration,
@@ -1051,70 +937,166 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                 logging.info(f"Target accuracy achieved for policy {idx} in {iteration} iterations!")
                 logging.info(f"Final accuracy: {accuracy:.1f}% (Improvement from baseline: {improvement:+.1f}%)")
                 
-                final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
-                save_json_file(repaired_policy, final_output_file)
-                
-                return {
-                    'index': idx,
-                    'status': 'success',
-                    'baseline_accuracy': baseline_accuracy,
-                    'final_accuracy': accuracy,
-                    'improvement_from_baseline': improvement,
-                    'iterations_used': iteration,
-                    'iteration_accuracies': iteration_accuracies,
-                    'iteration_results': iteration_results,
-                    'final_policy_file': final_output_file
-                }
+                # Try to save final policy with error handling
+                try:
+                    final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
+                    save_json_file(repaired_policy, final_output_file)
+                    iteration_success = True
+                    
+                    return {
+                        'index': idx,
+                        'status': 'success',
+                        'baseline_accuracy': baseline_accuracy,
+                        'final_accuracy': accuracy,
+                        'improvement_from_baseline': improvement,
+                        'iterations_used': iteration,
+                        'iteration_accuracies': iteration_accuracies,
+                        'iteration_results': iteration_results,
+                        'final_policy_file': final_output_file
+                    }
+                except Exception as save_error:
+                    logging.error(f"Error saving final policy for {idx}: {save_error}")
+                    # Continue to try saving as best policy below
+                    iteration_success = True  # We still achieved target accuracy
             
             # Update for next iteration
             current_policy = repaired_policy.copy()
             failed_examples = current_failed_examples if current_failed_examples else None
-            # current_erroneous_policy is already updated above
             
         except Exception as e:
             logging.error(f"Error in iteration {iteration} for policy {idx}: {e}")
-            iteration_record = {
-                'policy_idx': idx,
-                'iteration': iteration,
-                'validation_type': 'repair',
-                'accuracy': 0.0,    
-                'baseline_accuracy': baseline_accuracy,
-                'improvement_from_baseline': -baseline_accuracy,
-                'failed_examples_count': 0,
-                'error': str(e)
-            }
-            iteration_results.append(iteration_record)
-    
+            
+            # If we haven't recorded the iteration yet, add an error record
+            if not any(record.get('iteration') == iteration for record in iteration_results):
+                iteration_record = {
+                    'policy_idx': idx,
+                    'iteration': iteration,
+                    'validation_type': 'repair',
+                    'accuracy': iteration_accuracy,  # Use actual accuracy if we got it
+                    'baseline_accuracy': baseline_accuracy,
+                    'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
+                    'failed_examples_count': 0,
+                    'error': str(e),
+                    'policy_file': iteration_policy_file  # Include file if we got it
+                }
+                iteration_results.append(iteration_record)
+                
+                # Only append to iteration_accuracies if we got a real accuracy
+                if iteration_accuracy > 0:
+                    iteration_accuracies.append(iteration_accuracy)
+            
+            # If we achieved target accuracy but had a save error, try to save as best
+            if iteration_success and iteration_accuracy >= TARGET_ACCURACY:
+                try:
+                    final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
+                    if iteration_policy_file and os.path.exists(iteration_policy_file):
+                        shutil.copy2(iteration_policy_file, final_output_file)
+                        
+                        return {
+                            'index': idx,
+                            'status': 'success',
+                            'baseline_accuracy': baseline_accuracy,
+                            'final_accuracy': iteration_accuracy,
+                            'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
+                            'iterations_used': iteration,
+                            'iteration_accuracies': iteration_accuracies,
+                            'iteration_results': iteration_results,
+                            'final_policy_file': final_output_file
+                        }
+                except Exception as fallback_error:
+                    logging.error(f"Error in fallback save for {idx}: {fallback_error}")
+
+    # === DEBUGGING SECTION: BEST POLICY SELECTION ===
     # If we reach here, we didn't achieve target accuracy
-    improvement = final_accuracy - baseline_accuracy
-    logging.warning(f"Failed to achieve target accuracy for policy {idx} after {MAX_ITERATIONS} iterations.")
-    logging.warning(f"Final accuracy: {final_accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
-    
-    # Save best attempt
+    # Find the best iteration result
+    best_accuracy = baseline_accuracy
+    best_iteration = None
+
     if iteration_results:
+        # Debug: Show all iterations and their accuracies
+        logging.info(f"Policy {idx}: All iteration results:")
+        for i, result in enumerate(iteration_results):
+            logging.info(f"  Iteration {result.get('iteration')}: {result.get('accuracy', 0):.1f}% - File: {result.get('policy_file')}")
+        
         best_iteration = max(iteration_results, key=lambda x: x.get('accuracy', 0))
+        best_accuracy = best_iteration.get('accuracy', baseline_accuracy)
+        best_file = best_iteration.get('policy_file')
+        best_iter_num = best_iteration.get('iteration')
+        
+        logging.info(f"Policy {idx}: Selected best iteration {best_iter_num} with accuracy {best_accuracy:.1f}%")
+        logging.info(f"Policy {idx}: Best file path: {best_file}")
+        logging.info(f"Policy {idx}: Best file exists: {os.path.exists(best_file) if best_file else False}")
+        logging.info(f"Policy {idx}: Final iteration accuracy was {final_accuracy:.1f}%")
+        
         if 'policy_file' in best_iteration and os.path.exists(best_iteration['policy_file']):
             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_best.json")
-            shutil.copy2(best_iteration['policy_file'], final_output_file)
+            
+            # Debug: Check file before and after copy
+            import hashlib
+            try:
+                with open(best_iteration['policy_file'], 'rb') as f:
+                    original_hash = hashlib.md5(f.read()).hexdigest()
+                
+                shutil.copy2(best_iteration['policy_file'], final_output_file)
+                
+                with open(final_output_file, 'rb') as f:
+                    copied_hash = hashlib.md5(f.read()).hexdigest()
+                
+                logging.info(f"Policy {idx}: File copy hash match: {original_hash == copied_hash}")
+                
+                # Debug: Immediately validate the copied file
+                try:
+                    immediate_validation = run_smt_validator(final_output_file, req_file, policy_idx=idx)
+                    immediate_accuracy = immediate_validation['accuracy']
+                    logging.info(f"Policy {idx}: Immediate validation of copied file: {immediate_accuracy:.1f}%")
+                    
+                    if abs(best_accuracy - immediate_accuracy) > 0.1:
+                        logging.warning(f"Policy {idx}: ACCURACY MISMATCH after copy!")
+                        logging.warning(f"Policy {idx}: Expected {best_accuracy:.1f}%, got {immediate_accuracy:.1f}%")
+                        
+                        # Compare the policies themselves
+                        with open(best_iteration['policy_file'], 'r') as f:
+                            original_policy_content = f.read()
+                        with open(final_output_file, 'r') as f:
+                            copied_policy_content = f.read()
+                        
+                        if original_policy_content != copied_policy_content:
+                            logging.error(f"Policy {idx}: FILE CONTENT MISMATCH during copy!")
+                        else:
+                            logging.warning(f"Policy {idx}: File content identical, SMT solver gave different result")
+                    else:
+                        logging.info(f"Policy {idx}: Validation accuracy matches expected")
+                        
+                except Exception as val_e:
+                    logging.error(f"Policy {idx}: Failed to validate copied file: {val_e}")
+                    
+            except Exception as copy_e:
+                logging.error(f"Policy {idx}: Error during file copy/validation: {copy_e}")
         else:
             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_original.json")
             save_json_file(original_policy, final_output_file)
+            best_accuracy = baseline_accuracy
+            logging.warning(f"Policy {idx}: No valid best iteration file found, saving original policy")
     else:
         final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_original.json")
         save_json_file(original_policy, final_output_file)
-    
+        logging.warning(f"Policy {idx}: No iteration results found, saving original policy")
+
+    improvement = best_accuracy - baseline_accuracy
+    logging.warning(f"Failed to achieve target accuracy for policy {idx} after {MAX_ITERATIONS} iterations.")
+    logging.warning(f"Best accuracy: {best_accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
+
     return {
         'index': idx,
         'status': 'failed',
         'baseline_accuracy': baseline_accuracy,
-        'final_accuracy': final_accuracy,
+        'final_accuracy': best_accuracy,  # Use best accuracy, not final iteration
         'improvement_from_baseline': improvement,
         'iterations_used': MAX_ITERATIONS,
         'iteration_accuracies': iteration_accuracies,
         'iteration_results': iteration_results,
         'final_policy_file': final_output_file
     }
-
 class IterativeProgressTracker:
     """Progress tracker for iterative policy repair"""
     def __init__(self, progress_file: str = os.path.join(OUTPUT_DIR, "improved_iterative_progress.json")):
@@ -1221,7 +1203,7 @@ def run_baseline_validation(idx: int) -> dict:
     logging.info(f"Running baseline validation for policy {idx}...")
     
     try:
-        validation_results = run_smt_validator(policy_file, req_file)
+        validation_results = run_smt_validator(policy_file, req_file, policy_idx=idx)
         
         baseline_result = {
             'policy_idx': idx,
@@ -1234,6 +1216,7 @@ def run_baseline_validation(idx: int) -> dict:
             'misclassified_deny_to_allow': validation_results['misclassified_deny_to_allow'],
             'failed_examples_count': len(validation_results.get('failed_examples', [])),
             'failed_examples': validation_results.get('failed_examples', []),
+            'erroneous_policy': validation_results.get('erroneous_policy'),
             'output_file': validation_results['output_file']
         }
         
@@ -1251,7 +1234,6 @@ def run_baseline_validation(idx: int) -> dict:
             'failed_examples': [],
             'error': str(e)
         }
-
 def main():
     """Main function - Improved counter-example guided repair"""
     log_file = setup_logging()
@@ -1350,10 +1332,9 @@ def main():
                 'failed_examples': []
             })
     
-    # Save baseline results
+    # Save baseline results (REMOVED TIMESTAMP)
     if baseline_results:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        baseline_csv = os.path.join(OUTPUT_DIR, f"baseline_results_improved_{timestamp}.csv")
+        baseline_csv = os.path.join(OUTPUT_DIR, "baseline_results_improved.csv")
         baseline_df = pd.DataFrame(baseline_results)
         baseline_df.to_csv(baseline_csv, index=False)
         logging.info(f"Baseline results saved to {baseline_csv}")
@@ -1387,6 +1368,7 @@ def main():
     
     baseline_accuracy_map = {r['policy_idx']: r.get('accuracy', 0.0) for r in baseline_results}
     baseline_failed_examples_map = {r['policy_idx']: r.get('failed_examples', []) for r in baseline_results}
+    baseline_erroneous_policy_map = {r['policy_idx']: r.get('erroneous_policy') for r in baseline_results}
     
     to_process = [i for i in range(total) if not tracker.is_done(i)]
     logging.info(f"Policies to process for improved repair: {to_process}")
@@ -1399,7 +1381,8 @@ def main():
         try:
             baseline_acc = baseline_accuracy_map.get(idx, 0.0)
             baseline_failed = baseline_failed_examples_map.get(idx, [])
-            result = process_policy_with_improved_repair(idx, baseline_acc, baseline_failed)
+            baseline_erroneous = baseline_erroneous_policy_map.get(idx)
+            result = process_policy_with_improved_repair(idx, baseline_acc, baseline_failed, baseline_erroneous)
             
             # Track completion/failure
             if result['status'] in ['success', 'already_perfect']:
@@ -1440,20 +1423,19 @@ def main():
                 'error': str(e)
             })
     
-    # Save comprehensive results
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    # Save comprehensive results (REMOVED TIMESTAMPS)
     
     # Summary results
     if all_results:
         df_summary = pd.DataFrame(all_results)
-        summary_csv = os.path.join(OUTPUT_DIR, f"improved_repair_summary_{timestamp}.csv")
+        summary_csv = os.path.join(OUTPUT_DIR, "improved_repair_summary.csv")
         df_summary.to_csv(summary_csv, index=False)
         logging.info(f"Summary results saved to {summary_csv}")
     
     # Detailed iteration results
     if all_iteration_data:
         df_iterations = pd.DataFrame(all_iteration_data)
-        iterations_csv = os.path.join(OUTPUT_DIR, f"improved_repair_details_{timestamp}.csv")
+        iterations_csv = os.path.join(OUTPUT_DIR, "improved_repair_details.csv")
         df_iterations.to_csv(iterations_csv, index=False)
         logging.info(f"Detailed iteration results saved to {iterations_csv}")
     
@@ -1492,9 +1474,10 @@ def main():
     
     if failed_examples_analysis:
         df_failed = pd.DataFrame(failed_examples_analysis)
-        failed_csv = os.path.join(OUTPUT_DIR, f"improved_repair_failed_examples_{timestamp}.csv")
+        failed_csv = os.path.join(OUTPUT_DIR, "improved_repair_failed_examples.csv")
         df_failed.to_csv(failed_csv, index=False)
         logging.info(f"Failed examples analysis saved to {failed_csv}")
+    
     
     # Final summary
     successful = len([r for r in all_results if r.get('status') in ['success', 'already_perfect']])
@@ -1560,10 +1543,10 @@ def main():
     
     print(f"{'='*60}")
     print("Results files:")
-    print(f"  - Baseline: baseline_results_improved_{timestamp}.csv")
-    print(f"  - Summary: improved_repair_summary_{timestamp}.csv")
-    print(f"  - Detailed iterations: improved_repair_details_{timestamp}.csv")
-    print(f"  - Failed examples: improved_repair_failed_examples_{timestamp}.csv")
+    print(f"  - Baseline: baseline_results_improved.csv")
+    print(f"  - Summary: improved_repair_summary.csv")
+    print(f"  - Detailed iterations: improved_repair_details.csv")
+    print(f"  - Failed examples: improved_repair_failed_examples.csv")
     print(f"  - Progress tracker: {tracker.progress_file}")
     print(f"{'='*60}")
     print("\nKEY IMPROVEMENTS:")
@@ -1579,5 +1562,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
