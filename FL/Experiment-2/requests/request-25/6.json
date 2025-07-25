@@ -1,0 +1,259 @@
+{
+  "Requests": [
+    {
+      "id": "allow_a43b3cec",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket",
+        "iot-device-tester:LatestIdt"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_03490c90",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_c742e3f1",
+      "Effect": "allow",
+      "Action": [
+        "iot:CreateKeysAndCertificate",
+        "iot:CancelJob",
+        "s3:ListBucketVersions"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_816bff94",
+      "Effect": "deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_6d9162ae",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_f1be8344",
+      "Effect": "deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_50eef2fc",
+      "Effect": "allow",
+      "Action": [
+        "iot:CreateRoleAlias"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_b638aceb",
+      "Effect": "deny",
+      "Action": [
+        "iot:ListThingPrincipals"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "id": "deny_fac97454",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_6f068791",
+      "Effect": "deny",
+      "Action": [
+        "iam:ListUsers"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_69f6bc5d",
+      "Effect": "allow",
+      "Action": [
+        "iot-device-tester:LatestIdt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "iot.amazonaws.com",
+            "lambda.amazonaws.com",
+            "greengrass.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_0b4bd9a1",
+      "Effect": "allow",
+      "Action": [
+        "iot:DescribeCertificate"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "deny_e2737b79",
+      "Effect": "deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_e7283ffc",
+      "Effect": "deny",
+      "Action": [
+        "iot-device-tester:CheckVersion",
+        "iot:AttachThingPrincipal"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_0e553cd5",
+      "Effect": "deny",
+      "Action": [
+        "iot:AttachThingPrincipal"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

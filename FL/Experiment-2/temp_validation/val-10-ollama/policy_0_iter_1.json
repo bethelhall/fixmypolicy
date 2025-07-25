@@ -1,0 +1,111 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "stmt1",
+      "Action": [
+        "s3:Get*",
+        "s3:List*",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::athena-query-results/*",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI*"
+        }
+      }
+    },
+    {
+      "Sid": "stmt2",
+      "Action": [
+        "s3:*",
+        "glue:GetTable"
+      ],
+      "Resource": "arn:aws:s3:::bkt_logs/*",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "stmt3",
+      "Action": [
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:StopQueryExecution",
+        "athena:GetWorkGroup",
+        "athena:GetDatabase",
+        "athena:BatchGetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
+        "athena:GetTableMetadata"
+      ],
+      "Resource": "*",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "stmt4",
+      "Action": [
+        "glue:GetTable",
+        "glue:GetDatabase",
+        "glue:GetPartitions"
+      ],
+      "Resource": "*",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "stmt5",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:DescribeKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "*",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI*"
+        }
+      }
+    }
+  ]
+}

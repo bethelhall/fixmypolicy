@@ -1,0 +1,136 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "stmt1",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateScript",
+        "secretsmanager:*"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*"
+    },
+    {
+      "Sid": "stmt2",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListTags",
+        "sagemaker:DeleteNotebookInstance",
+        "sagemaker:StopNotebookInstance",
+        "sagemaker:CreatePresignedNotebookInstanceUrl",
+        "sagemaker:Describe*",
+        "sagemaker:StartNotebookInstance",
+        "sagemaker:UpdateNotebookInstance",
+        "sagemaker:CreatePresignedDomainUrl",
+        "sagemaker:*"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "stmt3",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListTags",
+        "sagemaker:Describe*",
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*"
+    },
+    {
+      "Sid": "fix1",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "fix2",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "fix3",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateScript"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "fix4",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "fix5",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "Sid": "fix6",
+      "Effect": "Deny",
+      "Action": [
+        "sagemaker:StopNotebookInstance"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*-forbidden-resource",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "Sid": "fix7",
+      "Effect": "Deny",
+      "Action": [
+        "sagemaker:CreatePresignedDomainUrl"
+      ],
+      "Resource": "arn:aws:sagemaker:::notebook-instance/*-forbidden-resource",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    }
+  ]
+}

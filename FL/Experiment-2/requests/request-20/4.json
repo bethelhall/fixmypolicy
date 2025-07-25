@@ -1,92 +1,248 @@
 {
   "Requests": [
     {
-      "id": "allow_261ced25",
+      "id": "allow_6cc3cb7b",
       "Effect": "allow",
       "Action": [
-        "s3:CreateBucket",
-        "s3:GetObject",
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::document",
-        "arn:aws:s3:::*/data/file.json",
-        "arn:aws:s3:::data123"
-      ]
-    },
-    {
-      "id": "allow_ee0c786d",
-      "Effect": "allow",
-      "Action": [
-        "s3:DeleteObject"
+        "s3:GetBucketLocation"
       ],
       "Resource": [
         "arn:aws:s3:::document"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_926aaf34",
+      "id": "allow_163431db",
       "Effect": "allow",
       "Action": [
         "s3:GetBucketAcl"
       ],
       "Resource": [
-        "arn:aws:s3:::document"
-      ]
+        "arn:aws:s3:::*/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
     },
     {
-      "id": "allow_cc7f2046",
+      "id": "allow_f022932c",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_ddafbcfe",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123",
+        "arn:aws:s3:::*/data/file.json"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_8d685ef6",
       "Effect": "allow",
       "Action": [
         "s3:PutBucketPolicy"
       ],
       "Resource": [
-        "arn:aws:s3:::document"
-      ]
+        "arn:aws:s3:::file1"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "deny_bd2acdc1",
+      "id": "deny_b79dae0d",
       "Effect": "deny",
       "Action": [
-        "iam:DeleteUser",
-        "lambda:CreateFunction",
-        "dynamodb:PutItem"
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_92774114",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_f30fa781",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::document",
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_df2d9a12",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::document"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_8a51c0ae",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
       ],
       "Resource": [
         "arn:aws:s3:::data123"
-      ]
-    },
-    {
-      "id": "deny_e5f2318b",
-      "Effect": "deny",
-      "Action": [
-        "s3:PutObject"
       ],
-      "Resource": [
-        "arn:aws:s3:::different-*/*"
-      ]
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     },
     {
-      "id": "deny_fd568637",
-      "Effect": "deny",
-      "Action": [
-        "ec2:RunInstances",
-        "dynamodb:DeleteItem",
-        "lambda:InvokeFunction"
-      ],
-      "Resource": [
-        "arn:aws:s3:::file1"
-      ]
-    },
-    {
-      "id": "deny_f88c0435",
-      "Effect": "deny",
+      "id": "allow_1b2e3598",
+      "Effect": "allow",
       "Action": [
         "s3:GetBucketLocation"
       ],
       "Resource": [
-        "arn:aws:s3:::completely-different-bucket/*"
-      ]
+        "arn:aws:s3:::file1"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_3850de17",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "id": "deny_b8039aa2",
+      "Effect": "deny",
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::file1"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "allow_c1c55179",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_01f56ca4",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     }
   ]
 }

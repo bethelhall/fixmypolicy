@@ -1,86 +1,149 @@
 {
   "Requests": [
     {
-      "id": "allow_2c5acc7b",
-      "Effect": "allow",
-      "Action": [
-        "sts:TagSession",
-        "sts:AssumeRoleWithWebIdentity"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "allow_e785a63e",
-      "Effect": "allow",
-      "Action": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "allow_32e1b623",
-      "Effect": "allow",
-      "Action": [
-        "sts:TagSession"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "allow_9a45ca5f",
-      "Effect": "allow",
-      "Action": [
-        "sts:AssumeRoleWithWebIdentity"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "allow_d894aaf0",
-      "Effect": "allow",
-      "Action": [
-        "sts:TagSession"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "deny_053b063a",
-      "Effect": "deny",
-      "Action": [
-        "iam:CreateUser",
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
-    },
-    {
-      "id": "deny_44bdd9cd",
-      "Effect": "deny",
-      "Action": [
-        "iam:DeleteUser"
-      ],
-      "Resource": [
-        "arn:aws:s3:::forbidden-bucket/file.txt"
-      ]
-    },
-    {
-      "id": "deny_fcdf761d",
+      "id": "deny_62b7b94b",
       "Effect": "deny",
       "Action": [
         "ec2:DescribeInstances"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/specific-file.txt"
-      ]
+      ],
+      "Principal": "arn:aws:iam::999888777666:oidc-provider/gitlab.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_01c05dff",
+      "Effect": "deny",
+      "Action": [
+        "sts:TagSession"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::{account id}:oidc-provider/gitlab.com",
+      "Condition": {
+        "StringLike": {
+          "gitlab.com:sub": "project_path:{redacted}/*:ref_type:branch:ref:*"
+        }
+      }
+    },
+    {
+      "id": "allow_5d358421",
+      "Effect": "allow",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:oidc-provider/gitlab.com",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_ab6a2d8f",
+      "Effect": "allow",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_5c0a1f4f",
+      "Effect": "allow",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity",
+        "sts:TagSession"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:oidc-provider/gitlab.com",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_6bfa30c0",
+      "Effect": "deny",
+      "Action": [
+        "sts:TagSession"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::{account id}:oidc-provider/gitlab.com",
+      "Condition": {
+        "StringLike": {
+          "gitlab.com:sub": "project_path:{redacted}/*:ref_type:branch:ref:*"
+        }
+      }
+    },
+    {
+      "id": "allow_05015115",
+      "Effect": "allow",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::{account id}:oidc-provider/gitlab.com",
+      "Condition": {
+        "StringLike": {
+          "gitlab.com:sub": "project_path:{redacted}/*:ref_type:branch:ref:*"
+        }
+      }
+    },
+    {
+      "id": "deny_d5ace2fc",
+      "Effect": "deny",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::{account id}:oidc-provider/forbidden-gitlab.com",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_2fb3ace4",
+      "Effect": "deny",
+      "Action": [
+        "sts:AssumeRoleWithWebIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/specific-file.txt"
+      ],
+      "Principal": "arn:aws:iam::{account id}:oidc-provider/gitlab.com",
+      "Condition": {
+        "StringLike": {
+          "gitlab.com:sub": "project_path:{redacted}/*:ref_type:branch:ref:*"
+        }
+      }
     }
   ]
 }

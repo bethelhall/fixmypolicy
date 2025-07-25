@@ -1,77 +1,149 @@
 {
   "Requests": [
     {
-      "id": "allow_62c42c1e",
+      "id": "allow_4dbd0c6c",
       "Effect": "allow",
       "Action": [
-        "s3:GetBucketLocation",
         "s3:GetObject"
       ],
       "Resource": [
-        "arn:aws:s3:::file1"
-      ]
+        "arn:aws:s3:::file1",
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "allow_1f76329d",
-      "Effect": "allow",
+      "id": "deny_6ff981cb",
+      "Effect": "deny",
       "Action": [
-        "s3:ListBucket",
-        "s3:PutBucketPolicy"
+        "dynamodb:DeleteItem"
       ],
       "Resource": [
         "arn:aws:s3:::document"
-      ]
-    },
-    {
-      "id": "allow_c5dfd59f",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutObject"
       ],
-      "Resource": [
-        "arn:aws:s3:::*/document.txt"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     },
     {
-      "id": "allow_15b56f5d",
+      "id": "allow_e2a6b40c",
       "Effect": "allow",
       "Action": [
         "s3:DeleteBucket"
       ],
       "Resource": [
-        "arn:aws:s3:::*/document.txt"
-      ]
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
     },
     {
-      "id": "deny_0ed7b331",
+      "id": "deny_7558fa16",
       "Effect": "deny",
       "Action": [
-        "lambda:InvokeFunction"
+        "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::*/document.txt",
-        "arn:aws:s3:::*/temp/upload.tmp"
-      ]
+        "arn:aws:s3:::data123"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     },
     {
-      "id": "deny_7e1903ba",
+      "id": "deny_de1ddc91",
       "Effect": "deny",
       "Action": [
-        "s3:GetBucketLocation"
+        "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::*-forbidden/*"
-      ]
+        "arn:aws:s3:::file1"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
     },
     {
-      "id": "deny_9f198315",
+      "id": "deny_faf7a8cd",
       "Effect": "deny",
       "Action": [
-        "lambda:CreateFunction"
+        "s3:GetObject"
       ],
       "Resource": [
         "arn:aws:s3:::document"
-      ]
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "allow_6040f48c",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_d57f273f",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::document"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_a0f2b5da",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     }
   ]
 }

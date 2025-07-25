@@ -1,0 +1,219 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "allow_e92ad4af",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:role/EC2 IAM Role"
+      },
+      "Action": "kms:CreateGrant",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_85f7a8a7",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_2f387d5f",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": "kms:ListGrants",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_39c1e18c",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:ListGrants",
+        "kms:ScheduleKeyDeletion",
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_438ac482",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:DeleteAlias"
+      ],
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_d7815577",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:role/EC2 IAM Role"
+      },
+      "Action": "kms:CreateGrant",
+      "Resource": "arn:aws:s3:::forbidden-bucket/document.txt",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "deny_83c83962",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_fb153525",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_1fa4e879",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:role/EC2 IAM Role"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::my-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_43a53882",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "deny_e95f030d",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/forbidden-key",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_db7e65cc",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:role/EC2 IAM Role"
+      },
+      "Action": "kms:ListGrants",
+      "Resource": "arn:aws:s3:::forbidden-bucket/document.txt",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    }
+  ],
+  "analysis_result": [
+    "allow_e92ad4af: must allow but got denied",
+    "allow_85f7a8a7: must allow but got denied",
+    "allow_2f387d5f: must allow but got denied",
+    "allow_39c1e18c: must allow but got denied",
+    "allow_438ac482: must allow but got denied",
+    "deny_d7815577: must allow but got denied",
+    "deny_83c83962: must allow but got denied",
+    "deny_fb153525: must allow but got denied",
+    "deny_1fa4e879: must allow but got denied",
+    "deny_43a53882: must allow but got denied",
+    "deny_e95f030d: must allow but got denied",
+    "deny_db7e65cc: must allow but got denied"
+  ],
+  "policy_metadata": {
+    "policy_name": "policy_9_iter_1.json",
+    "policy_index": null,
+    "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-25-ollama/policy_9_iter_1.json",
+    "total_statements": 12,
+    "faulty_statements_count": 12,
+    "requests_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-25/9.json",
+    "generated_timestamp": 1753287240
+  }
+}

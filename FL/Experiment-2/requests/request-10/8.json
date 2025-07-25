@@ -1,58 +1,143 @@
 {
   "Requests": [
     {
-      "id": "allow_d3b0f640",
+      "id": "allow_f213af17",
       "Effect": "allow",
       "Action": [
-        "s3:DeleteObject"
+        "cloudwatch:GetMetricStatistics"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ]
+        "arn:aws:s3:::bucket/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::${aws:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
     },
     {
-      "id": "allow_b3ede597",
-      "Effect": "allow",
+      "id": "deny_d5909c4f",
+      "Effect": "deny",
       "Action": [
-        "cloudwatch:GetMetricStatistics",
-        "s3:GetBucketAcl"
+        "s3:GetBucketLocation"
       ],
       "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
         "arn:aws:s3:::bucket"
-      ]
+      ],
+      "Principal": "arn:aws:iam::${aws:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
     },
     {
-      "id": "allow_6c1bcfe2",
+      "id": "allow_5f43e0fb",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "deny_d23d118a",
+      "Effect": "deny",
+      "Action": [
+        "cloudwatch:GetMetricStatistics"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::${aws:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_abf3eeb7",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "deny_bb97d53b",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::${aws:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_007f948f",
       "Effect": "allow",
       "Action": [
         "cloudwatch:ListMetrics"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/data/file.json"
-      ]
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:admin:032}:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "deny_b3e0e309",
+      "id": "deny_70080841",
       "Effect": "deny",
       "Action": [
-        "dynamodb:DeleteItem",
-        "ec2:RunInstances",
-        "lambda:CreateFunction"
+        "dynamodb:DeleteItem"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
-    },
-    {
-      "id": "deny_f383b108",
-      "Effect": "deny",
-      "Action": [
-        "s3:CreateBucket"
+        "arn:aws:s3:::bucket"
       ],
-      "Resource": [
-        "arn:aws:s3:::completely-different-bucket/*"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
     }
   ]
 }

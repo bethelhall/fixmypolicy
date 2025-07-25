@@ -1,68 +1,134 @@
 {
   "Requests": [
     {
-      "id": "allow_8f184757",
+      "id": "deny_abbbf125",
+      "Effect": "deny",
+      "Action": [
+        "iot:ListTargetsForPolicy"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "allow_2abd1350",
       "Effect": "allow",
       "Action": [
-        "iam:CreateRole"
+        "iot:CreateRoleAlias"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
-      ]
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
     },
     {
-      "id": "allow_31365af4",
-      "Effect": "allow",
+      "id": "deny_83da5b9e",
+      "Effect": "deny",
       "Action": [
-        "iot:DescribeEndpoint",
-        "iot:AttachPolicy"
+        "s3:PutObjectTagging"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
     },
     {
-      "id": "allow_833c53e4",
+      "id": "allow_76775378",
       "Effect": "allow",
       "Action": [
-        "iam:DetachRolePolicy"
+        "iot:UpdateThingShadow",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_3703de5f",
+      "Effect": "allow",
+      "Action": [
+        "iot:TagResource"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_14797abc",
+      "Effect": "deny",
+      "Action": [
+        "s3:DeleteBucket"
       ],
       "Resource": [
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ]
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
     },
     {
-      "id": "allow_be36f321",
+      "id": "deny_a81b383e",
+      "Effect": "deny",
+      "Action": [
+        "iam:ListUsers"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_87398b1d",
       "Effect": "allow",
       "Action": [
-        "iot:DescribeThing"
+        "s3:DeleteObjectVersion"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
         "arn:aws:s3:::my-bucket/document.txt"
-      ]
-    },
-    {
-      "id": "deny_69da1a9f",
-      "Effect": "deny",
-      "Action": [
-        "iam:AttachUserPolicy",
-        "s3:GetBucketAcl"
       ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ]
-    },
-    {
-      "id": "deny_2e525ec6",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::forbidden-bucket/*",
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ]
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
     }
   ]
 }

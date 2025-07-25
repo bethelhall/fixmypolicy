@@ -25,7 +25,7 @@ import pandas as pd
 from tqdm import tqdm
 from ollama import chat, ChatResponse 
 
-req = 25  # Set this to match your experiment number (80 or 25)
+req = 50  # Set this to match your experiment number (80 or 25)
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
 REQUIREMENTS_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-{req}"
 OUTPUT_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-{req}-ollama/"
@@ -34,11 +34,11 @@ TEMP_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
 
-MAX_ITERATIONS = 7
-MAX_ATTEMPT = 3
-DELAY = 5
+MAX_ITERATIONS = 5
+MAX_ATTEMPT = 1
+DELAY = 1
 TARGET_ACCURACY = 100.0
-OLLAMA_MODEL = "codellama:13b"
+OLLAMA_MODEL = "qwen3:14b"
 
 def setup_logging(log_dir: str = LOG_DIR):  
     """Configure logging"""
@@ -60,7 +60,7 @@ def call_ollama(prompt, system_prompt=""):
         messages = []
         
         if system_prompt:
-            messages.append({
+            messages.append({   
                 'role': 'system',
                 'content': system_prompt
             })
@@ -74,9 +74,10 @@ def call_ollama(prompt, system_prompt=""):
             model=OLLAMA_MODEL,
             messages=messages,
             options={
-                'temperature': 0.1,
-                'top_p': 0.9,
-                'num_predict': 10000,
+                'temperature': 0.4,
+                'top_p': 0.3,
+                'num_predict': 4000,
+                'num_ctx': 10000,   
                 'stop': ['\n```', '```\n'],
             }
         )
@@ -254,13 +255,10 @@ FAILURE ANALYSIS:
     prompt += f"""
 
 REPAIR INSTRUCTIONS:
-1. MAINTAIN STRUCTURE: Keep the same number of statements as the original ({len(current_policy.get('Statement', []))})
 2. MODIFY EXISTING: Fix existing statements rather than adding new ones
 3. ADD CONSTRAINTS: Add Principal and Condition fields when specified in requirements
-4. MINIMAL CHANGES: Make the smallest changes necessary to fix the failures
 
 IMPORTANT RULES:
-- Keep the same number of statements ({len(current_policy.get('Statement', []))})
 - Modify existing statements to meet requirements
 - Add Principal and Condition constraints when specified
 - Deny statements take precedence over Allow statements
@@ -503,14 +501,12 @@ SOLVER ANALYSIS RESULTS:
 {chr(10).join(f"• {result}" for result in analysis_results)}
 
 REPAIR INSTRUCTIONS:
-1. MAINTAIN STRUCTURE: Keep the same number of statements as the original policy ({len(policy.get('Statement', []))})
 2. FIX FAULTY STATEMENTS: Modify only the problematic statements identified above
 3. PRESERVE WORKING STATEMENTS: Keep statements that are working correctly unchanged
 4. ADD CONSTRAINTS: Add Principal and Condition fields when specified in requirements
 5. MINIMAL CHANGES: Make the smallest changes necessary to fix the issues
 
 IMPORTANT RULES:
-- Return a policy with {len(policy.get('Statement', []))} statements (same as original)
 - Do NOT add new statements unless absolutely necessary
 - Do NOT remove working statements
 - Focus on fixing the specific faulty statements provided
@@ -540,7 +536,6 @@ REQUIREMENTS:
 {req_text}
 
 REPAIR INSTRUCTIONS:
-- Keep the same number of statements ({len(policy.get('Statement', []))})
 - Make minimal changes to fix the issues
 - Do not add unnecessary statements
 - Focus on modifying existing statements to meet requirements

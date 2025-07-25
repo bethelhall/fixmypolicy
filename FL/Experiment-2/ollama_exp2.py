@@ -201,7 +201,6 @@ def resource_matches(test_resource, policy_resource):
     
     return False
 
-
 def generate_focused_repair_prompt(current_policy, requirements, erroneous_policy, iteration):
     """
     Generate a highly focused repair prompt that includes both SMT analysis and failed request examples
@@ -314,30 +313,6 @@ Solutions (choose the most appropriate):
 
     # Provide complete requirements context
     prompt += f"""
-COMPLETE REQUIREMENTS TO SATISFY:
-"""
-    
-    if allow_requirements:
-        prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
-        for req in allow_requirements:
-            prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-            if req.get('Principal'):
-                prompt += f" for Principal: {req.get('Principal')}"
-            if req.get('Condition'):
-                prompt += f" when Condition: {req.get('Condition')}"
-            prompt += "\n"
-    
-    if deny_requirements:
-        prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
-        for req in deny_requirements:
-            prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-            if req.get('Principal'):
-                prompt += f" for Principal: {req.get('Principal')}"
-            if req.get('Condition'):
-                prompt += f" when Condition: {req.get('Condition')}"
-            prompt += "\n"
-
-    prompt += f"""
 
 COMMON MISTAKES TO AVOID:
 - Don't just flip Effect from Allow to Deny without considering the specific requirement
@@ -352,98 +327,7 @@ Return ONLY the complete corrected policy as valid JSON. No explanations, no mar
 CORRECTED POLICY:"""
 
     return prompt
-def format_requirements_concise(requirements):
-    if "Requests" not in requirements:
-        return "No valid requirements found"
-    
-    lines = []
-    allow_reqs = [r for r in requirements["Requests"] if r.get("Effect", "").lower() == "allow"]
-    deny_reqs = [r for r in requirements["Requests"] if r.get("Effect", "").lower() != "allow"]
-    
-    if allow_reqs:
-        lines.append("ALLOW:")
-        for req in allow_reqs:
-            line = f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-            if req.get('Principal'):
-                line += f" for {req.get('Principal')}"
-            if req.get('Condition'):
-                line += f" when {req.get('Condition')}"
-            lines.append(line)
-    
-    if deny_reqs:
-        lines.append("DENY:")
-        for req in deny_reqs:
-            line = f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-            if req.get('Principal'):
-                line += f" for {req.get('Principal')}"
-            if req.get('Condition'):
-                line += f" when {req.get('Condition')}"
-            lines.append(line)
-    
-    return "\n".join(lines)
-def generate_simple_repair_prompt(current_policy, requirements, iteration):
-    """
-    Enhanced simple repair prompt for when erroneous policy is not available
-    """
-    
-    requirements_text = format_requirements_detailed(requirements)
-    
-    prompt = f"""Fix this AWS IAM policy to meet ALL the specified requirements.
 
-CURRENT POLICY:
-{json.dumps(current_policy, indent=2)}
-
-REQUIREMENTS TO SATISFY:
-{requirements_text}
-
-
-REPAIR STRATEGY:
-1. For each MUST ALLOW requirement, ensure there's an Allow statement that covers it
-2. For each MUST DENY requirement, ensure there's no Allow statement that permits it, or add explicit Deny
-3. Match Actions, Resources, Principals, and Conditions exactly as specified
-
-
-Return ONLY the corrected policy as valid JSON.
-
-CORRECTED POLICY:"""
-
-    return prompt
-
-
-def format_requirements_detailed(requirements):
-    """Format requirements with more detail for better understanding"""
-    if "Requests" not in requirements:
-        return "No valid requirements found"
-    
-    lines = []
-    allow_reqs = [r for r in requirements["Requests"] if r.get("Effect", "").lower() == "allow"]
-    deny_reqs = [r for r in requirements["Requests"] if r.get("Effect", "").lower() != "allow"]
-    
-    if allow_reqs:
-        lines.append("MUST ALLOW:")
-        for i, req in enumerate(allow_reqs, 1):
-            lines.append(f"  {i}. ID: {req.get('id', 'unknown')}")
-            lines.append(f"     Actions: {req.get('Action', [])}")
-            lines.append(f"     Resources: {req.get('Resource', [])}")
-            if req.get('Principal'):
-                lines.append(f"     Principal: {req.get('Principal')}")
-            if req.get('Condition'):
-                lines.append(f"     Condition: {req.get('Condition')}")
-            lines.append("")
-    
-    if deny_reqs:
-        lines.append("MUST DENY:")
-        for i, req in enumerate(deny_reqs, 1):
-            lines.append(f"  {i}. ID: {req.get('id', 'unknown')}")
-            lines.append(f"     Actions: {req.get('Action', [])}")
-            lines.append(f"     Resources: {req.get('Resource', [])}")
-            if req.get('Principal'):
-                lines.append(f"     Principal: {req.get('Principal')}")
-            if req.get('Condition'):
-                lines.append(f"     Condition: {req.get('Condition')}")
-            lines.append("")
-    
-    return "\n".join(lines)
 def analyze_prompt_effectiveness(original_policy, repaired_policy, erroneous_policy, requirements):
     """
     Analyze how well the prompt addressed the specific issues
@@ -485,6 +369,7 @@ def analyze_prompt_effectiveness(original_policy, repaired_policy, erroneous_pol
                         analysis['issues_addressed'].append(f"Statement {i+1}: Fixed deny issue")
     
     return analysis
+
 def extract_and_validate_json(response_text: str) -> dict:
     """Extract and validate JSON from Ollama response with debugging"""
     text = response_text.strip()
@@ -562,7 +447,7 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
             policy, requirements, erroneous_policy, failed_examples, iteration
         )
     else:
-        prompt = generate_simple_repair_prompt(policy, requirements, iteration)
+        prompt = generate_focused_repair_prompt(policy, requirements, erroneous_policy, iteration)
 
     system_prompt = """You are an AWS IAM expert. Fix policies by correcting specific misclassification issues using both SMT analysis and failed request examples.
 
@@ -1391,7 +1276,9 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
         'iteration_accuracies': iteration_accuracies,
         'iteration_results': iteration_results,
         'final_policy_file': final_output_file
-    }class IterativeProgressTracker:
+    }
+
+class IterativeProgressTracker:
     """Progress tracker for iterative policy repair"""
     def __init__(self, progress_file: str = os.path.join(OUTPUT_DIR, "improved_iterative_progress.json")):
         self.progress_file = progress_file

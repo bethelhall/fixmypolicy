@@ -16,10 +16,11 @@ import pandas as pd
 from datetime import datetime
 
 # Configuration - Update these paths to match your setup
-REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-90"
-OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-90-ollama/"
+REQUIREMENTS_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-10"
+OUTPUT_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-10-ollama/"
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
+
 
 def setup_logging():
     """Configure logging for validation"""
