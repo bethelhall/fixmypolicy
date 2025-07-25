@@ -26,17 +26,17 @@ from ollama import chat, ChatResponse
 req = 50
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
 REQUIREMENTS_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-{req}"
-OUTPUT_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-{req}-ollama"
-LOG_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-{req}-ollama"
-TEMP_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-{req}-ollama"
+OUTPUT_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-{req}-ollamaa"
+LOG_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/logs/log-{req}-ollamaa"
+TEMP_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-{req}-ollamaa"
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
 
 MAX_ITERATIONS = 5
-MAX_ATTEMPT = 1
+MAX_ATTEMPT = 2
 DELAY = 1
 TARGET_ACCURACY = 100.0
-OLLAMA_MODEL = "codellama:13b-instruct"
+OLLAMA_MODEL = "codellama:13b"  # Updated to use a more capable model
 
 def setup_logging(log_dir: str = LOG_DIR):  
     """Configure logging"""
@@ -89,7 +89,7 @@ def call_ollama(prompt, system_prompt=""):
             model=OLLAMA_MODEL,
             messages=messages,
             options={
-                'temperature': 0.4,
+                'temperature': 0.1, 
                 'top_p': 0.3,
                 'num_predict': 4000,
                 'num_ctx': 8000,   
@@ -202,105 +202,13 @@ def resource_matches(test_resource, policy_resource):
     return False
 
 
-# def generate_targeted_repair_prompt(current_policy, requirements, failed_analysis, iteration):
-#     """
-#     Generate a targeted repair prompt with original policy context for structure preservation.
-#     """
-    
-#     prompt = f"""You are an AWS IAM policy expert. Fix the current policy while maintaining its structure.
-
-# ORIGINAL POLICY (maintain similar structure and statement count):
-# {json.dumps(current_policy, indent=2)}
-
-# REQUIREMENTS:
-# {format_requirements_detailed(requirements)}
-
-# ITERATION: {iteration}/{MAX_ITERATIONS}
-
-# FAILURE ANALYSIS:
-# """
-
-#     if failed_analysis['allow_to_deny_failures']:
-#         prompt += f"\nCRITICAL: Currently DENYING {len(failed_analysis['allow_to_deny_failures'])} requests that should be ALLOWED:\n"
-#         for i, failure in enumerate(failed_analysis['allow_to_deny_failures'][:5], 1):  # Show top 5
-#             prompt += f"   {i}. Action: {failure['action']}\n"
-#             prompt += f"      Resource: {failure['resource']}\n"
-#             if failure.get('principal'):
-#                 prompt += f"      Principal: {failure['principal']}\n"
-#             if failure.get('condition'):
-#                 prompt += f"      Condition: {failure['condition']}\n"
-#             prompt += "\n"
-    
-#     if failed_analysis['deny_to_allow_failures']:
-#         prompt += f"\nWARNING: Currently ALLOWING {len(failed_analysis['deny_to_allow_failures'])} requests that should be DENIED:\n"
-#         for i, failure in enumerate(failed_analysis['deny_to_allow_failures'][:5], 1):  # Show top 5
-#             prompt += f"   {i}. Action: {failure['action']}\n"
-#             prompt += f"      Resource: {failure['resource']}\n"
-#             if failure.get('principal'):
-#                 prompt += f"      Principal: {failure['principal']}\n"
-#             if failure.get('condition'):
-#                 prompt += f"      Condition: {failure['condition']}\n"
-#             prompt += "\n"
-
-#     if failed_analysis['missing_allow_statements']:
-#         prompt += f"\nREQUIRED FIXES (modify existing statements to allow these):\n"
-#         for i, missing in enumerate(failed_analysis['missing_allow_statements'][:3], 1):
-#             req = missing['requirement']
-#             prompt += f"   {i}. Effect: Allow\n"
-#             prompt += f"      Action: {req.get('Action')}\n"
-#             prompt += f"      Resource: {req.get('Resource')}\n"
-#             if req.get('Principal'):
-#                 prompt += f"      Principal: {req.get('Principal')}\n"
-#             if req.get('Condition'):
-#                 prompt += f"      Condition: {req.get('Condition')}\n"
-#             prompt += "\n"
-
-#     if failed_analysis['incorrect_deny_statements']:
-#         prompt += f"\nREQUIRED RESTRICTIONS (add conditions to existing statements):\n"
-#         for i, incorrect in enumerate(failed_analysis['incorrect_deny_statements'][:3], 1):
-#             fix = incorrect['suggested_fix']
-#             prompt += f"   {i}. Add restriction for:\n"
-#             prompt += f"      Action: {fix['Action']}\n"
-#             prompt += f"      Resource: {fix['Resource']}\n"
-#             if fix.get('Principal'):
-#                 prompt += f"      Principal: {fix['Principal']}\n"
-#             if fix.get('Condition'):
-#                 prompt += f"      Condition: {fix['Condition']}\n"
-#             prompt += "\n"
-
-#     prompt += f"""
-
-# REPAIR INSTRUCTIONS:
-# 1. MAINTAIN STRUCTURE: Keep the same number of statements as the original ({len(current_policy.get('Statement', []))})
-# 2. MODIFY EXISTING: Fix existing statements rather than adding new ones
-# 3. ADD CONSTRAINTS: Add Principal and Condition fields when specified in requirements
-
-# IMPORTANT RULES:
-# - Keep the same number of statements ({len(current_policy.get('Statement', []))})
-# - Modify existing statements to meet requirements
-# - Add Principal and Condition constraints when specified
-
-# OUTPUT FORMAT:
-# Return ONLY the corrected policy as valid JSON. No explanations.
-
-# CORRECTED POLICY:"""
-
-#     return prompt
-
 def generate_focused_repair_prompt(current_policy, requirements, erroneous_policy, iteration):
     """
-    Generate a highly focused repair prompt that targets specific SMT-identified issues
+    Generate a highly focused repair prompt that includes both SMT analysis and failed request examples
     """
     
-    if not erroneous_policy:
-        # Fallback for when no erroneous policy is available
-        return generate_simple_repair_prompt(current_policy, requirements, iteration)
-    
-    faulty_statements = erroneous_policy.get('Statement', [])
-    analysis_results = erroneous_policy.get('analysis_result', [])
-    
-    if not faulty_statements or not analysis_results:
-        return generate_simple_repair_prompt(current_policy, requirements, iteration)
+    faulty_statements = erroneous_policy.get('Statement', []) if erroneous_policy else []
+    analysis_results = erroneous_policy.get('analysis_result', []) if erroneous_policy else []
     
     # Extract specific requirements for context
     allow_requirements = []
@@ -313,31 +221,43 @@ def generate_focused_repair_prompt(current_policy, requirements, erroneous_polic
             else:
                 deny_requirements.append(req)
     
-    prompt = f"""Fix this AWS IAM policy by correcting ONLY the specific faulty statements identified by the SMT solver.
+    prompt = f"""You are an AWS IAM policy expert. Fix this policy by addressing the specific failures identified by the SMT solver.
 
-CURRENT POLICY (keep this exact structure with {len(current_policy.get('Statement', []))} statements):
+CURRENT POLICY TO FIX:
 {json.dumps(current_policy, indent=2)}
 
-SMT SOLVER IDENTIFIED {len(faulty_statements)} FAULTY STATEMENTS:
+SMT SOLVER FOUND {len(faulty_statements)} PROBLEMATIC STATEMENTS:
+
 """
 
-    # Add specific analysis for each faulty statement
+    # Provide detailed analysis for each faulty statement with specific fixes
     for i, (stmt, analysis) in enumerate(zip(faulty_statements, analysis_results)):
         stmt_effect = stmt.get('Effect', 'Unknown')
         stmt_actions = stmt.get('Action', [])
         stmt_resources = stmt.get('Resource', [])
+        stmt_sid = stmt.get('Sid', f'Statement{i+1}')
         
-        prompt += f"\nFAULTY STATEMENT {i+1}:\n"
-        prompt += f"  Current Effect: {stmt_effect}\n"
-        prompt += f"  Current Actions: {stmt_actions}\n"
-        prompt += f"  Current Resources: {stmt_resources}\n"
-        prompt += f"  SMT Analysis: {analysis}\n"
+        prompt += f"""PROBLEM {i+1} - Statement ID: {stmt_sid}
+Current Statement:
+{json.dumps(stmt, indent=2)}
+
+Issue: {analysis}
+
+"""
         
-        # Determine specific fix needed
+        # Provide specific, actionable fix instructions
         if "must allow but got denied" in analysis.lower():
-            prompt += f"  FIX NEEDED: Change to Allow or add missing permissions\n"
+            prompt += f"""REQUIRED FIX: This statement is incorrectly DENYING requests that should be ALLOWED.
+
+Solutions (choose the most appropriate):
+1. Change "Effect": "Deny" to "Effect": "Allow"
+2. If this is currently an Allow statement, expand the Actions or Resources to be more permissive
+3. Remove overly restrictive Principal or Condition constraints
+4. Add a new Allow statement if current statement must remain Deny
+
+"""
             
-            # Find matching requirement
+            # Find the specific requirement that should be allowed
             for req in allow_requirements:
                 req_actions = req.get('Action', [])
                 req_resources = req.get('Resource', [])
@@ -346,113 +266,92 @@ SMT SOLVER IDENTIFIED {len(faulty_statements)} FAULTY STATEMENTS:
                 if isinstance(req_resources, str):
                     req_resources = [req_resources]
                 
-                # Check if this requirement could match the faulty statement
-                action_overlap = any(action in stmt_actions for action in req_actions if isinstance(stmt_actions, list))
-                if action_overlap:
-                    prompt += f"  MATCHING REQUIREMENT: {req.get('id')} - Actions: {req_actions}, Resources: {req_resources}\n"
+                # Check for overlap with the failing statement
+                action_overlap = any(action in str(stmt_actions) for action in req_actions)
+                resource_overlap = any(resource in str(stmt_resources) for resource in req_resources)
+                
+                if action_overlap or resource_overlap:
+                    prompt += f"""Matching Requirement to Allow:
+- ID: {req.get('id')}
+- Actions: {req_actions}
+- Resources: {req_resources}"""
                     if req.get('Principal'):
-                        prompt += f"    Required Principal: {req.get('Principal')}\n"
+                        prompt += f"\n- Principal: {req.get('Principal')}"
                     if req.get('Condition'):
-                        prompt += f"    Required Condition: {req.get('Condition')}\n"
+                        prompt += f"\n- Condition: {req.get('Condition')}"
+                    prompt += "\n\n"
                     break
         
         elif "must deny but got allow" in analysis.lower():
-            prompt += f"  FIX NEEDED: Change to Deny or add restrictive conditions\n"
+            prompt += f"""REQUIRED FIX: This statement is incorrectly ALLOWING requests that should be DENIED.
+
+Solutions (choose the most appropriate):
+1. Change "Effect": "Allow" to "Effect": "Deny"
+2. Add restrictive Principal constraints (e.g., only specific users/roles)
+3. Add restrictive Condition constraints (e.g., time, IP, MFA requirements)
+4. Narrow the Actions or Resources to be more specific
+
+"""
             
-            # Look for deny requirements that should apply
+            # Find deny requirements that should apply
             for req in deny_requirements:
                 req_actions = req.get('Action', [])
                 if isinstance(req_actions, str):
                     req_actions = [req_actions]
                 
-                action_overlap = any(action in stmt_actions for action in req_actions if isinstance(stmt_actions, list))
+                action_overlap = any(action in str(stmt_actions) for action in req_actions)
                 if action_overlap:
-                    prompt += f"  MATCHING DENY REQUIREMENT: {req.get('id')} - Actions: {req_actions}\n"
+                    prompt += f"""Matching Requirement to Deny:
+- ID: {req.get('id')}
+- Actions: {req_actions}
+- Resources: {req.get('Resource')}"""
+                    if req.get('Principal'):
+                        prompt += f"\n- Principal: {req.get('Principal')}"
+                    if req.get('Condition'):
+                        prompt += f"\n- Condition: {req.get('Condition')}"
+                    prompt += "\n\n"
                     break
 
+    # Provide complete requirements context
     prompt += f"""
-
-REQUIREMENTS CONTEXT:
+COMPLETE REQUIREMENTS TO SATISFY:
 """
     
     if allow_requirements:
-        prompt += "\nMUST ALLOW:\n"
+        prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
         for req in allow_requirements:
-            prompt += f"  - {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+            prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
             if req.get('Principal'):
-                prompt += f" for {req.get('Principal')}"
+                prompt += f" for Principal: {req.get('Principal')}"
             if req.get('Condition'):
-                prompt += f" when {req.get('Condition')}"
+                prompt += f" when Condition: {req.get('Condition')}"
             prompt += "\n"
     
     if deny_requirements:
-        prompt += "\nMUST DENY:\n"
+        prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
         for req in deny_requirements:
-            prompt += f"  - {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+            prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
             if req.get('Principal'):
-                prompt += f" for {req.get('Principal')}"
+                prompt += f" for Principal: {req.get('Principal')}"
             if req.get('Condition'):
-                prompt += f" when {req.get('Condition')}"
+                prompt += f" when Condition: {req.get('Condition')}"
             prompt += "\n"
 
     prompt += f"""
 
-REPAIR INSTRUCTIONS:
-2. MINIMAL CHANGES: Only fix the {len(faulty_statements)} faulty statements identified above
-3. PRECISE FIXES: Address the specific SMT analysis for each faulty statement
-4. MAINTAIN NON-FAULTY: Keep all other statements unchanged
-CORE PRINCIPLES:
-1. Only modify statements identified as faulty by the SMT solver
-2. Make the smallest change necessary to fix each specific issue
-3. Each faulty statement has a specific misclassification - address that exact problem
-4. VALID JSON: Always output syntactically perfect JSON
+COMMON MISTAKES TO AVOID:
+- Don't just flip Effect from Allow to Deny without considering the specific requirement
+- Don't make statements too broad (overly permissive) or too narrow (overly restrictive)
+- Don't ignore Principal and Condition constraints specified in requirements
+- Don't create statements that conflict with each other
+- Don't just copy the requests into the policy unless needed. 
 
-Here are options to follow to repair the policy:
-
-ALLOW-TO-DENY MISCLASSIFICATIONS:
-- "must allow but got denied" :
-  - Change Effect from "Deny" to "Allow", OR
-  - Expand existing Allow statement's Actions/Resources to cover the request, OR  
-  - Add missing Principal/Condition constraints to make implicit allows explicit
-
-DENY-TO-ALLOW MISCLASSIFICATIONS:
-- "must deny but got allow" :
-  - Change Effect from "Allow" to "Deny", OR
-  - Add restrictive Principal/Condition constraints to existing Allow statements, OR
-  - Narrow the scope of overly broad Allow statements (Actions/Resources)
-
-CRITICAL: Return ONLY the complete corrected policy as valid JSON. No explanations.
+OUTPUT INSTRUCTIONS:
+Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
 
 CORRECTED POLICY:"""
 
     return prompt
-
-def generate_simple_repair_prompt(current_policy, requirements, iteration):
-    """
-    Simplified repair prompt for when erroneous policy is not available
-    """
-    
-    requirements_text = format_requirements_concise(requirements)
-    
-    prompt = f"""Fix this AWS IAM policy to satisfy the requirements.
-
-CURRENT POLICY:
-{json.dumps(current_policy, indent=2)}
-
-REQUIREMENTS:
-{requirements_text}
-
-INSTRUCTIONS:
-- Keep exactly {len(current_policy.get('Statement', []))} statements
-- Modify existing statements to meet requirements
-- Add Principal/Condition constraints when specified in requirements
-
-Return ONLY the corrected policy as valid JSON.
-
-CORRECTED POLICY:"""
-
-    return prompt
-
 def format_requirements_concise(requirements):
     if "Requests" not in requirements:
         return "No valid requirements found"
@@ -482,38 +381,33 @@ def format_requirements_concise(requirements):
             lines.append(line)
     
     return "\n".join(lines)
-def generate_enhanced_system_prompt():
+def generate_simple_repair_prompt(current_policy, requirements, iteration):
     """
+    Enhanced simple repair prompt for when erroneous policy is not available
     """
-    return """You are an AWS IAM policy expert. Your task is to fix IAM policies based on SMT solver feedback.
+    
+    requirements_text = format_requirements_detailed(requirements)
+    
+    prompt = f"""Fix this AWS IAM policy to meet ALL the specified requirements.
 
-CORE PRINCIPLES:
-1. TARGETED FIXES: Only modify statements identified as faulty by the SMT solver
-2. MINIMAL CHANGES: Make the smallest change necessary to fix each specific issue
-3. PRECISION: Each faulty statement has a specific misclassification - address that exact problem
-4. VALID JSON: Always output syntactically perfect JSON
-5. STRUCTURE PRESERVATION: Maintain the original policy structure and statement organization
+CURRENT POLICY:
+{json.dumps(current_policy, indent=2)}
 
-COMMON FIXES:
+REQUIREMENTS TO SATISFY:
+{requirements_text}
 
-ALLOW-TO-DENY MISCLASSIFICATIONS:
-- "must allow but got denied" → 
-  - Change Effect from "Deny" to "Allow", OR
-  - Expand existing Allow statement's Actions/Resources to cover the request, OR  
-  - Add missing Principal/Condition constraints to make implicit allows explicit
 
-DENY-TO-ALLOW MISCLASSIFICATIONS:
-- "must deny but got allow" → 
-  - Change Effect from "Allow" to "Deny", OR
-  - Add restrictive Principal/Condition constraints to existing Allow statements, OR
-  - Narrow the scope of overly broad Allow statements (Actions/Resources)
+REPAIR STRATEGY:
+1. For each MUST ALLOW requirement, ensure there's an Allow statement that covers it
+2. For each MUST DENY requirement, ensure there's no Allow statement that permits it, or add explicit Deny
+3. Match Actions, Resources, Principals, and Conditions exactly as specified
 
-OUTPUT FORMAT: 
-- Return ONLY the complete corrected policy as valid JSON
-- No explanations, no markdown, no additional text
-- Ensure all quotes, brackets, and commas are correct
-"""
 
+Return ONLY the corrected policy as valid JSON.
+
+CORRECTED POLICY:"""
+
+    return prompt
 
 
 def format_requirements_detailed(requirements):
@@ -660,110 +554,144 @@ def extract_and_validate_json(response_text: str) -> dict:
 @retry()
 def repair_policy_with_targeted_approach(policy: dict, requirements: dict, iteration: int = 1, 
                                         erroneous_policy: dict = None, failed_examples: list = None) -> dict:
-    """Enhanced policy repair using erroneous policy subset with clear misclassification guidance"""
+    """Enhanced policy repair using both erroneous policy subset and failed request examples"""
     
-    if erroneous_policy:
-        # Extract the analysis results and faulty statements
-        analysis_results = erroneous_policy.get('analysis_result', [])
-        faulty_statements = erroneous_policy.get('Statement', [])
-        
-        original_policy_json = json.dumps(policy, indent=2)
-        requirements_formatted = format_requirements_detailed(requirements)
-        
-        # Build clear misclassification analysis
-        faulty_analysis_text = ""
-        for i, (stmt, analysis) in enumerate(zip(faulty_statements, analysis_results)):
-            stmt_num = i + 1
-            stmt_id = stmt.get('Sid', f'Statement{stmt_num}')
-            
-            faulty_analysis_text += f"\nfaulty statment {stmt_num} (Sid: {stmt_id}):\n"
-            faulty_analysis_text += f"  Current Statement: {json.dumps(stmt, indent=4)}\n"
-            faulty_analysis_text += f"  Misclassification: {analysis}\n"
-            
-            # Parse the analysis to understand what's wrong
-            if "must allow but got denied" in analysis.lower():
-                faulty_analysis_text += f"  Problem: This statement is incorrectly DENYING requests that should be ALLOWED\n"
-            if "must deny but got allow" in analysis.lower():
-                faulty_analysis_text += f"  Problem: This statement is incorrectly ALLOWING requests that should be DENIED\n"
-
-        # Create the focused prompt
-        prompt = f"""You are an AWS IAM policy expert. Fix the original policy by correcting the faulty statements.
-
-ORIGINAL POLICY (return this structure with corrections):
-{original_policy_json}
-
-FAULTY STATEMENTS SUBSET (these are the problematic statements from the original policy):
-{faulty_analysis_text}
-
-REQUIREMENTS TO SATISFY:
-{requirements_formatted}
-
-INSTRUCTIONS:
-1. Take the ORIGINAL POLICY above
-2. Fix ONLY the faulty statements identified in the subset
-3. Each faulty statement has specific misclassification problems - fix those exact issues
-4. Return the complete corrected original policy
-5. Preserve all non-faulty statements unchanged
-
-The faulty statements subset contains {len(faulty_statements)} statements that are causing misclassifications. Fix these specific issues and return the complete updated original policy.
-
-OUTPUT: Return ONLY the complete corrected policy as valid JSON.
-
-CORRECTED POLICY:"""
-        
+    # Use the dedicated prompt generation functions with failed examples
+    if erroneous_policy or failed_examples:
+        prompt = generate_focused_repair_prompt_with_failed_examples(
+            policy, requirements, erroneous_policy, failed_examples, iteration
+        )
     else:
-        # Fallback for first iteration
-        original_policy_json = json.dumps(policy, indent=2)
-        requirements_formatted = format_requirements_detailed(requirements)
-        
-        prompt = f"""Fix this AWS IAM policy to meet the requirements.
+        prompt = generate_simple_repair_prompt(policy, requirements, iteration)
 
-ORIGINAL POLICY:
-{original_policy_json}
-
-Requests to satisfy:
-{requirements_formatted}
-
-INSTRUCTIONS:
-- Minimize the Number of Statements While Satisfying Requirements
-- Modify existing statements to meet requirements
-- Add Principal and Condition fields when specified
-
-OUTPUT: Return ONLY the corrected policy as valid JSON.
-
-CORRECTED POLICY:"""
-
-    system_prompt = """You are an AWS IAM expert. Fix policies by correcting specific misclassification issues.
+    system_prompt = """You are an AWS IAM expert. Fix policies by correcting specific misclassification issues using both SMT analysis and failed request examples.
 
 Key strict principles you must follow:
-1. Fix only the specific misclassification issues identified
-2. Each faulty statement has a clear problem - fix that exact issue
-3. Always output syntactically correct JSON
+1. Use SMT analysis to identify problematic policy statements
+2. Use failed request examples to understand exact misclassifications
+3. For each failed request, trace it to the responsible policy statement and fix it
+4. Make targeted fixes: more permissive for wrongly denied, more restrictive for wrongly allowed
+5. Always output syntactically correct JSON
 
 Output ONLY valid JSON policy. No explanations."""
     
-    # Cleaner logging
-    logging.info(f"=== TARGETED REPAIR PROMPT (Iteration {iteration}) ===")
+    # ===== DETAILED LLM INPUT LOGGING =====
+    logging.info(f"{'='*80}")
+    logging.info(f"LLM INPUT DETAILS FOR ITERATION {iteration}")
+    logging.info(f"{'='*80}")
+    
+    # Log current policy being repaired
+    logging.info(f"CURRENT POLICY BEING REPAIRED:")
+    logging.info(json.dumps(policy, indent=2))
+    
+    # Log requirements
+    logging.info(f"\nREQUIREMENTS:")
+    logging.info(json.dumps(requirements, indent=2))
+    
+    # Log erroneous policy details
+    if erroneous_policy:
+        faulty_statements = erroneous_policy.get('Statement', [])
+        analysis_results = erroneous_policy.get('analysis_result', [])
+        logging.info(f"\nERRONEOUS POLICY ANALYSIS:")
+        logging.info(f"Number of faulty statements: {len(faulty_statements)}")
+        
+        for i, (stmt, analysis) in enumerate(zip(faulty_statements, analysis_results)):
+            logging.info(f"\n  Faulty Statement {i+1}:")
+            logging.info(f"    Statement: {json.dumps(stmt, indent=6)}")
+            logging.info(f"    SMT Analysis: {analysis}")
+    else:
+        logging.info(f"\nERRONEOUS POLICY: None provided")
+    
+    # Log failed examples details
+    if failed_examples:
+        logging.info(f"\nFAILED REQUEST EXAMPLES:")
+        logging.info(f"Total failed examples: {len(failed_examples)}")
+        
+        allow_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow']
+        deny_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny']
+        
+        if allow_failures:
+            logging.info(f"\n  WRONGLY DENIED REQUESTS (should be allowed): {len(allow_failures)}")
+            for i, failure in enumerate(allow_failures[:3], 1):  # Show first 3
+                logging.info(f"    {i}. Request ID: {failure.get('request_id', 'unknown')}")
+                logging.info(f"       Action: {failure.get('action', 'unknown')}")
+                logging.info(f"       Resource: {failure.get('resource', 'unknown')}")
+                logging.info(f"       Principal: {failure.get('principal', 'None')}")
+                logging.info(f"       Condition: {failure.get('condition', 'None')}")
+                logging.info(f"       Expected: {failure.get('expected')} | Got: {failure.get('actual')}")
+        
+        if deny_failures:
+            logging.info(f"\n  WRONGLY ALLOWED REQUESTS (should be denied): {len(deny_failures)}")
+            for i, failure in enumerate(deny_failures[:3], 1):  # Show first 3
+                logging.info(f"    {i}. Request ID: {failure.get('request_id', 'unknown')}")
+                logging.info(f"       Action: {failure.get('action', 'unknown')}")
+                logging.info(f"       Resource: {failure.get('resource', 'unknown')}")
+                logging.info(f"       Principal: {failure.get('principal', 'None')}")
+                logging.info(f"       Condition: {failure.get('condition', 'None')}")
+                logging.info(f"       Expected: {failure.get('expected')} | Got: {failure.get('actual')}")
+    else:
+        logging.info(f"\nFAILED REQUEST EXAMPLES: None provided")
+    
+    # Log the complete system prompt
+    logging.info(f"\nSYSTEM PROMPT:")
+    logging.info(f"{system_prompt}")
+    
+    # Log the complete user prompt
+    logging.info(f"\nUSER PROMPT (Length: {len(prompt)} characters):")
+    logging.info(f"{prompt}")
+    
+    logging.info(f"{'='*80}")
+    logging.info(f"CALLING LLM WITH ABOVE INPUTS...")
+    logging.info(f"{'='*80}")
+    
+    # Enhanced logging to show we're using both types of counter-examples
+    logging.info(f"=== TARGETED REPAIR WITH EXAMPLES (Iteration {iteration}) ===")
     
     if erroneous_policy:
+        faulty_statements = erroneous_policy.get('Statement', [])
+        analysis_results = erroneous_policy.get('analysis_result', [])
         faulty_count = len(faulty_statements)
-        logging.info(f"Targeting {faulty_count} faulty statements with specific misclassification issues")
+        logging.info(f"Using erroneous policy with {faulty_count} faulty statements")
         
-        # Log the misclassification types
         for i, analysis in enumerate(analysis_results):
             logging.info(f"  Statement {i+1}: {analysis}")
     
+    if failed_examples:
+        logging.info(f"Using {len(failed_examples)} specific failed request examples")
+        allow_failures = len([ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow'])
+        deny_failures = len([ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny'])
+        logging.info(f"  - {allow_failures} wrongly denied requests (should allow)")
+        logging.info(f"  - {deny_failures} wrongly allowed requests (should deny)")
+    
     logging.info(f"Prompt length: {len(prompt)} characters")
-    logging.debug(f"Full prompt: {prompt}")
     logging.info("=== END TARGETED REPAIR PROMPT ===")
     
     response_text = call_ollama(prompt, system_prompt)
+    
+    # ===== LOG LLM RESPONSE =====
+    logging.info(f"{'='*80}")
+    logging.info(f"LLM RESPONSE FOR ITERATION {iteration}")
+    logging.info(f"{'='*80}")
+    logging.info(f"Raw response length: {len(response_text)} characters")
+    logging.info(f"Raw response content:")
+    logging.info(f"{response_text}")
+    logging.info(f"{'='*80}")
+    logging.info(f"PROCESSING LLM RESPONSE...")
+    logging.info(f"{'='*80}")
     
     if not response_text:
         logging.error("Empty response from Ollama")
         raise ValueError("Empty response from Ollama")
     
     repaired_policy = extract_and_validate_json(response_text)
+    
+    # ===== LOG PARSED POLICY RESULT =====
+    logging.info(f"{'='*80}")
+    logging.info(f"PARSED POLICY RESULT FOR ITERATION {iteration}")
+    logging.info(f"{'='*80}")
+    logging.info(f"Successfully parsed policy:")
+    logging.info(json.dumps(repaired_policy, indent=2))
+    logging.info(f"{'='*80}")
     
     # Enhanced logging for repairs
     original_statements = policy.get('Statement', [])
@@ -773,7 +701,39 @@ Output ONLY valid JSON policy. No explanations."""
     logging.info(f"  Original: {len(original_statements)} statements")
     logging.info(f"  Repaired: {len(repaired_statements)} statements")
     
+    # ===== DETAILED COMPARISON LOGGING =====
+    logging.info(f"\nDETAILED POLICY CHANGES:")
+    for i in range(max(len(original_statements), len(repaired_statements))):
+        logging.info(f"\n  Statement {i+1} Comparison:")
+        
+        orig_stmt = original_statements[i] if i < len(original_statements) else None
+        repair_stmt = repaired_statements[i] if i < len(repaired_statements) else None
+        
+        if orig_stmt is None:
+            logging.info(f"    ADDED: {json.dumps(repair_stmt, indent=6)}")
+        elif repair_stmt is None:
+            logging.info(f"    REMOVED: {json.dumps(orig_stmt, indent=6)}")
+        elif orig_stmt != repair_stmt:
+            logging.info(f"    ORIGINAL: {json.dumps(orig_stmt, indent=6)}")
+            logging.info(f"    REPAIRED: {json.dumps(repair_stmt, indent=6)}")
+            
+            # Highlight specific changes
+            if orig_stmt.get('Effect') != repair_stmt.get('Effect'):
+                logging.info(f"    CHANGE: Effect {orig_stmt.get('Effect')} -> {repair_stmt.get('Effect')}")
+            if orig_stmt.get('Action') != repair_stmt.get('Action'):
+                logging.info(f"    CHANGE: Action modified")
+            if orig_stmt.get('Resource') != repair_stmt.get('Resource'):
+                logging.info(f"    CHANGE: Resource modified")
+            if orig_stmt.get('Principal') != repair_stmt.get('Principal'):
+                logging.info(f"    CHANGE: Principal {orig_stmt.get('Principal')} -> {repair_stmt.get('Principal')}")
+            if orig_stmt.get('Condition') != repair_stmt.get('Condition'):
+                logging.info(f"    CHANGE: Condition {orig_stmt.get('Condition')} -> {repair_stmt.get('Condition')}")
+        else:
+            logging.info(f"    UNCHANGED: {json.dumps(orig_stmt, indent=6)}")
+    
     if erroneous_policy:
+        faulty_statements = erroneous_policy.get('Statement', [])
+        analysis_results = erroneous_policy.get('analysis_result', [])
         logging.info(f"  Targeted fixes for {len(faulty_statements)} faulty statements")
         
         # Show what changed in the targeted statements
@@ -787,7 +747,6 @@ Output ONLY valid JSON policy. No explanations."""
                     changes_made += 1
                     logging.info(f"    Statement {i+1}: Effect {orig_stmt.get('Effect')} -> {repair_stmt.get('Effect')}")
                 
-                # Check for constraint additions
                 if not orig_stmt.get('Principal') and repair_stmt.get('Principal'):
                     changes_made += 1
                     logging.info(f"    Statement {i+1}: Added Principal constraint")
@@ -795,10 +754,154 @@ Output ONLY valid JSON policy. No explanations."""
                 if not orig_stmt.get('Condition') and repair_stmt.get('Condition'):
                     changes_made += 1
                     logging.info(f"    Statement {i+1}: Added Condition constraint")
+                
+                if orig_stmt.get('Action') != repair_stmt.get('Action'):
+                    changes_made += 1
+                    logging.info(f"    Statement {i+1}: Modified Actions")
+                
+                if orig_stmt.get('Resource') != repair_stmt.get('Resource'):
+                    changes_made += 1
+                    logging.info(f"    Statement {i+1}: Modified Resources")
         
         logging.info(f"  Total targeted changes made: {changes_made}")
     
     return repaired_policy
+
+def generate_focused_repair_prompt_with_failed_examples(current_policy, requirements, erroneous_policy, failed_examples, iteration):
+    """
+    Helper function that includes both SMT analysis and failed request examples in the prompt
+    """
+    
+    faulty_statements = erroneous_policy.get('Statement', []) if erroneous_policy else []
+    analysis_results = erroneous_policy.get('analysis_result', []) if erroneous_policy else []
+    
+    # Extract specific requirements for context
+    allow_requirements = []
+    deny_requirements = []
+    
+    if "Requests" in requirements:
+        for req in requirements["Requests"]:
+            if req.get("Effect", "").lower() == "allow":
+                allow_requirements.append(req)
+            else:
+                deny_requirements.append(req)
+    
+    prompt = f"""You are an AWS IAM policy expert. Fix this policy using both SMT solver analysis and specific failed request examples.
+
+CURRENT POLICY TO FIX:
+{json.dumps(current_policy, indent=2)}
+
+"""
+
+    # Add SMT solver analysis of faulty statements if available
+    if faulty_statements and analysis_results:
+        prompt += f"""SMT SOLVER IDENTIFIED {len(faulty_statements)} PROBLEMATIC STATEMENTS:
+
+"""
+        for i, (stmt, analysis) in enumerate(zip(faulty_statements, analysis_results)):
+            stmt_effect = stmt.get('Effect', 'Unknown')
+            stmt_actions = stmt.get('Action', [])
+            stmt_resources = stmt.get('Resource', [])
+            stmt_sid = stmt.get('Sid', f'Statement{i+1}')
+            
+            prompt += f"""FAULTY STATEMENT {i+1} - ID: {stmt_sid}
+Current Statement:
+{json.dumps(stmt, indent=2)}
+
+SMT Analysis: {analysis}
+
+"""
+
+    # Add specific failed request examples if available
+    if failed_examples and len(failed_examples) > 0:
+        prompt += f"""SPECIFIC FAILED REQUEST EXAMPLES ({len(failed_examples)} failures):
+
+"""
+        # Group by failure type for better organization
+        allow_to_deny_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow' and ex.get('actual', '').lower() == 'deny']
+        deny_to_allow_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny' and ex.get('actual', '').lower() == 'allow']
+        
+        if allow_to_deny_failures:
+            prompt += f"""CRITICAL: {len(allow_to_deny_failures)} requests that should be ALLOWED are being DENIED:
+"""
+            for i, failure in enumerate(allow_to_deny_failures[:5], 1):  # Show top 5
+                prompt += f"""  {i}. Request ID: {failure.get('request_id', 'unknown')}
+     Action: {failure.get('action', 'unknown')}
+     Resource: {failure.get('resource', 'unknown')}"""
+                if failure.get('principal'):
+                    prompt += f"\n     Principal: {failure.get('principal')}"
+                if failure.get('condition'):
+                    prompt += f"\n     Condition: {failure.get('condition')}"
+                prompt += f"""
+     PROBLEM: Expected ALLOW but got DENY
+     
+"""
+        
+        if deny_to_allow_failures:
+            prompt += f"""WARNING: {len(deny_to_allow_failures)} requests that should be DENIED are being ALLOWED:
+"""
+            for i, failure in enumerate(deny_to_allow_failures[:5], 1):  # Show top 5
+                prompt += f"""  {i}. Request ID: {failure.get('request_id', 'unknown')}
+     Action: {failure.get('action', 'unknown')}
+     Resource: {failure.get('resource', 'unknown')}"""
+                if failure.get('principal'):
+                    prompt += f"\n     Principal: {failure.get('principal')}"
+                if failure.get('condition'):
+                    prompt += f"\n     Condition: {failure.get('condition')}"
+                prompt += f"""
+     PROBLEM: Expected DENY but got ALLOW
+     
+"""
+
+    # Add complete requirements context
+    prompt += f"""
+"""
+    
+    # if allow_requirements:
+    #     prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
+    #     for req in allow_requirements:
+    #         prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+    #         if req.get('Principal'):
+    #             prompt += f" for Principal: {req.get('Principal')}"
+    #         if req.get('Condition'):
+    #             prompt += f" when Condition: {req.get('Condition')}"
+    #         prompt += "\n"
+    
+    # if deny_requirements:
+    #     prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
+    #     for req in deny_requirements:
+    #         prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+    #         if req.get('Principal'):
+    #             prompt += f" for Principal: {req.get('Principal')}"
+    #         if req.get('Condition'):
+    #             prompt += f" when Condition: {req.get('Condition')}"
+    #         prompt += "\n"
+
+    prompt += f"""
+REPAIR INSTRUCTIONS:
+1. Use the SMT analysis to identify which statements are problematic
+2. Use the failed request examples to understand exactly what's going wrong
+3. Repair it.
+CRITICAL FIXES NEEDED:
+"""
+
+    # Map failed examples to required fixes
+    if failed_examples and len(failed_examples) > 0:
+        for i, failure in enumerate(failed_examples[:3], 1):  # Top 3 most critical
+            prompt += f"""
+Fix {i}: Request {failure.get('request_id')} 
+- Action: {failure.get('action')} on Resource: {failure.get('resource')}
+- Currently: {failure.get('actual')} but should be: {failure.get('expected')}
+"""
+
+    prompt += f"""
+
+OUTPUT INSTRUCTIONS:
+Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+CORRECTED POLICY:"""
+
+    return prompt
 
 
 def extract_failed_examples(output_content: str) -> list:
@@ -1035,7 +1138,7 @@ def save_json_file(data: dict, path: str):
         json.dump(data, f, indent=2)
 
 def format_requirements(requests: dict) -> str:
-    """Simple format for backward compatibility"""
+  
     if "Requests" not in requests:
         raise ValueError("Invalid request format: missing 'Requests' key")
     
@@ -1062,9 +1165,9 @@ def format_requirements(requests: dict) -> str:
     return "\n".join(lines)
 
 def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0, 
-                                              baseline_failed_examples: list = None,
-                                              baseline_erroneous_policy: dict = None) -> dict:
-    """Process a single policy with erroneous policy guided repair"""
+                                      baseline_failed_examples: list = None,
+                                      baseline_erroneous_policy: dict = None) -> dict:
+    """Process a single policy with erroneous policy guided repair using both analysis and failed examples"""
     policy_file = os.path.join(POLICY_DIR, f"{idx}.json")
     req_file = os.path.join(REQUIREMENTS_DIR, f"{idx}.json")
     
@@ -1074,7 +1177,11 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     original_policy = load_json_file(policy_file)
     requirements = load_json_file(req_file)
     
-    logging.info(f"Starting erroneous policy guided repair for policy {idx} (baseline: {baseline_accuracy:.1f}%)...")
+    logging.info(f"Starting enhanced repair for policy {idx} (baseline: {baseline_accuracy:.1f}%)...")
+    if baseline_failed_examples:
+        logging.info(f"Using {len(baseline_failed_examples)} failed request examples")
+    if baseline_erroneous_policy:
+        logging.info(f"Using erroneous policy analysis")
     
     if baseline_accuracy >= TARGET_ACCURACY:
         logging.info(f"Policy {idx} already achieves target accuracy ({baseline_accuracy:.1f}%). Skipping repair.")
@@ -1096,7 +1203,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     iteration_results = []
     current_policy = original_policy.copy()
     current_erroneous_policy = baseline_erroneous_policy
-    failed_examples = baseline_failed_examples or []
+    current_failed_examples = baseline_failed_examples or []
     final_accuracy = baseline_accuracy
     iteration_accuracies = [baseline_accuracy]
     
@@ -1108,18 +1215,16 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
         iteration_policy_file = None
         
         try:
-            logging.info(f"Repairing policy with erroneous policy guidance (iteration {iteration})...")
+            logging.info(f"Repairing policy with enhanced guidance (iteration {iteration})...")
             
             if current_erroneous_policy:
                 logging.info(f"Using erroneous policy with {len(current_erroneous_policy.get('Statement', []))} faulty statements")
-            #print the erroneous policy if it exists
-                logging.info(f'Erroneous Policy: {json.dumps(current_erroneous_policy, indent=2)}')
-            elif failed_examples:
-                logging.info(f"Fallback to analyzing {len(failed_examples)} failed examples")
+            if current_failed_examples:
+                logging.info(f"Using {len(current_failed_examples)} failed request examples")
             
-            # Use erroneous policy guided repair
+            # Use BOTH erroneous policy AND failed examples for comprehensive repair
             repaired_policy = repair_policy_with_targeted_approach(
-                current_policy, requirements, iteration, current_erroneous_policy, failed_examples
+                current_policy, requirements, iteration, current_erroneous_policy, current_failed_examples
             )
             
             temp_policy_file = os.path.join(TEMP_DIR, f"policy_{idx}_iter_{iteration}.json")
@@ -1133,6 +1238,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             iteration_accuracy = accuracy  # Store for tracking
             iteration_policy_file = temp_policy_file  # Store for tracking
             
+            # Update failed examples and erroneous policy for next iteration
             current_failed_examples = validation_results.get('failed_examples', [])
             current_erroneous_policy = validation_results.get('erroneous_policy')
             
@@ -1142,7 +1248,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             
             logging.info(f"Iteration {iteration} Results:")
             logging.info(f"  Accuracy: {accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
-            logging.info(f"  Failed Examples: {len(current_failed_examples)}")
+            logging.info(f"  New Failed Examples: {len(current_failed_examples)}")
             if current_erroneous_policy:
                 logging.info(f"  New erroneous policy has {len(current_erroneous_policy.get('Statement', []))} faulty statements")
             
@@ -1150,7 +1256,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             iteration_record = {
                 'policy_idx': idx,
                 'iteration': iteration,
-                'validation_type': 'repair',
+                'validation_type': 'repair_with_examples',
                 'accuracy': accuracy,
                 'baseline_accuracy': baseline_accuracy,
                 'improvement_from_baseline': improvement,
@@ -1197,7 +1303,6 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             
             # Update for next iteration
             current_policy = repaired_policy.copy()
-            failed_examples = current_failed_examples if current_failed_examples else None
             
         except Exception as e:
             logging.error(f"Error in iteration {iteration} for policy {idx}: {e}")
@@ -1207,7 +1312,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                 iteration_record = {
                     'policy_idx': idx,
                     'iteration': iteration,
-                    'validation_type': 'repair',
+                    'validation_type': 'repair_with_examples',
                     'accuracy': iteration_accuracy,  # Use actual accuracy if we got it
                     'baseline_accuracy': baseline_accuracy,
                     'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
@@ -1242,14 +1347,12 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                 except Exception as fallback_error:
                     logging.error(f"Error in fallback save for {idx}: {fallback_error}")
 
-    # === DEBUGGING SECTION: BEST POLICY SELECTION ===
     # If we reach here, we didn't achieve target accuracy
     # Find the best iteration result
     best_accuracy = baseline_accuracy
     best_iteration = None
 
     if iteration_results:
-    
         logging.info(f"Policy {idx}: All iteration results:")
         for i, result in enumerate(iteration_results):
             logging.info(f"  Iteration {result.get('iteration')}: {result.get('accuracy', 0):.1f}% - File: {result.get('policy_file')}")
@@ -1260,55 +1363,10 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
         best_iter_num = best_iteration.get('iteration')
         
         logging.info(f"Policy {idx}: Selected best iteration {best_iter_num} with accuracy {best_accuracy:.1f}%")
-        logging.info(f"Policy {idx}: Best file path: {best_file}")
-        logging.info(f"Policy {idx}: Best file exists: {os.path.exists(best_file) if best_file else False}")
-        logging.info(f"Policy {idx}: Final iteration accuracy was {final_accuracy:.1f}%")
         
-        if ('policy_file' in best_iteration and  best_iteration['policy_file'] is not None and os.path.exists(best_iteration['policy_file'])):
+        if ('policy_file' in best_iteration and best_iteration['policy_file'] is not None and os.path.exists(best_iteration['policy_file'])):
             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_best.json")
-
-            
-            # Debug: Check file before and after copy
-            import hashlib
-            try:
-                with open(best_iteration['policy_file'], 'rb') as f:
-                    original_hash = hashlib.md5(f.read()).hexdigest()
-                
-                shutil.copy2(best_iteration['policy_file'], final_output_file)
-                
-                with open(final_output_file, 'rb') as f:
-                    copied_hash = hashlib.md5(f.read()).hexdigest()
-                
-                logging.info(f"Policy {idx}: File copy hash match: {original_hash == copied_hash}")
-                
-                # Debug: Immediately validate the copied file
-                try:
-                    immediate_validation = run_smt_validator(final_output_file, req_file, policy_idx=idx)
-                    immediate_accuracy = immediate_validation['accuracy']
-                    logging.info(f"Policy {idx}: Immediate validation of copied file: {immediate_accuracy:.1f}%")
-                    
-                    if abs(best_accuracy - immediate_accuracy) > 0.1:
-                        logging.warning(f"Policy {idx}: ACCURACY MISMATCH after copy!")
-                        logging.warning(f"Policy {idx}: Expected {best_accuracy:.1f}%, got {immediate_accuracy:.1f}%")
-                        
-                        # Compare the policies themselves
-                        with open(best_iteration['policy_file'], 'r') as f:
-                            original_policy_content = f.read()
-                        with open(final_output_file, 'r') as f:
-                            copied_policy_content = f.read()
-                        
-                        if original_policy_content != copied_policy_content:
-                            logging.error(f"Policy {idx}: FILE CONTENT MISMATCH during copy!")
-                        else:
-                            logging.warning(f"Policy {idx}: File content identical, SMT solver gave different result")
-                    else:
-                        logging.info(f"Policy {idx}: Validation accuracy matches expected")
-                        
-                except Exception as val_e:
-                    logging.error(f"Policy {idx}: Failed to validate copied file: {val_e}")
-                    
-            except Exception as copy_e:
-                logging.error(f"Policy {idx}: Error during file copy/validation: {copy_e}")
+            shutil.copy2(best_iteration['policy_file'], final_output_file)
         else:
             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_original.json")
             save_json_file(original_policy, final_output_file)
@@ -1333,8 +1391,7 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
         'iteration_accuracies': iteration_accuracies,
         'iteration_results': iteration_results,
         'final_policy_file': final_output_file
-    }
-class IterativeProgressTracker:
+    }class IterativeProgressTracker:
     """Progress tracker for iterative policy repair"""
     def __init__(self, progress_file: str = os.path.join(OUTPUT_DIR, "improved_iterative_progress.json")):
         self.progress_file = progress_file
@@ -1387,7 +1444,7 @@ class IterativeProgressTracker:
         
         self.progress["policy_iterations"][str(idx)] = {
             "status": "completed",
-            "baseline_accuracy": baseline_accuracy,
+            "ba seline_accuracy": baseline_accuracy,
             "final_accuracy": final_accuracy,
             "improvement": final_accuracy - baseline_accuracy,
             "iterations_used": iterations_used,
