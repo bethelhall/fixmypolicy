@@ -23,7 +23,7 @@ import pandas as pd
 from tqdm import tqdm
 from ollama import chat, ChatResponse 
 
-req = 50
+req = 25
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
 REQUIREMENTS_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-{req}"
 OUTPUT_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-{req}-ollamaa"
@@ -32,11 +32,11 @@ TEMP_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/
 QUACKY_SRC_DIR = "/home/bhall2/Documents/fixmypolicy/quacky/src"
 SMT_VALIDATOR_SCRIPT = "/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py"
 
-MAX_ITERATIONS = 5
-MAX_ATTEMPT = 2
+MAX_ITERATIONS = 7
+MAX_ATTEMPT = 4
 DELAY = 1
 TARGET_ACCURACY = 100.0
-OLLAMA_MODEL = "codellama:13b"  # Updated to use a more capable model
+OLLAMA_MODEL = "codellama:13b" 
 
 def setup_logging(log_dir: str = LOG_DIR):  
     """Configure logging"""
@@ -89,11 +89,14 @@ def call_ollama(prompt, system_prompt=""):
             model=OLLAMA_MODEL,
             messages=messages,
             options={
-                'temperature': 0.1, 
-                'top_p': 0.3,
-                'num_predict': 4000,
-                'num_ctx': 8000,   
+                'temperature': 0.1,     # Keep low for consistency
+                'top_p': 0.3,          # Keep low for focused output
+                'num_predict': 8000,    # 🔥 DOUBLED: Allow longer outputs
+                'num_ctx': 16000,       # 🔥 DOUBLED: Much larger context window
                 'stop': ['\n```', '```\n'],
+                # Additional optimizations
+                'repeat_penalty': 1.1,   # Reduce repetitive statements
+                'top_k': 40,            # Limit vocabulary for more focused output
             }
         )
         
@@ -283,12 +286,14 @@ Solutions (choose the most appropriate):
         
         elif "must deny but got allow" in analysis.lower():
             prompt += f"""REQUIRED FIX: This statement is incorrectly ALLOWING requests that should be DENIED.
+            
+Follow this logic:
+1. Make MINIMAL, TARGETED changes - avoid overcorrecting
+2. If previous iterations made the policy worse, consider reverting some changes
+3. Focus on the specific failures identified by SMT analysis
+4. Ensure statements don't conflict with each other
+5. Test your logic mentally before outputting
 
-Solutions (choose the most appropriate):
-1. Change "Effect": "Allow" to "Effect": "Deny"
-2. Add restrictive Principal constraints (e.g., only specific users/roles)
-3. Add restrictive Condition constraints (e.g., time, IP, MFA requirements)
-4. Narrow the Actions or Resources to be more specific
 
 """
             
@@ -314,7 +319,7 @@ Solutions (choose the most appropriate):
     # Provide complete requirements context
     prompt += f"""
 
-COMMON MISTAKES TO AVOID:
+You Must Avoid the following:
 - Don't just flip Effect from Allow to Deny without considering the specific requirement
 - Don't make statements too broad (overly permissive) or too narrow (overly restrictive)
 - Don't ignore Principal and Condition constraints specified in requirements
@@ -434,221 +439,505 @@ def extract_and_validate_json(response_text: str) -> dict:
             logging.error(f"{i:2}: {line}{marker}")
         
         raise ValueError(f"LLM generated invalid JSON: {e}")
+def analyze_policy_structure_for_repair(current_policy, failed_examples, erroneous_policy):
+    """
+    Deep analysis of policy structure to provide targeted repair guidance
+    """
+    analysis = {
+        'statement_mapping': {},
+        'coverage_gaps': [],
+        'overpermissive_statements': [],
+        'repair_strategies': {},
+        'root_causes': []
+    }
+    
+    statements = current_policy.get('Statement', [])
+    
+    # Map each failed example to the responsible statement(s)
+    for i, stmt in enumerate(statements):
+        stmt_actions = stmt.get('Action', [])
+        stmt_resources = stmt.get('Resource', [])
+        stmt_effect = stmt.get('Effect')
+        
+        if isinstance(stmt_actions, str):
+            stmt_actions = [stmt_actions]
+        if isinstance(stmt_resources, str):
+            stmt_resources = [stmt_resources]
+        
+        analysis['statement_mapping'][i] = {
+            'statement': stmt,
+            'covers_failed_examples': [],
+            'responsible_for_failures': []
+        }
+        
+        # Check which failed examples this statement affects
+        for example in failed_examples:
+            example_action = example.get('action', '')
+            example_resource = example.get('resource', '')
+            
+            # Check if this statement could be responsible for the failure
+            action_matches = any(matches_pattern(example_action, action) for action in stmt_actions)
+            resource_matches = any(matches_pattern(example_resource, resource) for resource in stmt_resources)
+            
+            if action_matches and resource_matches:
+                analysis['statement_mapping'][i]['covers_failed_examples'].append(example)
+                
+                # Determine if this statement is causing the failure
+                expected = example.get('expected', '').lower()
+                actual = example.get('actual', '').lower()
+                
+                if expected == 'allow' and actual == 'deny' and stmt_effect == 'Deny':
+                    analysis['statement_mapping'][i]['responsible_for_failures'].append({
+                        'example': example,
+                        'issue': 'explicit_deny_blocking_required_allow',
+                        'fix_strategy': 'make_deny_more_specific_or_add_allow_exception'
+                    })
+                elif expected == 'deny' and actual == 'allow' and stmt_effect == 'Allow':
+                    analysis['statement_mapping'][i]['responsible_for_failures'].append({
+                        'example': example,
+                        'issue': 'overpermissive_allow',
+                        'fix_strategy': 'add_constraints_or_specific_deny'
+                    })
+    
+    # Identify coverage gaps (failed allows with no matching statement)
+    for example in failed_examples:
+        if example.get('expected', '').lower() == 'allow':
+            covered = False
+            for stmt_analysis in analysis['statement_mapping'].values():
+                if example in stmt_analysis['covers_failed_examples']:
+                    covered = True
+                    break
+            
+            if not covered:
+                analysis['coverage_gaps'].append({
+                    'example': example,
+                    'fix_strategy': 'add_new_allow_statement'
+                })
+    
+    return analysis
 
+def matches_pattern(test_value, pattern):
+    """Enhanced pattern matching for AWS actions and resources"""
+    if test_value == pattern:
+        return True
+    
+    # Wildcard matching
+    if pattern.endswith('*'):
+        prefix = pattern[:-1]
+        return test_value.startswith(prefix)
+    
+    # AWS service:action matching
+    if ':' in pattern and ':' in test_value:
+        pattern_parts = pattern.split(':')
+        test_parts = test_value.split(':')
+        
+        if len(pattern_parts) == len(test_parts):
+            return all(
+                p == '*' or p == t or (p.endswith('*') and t.startswith(p[:-1]))
+                for p, t in zip(pattern_parts, test_parts)
+            )
+    
+    return False
 
+def create_enhanced_repair_prompt(current_policy, requirements, failed_examples, erroneous_policy, iteration):
+    """
+    Create a much more structured and informative repair prompt
+    """
+    
+    # Perform deep analysis
+    analysis = analyze_policy_structure_for_repair(current_policy, failed_examples, erroneous_policy)
+    
+    prompt = f"""You are an AWS IAM policy expert. You must fix this policy by addressing specific failures with surgical precision.
+
+CURRENT POLICY (needs repair):
+{json.dumps(current_policy, indent=2)}
+
+DIAGNOSTIC ANALYSIS:
+================
+
+"""
+
+    # Group and prioritize failed examples
+    allow_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow']
+    deny_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny']
+    
+    if allow_failures:
+        prompt += f"""CRITICAL ISSUE: {len(allow_failures)} requests are being WRONGLY DENIED
+These requests MUST be allowed but are currently blocked:
+
+"""
+        for i, failure in enumerate(allow_failures, 1):
+            prompt += f"""Request {i}: ID={failure.get('request_id')}
+  ├─ Action: {failure.get('action')}
+  ├─ Resource: {failure.get('resource')}
+  ├─ Principal: {failure.get('principal', 'Any')}
+  ├─ Condition: {failure.get('condition', 'None')}
+  └─ PROBLEM: Expected ALLOW but got DENY
+
+"""
+    
+    if deny_failures:
+        prompt += f"""SECURITY ISSUE: {len(deny_failures)} requests are being WRONGLY ALLOWED
+These requests MUST be denied but are currently permitted:
+
+"""
+        for i, failure in enumerate(deny_failures, 1):
+            prompt += f"""Request {i}: ID={failure.get('request_id')}
+  ├─ Action: {failure.get('action')}
+  ├─ Resource: {failure.get('resource')}
+  ├─ Principal: {failure.get('principal', 'Any')}
+  ├─ Condition: {failure.get('condition', 'None')}
+  └─ PROBLEM: Expected DENY but got ALLOW
+
+"""
+
+    # Statement-by-statement analysis
+    prompt += f"""
+STATEMENT-BY-STATEMENT REPAIR ANALYSIS:
+======================================
+
+"""
+    
+    statements = current_policy.get('Statement', [])
+    for i, stmt in enumerate(statements):
+        stmt_analysis = analysis['statement_mapping'].get(i, {})
+        responsible_failures = stmt_analysis.get('responsible_for_failures', [])
+        
+        prompt += f"""Statement {i+1}: {stmt.get('Sid', f'Statement{i+1}')}
+Current: {json.dumps(stmt, indent=2)}
+
+"""
+        
+        if responsible_failures:
+            prompt += f"""This statement is causing {len(responsible_failures)} failures:
+"""
+            for failure_info in responsible_failures:
+                example = failure_info['example']
+                issue = failure_info['issue']
+                strategy = failure_info['fix_strategy']
+                
+                prompt += f"""  • Request {example.get('request_id')}: {example.get('action')} on {example.get('resource')}
+    Issue: {issue.replace('_', ' ').title()}
+    Fix Strategy: {strategy.replace('_', ' ').title()}
+"""
+        else:
+            prompt += f"""This statement is not causing any failures.
+"""
+        
+        prompt += "\n"
+
+    # Add SMT solver erroneous policy analysis if available
+    if erroneous_policy and 'Statement' in erroneous_policy:
+        faulty_statements = erroneous_policy['Statement']
+        analysis_results = erroneous_policy.get('analysis_result', [])
+        
+        prompt += f"""
+SMT SOLVER IDENTIFIED FAULTY STATEMENTS:
+=======================================
+
+"""
+        
+        for i, (faulty_stmt, smt_analysis) in enumerate(zip(faulty_statements, analysis_results)):
+            prompt += f"""Faulty Statement {i+1}:
+{json.dumps(faulty_stmt, indent=2)}
+
+SMT Analysis: {smt_analysis}
+
+"""
+
+    # Provide specific repair instructions
+    prompt += f"""
+PRECISE REPAIR INSTRUCTIONS:
+===========================
+
+You MUST apply these specific fixes:
+
+"""
+
+    # Instructions for allow failures
+    if allow_failures:
+        prompt += f"""FOR WRONGLY DENIED REQUESTS (Expected Allow, Got Deny):
+"""
+        
+        # Group by root cause
+        explicit_deny_blocks = []
+        implicit_deny_cases = []
+        
+        for failure in allow_failures:
+            # Check if any current statement explicitly denies this
+            explicitly_denied = False
+            for stmt in statements:
+                if (stmt.get('Effect') == 'Deny' and 
+                    matches_any_pattern(failure.get('action', ''), stmt.get('Action', [])) and
+                    matches_any_pattern(failure.get('resource', ''), stmt.get('Resource', []))):
+                    explicitly_denied = True
+                    explicit_deny_blocks.append((failure, stmt))
+                    break
+            
+            if not explicitly_denied:
+                implicit_deny_cases.append(failure)
+        
+        if explicit_deny_blocks:
+            prompt += f"""
+1. EXPLICIT DENY BLOCKS ({len(explicit_deny_blocks)} cases):
+   These requests are blocked by specific Deny statements.
+   
+"""
+            for failure, blocking_stmt in explicit_deny_blocks:
+                prompt += f"""   • Request {failure.get('request_id')}: Add Principal/Condition constraints to the Deny statement
+     OR create a more specific Allow statement that takes precedence
+     Current blocking statement: {blocking_stmt.get('Sid', 'unnamed')}
+"""
+        
+        if implicit_deny_cases:
+            prompt += f"""
+2. IMPLICIT DENY CASES ({len(implicit_deny_cases)} cases):
+   These requests have no matching Allow statement.
+   
+"""
+            for failure in implicit_deny_cases:
+                prompt += f"""   • Request {failure.get('request_id')}: Add new Allow statement:
+     {{
+       "Effect": "Allow",
+       "Action": "{failure.get('action')}",
+       "Resource": "{failure.get('resource')}"
+"""
+                if failure.get('principal'):
+                    prompt += f""",
+       "Principal": "{failure.get('principal')}" """
+                if failure.get('condition'):
+                    prompt += f""",
+       "Condition": {failure.get('condition')}"""
+                prompt += f"""
+     }}
+"""
+
+    # Instructions for deny failures  
+    if deny_failures:
+        prompt += f"""
+FOR WRONGLY ALLOWED REQUESTS (Expected Deny, Got Allow):
+
+"""
+        for failure in deny_failures:
+            prompt += f"""• Request {failure.get('request_id')}: Add specific Deny statement:
+  {{
+    "Effect": "Deny",
+    "Action": "{failure.get('action')}",
+    "Resource": "{failure.get('resource')}"
+"""
+            if failure.get('principal'):
+                prompt += f""",
+    "Principal": "{failure.get('principal')}" """
+            if failure.get('condition'):
+                prompt += f""",
+    "Condition": {failure.get('condition')}"""
+            prompt += f"""
+  }}
+"""
+
+    # Add requirements context for validation
+    prompt += f"""
+REQUIREMENTS CONTEXT:
+===================
+{format_requirements_enhanced(requirements)}
+
+REPAIR RULES:
+============
+1. Make MINIMAL changes - only fix what's broken
+2. Preserve existing working statements
+3. For explicit denies blocking required allows: Add constraints, don't just flip Effect
+4. For missing allows: Add new Allow statements
+5. For unwanted allows: Add specific Deny statements
+6. Test your changes mentally against each failed example
+7. Ensure Principal and Condition constraints are preserved from requirements
+
+OUTPUT FORMAT:
+=============
+Return ONLY the complete corrected policy as valid JSON. No explanations or markdown.
+
+CORRECTED POLICY:"""
+
+    return prompt
+
+def matches_any_pattern(test_value, patterns):
+    """Check if test_value matches any pattern in the list"""
+    if isinstance(patterns, str):
+        patterns = [patterns]
+    
+    return any(matches_pattern(test_value, pattern) for pattern in patterns)
+
+def format_requirements_enhanced(requirements):
+    """Enhanced requirements formatting with clear allow/deny separation"""
+    if "Requests" not in requirements:
+        return "No requirements provided"
+    
+    allow_reqs = []
+    deny_reqs = []
+    
+    for req in requirements["Requests"]:
+        if req.get("Effect", "").lower() == "allow":
+            allow_reqs.append(req)
+        else:
+            deny_reqs.append(req)
+    
+    output = []
+    
+    if allow_reqs:
+        output.append("MUST ALLOW (these requests must succeed):")
+        for i, req in enumerate(allow_reqs, 1):
+            output.append(f"  {i}. ID: {req.get('id')}")
+            output.append(f"     Actions: {req.get('Action')}")
+            output.append(f"     Resources: {req.get('Resource')}")
+            if req.get('Principal'):
+                output.append(f"     Principal: {req.get('Principal')}")
+            if req.get('Condition'):
+                output.append(f"     Condition: {req.get('Condition')}")
+            output.append("")
+    
+    if deny_reqs:
+        output.append("MUST DENY (these requests must fail):")
+        for i, req in enumerate(deny_reqs, 1):
+            output.append(f"  {i}. ID: {req.get('id')}")
+            output.append(f"     Actions: {req.get('Action')}")
+            output.append(f"     Resources: {req.get('Resource')}")
+            if req.get('Principal'):
+                output.append(f"     Principal: {req.get('Principal')}")
+            if req.get('Condition'):
+                output.append(f"     Condition: {req.get('Condition')}")
+            output.append("")
+    
+    return "\n".join(output)
+
+def create_enhanced_system_prompt():
+    """Enhanced system prompt with better guidance"""
+    return """You are an expert AWS IAM policy engineer. Your task is to repair IAM policies with surgical precision.
+
+CORE PRINCIPLES:
+1. AWS IAM uses explicit allow model - requests are denied unless explicitly allowed
+2. Deny statements always override Allow statements
+3. Make minimal, targeted changes to fix specific failures
+4. Preserve existing working functionality
+
+REPAIR METHODOLOGY:
+1. For each failed request, identify the root cause:
+   - Implicit deny: No Allow statement covers the request → Add specific Allow
+   - Explicit deny: Deny statement blocks required request → Make Deny more specific or add Allow exception
+   - Overpermissive allow: Allow statement permits unwanted request → Add constraints or specific Deny
+
+2. Apply fixes systematically:
+   - Use Principal/Condition constraints to narrow scope rather than changing Effect
+   - Add new statements only when necessary
+   - Ensure all requirements are satisfied
+
+3. Validate your changes mentally:
+   - Trace each failed request through your repaired policy
+   - Ensure the repair doesn't break existing working requests
+
+OUTPUT REQUIREMENTS:
+- Return ONLY valid JSON policy
+- No explanations, comments, or markdown formatting
+- Ensure all JSON syntax is correct
+- Include required fields: Version, Statement"""
+
+# Enhanced repair function using the improved prompts
 @retry()
 def repair_policy_with_targeted_approach(policy: dict, requirements: dict, iteration: int = 1, 
-                                        erroneous_policy: dict = None, failed_examples: list = None) -> dict:
-    """Enhanced policy repair using both erroneous policy subset and failed request examples"""
+                                       erroneous_policy: dict = None, failed_examples: list = None) -> dict:
+    """Enhanced policy repair with better structured information feeding"""
     
-    # Use the dedicated prompt generation functions with failed examples
-    if erroneous_policy or failed_examples:
-        prompt = generate_focused_repair_prompt_with_failed_examples(
-            policy, requirements, erroneous_policy, failed_examples, iteration
-        )
-    else:
-        prompt = generate_focused_repair_prompt(policy, requirements, erroneous_policy, iteration)
-
-    system_prompt = """You are an AWS IAM expert. Fix policies by correcting specific misclassification issues using both SMT analysis and failed request examples.
-
-Key strict principles you must follow:
-1. Use SMT analysis to identify problematic policy statements
-2. Use failed request examples to understand exact misclassifications
-3. For each failed request, trace it to the responsible policy statement and fix it
-4. Make targeted fixes: more permissive for wrongly denied, more restrictive for wrongly allowed
-5. Always output syntactically correct JSON
-
-Output ONLY valid JSON policy. No explanations."""
+    if not failed_examples:
+        failed_examples = []
     
-    # ===== DETAILED LLM INPUT LOGGING =====
+    # Use enhanced prompt generation
+    prompt = create_enhanced_repair_prompt(
+        policy, requirements, failed_examples, erroneous_policy, iteration
+    )
+    
+    system_prompt = create_enhanced_system_prompt()
+    
+    # Enhanced logging
     logging.info(f"{'='*80}")
-    logging.info(f"LLM INPUT DETAILS FOR ITERATION {iteration}")
+    logging.info(f"ENHANCED REPAIR - ITERATION {iteration}")
     logging.info(f"{'='*80}")
     
-    # Log current policy being repaired
-    logging.info(f"CURRENT POLICY BEING REPAIRED:")
-    logging.info(json.dumps(policy, indent=2))
-    
-    # Log requirements
-    logging.info(f"\nREQUIREMENTS:")
-    logging.info(json.dumps(requirements, indent=2))
-    
-    # Log erroneous policy details
-    if erroneous_policy:
-        faulty_statements = erroneous_policy.get('Statement', [])
-        analysis_results = erroneous_policy.get('analysis_result', [])
-        logging.info(f"\nERRONEOUS POLICY ANALYSIS:")
-        logging.info(f"Number of faulty statements: {len(faulty_statements)}")
-        
-        for i, (stmt, analysis) in enumerate(zip(faulty_statements, analysis_results)):
-            logging.info(f"\n  Faulty Statement {i+1}:")
-            logging.info(f"    Statement: {json.dumps(stmt, indent=6)}")
-            logging.info(f"    SMT Analysis: {analysis}")
-    else:
-        logging.info(f"\nERRONEOUS POLICY: None provided")
-    
-    # Log failed examples details
     if failed_examples:
-        logging.info(f"\nFAILED REQUEST EXAMPLES:")
-        logging.info(f"Total failed examples: {len(failed_examples)}")
-        
         allow_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow']
         deny_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny']
+        logging.info(f"Failed examples breakdown:")
+        logging.info(f"  - Wrongly denied (should allow): {len(allow_failures)}")
+        logging.info(f"  - Wrongly allowed (should deny): {len(deny_failures)}")
         
+        # Log specific examples for debugging
         if allow_failures:
-            logging.info(f"\n  WRONGLY DENIED REQUESTS (should be allowed): {len(allow_failures)}")
-            for i, failure in enumerate(allow_failures[:3], 1):  # Show first 3
-                logging.info(f"    {i}. Request ID: {failure.get('request_id', 'unknown')}")
-                logging.info(f"       Action: {failure.get('action', 'unknown')}")
-                logging.info(f"       Resource: {failure.get('resource', 'unknown')}")
-                logging.info(f"       Principal: {failure.get('principal', 'None')}")
-                logging.info(f"       Condition: {failure.get('condition', 'None')}")
-                logging.info(f"       Expected: {failure.get('expected')} | Got: {failure.get('actual')}")
+            logging.info(f"  Sample wrongly denied requests:")
+            for ex in allow_failures[:3]:
+                logging.info(f"    • {ex.get('request_id')}: {ex.get('action')} on {ex.get('resource')}")
         
         if deny_failures:
-            logging.info(f"\n  WRONGLY ALLOWED REQUESTS (should be denied): {len(deny_failures)}")
-            for i, failure in enumerate(deny_failures[:3], 1):  # Show first 3
-                logging.info(f"    {i}. Request ID: {failure.get('request_id', 'unknown')}")
-                logging.info(f"       Action: {failure.get('action', 'unknown')}")
-                logging.info(f"       Resource: {failure.get('resource', 'unknown')}")
-                logging.info(f"       Principal: {failure.get('principal', 'None')}")
-                logging.info(f"       Condition: {failure.get('condition', 'None')}")
-                logging.info(f"       Expected: {failure.get('expected')} | Got: {failure.get('actual')}")
-    else:
-        logging.info(f"\nFAILED REQUEST EXAMPLES: None provided")
-    
-    # Log the complete system prompt
-    logging.info(f"\nSYSTEM PROMPT:")
-    logging.info(f"{system_prompt}")
-    
-    # Log the complete user prompt
-    logging.info(f"\nUSER PROMPT (Length: {len(prompt)} characters):")
-    logging.info(f"{prompt}")
-    
-    logging.info(f"{'='*80}")
-    logging.info(f"CALLING LLM WITH ABOVE INPUTS...")
-    logging.info(f"{'='*80}")
-    
-    # Enhanced logging to show we're using both types of counter-examples
-    logging.info(f"=== TARGETED REPAIR WITH EXAMPLES (Iteration {iteration}) ===")
+            logging.info(f"  Sample wrongly allowed requests:")
+            for ex in deny_failures[:3]:
+                logging.info(f"    • {ex.get('request_id')}: {ex.get('action')} on {ex.get('resource')}")
     
     if erroneous_policy:
-        faulty_statements = erroneous_policy.get('Statement', [])
-        analysis_results = erroneous_policy.get('analysis_result', [])
-        faulty_count = len(faulty_statements)
-        logging.info(f"Using erroneous policy with {faulty_count} faulty statements")
-        
-        for i, analysis in enumerate(analysis_results):
-            logging.info(f"  Statement {i+1}: {analysis}")
-    
-    if failed_examples:
-        logging.info(f"Using {len(failed_examples)} specific failed request examples")
-        allow_failures = len([ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow'])
-        deny_failures = len([ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny'])
-        logging.info(f"  - {allow_failures} wrongly denied requests (should allow)")
-        logging.info(f"  - {deny_failures} wrongly allowed requests (should deny)")
+        faulty_count = len(erroneous_policy.get('Statement', []))
+        logging.info(f"SMT erroneous policy: {faulty_count} faulty statements")
     
     logging.info(f"Prompt length: {len(prompt)} characters")
-    logging.info("=== END TARGETED REPAIR PROMPT ===")
+    logging.info(f"{'='*80}")
     
+    # Call LLM
     response_text = call_ollama(prompt, system_prompt)
     
-    # ===== LOG LLM RESPONSE =====
+    # Enhanced response logging
     logging.info(f"{'='*80}")
-    logging.info(f"LLM RESPONSE FOR ITERATION {iteration}")
+    logging.info(f"LLM RESPONSE - ITERATION {iteration}")
     logging.info(f"{'='*80}")
-    logging.info(f"Raw response length: {len(response_text)} characters")
-    logging.info(f"Raw response content:")
-    logging.info(f"{response_text}")
-    logging.info(f"{'='*80}")
-    logging.info(f"PROCESSING LLM RESPONSE...")
+    logging.info(f"Response length: {len(response_text)} characters")
+    logging.info(f"Response preview: {response_text[:200]}...")
     logging.info(f"{'='*80}")
     
     if not response_text:
-        logging.error("Empty response from Ollama")
-        raise ValueError("Empty response from Ollama")
+        raise ValueError("Empty response from LLM")
     
+    # Parse and validate response
     repaired_policy = extract_and_validate_json(response_text)
     
-    # ===== LOG PARSED POLICY RESULT =====
-    logging.info(f"{'='*80}")
-    logging.info(f"PARSED POLICY RESULT FOR ITERATION {iteration}")
-    logging.info(f"{'='*80}")
-    logging.info(f"Successfully parsed policy:")
-    logging.info(json.dumps(repaired_policy, indent=2))
-    logging.info(f"{'='*80}")
-    
-    # Enhanced logging for repairs
+    # Enhanced change analysis
     original_statements = policy.get('Statement', [])
     repaired_statements = repaired_policy.get('Statement', [])
     
-    logging.info(f"TARGETED REPAIR RESULTS (Iteration {iteration}):")
-    logging.info(f"  Original: {len(original_statements)} statements")
-    logging.info(f"  Repaired: {len(repaired_statements)} statements")
+    logging.info(f"POLICY CHANGES ANALYSIS:")
+    logging.info(f"  Original statements: {len(original_statements)}")
+    logging.info(f"  Repaired statements: {len(repaired_statements)}")
     
-    # ===== DETAILED COMPARISON LOGGING =====
-    logging.info(f"\nDETAILED POLICY CHANGES:")
+    changes_made = 0
     for i in range(max(len(original_statements), len(repaired_statements))):
-        logging.info(f"\n  Statement {i+1} Comparison:")
-        
         orig_stmt = original_statements[i] if i < len(original_statements) else None
         repair_stmt = repaired_statements[i] if i < len(repaired_statements) else None
         
-        if orig_stmt is None:
-            logging.info(f"    ADDED: {json.dumps(repair_stmt, indent=6)}")
-        elif repair_stmt is None:
-            logging.info(f"    REMOVED: {json.dumps(orig_stmt, indent=6)}")
-        elif orig_stmt != repair_stmt:
-            logging.info(f"    ORIGINAL: {json.dumps(orig_stmt, indent=6)}")
-            logging.info(f"    REPAIRED: {json.dumps(repair_stmt, indent=6)}")
-            
-            # Highlight specific changes
-            if orig_stmt.get('Effect') != repair_stmt.get('Effect'):
-                logging.info(f"    CHANGE: Effect {orig_stmt.get('Effect')} -> {repair_stmt.get('Effect')}")
-            if orig_stmt.get('Action') != repair_stmt.get('Action'):
-                logging.info(f"    CHANGE: Action modified")
-            if orig_stmt.get('Resource') != repair_stmt.get('Resource'):
-                logging.info(f"    CHANGE: Resource modified")
-            if orig_stmt.get('Principal') != repair_stmt.get('Principal'):
-                logging.info(f"    CHANGE: Principal {orig_stmt.get('Principal')} -> {repair_stmt.get('Principal')}")
-            if orig_stmt.get('Condition') != repair_stmt.get('Condition'):
-                logging.info(f"    CHANGE: Condition {orig_stmt.get('Condition')} -> {repair_stmt.get('Condition')}")
-        else:
-            logging.info(f"    UNCHANGED: {json.dumps(orig_stmt, indent=6)}")
-    
-    if erroneous_policy:
-        faulty_statements = erroneous_policy.get('Statement', [])
-        analysis_results = erroneous_policy.get('analysis_result', [])
-        logging.info(f"  Targeted fixes for {len(faulty_statements)} faulty statements")
-        
-        # Show what changed in the targeted statements
-        changes_made = 0
-        for i, analysis in enumerate(analysis_results):
-            if i < len(repaired_statements):
-                orig_stmt = original_statements[i] if i < len(original_statements) else {}
-                repair_stmt = repaired_statements[i]
-                
+        if orig_stmt != repair_stmt:
+            changes_made += 1
+            if orig_stmt is None:
+                logging.info(f"    Statement {i+1}: ADDED")
+            elif repair_stmt is None:
+                logging.info(f"    Statement {i+1}: REMOVED")
+            else:
+                change_details = []
                 if orig_stmt.get('Effect') != repair_stmt.get('Effect'):
-                    changes_made += 1
-                    logging.info(f"    Statement {i+1}: Effect {orig_stmt.get('Effect')} -> {repair_stmt.get('Effect')}")
-                
-                if not orig_stmt.get('Principal') and repair_stmt.get('Principal'):
-                    changes_made += 1
-                    logging.info(f"    Statement {i+1}: Added Principal constraint")
-                
-                if not orig_stmt.get('Condition') and repair_stmt.get('Condition'):
-                    changes_made += 1
-                    logging.info(f"    Statement {i+1}: Added Condition constraint")
-                
+                    change_details.append(f"Effect: {orig_stmt.get('Effect')} → {repair_stmt.get('Effect')}")
                 if orig_stmt.get('Action') != repair_stmt.get('Action'):
-                    changes_made += 1
-                    logging.info(f"    Statement {i+1}: Modified Actions")
-                
+                    change_details.append("Action modified")
                 if orig_stmt.get('Resource') != repair_stmt.get('Resource'):
-                    changes_made += 1
-                    logging.info(f"    Statement {i+1}: Modified Resources")
-        
-        logging.info(f"  Total targeted changes made: {changes_made}")
+                    change_details.append("Resource modified")
+                if orig_stmt.get('Principal') != repair_stmt.get('Principal'):
+                    change_details.append("Principal modified")
+                if orig_stmt.get('Condition') != repair_stmt.get('Condition'):
+                    change_details.append("Condition modified")
+                
+                logging.info(f"    Statement {i+1}: MODIFIED ({', '.join(change_details)})")
+    
+    logging.info(f"  Total changes made: {changes_made}")
+    logging.info(f"{'='*80}")
     
     return repaired_policy
 
@@ -660,12 +949,34 @@ def generate_focused_repair_prompt_with_failed_examples(current_policy, requirem
     faulty_statements = erroneous_policy.get('Statement', []) if erroneous_policy else []
     analysis_results = erroneous_policy.get('analysis_result', []) if erroneous_policy else []
     
+    # FILTER REQUIREMENTS TO ONLY RELEVANT ONES
+    filtered_requirements = {"Requests": []}
+    
+    if failed_examples and "Requests" in requirements:
+        # Get unique request IDs from failed examples
+        failed_request_ids = set()
+        for example in failed_examples:
+            request_id = example.get('request_id', '')
+            if request_id:
+                failed_request_ids.add(request_id)
+        
+        # Only include requirements that match failed request IDs
+        for req in requirements["Requests"]:
+            if req.get('id') in failed_request_ids:
+                filtered_requirements["Requests"].append(req)
+        
+        logging.info(f"Filtered requirements: {len(requirements['Requests'])} -> {len(filtered_requirements['Requests'])}")
+    else:
+        # If no failed examples, include all (fallback for iteration 1)
+        printing(f"Using all requirements as no failed examples provided")
+        filtered_requirements = requirements
+    
     # Extract specific requirements for context
     allow_requirements = []
     deny_requirements = []
     
-    if "Requests" in requirements:
-        for req in requirements["Requests"]:
+    if "Requests" in filtered_requirements:
+        for req in filtered_requirements["Requests"]:
             if req.get("Effect", "").lower() == "allow":
                 allow_requirements.append(req)
             else:
@@ -738,35 +1049,56 @@ SMT Analysis: {analysis}
      
 """
 
-    # Add complete requirements context
-    prompt += f"""
-"""
-    
-    # if allow_requirements:
-    #     prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
-    #     for req in allow_requirements:
-    #         prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-    #         if req.get('Principal'):
-    #             prompt += f" for Principal: {req.get('Principal')}"
-    #         if req.get('Condition'):
-    #             prompt += f" when Condition: {req.get('Condition')}"
-    #         prompt += "\n"
-    
-    # if deny_requirements:
-    #     prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
-    #     for req in deny_requirements:
-    #         prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-    #         if req.get('Principal'):
-    #             prompt += f" for Principal: {req.get('Principal')}"
-    #         if req.get('Condition'):
-    #             prompt += f" when Condition: {req.get('Condition')}"
-    #         prompt += "\n"
+    # ONLY ADD FILTERED REQUIREMENTS (not the full set)
+    if len(filtered_requirements.get("Requests", [])) > 0:
+        prompt += f"""
+# RELEVANT REQUEST FOR CONTEXT (not all requirements are needed, only those related to failed requests):
+# """
+        
+#         if allow_requirements:
+#             prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
+#             for req in allow_requirements:
+#                 prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+#                 if req.get('Principal'):
+#                     prompt += f" for Principal: {req.get('Principal')}"
+#                 if req.get('Condition'):
+#                     prompt += f" when Condition: {req.get('Condition')}"
+#                 prompt += "\n"
+        
+#         if deny_requirements:
+#             prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
+#             for req in deny_requirements:
+#                 prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
+#                 if req.get('Principal'):
+#                     prompt += f" for Principal: {req.get('Principal')}"
+#                 if req.get('Condition'):
+#                     prompt += f" when Condition: {req.get('Condition')}"
+#                 prompt += "\n"
 
     prompt += f"""
-REPAIR INSTRUCTIONS:
+    
+REPAIR INSTRUCTIONS (You MUST follow these strict principles):
 1. Use the SMT analysis to identify which statements are problematic
-2. Use the failed request examples to understand exactly what's going wrong
-3. Repair it.
+2. Instead of creating new statments for every failed request, group them into deny and request sets and repair
+3. Do not create duplicated statments in the policy, only modify existing ones using the examples that are failed. 
+4. Classify each failure type and apply appropriate repair strategy:
+  
+  IMPLICIT DENY (no matching Allow): Add new Allow statement covering the request
+  - Effect: "Allow" with specific Action/Resource from failed request
+  - Add Principal/Condition constraints if specified in requirements
+  
+  EXPLICIT DENY (blocked by Deny statement): Make Deny more specific
+  - Add Principal/Condition constraints to limit scope of denial
+  - Make Actions/Resources more specific rather than changing Effect
+  
+  EXPLICIT ALLOW (wrongly permitted): Make Allow more restrictive  
+  - Add Principal/Condition constraints to limit who can access
+  - Narrow Actions/Resources scope or add specific Deny statement
+
+3. Use the failed request examples to understand exactly what's going wrong
+4. Make MINIMAL changes - prefer constraints over Effect changes
+5. Test your repair logic mentally before applying changes
+
 CRITICAL FIXES NEEDED:
 """
 
