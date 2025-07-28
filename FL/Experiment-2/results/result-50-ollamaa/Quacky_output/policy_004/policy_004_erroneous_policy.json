@@ -2,6 +2,25 @@
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "stmt1",
+      "Effect": "Allow",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::*"
+    },
+    {
+      "Sid": "stmt2",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*",
+        "s3:Put*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*",
+        "arn:aws:s3:::*/*"
+      ]
+    },
+    {
       "Sid": "allow_bfdaa425",
       "Effect": "Allow",
       "Action": [
@@ -24,7 +43,9 @@
       "Resource": [
         "arn:aws:s3:::*/logs/app.log"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -53,7 +74,9 @@
       "Resource": [
         "arn:aws:s3:::*/temp/upload.tmp"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -112,7 +135,9 @@
       "Resource": [
         "arn:aws:s3:::data123"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-west-2"
@@ -130,7 +155,9 @@
       "Resource": [
         "arn:aws:s3:::file1"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -200,7 +227,9 @@
       "Resource": [
         "arn:aws:s3:::*-forbidden/file.txt"
       ],
-      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -282,6 +311,8 @@
     }
   ],
   "analysis_result": [
+    "stmt1: must allow but got denied, must deny but got allow",
+    "stmt2: must allow but got denied, must deny but got allow",
     "allow_bfdaa425: must allow but got denied",
     "allow_c2a208b0: must allow but got denied",
     "allow_4b0d6755: must allow but got denied",
@@ -307,12 +338,12 @@
     "deny_76fb1c09: must allow but got denied"
   ],
   "policy_metadata": {
-    "policy_name": "policy_4_iter_5.json",
+    "policy_name": "policy_4_iter_1.json",
     "policy_index": null,
-    "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-50-ollamaa/policy_4_iter_5.json",
-    "total_statements": 23,
-    "faulty_statements_count": 23,
+    "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-50-ollamaa/policy_4_iter_1.json",
+    "total_statements": 25,
+    "faulty_statements_count": 25,
     "requests_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-50/4.json",
-    "generated_timestamp": 1753397973
+    "generated_timestamp": 1753569644
   }
 }

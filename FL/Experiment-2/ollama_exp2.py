@@ -23,7 +23,7 @@ import pandas as pd
 from tqdm import tqdm
 from ollama import chat, ChatResponse 
 
-req = 25
+req = 60
 POLICY_DIR = "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy"
 REQUIREMENTS_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-{req}"
 OUTPUT_DIR = f"/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/results/result-{req}-ollamaa"
@@ -89,14 +89,13 @@ def call_ollama(prompt, system_prompt=""):
             model=OLLAMA_MODEL,
             messages=messages,
             options={
-                'temperature': 0.1,     # Keep low for consistency
-                'top_p': 0.3,          # Keep low for focused output
-                'num_predict': 8000,    # 🔥 DOUBLED: Allow longer outputs
-                'num_ctx': 16000,       # 🔥 DOUBLED: Much larger context window
+                'temperature': 0.1,  
+                'top_p': 0.3,
+                'num_predict': 8000,
+                'num_ctx': 16000,
                 'stop': ['\n```', '```\n'],
-                # Additional optimizations
-                'repeat_penalty': 1.1,   # Reduce repetitive statements
-                'top_k': 40,            # Limit vocabulary for more focused output
+                'repeat_penalty': 1.1,
+                'top_k': 40,          
             }
         )
         
@@ -322,9 +321,10 @@ Follow this logic:
 You Must Avoid the following:
 - Don't just flip Effect from Allow to Deny without considering the specific requirement
 - Don't make statements too broad (overly permissive) or too narrow (overly restrictive)
-- Don't ignore Principal and Condition constraints specified in requirements
+- Don't ignore Principal and Condition constraints specified in requests. 
 - Don't create statements that conflict with each other
 - Don't just copy the requests into the policy unless needed. 
+
 
 OUTPUT INSTRUCTIONS:
 Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
@@ -684,7 +684,7 @@ You MUST apply these specific fixes:
    
 """
             for failure, blocking_stmt in explicit_deny_blocks:
-                prompt += f"""   • Request {failure.get('request_id')}: Add Principal/Condition constraints to the Deny statement
+                prompt += f"""  Request {failure.get('request_id')}: Add Principal/Condition constraints to the Deny statement
      OR create a more specific Allow statement that takes precedence
      Current blocking statement: {blocking_stmt.get('Sid', 'unnamed')}
 """
@@ -696,7 +696,7 @@ You MUST apply these specific fixes:
    
 """
             for failure in implicit_deny_cases:
-                prompt += f"""   • Request {failure.get('request_id')}: Add new Allow statement:
+                prompt += f"""  Request {failure.get('request_id')}: Add new Allow statement:
      {{
        "Effect": "Allow",
        "Action": "{failure.get('action')}",
@@ -719,7 +719,7 @@ FOR WRONGLY ALLOWED REQUESTS (Expected Deny, Got Allow):
 
 """
         for failure in deny_failures:
-            prompt += f"""• Request {failure.get('request_id')}: Add specific Deny statement:
+            prompt += f""" Request {failure.get('request_id')}: Add specific Deny statement:
   {{
     "Effect": "Deny",
     "Action": "{failure.get('action')}",
@@ -852,7 +852,7 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
     prompt = create_enhanced_repair_prompt(
         policy, requirements, failed_examples, erroneous_policy, iteration
     )
-    
+    prompt = prompt + "\n\n" + "1. EVERY statement MUST have an 'Effect' field set to either 'Allow' or 'Deny'."
     system_prompt = create_enhanced_system_prompt()
     
     # Enhanced logging

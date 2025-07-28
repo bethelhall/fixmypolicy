@@ -1,17 +1,17 @@
 {
   "Requests": [
     {
-      "id": "allow_c5d507a9",
+      "id": "allow_89b8d292",
       "Effect": "allow",
       "Action": [
-        "sagemaker:ListTags"
+        "sagemaker:StopNotebookInstance",
+        "sagemaker:ListTags",
+        "sagemaker:StartNotebookInstance"
       ],
       "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/document.txt",
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
       ],
-      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
       "Condition": {
         "StringEquals": {
           "aws:ResourceTag/Owner": "${identitystore:UserId}"
@@ -19,47 +19,15 @@
       }
     },
     {
-      "id": "allow_ecfa5653",
+      "id": "allow_18cf4ac2",
       "Effect": "allow",
       "Action": [
         "sagemaker:StopNotebookInstance"
       ],
       "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/data/file.json"
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "deny_6368caea",
-      "Effect": "deny",
-      "Action": [
-        "glue:UpdateTable"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "deny_09f346d5",
-      "Effect": "deny",
-      "Action": [
-        "sagemaker:UpdateNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
       "Condition": {
         "StringEquals": {
           "aws:ResourceTag/Owner": "${identitystore:UserId}"
@@ -67,32 +35,33 @@
       }
     },
     {
-      "id": "deny_fd8d7db3",
-      "Effect": "deny",
+      "id": "allow_be076689",
+      "Effect": "allow",
       "Action": [
-        "sagemaker:UpdateNotebookInstance",
-        "sagemaker:StopNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/document.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "deny_140c2aba",
-      "Effect": "deny",
-      "Action": [
+        "sagemaker:StartNotebookInstance",
         "sagemaker:UpdateNotebookInstance"
       ],
       "Resource": [
-        "forbidden-arn:aws:sagemaker:::notebook-instance/*-specific"
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "deny_96881bf2",
+      "Effect": "deny",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl",
+        "sagemaker:UpdateNotebookInstance",
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-east-1"
@@ -100,164 +69,14 @@
       }
     },
     {
-      "id": "deny_04a845e7",
+      "id": "deny_2394e6c3",
       "Effect": "deny",
       "Action": [
-        "sagemaker:UpdateNotebookInstance",
         "glue:CreateScript"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+        "arn:aws:iam::123456789012:role/admin-role"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "deny_b2506f60",
-      "Effect": "deny",
-      "Action": [
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_ef3d68c8",
-      "Effect": "allow",
-      "Action": [
-        "sagemaker:StartNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_1c3b2c97",
-      "Effect": "allow",
-      "Action": [
-        "sagemaker:ListTags"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "deny_ad3be944",
-      "Effect": "deny",
-      "Action": [
-        "sagemaker:StartNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "deny_b73fbf76",
-      "Effect": "deny",
-      "Action": [
-        "sagemaker:StopNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "allow_200c738d",
-      "Effect": "allow",
-      "Action": [
-        "sagemaker:StartNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateLessThan": {
-          "aws:CurrentTime": "2025-12-31T23:59:59Z"
-        }
-      }
-    },
-    {
-      "id": "allow_ff4fa496",
-      "Effect": "allow",
-      "Action": [
-        "sagemaker:StartNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "deny_cbe863d7",
-      "Effect": "deny",
-      "Action": [
-        "glue:CreateScript",
-        "sagemaker:DeleteNotebookInstance",
-        "sagemaker:StopNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:ResourceTag/Owner": "${identitystore:UserId}"
-        }
-      }
-    },
-    {
-      "id": "allow_08b51f42",
-      "Effect": "allow",
-      "Action": [
-        "sagemaker:StartNotebookInstance"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -265,16 +84,45 @@
       }
     },
     {
-      "id": "allow_592947ce",
+      "id": "allow_8344a880",
       "Effect": "allow",
       "Action": [
-        "sagemaker:CreatePresignedDomainUrl",
         "sagemaker:StartNotebookInstance"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "id": "deny_f967ac4e",
+      "Effect": "deny",
+      "Action": [
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:::notebook-instance/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "not-${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "id": "deny_fc172e88",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:sagemaker:::notebook-instance/logs/app.log"
+      ],
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-east-1"
@@ -282,36 +130,127 @@
       }
     },
     {
-      "id": "allow_ea045da4",
-      "Effect": "allow",
+      "id": "deny_dfce0018",
+      "Effect": "deny",
       "Action": [
-        "sagemaker:ListTags"
+        "dynamodb:DeleteItem"
       ],
       "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/document.txt"
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
       "Condition": {
         "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
+          "aws:ResourceTag/Owner": "not-${identitystore:UserId}"
         }
       }
     },
     {
-      "id": "allow_30dc00be",
-      "Effect": "allow",
+      "id": "deny_5640b54c",
+      "Effect": "deny",
       "Action": [
-        "sagemaker:ListTags"
+        "dynamodb:PutItem"
       ],
       "Resource": [
-        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp",
-        "arn:aws:sagemaker:::notebook-instance/document.txt",
-        "arn:aws:s3:::my-bucket/document.txt"
+        "arn:aws:sagemaker:::notebook-instance/document.txt"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "deny_495f20ef",
+      "Effect": "deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
       "Condition": {
         "DateLessThan": {
           "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_d0b0da0c",
+      "Effect": "deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "not-${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "id": "deny_51d8702b",
+      "Effect": "deny",
+      "Action": [
+        "sagemaker:CreatePresignedNotebookInstanceUrl"
+      ],
+      "Resource": [
+        "unauthorized/arn:aws:sagemaker:::notebook-instance/*/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "not-${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "id": "allow_25434637",
+      "Effect": "allow",
+      "Action": [
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:::notebook-instance/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
+        }
+      }
+    },
+    {
+      "id": "allow_fd6e5e07",
+      "Effect": "allow",
+      "Action": [
+        "sagemaker:ListTags",
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "allow_6e1e7ddd",
+      "Effect": "allow",
+      "Action": [
+        "sagemaker:StartNotebookInstance",
+        "glue:CreateScript"
+      ],
+      "Resource": [
+        "arn:aws:sagemaker:::notebook-instance/temp/upload.tmp"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Owner": "${identitystore:UserId}"
         }
       }
     }

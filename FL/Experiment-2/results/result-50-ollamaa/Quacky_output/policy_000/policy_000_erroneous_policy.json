@@ -2,50 +2,9 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "allow_45942859",
+      "Sid": "allow_126de3b1",
       "Action": [
-        "athena:GetWorkGroup",
-        "kms:CreateGrant"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_b2a152f8",
-      "Action": [
-        "athena:BatchGetQueryExecution",
-        "athena:GetDatabase"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt",
-        "arn:aws:s3:::athena-query-results/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      },
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_55367f92",
-      "Action": [
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bkt_logs/document.txt",
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_1af45114",
-      "Action": [
-        "glue:GetDatabase"
+        "athena:StopQueryExecution"
       ],
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
@@ -53,23 +12,9 @@
       "Effect": "Allow"
     },
     {
-      "Sid": "allow_1f7e24bf",
+      "Sid": "allow_22933e80",
       "Action": [
-        "s3:DeleteObject",
-        "s3:CreateBucket",
-        "athena:BatchGetQueryExecution"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_900399e9",
-      "Action": [
-        "s3:DeleteObject",
-        "s3:GetBucketLocation",
-        "athena:GetQueryResults"
+        "athena:StopQueryExecution"
       ],
       "Resource": [
         "arn:aws:s3:::athena-query-results/temp/upload.tmp"
@@ -77,12 +22,28 @@
       "Effect": "Allow"
     },
     {
-      "Sid": "allow_a314ffbf",
+      "Sid": "allow_bae702d8",
       "Action": [
-        "athena:GetQueryExecution"
+        "glue:GetTable",
+        "athena:GetTableMetadata",
+        "glue:GetDatabase"
       ],
       "Resource": [
-        "arn:aws:s3:::bkt_logs/temp/upload.tmp"
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Effect": "Allow"
+    },
+    {
+      "Sid": "allow_77505233",
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetBucketAcl",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs/temp/upload.tmp",
+        "arn:aws:s3:::athena-query-results/temp/upload.tmp",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
       "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
@@ -93,34 +54,12 @@
       "Effect": "Allow"
     },
     {
-      "Sid": "allow_57e8bf3b",
+      "Sid": "allow_3c28c397",
       "Action": [
-        "kms:CreateGrant"
-      ],
-      "Resource": [
-        "arn:aws:s3:::athena-query-results/data/file.json"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_ad3ef0aa",
-      "Action": [
-        "athena:GetWorkGroup",
-        "s3:GetBucketLocation"
+        "s3:DeleteBucket"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Effect": "Allow"
-    },
-    {
-      "Sid": "allow_8c98a227",
-      "Action": [
-        "athena:BatchGetQueryExecution"
-      ],
-      "Resource": [
-        "arn:aws:s3:::athena-query-results/document.txt",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
       "Principal": "arn:aws:iam::123456789012:user/bob",
       "Condition": {
@@ -131,36 +70,197 @@
       "Effect": "Allow"
     },
     {
-      "Sid": "allow_ae3b2ceb",
+      "Sid": "allow_73f729dc",
       "Action": [
-        "athena:BatchGetQueryExecution",
-        "athena:GetQueryResultsStream"
+        "athena:StopQueryExecution",
+        "s3:DeleteBucket",
+        "s3:PutBucketPolicy"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
-        "arn:aws:s3:::athena-query-results/temp/upload.tmp"
+        "arn:aws:s3:::bkt_logs/temp/upload.tmp",
+        "arn:aws:s3:::athena-query-results/document.txt"
       ],
       "Effect": "Allow"
     },
     {
-      "Sid": "allow_8d9e3103",
+      "Sid": "allow_fd07f6f2",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      },
+      "Effect": "Allow"
+    },
+    {
+      "Sid": "allow_d035e956",
       "Action": [
         "glue:GetPartitions"
       ],
       "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Allow"
+    },
+    {
+      "Sid": "allow_f4dbbb9f",
+      "Action": [
+        "glue:GetDatabase"
+      ],
+      "Resource": [
+        "arn:aws:s3:::athena-query-results/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      },
+      "Effect": "Allow"
+    },
+    {
+      "Sid": "allow_8b3481ee",
+      "Action": [
+        "athena:GetQueryResultsStream",
+        "s3:GetObject"
+      ],
+      "Resource": [
         "arn:aws:s3:::bkt_logs/document.txt",
-        "arn:aws:s3:::athena-query-results/logs/app.log",
-        "arn:aws:s3:::athena-query-results/temp/upload.tmp"
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
       "Effect": "Allow"
     },
     {
-      "Sid": "deny_b611c65a",
+      "Sid": "deny_42736646",
       "Action": [
-        "athena:GetDatabase"
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-athena-query-results/file.txt"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      },
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_e31bb920",
+      "Action": [
+        "athena:DeleteWorkGroup"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_94579da8",
+      "Action": [
+        "athena:GetWorkGroup",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_12c2496a",
+      "Action": [
+        "s3:GetBucketLocation",
+        "athena:StopQueryExecution"
       ],
       "Resource": [
         "arn:aws:s3:::athena-query-results-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      },
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_c7d69caa",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bkt_logs/document.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_b09e2204",
+      "Action": [
+        "athena:GetQueryResultsStream",
+        "athena:StartQueryExecution"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-bkt_logs/file.txt"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_f08aefe6",
+      "Action": [
+        "glue:CreateDatabase"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:s3:::athena-query-results/data/file.json"
+      ],
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_7dcb8894",
+      "Action": [
+        "glue:CreateTable"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Effect": "Deny"
+    },
+    {
+      "Sid": "deny_822686bc",
+      "Action": [
+        "s3:ListBucket",
+        "athena:GetQueryResultsStream"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-athena-query-results/file.txt"
       ],
       "Principal": "arn:aws:iam::123456789012:role/service-role",
       "Condition": {
@@ -171,179 +271,58 @@
       "Effect": "Deny"
     },
     {
-      "Sid": "deny_b14b8f5d",
+      "Sid": "deny_dd35cf7b",
       "Action": [
-        "kms:Encrypt"
+        "ec2:RunInstances"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
       ],
-      "Principal": "arn:aws:iam::987654321098:user/charlie",
-      "Condition": {
-        "StringEquals": {
-          "s3:ExistingObjectTag/Department": "Finance"
-        }
-      },
       "Effect": "Deny"
     },
     {
-      "Sid": "deny_f227f7d3",
+      "Sid": "deny_0a19eeaf",
       "Action": [
-        "athena:DeleteWorkGroup"
+        "glue:UpdateTable"
       ],
       "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:s3:::athena-query-results/temp/upload.tmp"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_5de551a9",
-      "Action": [
-        "s3:GetBucketLocation",
-        "athena:GetQueryResultsStream"
-      ],
-      "Resource": [
-        "arn:aws:s3:::athena-query-results-forbidden/file.txt"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_ebf5c153",
-      "Action": [
-        "athena:GetTableMetadata",
-        "s3:ListBucket",
-        "athena:StopQueryExecution"
-      ],
-      "Resource": [
-        "arn:aws:s3:::forbidden-bucket/document.txt"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_1ebffcb3",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::forbidden-bucket/document.txt"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_0ea41fbd",
-      "Action": [
-        "dynamodb:DeleteItem"
-      ],
-      "Resource": [
-        "arn:aws:s3:::athena-query-results/logs/app.log",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_860de51d",
-      "Action": [
-        "glue:CreateDatabase"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "s3:ExistingObjectTag/Department": "Finance"
-        }
-      },
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_2f0e9a44",
-      "Action": [
-        "lambda:InvokeFunction"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_69ec4931",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:iam::123456789012:role/admin-role"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_7ea91a34",
-      "Action": [
-        "lambda:InvokeFunction"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_36c3f44f",
-      "Action": [
-        "kms:GenerateDataKey"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:s3:::athena-query-results/logs/app.log"
-      ],
-      "Effect": "Deny"
-    },
-    {
-      "Sid": "deny_e6bac0db",
-      "Action": [
-        "athena:GetTableMetadata"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bkt_logs-forbidden/file.txt"
       ],
       "Effect": "Deny"
     }
   ],
   "analysis_result": [
-    "allow_45942859: must allow but got denied",
-    "allow_b2a152f8: must allow but got denied",
-    "allow_55367f92: must allow but got denied",
-    "allow_1af45114: must allow but got denied",
-    "allow_1f7e24bf: must allow but got denied",
-    "allow_900399e9: must allow but got denied",
-    "allow_a314ffbf: must allow but got denied",
-    "allow_57e8bf3b: must allow but got denied",
-    "allow_ad3ef0aa: must allow but got denied",
-    "allow_8c98a227: must allow but got denied",
-    "allow_ae3b2ceb: must allow but got denied",
-    "allow_8d9e3103: must allow but got denied",
-    "deny_b611c65a: must allow but got denied",
-    "deny_b14b8f5d: must allow but got denied",
-    "deny_f227f7d3: must allow but got denied",
-    "deny_5de551a9: must allow but got denied",
-    "deny_ebf5c153: must allow but got denied",
-    "deny_1ebffcb3: must allow but got denied",
-    "deny_0ea41fbd: must allow but got denied",
-    "deny_860de51d: must allow but got denied",
-    "deny_2f0e9a44: must allow but got denied",
-    "deny_69ec4931: must allow but got denied",
-    "deny_7ea91a34: must allow but got denied",
-    "deny_36c3f44f: must allow but got denied",
-    "deny_e6bac0db: must allow but got denied"
+    "allow_126de3b1: must allow but got denied",
+    "allow_22933e80: must allow but got denied",
+    "allow_bae702d8: must allow but got denied",
+    "allow_77505233: must allow but got denied",
+    "allow_3c28c397: must allow but got denied",
+    "allow_73f729dc: must allow but got denied",
+    "allow_fd07f6f2: must allow but got denied",
+    "allow_d035e956: must allow but got denied",
+    "allow_f4dbbb9f: must allow but got denied",
+    "allow_8b3481ee: must allow but got denied",
+    "deny_42736646: must allow but got denied",
+    "deny_e31bb920: must allow but got denied",
+    "deny_94579da8: must allow but got denied",
+    "deny_12c2496a: must allow but got denied",
+    "deny_c7d69caa: must allow but got denied",
+    "deny_b09e2204: must allow but got denied",
+    "deny_f08aefe6: must allow but got denied",
+    "deny_7dcb8894: must allow but got denied",
+    "deny_822686bc: must allow but got denied",
+    "deny_dd35cf7b: must allow but got denied",
+    "deny_0a19eeaf: must allow but got denied"
   ],
   "policy_metadata": {
     "policy_name": "policy_0_iter_1.json",
     "policy_index": null,
     "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-50-ollamaa/policy_0_iter_1.json",
-    "total_statements": 25,
-    "faulty_statements_count": 25,
+    "total_statements": 21,
+    "faulty_statements_count": 21,
     "requests_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-50/0.json",
-    "generated_timestamp": 1753397489
+    "generated_timestamp": 1753567281
   }
 }

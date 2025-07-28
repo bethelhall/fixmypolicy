@@ -1,0 +1,313 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "allow_55b8a643",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_26c2c5dc",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:root"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:ScheduleKeyDeletion",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_90f954bf",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f0f6d097",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c5d1b49b",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:root"
+      },
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a417c1e0",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9970d702",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "kms:DescribeKey",
+        "kms:GenerateDataKey",
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_f9510ba4",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:root"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_a51e9cb3",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": [
+        "kms:ScheduleKeyDeletion",
+        "kms:ListGrants"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_5f31aa4e",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "Sid": "deny_465e14f8",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:root"
+      },
+      "Action": [
+        "kms:CreateKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ee4e5e59",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:root"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "deny_21f4522e",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/EC2 IAM Role"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_caa20780",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::AWS Accout ID:role/forbidden-EC2 IAM Role"
+      },
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:s3:::my-bucket/document.txt"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0183c712",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:root"
+      },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:DeleteAlias"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ],
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    }
+  ],
+  "analysis_result": [
+    "allow_55b8a643: must allow but got denied",
+    "allow_26c2c5dc: must allow but got denied",
+    "allow_90f954bf: must allow but got denied",
+    "allow_f0f6d097: must allow but got denied",
+    "allow_c5d1b49b: must allow but got denied",
+    "allow_a417c1e0: must allow but got denied",
+    "allow_9970d702: must allow but got denied",
+    "deny_f9510ba4: must allow but got denied",
+    "deny_a51e9cb3: must allow but got denied",
+    "deny_5f31aa4e: must allow but got denied",
+    "deny_465e14f8: must allow but got denied",
+    "deny_ee4e5e59: must allow but got denied",
+    "deny_21f4522e: must allow but got denied",
+    "deny_caa20780: must allow but got denied",
+    "deny_0183c712: must allow but got denied"
+  ],
+  "policy_metadata": {
+    "policy_name": "policy_9_iter_1.json",
+    "policy_index": null,
+    "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/temp_validation/val-30-ollamaa/policy_9_iter_1.json",
+    "total_statements": 15,
+    "faulty_statements_count": 15,
+    "requests_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-30/9.json",
+    "generated_timestamp": 1753586041
+  }
+}

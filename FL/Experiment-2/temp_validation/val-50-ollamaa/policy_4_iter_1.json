@@ -2,6 +2,25 @@
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Sid": "stmt1",
+      "Effect": "Allow",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::*"
+    },
+    {
+      "Sid": "stmt2",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*",
+        "s3:Put*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*",
+        "arn:aws:s3:::*/*"
+      ]
+    },
+    {
       "Sid": "allow_bfdaa425",
       "Effect": "Allow",
       "Action": [
@@ -24,7 +43,9 @@
       "Resource": [
         "arn:aws:s3:::*/logs/app.log"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -53,7 +74,9 @@
       "Resource": [
         "arn:aws:s3:::*/temp/upload.tmp"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -112,7 +135,9 @@
       "Resource": [
         "arn:aws:s3:::data123"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-west-2"
@@ -130,7 +155,9 @@
       "Resource": [
         "arn:aws:s3:::file1"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -200,7 +227,9 @@
       "Resource": [
         "arn:aws:s3:::*-forbidden/file.txt"
       ],
-      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"

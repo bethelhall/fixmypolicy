@@ -1,0 +1,49 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "stmt1",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEqualsIfExists": {
+          "ec2:ResourceTag/Username": "${aws:userid}"
+        }
+      }
+    },
+    {
+      "Sid": "stmt2",
+      "Effect": "Allow",
+      "Action": "ec2:Describe*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "stmt3",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/Owner": "true"
+        }
+      }
+    }
+  ],
+  "analysis_result": [
+    "stmt1: must allow but got denied, must deny but got allow",
+    "stmt2: must allow but got denied, must deny but got allow",
+    "stmt3: must allow but got denied"
+  ],
+  "policy_metadata": {
+    "policy_name": "2.json",
+    "policy_index": 2,
+    "original_policy_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/original_policy/2.json",
+    "total_statements": 3,
+    "faulty_statements_count": 3,
+    "requests_file": "/home/bhall2/Documents/fixmypolicy/FL/Experiment-2/requests/request-70/2.json",
+    "generated_timestamp": 1753586998
+  }
+}

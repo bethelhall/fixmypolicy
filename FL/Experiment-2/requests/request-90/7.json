@@ -1,15 +1,87 @@
 {
   "Requests": [
     {
-      "id": "allow_8680148d",
+      "id": "allow_bcad90e0",
       "Effect": "allow",
       "Action": [
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log"
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_713bbe74",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_b3616e8f",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
       ],
       "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_d922d73c",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket/logs/app.log",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_75c70af9",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-west-2"
@@ -17,52 +89,13 @@
       }
     },
     {
-      "id": "allow_7efb51e6",
-      "Effect": "allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_665f6015",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/data/file.json"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_a30ac5f2",
+      "id": "allow_4861242b",
       "Effect": "allow",
       "Action": [
         "s3:GetBucketAcl"
       ],
       "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log",
         "arn:aws:s3:::bucket"
       ],
       "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
@@ -76,81 +109,10 @@
       }
     },
     {
-      "id": "deny_898bfc99",
+      "id": "deny_72399e57",
       "Effect": "deny",
       "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket-forbidden/file.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "allow_cde92739",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_de2e48d7",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/data/file.json",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_8b56121b",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_68405f28",
-      "Effect": "allow",
-      "Action": [
-        "s3:ListBucket"
+        "iam:CreateUser"
       ],
       "Resource": [
         "arn:aws:s3:::bucket"
@@ -163,7 +125,56 @@
       }
     },
     {
-      "id": "deny_cf93d836",
+      "id": "deny_2abb5790",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_d7ce4fbc",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_81d66c13",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/document.txt",
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_a97dcefd",
       "Effect": "deny",
       "Action": [
         "s3:PutObject"
@@ -174,108 +185,18 @@
       "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
       "Condition": {
         "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "deny_d0503ddf",
-      "Effect": "deny",
-      "Action": [
-        "s3:DeleteBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_1e67cb42",
-      "Effect": "allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_7da631bd",
-      "Effect": "deny",
-      "Action": [
-        "iam:CreateUser"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "allow_fc53692d",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_9cd81425",
-      "Effect": "deny",
-      "Action": [
-        "ec2:DescribeInstances"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
           "aws:RequestedRegion": "us-east-1"
         }
       }
     },
     {
-      "id": "allow_27cad6e1",
+      "id": "allow_23f62437",
       "Effect": "allow",
       "Action": [
         "s3:GetBucketLocation"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/data/file.json",
+        "arn:aws:s3:::bucket/document.txt",
         "arn:aws:s3:::bucket"
       ],
       "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
@@ -289,218 +210,14 @@
       }
     },
     {
-      "id": "allow_12b4baa0",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_96cba86a",
+      "id": "deny_34b7b82d",
       "Effect": "deny",
       "Action": [
-        "s3:DeleteObject"
+        "lambda:CreateFunction"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/data/file.json",
-        "arn:aws:s3:::bucket/temp/upload.tmp",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_b4c6fcc8",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_d51f75ef",
-      "Effect": "deny",
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log",
         "arn:aws:s3:::bucket/data/file.json"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_e26eac36",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "deny_31c5f287",
-      "Effect": "deny",
-      "Action": [
-        "s3:DeleteBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_cdf94629",
-      "Effect": "deny",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/data/file.json"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_00069b6c",
-      "Effect": "deny",
-      "Action": [
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/data/file.json"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_fa92fb00",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_bef97591",
-      "Effect": "deny",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_766a725f",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_f6190c97",
-      "Effect": "allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
       ],
       "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
@@ -510,13 +227,14 @@
       }
     },
     {
-      "id": "allow_5604f2b5",
+      "id": "allow_c6b58d96",
       "Effect": "allow",
       "Action": [
-        "s3:GetObject"
+        "s3:PutBucketPolicy"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket"
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/document.txt"
       ],
       "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
@@ -526,13 +244,304 @@
       }
     },
     {
-      "id": "deny_73c11b3f",
+      "id": "deny_b7cd4ac9",
       "Effect": "deny",
       "Action": [
-        "s3:GetObject"
+        "s3:PutObject"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/data/file.json",
+        "arn:aws:s3:::bucket-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "deny_3cb92ce7",
+      "Effect": "deny",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_89a34344",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "allow_a62740b5",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "allow_51c37716",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_286a626b",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_c7e55496",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_14b7bcf5",
+      "Effect": "allow",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_88a8a628",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_8f505c7c",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-forbidden/file.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "allow_5bc57e00",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_a55a1a95",
+      "Effect": "deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/data/file.json"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_e8030931",
+      "Effect": "deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_4c2e5364",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log",
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
+        }
+      }
+    },
+    {
+      "id": "allow_48612c85",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_e373787b",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/data/file.json"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_ab3fd9d2",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/document.txt",
         "arn:aws:s3:::bucket/temp/upload.tmp"
       ],
       "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
@@ -546,320 +555,453 @@
       }
     },
     {
-      "id": "deny_fc947481",
+      "id": "allow_e8ea5ff3",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket/logs/app.log",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_0d81013c",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/document.txt",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_4b901469",
       "Effect": "deny",
       "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_c991effa",
+      "Effect": "deny",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        }
+      }
+    },
+    {
+      "id": "allow_6271a155",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_84961c9b",
+      "Effect": "deny",
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/logs/app.log"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_f17a52e0",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_f49d7c3e",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_9c5905d9",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/document.txt",
+        "arn:aws:s3:::bucket/data/file.json",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_0d70cc93",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/data/file.json",
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_82bdf64d",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/data/file.json",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_78fb1c92",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/data/file.json"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_0be10e03",
+      "Effect": "allow",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_0ffcff2b",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_309668d9",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_d5b5229a",
+      "Effect": "deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/logs/app.log",
+        "arn:aws:s3:::bucket/document.txt"
+      ],
+      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "allow_a5466a38",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_924840c5",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_b6b5391c",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "DateLessThan": {
+          "aws:CurrentTime": "2025-12-31T23:59:59Z"
+        }
+      }
+    },
+    {
+      "id": "deny_96fb4483",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "allow_1e467b11",
+      "Effect": "allow",
+      "Action": [
         "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket/temp/upload.tmp"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_9847ad3e",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
       ],
       "Resource": [
         "arn:aws:s3:::different-bucket/file.txt"
       ],
       "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+        "DateGreaterThan": {
+          "aws:CurrentTime": "2024-01-01T00:00:00Z"
         }
       }
     },
     {
-      "id": "allow_ea75e25b",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log",
-        "arn:aws:s3:::bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "allow_2fbc6124",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_f2998416",
+      "id": "allow_0c4c5c91",
       "Effect": "allow",
       "Action": [
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateLessThan": {
-          "aws:CurrentTime": "2025-12-31T23:59:59Z"
-        }
-      }
-    },
-    {
-      "id": "allow_481840e8",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
         "arn:aws:s3:::bucket/document.txt",
-        "arn:aws:s3:::bucket/data/file.json"
+        "arn:aws:s3:::bucket"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
       "Condition": {
         "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
         }
       }
     },
     {
-      "id": "allow_8e5d4be5",
+      "id": "allow_c6da98e9",
       "Effect": "allow",
       "Action": [
         "s3:DeleteBucket"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "allow_1bca488b",
-      "Effect": "allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
         "arn:aws:s3:::bucket/logs/app.log"
       ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "allow_75e4eca4",
-      "Effect": "allow",
-      "Action": [
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateLessThan": {
-          "aws:CurrentTime": "2025-12-31T23:59:59Z"
-        }
-      }
-    },
-    {
-      "id": "allow_3ed20fa3",
-      "Effect": "allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
       "Condition": {
         "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
         }
       }
     },
     {
-      "id": "allow_1bc69bca",
+      "id": "allow_503b35e3",
       "Effect": "allow",
       "Action": [
-        "s3:CreateBucket"
+        "s3:DeleteBucket"
       ],
       "Resource": [
         "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "DateLessThan": {
-          "aws:CurrentTime": "2025-12-31T23:59:59Z"
-        }
-      }
-    },
-    {
-      "id": "allow_ef560074",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_860cc315",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt",
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_54271560",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt",
-        "arn:aws:s3:::bucket/logs/app.log",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "allow_99947a13",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp",
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_f1975fb7",
-      "Effect": "deny",
-      "Action": [
-        "iam:DeleteUser"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "deny_4e6d6677",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_1761d1c3",
-      "Effect": "allow",
-      "Action": [
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_03ae8b91",
-      "Effect": "deny",
-      "Action": [
-        "ec2:DescribeInstances"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_22bbc604",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
         "arn:aws:s3:::bucket/data/file.json"
       ],
       "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
@@ -873,216 +1015,54 @@
       }
     },
     {
-      "id": "allow_a3faf070",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "allow_fef9d5dc",
+      "id": "allow_68013e22",
       "Effect": "allow",
       "Action": [
         "s3:ListBucket"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp",
+        "arn:aws:s3:::bucket",
         "arn:aws:s3:::bucket/document.txt"
       ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
       "Condition": {
         "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
         }
       }
     },
     {
-      "id": "deny_131fbaff",
-      "Effect": "deny",
+      "id": "allow_59b50f9c",
+      "Effect": "allow",
       "Action": [
-        "s3:DeleteObject"
+        "s3:PutBucketPolicy"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket",
+        "arn:aws:s3:::bucket"
+      ],
+      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "home/${aws:userid}/",
+            "home/${aws:username}"
+          ]
+        }
+      }
+    },
+    {
+      "id": "deny_39c5c84c",
+      "Effect": "deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
         "arn:aws:s3:::bucket/logs/app.log"
       ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_67ce85dd",
-      "Effect": "allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
       "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_8cef8382",
-      "Effect": "allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_d45a0acd",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket-forbidden/file.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "allow_f38e3102",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_357397d8",
-      "Effect": "allow",
-      "Action": [
-        "s3:GetBucketAcl"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log",
-        "arn:aws:s3:::bucket",
-        "arn:aws:s3:::bucket/temp/upload.tmp"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_0afa134d",
-      "Effect": "deny",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_9d1fea12",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_cce3d96a",
-      "Effect": "deny",
-      "Action": [
-        "s3:PutBucketPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "allow_6c00322d",
-      "Effect": "allow",
-      "Action": [
-        "s3:CreateBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/document.txt",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
         "DateLessThan": {
           "aws:CurrentTime": "2025-12-31T23:59:59Z"
@@ -1090,51 +1070,15 @@
       }
     },
     {
-      "id": "deny_87094104",
-      "Effect": "deny",
-      "Action": [
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::${aws:PrincipalOrgID}:root",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": [
-            "home/${aws:userid}/",
-            "home/${aws:username}"
-          ]
-        }
-      }
-    },
-    {
-      "id": "deny_1c1de08a",
+      "id": "deny_a285c186",
       "Effect": "deny",
       "Action": [
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket-forbidden/file.txt"
+        "arn:aws:s3:::different-bucket/file.txt"
       ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "s3:prefix": "not-['home/${aws:userid}/', 'home/${aws:username}']"
-        }
-      }
-    },
-    {
-      "id": "deny_f3118527",
-      "Effect": "deny",
-      "Action": [
-        "lambda:CreateFunction"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/temp/upload.tmp",
-        "arn:aws:s3:::bucket"
-      ],
-      "Principal": "arn:aws:iam::999888777666:PrincipalOrgID}:root",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -1142,31 +1086,15 @@
       }
     },
     {
-      "id": "allow_de21f3c2",
-      "Effect": "allow",
+      "id": "deny_774d74c7",
+      "Effect": "deny",
       "Action": [
-        "s3:PutBucketPolicy"
+        "s3:CreateBucket"
       ],
       "Resource": [
-        "arn:aws:s3:::bucket"
+        "arn:aws:s3:::different-bucket/file.txt"
       ],
       "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_5d93d3e9",
-      "Effect": "allow",
-      "Action": [
-        "s3:ListBucket"
-      ],
-      "Resource": [
-        "arn:aws:s3:::bucket/logs/app.log"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"

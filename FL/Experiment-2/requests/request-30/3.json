@@ -1,118 +1,38 @@
 {
   "Requests": [
     {
-      "id": "deny_ceda3df2",
+      "id": "deny_2b4dcad6",
       "Effect": "deny",
       "Action": [
-        "iot:DeleteThingGroup"
+        "ec2:DescribeInstances"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::987654321098:user/charlie",
-      "Condition": {
-        "NumericLessThan": {
-          "s3:max-keys": "10"
-        }
-      }
+      ]
     },
     {
-      "id": "allow_9d3a6ec3",
+      "id": "allow_d9e5a588",
       "Effect": "allow",
       "Action": [
-        "iot:DeleteThing",
-        "iot:CreateKeysAndCertificate"
+        "logs:CreateLogGroup"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
+      ]
     },
     {
-      "id": "allow_77cefa04",
-      "Effect": "allow",
-      "Action": [
-        "iot:DescribeRoleAlias",
-        "iot:ListTargetsForPolicy"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "deny_fecdbdc0",
-      "Effect": "deny",
-      "Action": [
-        "iot:DescribeThingGroup"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "IpAddress": {
-          "aws:SourceIp": "203.0.113.0/24"
-        }
-      }
-    },
-    {
-      "id": "allow_eee9e28f",
-      "Effect": "allow",
-      "Action": [
-        "iot:AddThingToThingGroup",
-        "iot:Receive"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "deny_7ed1bc46",
-      "Effect": "deny",
-      "Action": [
-        "s3:ListBucket",
-        "iam:ListAttachedRolePolicies"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringLike": {
-          "aws:userid": "AIDAI"
-        }
-      }
-    },
-    {
-      "id": "allow_1b7b0cb6",
+      "id": "allow_88200ef1",
       "Effect": "allow",
       "Action": [
         "s3:PutObjectTagging",
-        "iot:DeleteThingGroup"
+        "s3:PutBucketTagging",
+        "s3:DeleteBucket"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:s3:::my-bucket/document.txt",
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
       "Condition": {
         "DateGreaterThan": {
           "aws:CurrentTime": "2024-01-01T00:00:00Z"
@@ -120,64 +40,114 @@
       }
     },
     {
-      "id": "deny_ce2c2a43",
+      "id": "deny_7613a705",
       "Effect": "deny",
       "Action": [
+        "iam:ListUsers"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "id": "deny_bcbbbfa0",
+      "Effect": "deny",
+      "Action": [
+        "iam:AttachUserPolicy"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "id": "allow_4c85a45e",
+      "Effect": "allow",
+      "Action": [
+        "iot:RemoveThingFromThingGroup"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
+    },
+    {
+      "id": "allow_5baba1dd",
+      "Effect": "allow",
+      "Action": [
+        "iot:DescribeThing",
         "iot:DeleteCertificate"
       ],
       "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/bob",
-      "Condition": {
-        "Bool": {
-          "aws:SecureTransport": "true"
-        }
-      }
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ]
     },
     {
-      "id": "deny_17d537df",
+      "id": "deny_c5c919dc",
       "Effect": "deny",
       "Action": [
-        "iam:DeleteUser"
+        "lambda:PublishVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ]
+    },
+    {
+      "id": "allow_bcc40e4a",
+      "Effect": "allow",
+      "Action": [
+        "iot:GetThingShadow"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
+      ]
+    },
+    {
+      "id": "deny_60273473",
+      "Effect": "deny",
+      "Action": [
+        "iam:AttachUserPolicy"
       ],
       "Resource": [
         "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
         "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
+      ]
     },
     {
-      "id": "deny_571bc3a8",
+      "id": "deny_876decf0",
       "Effect": "deny",
       "Action": [
+        "iot:AddThingToThingGroup",
+        "iam:ListEntitiesForPolicy",
         "logs:DescribeLogStreams"
       ],
       "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
+        "arn:aws:s3:::forbidden-bucket/document.txt"
+      ]
     },
     {
-      "id": "allow_572a7333",
+      "id": "allow_0a89d6a4",
       "Effect": "allow",
       "Action": [
-        "s3:PutObjectTagging"
+        "iot:DescribeThingGroup",
+        "iam:TagPolicy",
+        "iot:AddThingToThingGroup"
       ],
       "Resource": [
         "arn:aws:s3:::my-bucket/document.txt"
+      ]
+    },
+    {
+      "id": "allow_5448062c",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteBucket"
       ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
       "Condition": {
         "StringEquals": {
           "aws:RequestedRegion": "us-east-1"
@@ -185,133 +155,15 @@
       }
     },
     {
-      "id": "allow_6be1d0fa",
-      "Effect": "allow",
-      "Action": [
-        "iot:ListThingPrincipals"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "NumericLessThan": {
-          "s3:max-keys": "10"
-        }
-      }
-    },
-    {
-      "id": "deny_77826c02",
+      "id": "deny_5a90c01c",
       "Effect": "deny",
       "Action": [
-        "iam:CreatePolicy"
+        "iot:CreateKeysAndCertificate",
+        "iot:ListAttachedPolicies"
       ],
       "Resource": [
         "arn:aws:kms:us-east-1:123456789012:key/forbidden-key"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "allow_4e491801",
-      "Effect": "allow",
-      "Action": [
-        "s3:PutBucketTagging"
-      ],
-      "Resource": [
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/admin-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-east-1"
-        }
-      }
-    },
-    {
-      "id": "allow_6147a37d",
-      "Effect": "allow",
-      "Action": [
-        "iot:DeleteRoleAlias"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
-      "Condition": {
-        "DateGreaterThan": {
-          "aws:CurrentTime": "2024-01-01T00:00:00Z"
-        }
-      }
-    },
-    {
-      "id": "deny_c26e29ef",
-      "Effect": "deny",
-      "Action": [
-        "lambda:UpdateFunctionCode"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-bucket/document.txt"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "allow_394f158e",
-      "Effect": "allow",
-      "Action": [
-        "iot:UpdateThingShadow"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::123456789012:user/alice",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
-    },
-    {
-      "id": "deny_2fc9c7f8",
-      "Effect": "deny",
-      "Action": [
-        "iam:DeleteRole"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table"
-      ],
-      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
-      "Condition": {
-        "StringEquals": {
-          "s3:ExistingObjectTag/Department": "Finance"
-        }
-      }
-    },
-    {
-      "id": "deny_15735c14",
-      "Effect": "deny",
-      "Action": [
-        "iot-device-tester:LatestIdt"
-      ],
-      "Resource": [
-        "arn:aws:glue:us-east-1:123456789012:table/my-database/my-table",
-        "arn:aws:athena:us-east-1:123456789012:workgroup/primary"
-      ],
-      "Principal": "arn:aws:iam::123456789012:role/service-role",
-      "Condition": {
-        "StringEquals": {
-          "aws:RequestedRegion": "us-west-2"
-        }
-      }
+      ]
     }
   ]
 }
