@@ -91,8 +91,8 @@ def call_ollama(prompt, system_prompt=""):
             options={
                 'temperature': 0.1,  
                 'top_p': 0.3,
-                'num_predict': 8000,
-                'num_ctx': 16000,
+                'num_predict': 640000,
+                'num_ctx': 1600000,
                 'stop': ['\n```', '```\n'],
                 'repeat_penalty': 1.1,
                 'top_k': 40,          
@@ -439,6 +439,8 @@ def extract_and_validate_json(response_text: str) -> dict:
             logging.error(f"{i:2}: {line}{marker}")
         
         raise ValueError(f"LLM generated invalid JSON: {e}")
+
+    # This function maps each failed example to the responsible statement(s) and provides targeted repair guidance.
 def analyze_policy_structure_for_repair(current_policy, failed_examples, erroneous_policy):
     """
     Deep analysis of policy structure to provide targeted repair guidance
@@ -490,7 +492,7 @@ def analyze_policy_structure_for_repair(current_policy, failed_examples, erroneo
                     analysis['statement_mapping'][i]['responsible_for_failures'].append({
                         'example': example,
                         'issue': 'explicit_deny_blocking_required_allow',
-                        'fix_strategy': 'make_deny_more_specific_or_add_allow_exception'
+                        'fix_strategy': 'make_deny_more_specific_or_add_allow_exceptions'
                     })
                 elif expected == 'deny' and actual == 'allow' and stmt_effect == 'Allow':
                     analysis['statement_mapping'][i]['responsible_for_failures'].append({
@@ -540,14 +542,11 @@ def matches_pattern(test_value, pattern):
     return False
 
 def create_enhanced_repair_prompt(current_policy, requirements, failed_examples, erroneous_policy, iteration):
-    """
-    Create a much more structured and informative repair prompt
-    """
     
     # Perform deep analysis
     analysis = analyze_policy_structure_for_repair(current_policy, failed_examples, erroneous_policy)
     
-    prompt = f"""You are an AWS IAM policy expert. You must fix this policy by addressing specific failures with surgical precision.
+    prompt = f"""You are an AWS IAM policy expert. You must fix this policy by addressing specific failures with surgical precision. 
 
 CURRENT POLICY (needs repair):
 {json.dumps(current_policy, indent=2)}
@@ -557,44 +556,43 @@ DIAGNOSTIC ANALYSIS:
 
 """
 
-    # Group and prioritize failed examples
+    # Group failed examples
     allow_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'allow']
     deny_failures = [ex for ex in failed_examples if ex.get('expected', '').lower() == 'deny']
     
     if allow_failures:
-        prompt += f"""CRITICAL ISSUE: {len(allow_failures)} requests are being WRONGLY DENIED
+        prompt += f"""Current ISSUE: {len(allow_failures)} requests are being WRONGLY DENIED
 These requests MUST be allowed but are currently blocked:
 
 """
         for i, failure in enumerate(allow_failures, 1):
             prompt += f"""Request {i}: ID={failure.get('request_id')}
-  ├─ Action: {failure.get('action')}
-  ├─ Resource: {failure.get('resource')}
-  ├─ Principal: {failure.get('principal', 'Any')}
-  ├─ Condition: {failure.get('condition', 'None')}
-  └─ PROBLEM: Expected ALLOW but got DENY
+  Action: {failure.get('action')}
+  Resource: {failure.get('resource')}
+  Principal: {failure.get('principal', 'Any')}
+  Condition: {failure.get('condition', 'None')}
+  PROBLEM: Expected ALLOW but got DENY
 
 """
     
     if deny_failures:
-        prompt += f"""SECURITY ISSUE: {len(deny_failures)} requests are being WRONGLY ALLOWED
+        prompt += f"""Current ISSUE: {len(deny_failures)} requests are being WRONGLY ALLOWED
 These requests MUST be denied but are currently permitted:
 
 """
         for i, failure in enumerate(deny_failures, 1):
             prompt += f"""Request {i}: ID={failure.get('request_id')}
-  ├─ Action: {failure.get('action')}
-  ├─ Resource: {failure.get('resource')}
-  ├─ Principal: {failure.get('principal', 'Any')}
-  ├─ Condition: {failure.get('condition', 'None')}
-  └─ PROBLEM: Expected DENY but got ALLOW
+  Action: {failure.get('action')}
+  Resource: {failure.get('resource')}
+  Principal: {failure.get('principal', 'Any')}
+  Condition: {failure.get('condition', 'None')}
+  PROBLEM: Expected DENY but got ALLOW
 
 """
 
-    # Statement-by-statement analysis
     prompt += f"""
 STATEMENT-BY-STATEMENT REPAIR ANALYSIS:
-======================================
+
 
 """
     
@@ -616,7 +614,7 @@ Current: {json.dumps(stmt, indent=2)}
                 issue = failure_info['issue']
                 strategy = failure_info['fix_strategy']
                 
-                prompt += f"""  • Request {example.get('request_id')}: {example.get('action')} on {example.get('resource')}
+                prompt += f""" Request {example.get('request_id')}: {example.get('action')} on {example.get('resource')}
     Issue: {issue.replace('_', ' ').title()}
     Fix Strategy: {strategy.replace('_', ' ').title()}
 """
@@ -633,7 +631,6 @@ Current: {json.dumps(stmt, indent=2)}
         
         prompt += f"""
 SMT SOLVER IDENTIFIED FAULTY STATEMENTS:
-=======================================
 
 """
         
@@ -648,7 +645,6 @@ SMT Analysis: {smt_analysis}
     # Provide specific repair instructions
     prompt += f"""
 PRECISE REPAIR INSTRUCTIONS:
-===========================
 
 You MUST apply these specific fixes:
 
@@ -735,7 +731,7 @@ FOR WRONGLY ALLOWED REQUESTS (Expected Deny, Got Allow):
   }}
 """
 
-    # Add requirements context for validation
+   
     prompt += f"""
 REQUIREMENTS CONTEXT:
 ===================
@@ -809,8 +805,15 @@ def format_requirements_enhanced(requirements):
     return "\n".join(output)
 
 def create_enhanced_system_prompt():
-    """Enhanced system prompt with better guidance"""
+    """Enhanced system prompt with better guidance for consistent JSON output"""
     return """You are an expert AWS IAM policy engineer. Your task is to repair IAM policies with surgical precision.
+
+CRITICAL OUTPUT REQUIREMENTS:
+- You MUST return a complete, valid JSON policy
+- Start your response immediately with { and end with }
+- Do NOT include any explanations, comments, or text before or after the JSON
+- Do NOT use markdown formatting or code blocks
+- The JSON must be syntactically correct and complete
 
 CORE PRINCIPLES:
 1. AWS IAM uses explicit allow model - requests are denied unless explicitly allowed
@@ -832,12 +835,61 @@ REPAIR METHODOLOGY:
 3. Validate your changes mentally:
    - Trace each failed request through your repaired policy
    - Ensure the repair doesn't break existing working requests
+   
+CRITICAL JSON SYNTAX REQUIREMENTS:
 
-OUTPUT REQUIREMENTS:
-- Return ONLY valid JSON policy
-- No explanations, comments, or markdown formatting
-- Ensure all JSON syntax is correct
-- Include required fields: Version, Statement"""
+1. ALL strings must use DOUBLE quotes "like this", NEVER single quotes 'like this'
+2. ALL property names must be in double quotes: {"Effect": "Allow"}
+3. ALL strings must be properly closed with matching quotes
+4. ALL objects must be properly closed with matching braces {}
+5. ALL arrays must be properly closed with matching brackets []
+
+REQUIRED JSON STRUCTURE to maintain. Do not copy this. This is only for referrence:
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "...",
+      "Effect": "Allow" or "Deny",
+      "Action": "..." or [...],
+      "Resource": "..." or [...],
+      "Principal": "..." (optional),
+      "Condition": {...} (optional)
+    }
+  ]
+}
+
+REMEMBER: Return ONLY the JSON policy, nothing else."""
+# def create_enhanced_system_prompt():
+#     """Enhanced system prompt with better guidance"""
+#     return """You are an expert AWS IAM policy engineer. Your task is to repair IAM policies with surgical precision.
+
+# CORE PRINCIPLES:
+# 1. AWS IAM uses explicit allow model - requests are denied unless explicitly allowed
+# 2. Deny statements always override Allow statements
+# 3. Make minimal, targeted changes to fix specific failures
+# 4. Preserve existing working functionality
+
+# REPAIR METHODOLOGY:
+# 1. For each failed request, identify the root cause:
+#    - Implicit deny: No Allow statement covers the request → Add specific Allow
+#    - Explicit deny: Deny statement blocks required request → Make Deny more specific or add Allow exception
+#    - Overpermissive allow: Allow statement permits unwanted request → Add constraints or specific Deny
+
+# 2. Apply fixes systematically:
+#    - Use Principal/Condition constraints to narrow scope rather than changing Effect
+#    - Add new statements only when necessary
+#    - Ensure all requirements are satisfied
+
+# 3. Validate your changes mentally:
+#    - Trace each failed request through your repaired policy
+#    - Ensure the repair doesn't break existing working requests
+
+# OUTPUT REQUIREMENTS:
+# - Return ONLY valid JSON policy
+# - No explanations, comments, or markdown formatting
+# - Ensure all JSON syntax is correct
+# - Include required fields: Version, Statement"""
 
 # Enhanced repair function using the improved prompts
 @retry()
@@ -852,12 +904,12 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
     prompt = create_enhanced_repair_prompt(
         policy, requirements, failed_examples, erroneous_policy, iteration
     )
-    prompt = prompt + "\n\n" + "1. EVERY statement MUST have an 'Effect' field set to either 'Allow' or 'Deny'."
+    prompt = prompt + "\n\n" + "1. EVERY statement MUST have an 'Effect' field set to either 'Allow' or 'Deny'. DO NOT create generic statements. Each failed request needs its own specific Principal and Condition combination unless needed."
     system_prompt = create_enhanced_system_prompt()
     
     # Enhanced logging
     logging.info(f"{'='*80}")
-    logging.info(f"ENHANCED REPAIR - ITERATION {iteration}")
+    logging.info(f"REPAIR - ITERATION {iteration}")
     logging.info(f"{'='*80}")
     
     if failed_examples:
@@ -895,7 +947,12 @@ def repair_policy_with_targeted_approach(policy: dict, requirements: dict, itera
     logging.info(f"Response length: {len(response_text)} characters")
     logging.info(f"Response preview: {response_text[:200]}...")
     logging.info(f"{'='*80}")
-    
+    logging.info(f"Complete Response - Iteration {iteration}: ")
+    logging.info(f"{'='*120}")
+    logging.info(response_text)
+    logging.info(f"{'='*120}")
+    logging.info(f"End of Complete Response - Iteration {iteration}")
+
     if not response_text:
         raise ValueError("Empty response from LLM")
     
@@ -1052,30 +1109,6 @@ SMT Analysis: {analysis}
     # ONLY ADD FILTERED REQUIREMENTS (not the full set)
     if len(filtered_requirements.get("Requests", [])) > 0:
         prompt += f"""
-# RELEVANT REQUEST FOR CONTEXT (not all requirements are needed, only those related to failed requests):
-# """
-        
-#         if allow_requirements:
-#             prompt += "\nMUST ALLOW (these requests should get Effect: Allow):\n"
-#             for req in allow_requirements:
-#                 prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-#                 if req.get('Principal'):
-#                     prompt += f" for Principal: {req.get('Principal')}"
-#                 if req.get('Condition'):
-#                     prompt += f" when Condition: {req.get('Condition')}"
-#                 prompt += "\n"
-        
-#         if deny_requirements:
-#             prompt += "\nMUST DENY (these requests should get Effect: Deny):\n"
-#             for req in deny_requirements:
-#                 prompt += f"  {req.get('id')}: {req.get('Action')} on {req.get('Resource')}"
-#                 if req.get('Principal'):
-#                     prompt += f" for Principal: {req.get('Principal')}"
-#                 if req.get('Condition'):
-#                     prompt += f" when Condition: {req.get('Condition')}"
-#                 prompt += "\n"
-
-    prompt += f"""
     
 REPAIR INSTRUCTIONS (You MUST follow these strict principles):
 1. Use the SMT analysis to identify which statements are problematic
@@ -1318,8 +1351,8 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
             os.unlink(faulty_output_path)
         
         return {
-            'accuracy': accuracy,  # ← From complete policy validation
-            'total_requests': total_requests,  # ← Should be 10, not 60
+            'accuracy': accuracy, 
+            'total_requests': total_requests,
             'correct': correct_count,
             'incorrect': incorrect_count,
             'misclassified_allow_to_deny': misclassified_allow_to_deny,
@@ -1381,10 +1414,250 @@ def format_requirements(requests: dict) -> str:
     
     return "\n".join(lines)
 
+# def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0, 
+#                                       baseline_failed_examples: list = None,
+#                                       baseline_erroneous_policy: dict = None) -> dict:
+#     """Process a single policy with erroneous policy guided repair using both analysis and failed examples"""
+    
+#     cycle_start_time = time.time()
+#     logging.info(f"Processing policy {idx} for repair...")
+#     policy_file = os.path.join(POLICY_DIR, f"{idx}.json")
+#     req_file = os.path.join(REQUIREMENTS_DIR, f"{idx}.json")
+    
+#     if not os.path.exists(policy_file) or not os.path.exists(req_file):
+#         raise FileNotFoundError(f"Missing files for index {idx}")
+    
+#     original_policy = load_json_file(policy_file)
+#     requirements = load_json_file(req_file)
+    
+#     logging.info(f"Starting enhanced repair for policy {idx} (baseline: {baseline_accuracy:.1f}%)...")
+#     if baseline_failed_examples:
+#         logging.info(f"Using {len(baseline_failed_examples)} failed request examples")
+#     if baseline_erroneous_policy:
+#         logging.info(f"Using erroneous policy analysis")
+    
+#     if baseline_accuracy >= TARGET_ACCURACY:
+#         logging.info(f"Policy {idx} already achieves target accuracy ({baseline_accuracy:.1f}%). Skipping repair.")
+#         final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_already_perfect.json")
+#         save_json_file(original_policy, final_output_file)
+        
+#         return {
+#             'index': idx,
+#             'status': 'already_perfect',
+#             'baseline_accuracy': baseline_accuracy,
+#             'final_accuracy': baseline_accuracy,
+#             'improvement_from_baseline': 0.0,
+#             'iterations_used': 0,
+#             'iteration_accuracies': [baseline_accuracy],
+#             'iteration_results': [],
+#             'final_policy_file': final_output_file
+#         }
+    
+#     iteration_results = []
+#     current_policy = original_policy.copy()
+#     current_erroneous_policy = baseline_erroneous_policy
+#     current_failed_examples = baseline_failed_examples or []
+#     final_accuracy = baseline_accuracy
+#     iteration_accuracies = [baseline_accuracy]
+    
+#     for iteration in range(1, MAX_ITERATIONS + 1):
+#         logging.info(f"Policy {idx} - Iteration {iteration}/{MAX_ITERATIONS} (Previous: {final_accuracy:.1f}%)")
+        
+#         iteration_success = False
+#         iteration_accuracy = 0.0
+#         iteration_policy_file = None
+        
+#         try:
+#             logging.info(f"Repairing policy with enhanced guidance (iteration {iteration})...")
+            
+#             if current_erroneous_policy:
+#                 logging.info(f"Using erroneous policy with {len(current_erroneous_policy.get('Statement', []))} faulty statements")
+#             if current_failed_examples:
+#                 logging.info(f"Using {len(current_failed_examples)} failed request examples")
+            
+#             # Use BOTH erroneous policy AND failed examples for comprehensive repair
+#             repaired_policy = repair_policy_with_targeted_approach(
+#                 current_policy, requirements, iteration, current_erroneous_policy, current_failed_examples
+#             )
+            
+#             temp_policy_file = os.path.join(TEMP_DIR, f"policy_{idx}_iter_{iteration}.json")
+#             os.makedirs(TEMP_DIR, exist_ok=True)
+#             save_json_file(repaired_policy, temp_policy_file)
+            
+#             logging.info(f"Validating with SMT solver (iteration {iteration})...")
+#             validation_results = run_smt_validator(temp_policy_file, req_file, policy_idx=idx)
+            
+#             accuracy = validation_results['accuracy']
+#             iteration_accuracy = accuracy  # Store for tracking
+#             iteration_policy_file = temp_policy_file  # Store for tracking
+            
+#             # Update failed examples and erroneous policy for next iteration
+#             current_failed_examples = validation_results.get('failed_examples', [])
+#             current_erroneous_policy = validation_results.get('erroneous_policy')
+            
+#             # ALWAYS append iteration accuracy before any potential exceptions
+#             iteration_accuracies.append(accuracy)
+#             improvement = accuracy - baseline_accuracy
+            
+#             logging.info(f"Iteration {iteration} Results:")
+#             logging.info(f"  Accuracy: {accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
+#             logging.info(f"  New Failed Examples: {len(current_failed_examples)}")
+#             if current_erroneous_policy:
+#                 logging.info(f"  New erroneous policy has {len(current_erroneous_policy.get('Statement', []))} faulty statements")
+            
+#             # Create iteration record BEFORE success check
+#             iteration_record = {
+#                 'policy_idx': idx,
+#                 'iteration': iteration,
+#                 'validation_type': 'repair_with_examples',
+#                 'accuracy': accuracy,
+#                 'baseline_accuracy': baseline_accuracy,
+#                 'improvement_from_baseline': improvement,
+#                 'total_requests': validation_results['total_requests'],
+#                 'correct': validation_results['correct'],
+#                 'incorrect': validation_results['incorrect'],
+#                 'misclassified_allow_to_deny': validation_results['misclassified_allow_to_deny'],
+#                 'misclassified_deny_to_allow': validation_results['misclassified_deny_to_allow'],
+#                 'failed_examples_count': len(current_failed_examples),
+#                 'failed_examples': current_failed_examples,
+#                 'erroneous_policy': current_erroneous_policy,
+#                 'policy_file': temp_policy_file
+#             }
+#             iteration_results.append(iteration_record)
+            
+#             final_accuracy = accuracy
+            
+#             # Check if we achieved target accuracy
+#             if accuracy >= TARGET_ACCURACY:
+#                 logging.info(f"Target accuracy achieved for policy {idx} in {iteration} iterations!")
+#                 logging.info(f"Final accuracy: {accuracy:.1f}% (Improvement from baseline: {improvement:+.1f}%)")
+                
+#                 # Try to save final policy with error handling
+#                 try:
+#                     final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
+#                     save_json_file(repaired_policy, final_output_file)
+#                     iteration_success = True
+                    
+#                     return {
+#                         'index': idx,
+#                         'status': 'success',
+#                         'baseline_accuracy': baseline_accuracy,
+#                         'final_accuracy': accuracy,
+#                         'improvement_from_baseline': improvement,
+#                         'iterations_used': iteration,
+#                         'iteration_accuracies': iteration_accuracies,
+#                         'iteration_results': iteration_results,
+#                         'final_policy_file': final_output_file
+#                     }
+#                 except Exception as save_error:
+#                     logging.error(f"Error saving final policy for {idx}: {save_error}")
+#                     # Continue to try saving as best policy below
+#                     iteration_success = True  # We still achieved target accuracy
+            
+#             # Update for next iteration
+#             current_policy = repaired_policy.copy()
+            
+#         except Exception as e:
+#             logging.error(f"Error in iteration {iteration} for policy {idx}: {e}")
+            
+#             # If we haven't recorded the iteration yet, add an error record
+#             if not any(record.get('iteration') == iteration for record in iteration_results):
+#                 iteration_record = {
+#                     'policy_idx': idx,
+#                     'iteration': iteration,
+#                     'validation_type': 'repair_with_examples',
+#                     'accuracy': iteration_accuracy,  # Use actual accuracy if we got it
+#                     'baseline_accuracy': baseline_accuracy,
+#                     'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
+#                     'failed_examples_count': 0,
+#                     'error': str(e),
+#                     'policy_file': iteration_policy_file  # Include file if we got it
+#                 }
+#                 iteration_results.append(iteration_record)
+                
+#                 # Only append to iteration_accuracies if we got a real accuracy
+#                 if iteration_accuracy > 0:
+#                     iteration_accuracies.append(iteration_accuracy)
+            
+#             # If we achieved target accuracy but had a save error, try to save as best
+#             if iteration_success and iteration_accuracy >= TARGET_ACCURACY:
+#                 try:
+#                     final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
+#                     if iteration_policy_file and os.path.exists(iteration_policy_file):
+#                         shutil.copy2(iteration_policy_file, final_output_file)
+                        
+#                         return {
+#                             'index': idx,
+#                             'status': 'success',
+#                             'baseline_accuracy': baseline_accuracy,
+#                             'final_accuracy': iteration_accuracy,
+#                             'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
+#                             'iterations_used': iteration,
+#                             'iteration_accuracies': iteration_accuracies,
+#                             'iteration_results': iteration_results,
+#                             'final_policy_file': final_output_file
+#                         }
+#                 except Exception as fallback_error:
+#                     logging.error(f"Error in fallback save for {idx}: {fallback_error}")
+
+#     # If we reach here, we didn't achieve target accuracy
+#     # Find the best iteration result
+#     best_accuracy = baseline_accuracy
+#     best_iteration = None
+
+#     if iteration_results:
+#         logging.info(f"Policy {idx}: All iteration results:")
+#         for i, result in enumerate(iteration_results):
+#             logging.info(f"  Iteration {result.get('iteration')}: {result.get('accuracy', 0):.1f}% - File: {result.get('policy_file')}")
+        
+#         best_iteration = max(iteration_results, key=lambda x: x.get('accuracy', 0))
+#         best_accuracy = best_iteration.get('accuracy', baseline_accuracy)
+#         best_file = best_iteration.get('policy_file')
+#         best_iter_num = best_iteration.get('iteration')
+        
+#         logging.info(f"Policy {idx}: Selected best iteration {best_iter_num} with accuracy {best_accuracy:.1f}%")
+        
+#         if ('policy_file' in best_iteration and best_iteration['policy_file'] is not None and os.path.exists(best_iteration['policy_file'])):
+#             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_best.json")
+#             shutil.copy2(best_iteration['policy_file'], final_output_file)
+#         else:
+#             final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_original.json")
+#             save_json_file(original_policy, final_output_file)
+#             best_accuracy = baseline_accuracy
+#             logging.warning(f"Policy {idx}: No valid best iteration file found, saving original policy")
+#     else:
+#         final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_original.json")
+#         save_json_file(original_policy, final_output_file)
+#         logging.warning(f"Policy {idx}: No iteration results found, saving original policy")
+
+#     improvement = best_accuracy - baseline_accuracy
+#     logging.warning(f"Failed to achieve target accuracy for policy {idx} after {MAX_ITERATIONS} iterations.")
+#     logging.warning(f"Best accuracy: {best_accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
+
+#     return {
+#         'index': idx,
+#         'status': 'failed',
+#         'baseline_accuracy': baseline_accuracy,
+#         'final_accuracy': best_accuracy,  # Use best accuracy, not final iteration
+#         'improvement_from_baseline': improvement,
+#         'iterations_used': MAX_ITERATIONS,
+#         'iteration_accuracies': iteration_accuracies,
+#         'iteration_results': iteration_results,
+#         'final_policy_file': final_output_file
+#     }
+
+import time
+from datetime import datetime, timedelta
+
+# Modify the process_policy_with_improved_repair function
 def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0, 
                                       baseline_failed_examples: list = None,
                                       baseline_erroneous_policy: dict = None) -> dict:
     """Process a single policy with erroneous policy guided repair using both analysis and failed examples"""
+    
+    # START TIME TRACKING
+    cycle_start_time = time.time()
+    
     policy_file = os.path.join(POLICY_DIR, f"{idx}.json")
     req_file = os.path.join(REQUIREMENTS_DIR, f"{idx}.json")
     
@@ -1401,6 +1674,9 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
         logging.info(f"Using erroneous policy analysis")
     
     if baseline_accuracy >= TARGET_ACCURACY:
+        cycle_end_time = time.time()
+        cycle_duration = cycle_end_time - cycle_start_time
+        
         logging.info(f"Policy {idx} already achieves target accuracy ({baseline_accuracy:.1f}%). Skipping repair.")
         final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_already_perfect.json")
         save_json_file(original_policy, final_output_file)
@@ -1414,7 +1690,10 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             'iterations_used': 0,
             'iteration_accuracies': [baseline_accuracy],
             'iteration_results': [],
-            'final_policy_file': final_output_file
+            'final_policy_file': final_output_file,
+            'cycle_duration_seconds': cycle_duration,
+            'cycle_duration_formatted': str(timedelta(seconds=int(cycle_duration))),
+            'average_accuracy': baseline_accuracy
         }
     
     iteration_results = []
@@ -1425,6 +1704,8 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     iteration_accuracies = [baseline_accuracy]
     
     for iteration in range(1, MAX_ITERATIONS + 1):
+        iteration_start_time = time.time()
+        
         logging.info(f"Policy {idx} - Iteration {iteration}/{MAX_ITERATIONS} (Previous: {final_accuracy:.1f}%)")
         
         iteration_success = False
@@ -1452,8 +1733,8 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             validation_results = run_smt_validator(temp_policy_file, req_file, policy_idx=idx)
             
             accuracy = validation_results['accuracy']
-            iteration_accuracy = accuracy  # Store for tracking
-            iteration_policy_file = temp_policy_file  # Store for tracking
+            iteration_accuracy = accuracy
+            iteration_policy_file = temp_policy_file
             
             # Update failed examples and erroneous policy for next iteration
             current_failed_examples = validation_results.get('failed_examples', [])
@@ -1463,8 +1744,12 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             iteration_accuracies.append(accuracy)
             improvement = accuracy - baseline_accuracy
             
+            iteration_end_time = time.time()
+            iteration_duration = iteration_end_time - iteration_start_time
+            
             logging.info(f"Iteration {iteration} Results:")
             logging.info(f"  Accuracy: {accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
+            logging.info(f"  Duration: {iteration_duration:.1f} seconds")
             logging.info(f"  New Failed Examples: {len(current_failed_examples)}")
             if current_erroneous_policy:
                 logging.info(f"  New erroneous policy has {len(current_erroneous_policy.get('Statement', []))} faulty statements")
@@ -1485,7 +1770,8 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                 'failed_examples_count': len(current_failed_examples),
                 'failed_examples': current_failed_examples,
                 'erroneous_policy': current_erroneous_policy,
-                'policy_file': temp_policy_file
+                'policy_file': temp_policy_file,
+                'iteration_duration_seconds': iteration_duration
             }
             iteration_results.append(iteration_record)
             
@@ -1493,8 +1779,15 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             
             # Check if we achieved target accuracy
             if accuracy >= TARGET_ACCURACY:
+                cycle_end_time = time.time()
+                cycle_duration = cycle_end_time - cycle_start_time
+                repair_accuracies = iteration_accuracies[1:] if len(iteration_accuracies) > 1 else []
+                average_accuracy = sum(repair_accuracies) / len(repair_accuracies) if repair_accuracies else best_accuracy
+
                 logging.info(f"Target accuracy achieved for policy {idx} in {iteration} iterations!")
                 logging.info(f"Final accuracy: {accuracy:.1f}% (Improvement from baseline: {improvement:+.1f}%)")
+                logging.info(f"Total cycle time: {cycle_duration:.1f} seconds ({str(timedelta(seconds=int(cycle_duration)))})")
+                logging.info(f"Average accuracy across all iterations: {average_accuracy:.1f}%")
                 
                 # Try to save final policy with error handling
                 try:
@@ -1511,7 +1804,10 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                         'iterations_used': iteration,
                         'iteration_accuracies': iteration_accuracies,
                         'iteration_results': iteration_results,
-                        'final_policy_file': final_output_file
+                        'final_policy_file': final_output_file,
+                        'cycle_duration_seconds': cycle_duration,
+                        'cycle_duration_formatted': str(timedelta(seconds=int(cycle_duration))),
+                        'average_accuracy': average_accuracy
                     }
                 except Exception as save_error:
                     logging.error(f"Error saving final policy for {idx}: {save_error}")
@@ -1522,6 +1818,9 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             current_policy = repaired_policy.copy()
             
         except Exception as e:
+            iteration_end_time = time.time()
+            iteration_duration = iteration_end_time - iteration_start_time
+            
             logging.error(f"Error in iteration {iteration} for policy {idx}: {e}")
             
             # If we haven't recorded the iteration yet, add an error record
@@ -1530,12 +1829,13 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                     'policy_idx': idx,
                     'iteration': iteration,
                     'validation_type': 'repair_with_examples',
-                    'accuracy': iteration_accuracy,  # Use actual accuracy if we got it
+                    'accuracy': iteration_accuracy,
                     'baseline_accuracy': baseline_accuracy,
                     'improvement_from_baseline': iteration_accuracy - baseline_accuracy,
                     'failed_examples_count': 0,
                     'error': str(e),
-                    'policy_file': iteration_policy_file  # Include file if we got it
+                    'policy_file': iteration_policy_file,
+                    'iteration_duration_seconds': iteration_duration
                 }
                 iteration_results.append(iteration_record)
                 
@@ -1546,6 +1846,10 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
             # If we achieved target accuracy but had a save error, try to save as best
             if iteration_success and iteration_accuracy >= TARGET_ACCURACY:
                 try:
+                    cycle_end_time = time.time()
+                    cycle_duration = cycle_end_time - cycle_start_time
+                    average_accuracy = sum(iteration_accuracies) / len(iteration_accuracies)
+                    
                     final_output_file = os.path.join(OUTPUT_DIR, f"repaired_{idx}_final.json")
                     if iteration_policy_file and os.path.exists(iteration_policy_file):
                         shutil.copy2(iteration_policy_file, final_output_file)
@@ -1559,10 +1863,18 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
                             'iterations_used': iteration,
                             'iteration_accuracies': iteration_accuracies,
                             'iteration_results': iteration_results,
-                            'final_policy_file': final_output_file
+                            'final_policy_file': final_output_file,
+                            'cycle_duration_seconds': cycle_duration,
+                            'cycle_duration_formatted': str(timedelta(seconds=int(cycle_duration))),
+                            'average_accuracy': average_accuracy
                         }
                 except Exception as fallback_error:
                     logging.error(f"Error in fallback save for {idx}: {fallback_error}")
+
+    # END TIME TRACKING FOR FAILED CASES
+    cycle_end_time = time.time()
+    cycle_duration = cycle_end_time - cycle_start_time
+    average_accuracy = sum(iteration_accuracies) / len(iteration_accuracies) if iteration_accuracies else baseline_accuracy
 
     # If we reach here, we didn't achieve target accuracy
     # Find the best iteration result
@@ -1572,7 +1884,8 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     if iteration_results:
         logging.info(f"Policy {idx}: All iteration results:")
         for i, result in enumerate(iteration_results):
-            logging.info(f"  Iteration {result.get('iteration')}: {result.get('accuracy', 0):.1f}% - File: {result.get('policy_file')}")
+            duration = result.get('iteration_duration_seconds', 0)
+            logging.info(f"  Iteration {result.get('iteration')}: {result.get('accuracy', 0):.1f}% ({duration:.1f}s) - File: {result.get('policy_file')}")
         
         best_iteration = max(iteration_results, key=lambda x: x.get('accuracy', 0))
         best_accuracy = best_iteration.get('accuracy', baseline_accuracy)
@@ -1597,17 +1910,22 @@ def process_policy_with_improved_repair(idx: int, baseline_accuracy: float = 0.0
     improvement = best_accuracy - baseline_accuracy
     logging.warning(f"Failed to achieve target accuracy for policy {idx} after {MAX_ITERATIONS} iterations.")
     logging.warning(f"Best accuracy: {best_accuracy:.1f}% (Baseline: {baseline_accuracy:.1f}%, Improvement: {improvement:+.1f}%)")
+    logging.warning(f"Total cycle time: {cycle_duration:.1f} seconds ({str(timedelta(seconds=int(cycle_duration)))})")
+    logging.warning(f"Average accuracy across all iterations: {average_accuracy:.1f}%")
 
     return {
         'index': idx,
         'status': 'failed',
         'baseline_accuracy': baseline_accuracy,
-        'final_accuracy': best_accuracy,  # Use best accuracy, not final iteration
+        'final_accuracy': best_accuracy,
         'improvement_from_baseline': improvement,
         'iterations_used': MAX_ITERATIONS,
         'iteration_accuracies': iteration_accuracies,
         'iteration_results': iteration_results,
-        'final_policy_file': final_output_file
+        'final_policy_file': final_output_file,
+        'cycle_duration_seconds': cycle_duration,
+        'cycle_duration_formatted': str(timedelta(seconds=int(cycle_duration))),
+        'average_accuracy': average_accuracy
     }
 
 class IterativeProgressTracker:
@@ -1652,7 +1970,7 @@ class IterativeProgressTracker:
     def is_baseline_done(self, idx):
         return idx in self.progress.get("baseline_completed", [])
     
-    def mark_completed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies):
+    def mark_completed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies, cycle_duration=0.0):
         self.progress["last_processed"] = idx
         if idx not in self.progress["completed"]:
             self.progress["completed"].append(idx)
@@ -1661,21 +1979,32 @@ class IterativeProgressTracker:
         
         self.progress["baseline_accuracies"][str(idx)] = baseline_accuracy
         
+        # Calculate average accuracy across repair iterations only (excluding baseline)
+        repair_accuracies = iteration_accuracies[1:] if len(iteration_accuracies) > 1 else []
+        average_accuracy = sum(repair_accuracies) / len(repair_accuracies) if repair_accuracies else final_accuracy
+        
         self.progress["policy_iterations"][str(idx)] = {
             "status": "completed",
-            "ba seline_accuracy": baseline_accuracy,
+            "baseline_accuracy": baseline_accuracy,
             "final_accuracy": final_accuracy,
             "improvement": final_accuracy - baseline_accuracy,
             "iterations_used": iterations_used,
-            "iteration_accuracies": iteration_accuracies
+            "iteration_accuracies": iteration_accuracies,
+            "average_accuracy": average_accuracy,
+            "cycle_duration_seconds": cycle_duration,
+            "cycle_duration_formatted": str(timedelta(seconds=int(cycle_duration))) if cycle_duration > 0 else "00:00:00"
         }
         self.save_progress()
     
-    def mark_failed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies):
+    def mark_failed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies, cycle_duration=0.0):
         if idx not in self.progress["failed"]:
             self.progress["failed"].append(idx)
         
         self.progress["baseline_accuracies"][str(idx)] = baseline_accuracy
+        
+        # Calculate average accuracy across repair iterations only (excluding baseline)
+        repair_accuracies = iteration_accuracies[1:] if len(iteration_accuracies) > 1 else []
+        average_accuracy = sum(repair_accuracies) / len(repair_accuracies) if repair_accuracies else final_accuracy
         
         self.progress["policy_iterations"][str(idx)] = {
             "status": "failed",
@@ -1683,7 +2012,10 @@ class IterativeProgressTracker:
             "final_accuracy": final_accuracy,
             "improvement": final_accuracy - baseline_accuracy,
             "iterations_used": iterations_used,
-            "iteration_accuracies": iteration_accuracies
+            "iteration_accuracies": iteration_accuracies,
+            "average_accuracy": average_accuracy,
+            "cycle_duration_seconds": cycle_duration,
+            "cycle_duration_formatted": str(timedelta(seconds=int(cycle_duration))) if cycle_duration > 0 else "00:00:00"
         }
         self.save_progress()
     
@@ -1692,6 +2024,128 @@ class IterativeProgressTracker:
     
     def is_done(self, idx):
         return idx in self.progress.get("completed", [])
+    
+# class IterativeProgressTracker:
+#     """Progress tracker for iterative policy repair"""
+#     def __init__(self, progress_file: str = os.path.join(OUTPUT_DIR, "improved_iterative_progress.json")):
+#         self.progress_file = progress_file
+#         self.progress = self._load_progress()
+    
+#     def _load_progress(self):
+#         if os.path.exists(self.progress_file):
+#             try:
+#                 with open(self.progress_file, 'r') as f:
+#                     return json.load(f)
+#             except:
+#                 pass
+#         return {
+#             "last_processed": -1, 
+#             "completed": [], 
+#             "failed": [],
+#             "policy_iterations": {},
+#             "baseline_completed": [],
+#             "baseline_accuracies": {}
+#         }
+    
+#     def save_progress(self):
+#         os.makedirs(os.path.dirname(self.progress_file), exist_ok=True)
+#         with open(self.progress_file, 'w') as f:
+#             json.dump(self.progress, f, indent=2)
+    
+#     def mark_baseline_completed(self, idx, baseline_accuracy=None):
+#         if idx not in self.progress["baseline_completed"]:
+#             self.progress["baseline_completed"].append(idx)
+        
+#         if baseline_accuracy is not None:
+#             self.progress["baseline_accuracies"][str(idx)] = baseline_accuracy
+            
+#         self.save_progress()
+    
+#     def get_baseline_accuracy(self, idx):
+#         return self.progress["baseline_accuracies"].get(str(idx), 0.0)
+    
+#     def is_baseline_done(self, idx):
+#         return idx in self.progress.get("baseline_completed", [])
+    
+#     def mark_completed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies):
+#         self.progress["last_processed"] = idx
+#         if idx not in self.progress["completed"]:
+#             self.progress["completed"].append(idx)
+#         if idx in self.progress["failed"]:
+#             self.progress["failed"].remove(idx)
+        
+#         self.progress["baseline_accuracies"][str(idx)] = baseline_accuracy
+        
+#         self.progress["policy_iterations"][str(idx)] = {
+#             "status": "completed",
+#             "ba seline_accuracy": baseline_accuracy,
+#             "final_accuracy": final_accuracy,
+#             "improvement": final_accuracy - baseline_accuracy,
+#             "iterations_used": iterations_used,
+#             "iteration_accuracies": iteration_accuracies
+#         }
+#         self.save_progress()
+    
+#     def mark_failed(self, idx, baseline_accuracy, final_accuracy, iterations_used, iteration_accuracies, iteration_results=None):
+#         """Mark a policy as failed with proper timing and accuracy calculations"""
+#         if idx not in self.progress["failed"]:
+#             self.progress["failed"].append(idx)
+        
+#         self.progress["baseline_accuracies"][str(idx)] = baseline_accuracy
+        
+#         # Calculate average accuracy correctly (excluding baseline if present)
+#         if iteration_accuracies:
+#             # If first accuracy is baseline, exclude it from iteration average
+#             if len(iteration_accuracies) > 1:
+#                 repair_accuracies = iteration_accuracies[1:]  # Skip baseline
+#                 average_accuracy = sum(repair_accuracies) / len(repair_accuracies) if repair_accuracies else baseline_accuracy
+#             else:
+#                 average_accuracy = iteration_accuracies[0]
+#         else:
+#             average_accuracy = baseline_accuracy
+        
+#         # Calculate timing metrics if iteration_results provided
+#         average_iteration_duration = 0.0
+#         total_iteration_time = 0.0
+#         average_iteration_duration_formatted = "00:00:00"
+#         total_iteration_time_formatted = "00:00:00"
+        
+#         if iteration_results:
+#             # Extract durations from iteration results
+#             iteration_durations = [
+#                 result.get('iteration_duration_seconds', 0) 
+#                 for result in iteration_results 
+#                 if 'iteration_duration_seconds' in result and result.get('iteration_duration_seconds', 0) > 0
+#             ]
+            
+#             if iteration_durations:
+#                 average_iteration_duration = sum(iteration_durations) / len(iteration_durations)
+#                 total_iteration_time = sum(iteration_durations)
+#                 average_iteration_duration_formatted = str(timedelta(seconds=int(average_iteration_duration)))
+#                 total_iteration_time_formatted = str(timedelta(seconds=int(total_iteration_time)))
+        
+#         self.progress["policy_iterations"][str(idx)] = {
+#             "status": "failed",
+#             "baseline_accuracy": baseline_accuracy,
+#             "final_accuracy": final_accuracy,
+#             "improvement": final_accuracy - baseline_accuracy,
+#             "iterations_used": iterations_used,
+#             "iteration_accuracies": iteration_accuracies,
+#             "average_accuracy": average_accuracy,
+#             "average_iteration_duration_seconds": average_iteration_duration,
+#             "average_iteration_duration_formatted": average_iteration_duration_formatted,
+#             "total_iteration_time_seconds": total_iteration_time,
+#             "total_iteration_time_formatted": total_iteration_time_formatted,
+#             "iteration_count": len(iteration_durations) if iteration_results else 0
+#         }
+#         self.save_progress()
+
+    
+#     def get_next(self):
+#         return self.progress.get("last_processed", -1) + 1
+    
+#     def is_done(self, idx):
+#         return idx in self.progress.get("completed", [])
 
 def test_ollama_connection():
     """Test if Ollama is running and the model is available"""
@@ -1902,7 +2356,8 @@ def main():
                     result['baseline_accuracy'], 
                     result['final_accuracy'], 
                     result['iterations_used'], 
-                    result['iteration_accuracies']
+                    result['iteration_accuracies'],
+                    result.get('cycle_duration_seconds', 0.0)
                 )
             else:
                 tracker.mark_failed(
@@ -1910,7 +2365,8 @@ def main():
                     result['baseline_accuracy'], 
                     result['final_accuracy'], 
                     result['iterations_used'], 
-                    result.get('iteration_accuracies', [])
+                    result.get('iteration_accuracies', []),
+                    result.get('cycle_duration_seconds', 0.0)
                 )
             
             all_results.append(result)
@@ -1965,7 +2421,7 @@ def main():
                     'action': example['action'],
                     'resource': example['resource'],
                     'expected': example['expected'],
-                    'actual': example['actual']
+                    'actual': example['actual'] 
                 })
     
     if failed_examples_analysis:
@@ -2055,7 +2511,42 @@ def main():
     # Cleanup
     if os.path.exists(TEMP_DIR):
         logging.info(f"Temporary files kept for analysis in: {TEMP_DIR}")
+def print_timing_summary(all_results):
+    """Print timing and accuracy summary"""
+    if not all_results:
+        return
+    
+    total_time = sum(r.get('cycle_duration_seconds', 0) for r in all_results)
+    successful_results = [r for r in all_results if r.get('status') in ['success', 'already_perfect']]
+    failed_results = [r for r in all_results if r.get('status') == 'failed']
+    
+    print(f"\nTIMING & ACCURACY ANALYSIS:")
+    print(f"  Total processing time: {str(timedelta(seconds=int(total_time)))}")
+    print(f"  Average time per policy: {total_time/len(all_results):.1f} seconds")
+    
+    if successful_results:
+        avg_success_time = sum(r.get('cycle_duration_seconds', 0) for r in successful_results) / len(successful_results)
+        avg_success_accuracy = sum(r.get('average_accuracy', 0) for r in successful_results) / len(successful_results)
+        print(f"  Average time for successful repairs: {avg_success_time:.1f} seconds")
+        print(f"  Average accuracy for successful repairs: {avg_success_accuracy:.1f}%")
+    
+    if failed_results:
+        avg_failed_time = sum(r.get('cycle_duration_seconds', 0) for r in failed_results) / len(failed_results)
+        avg_failed_accuracy = sum(r.get('average_accuracy', 0) for r in failed_results) / len(failed_results)
+        print(f"  Average time for failed repairs: {avg_failed_time:.1f} seconds")
+        print(f"  Average accuracy for failed repairs: {avg_failed_accuracy:.1f}%")
+    
+    print(f"\nPER-POLICY TIMING:")
+    for result in all_results:
+        idx = result['index']
+        duration = result.get('cycle_duration_seconds', 0)
+        avg_acc = result.get('average_accuracy', 0)
+        status = result.get('status', 'unknown')
+        iterations = result.get('iterations_used', 0)
         
+        duration_str = str(timedelta(seconds=int(duration)))
+        print(f"  Policy {idx}: {duration_str} ({duration:.1f}s) - {status} - {iterations} iterations - Avg accuracy: {avg_acc:.1f}%")
+
 def cleanup_previous_run():
     directories_to_clean = [
         OUTPUT_DIR,
