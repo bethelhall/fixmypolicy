@@ -1,0 +1,150 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ecs_task_put_events_with_org",
+        "Effect": "allow",
+        "Action": [
+          "events:PutEvents"
+        ],
+        "Resource": [
+          "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalOrgID": "OrgID"
+          }
+        }
+      },
+      {
+        "id": "test_ecs_task_put_events_no_org",
+        "Effect": "deny",
+        "Action": [
+          "events:PutEvents"
+        ],
+        "Resource": [
+          "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309"
+      },
+      {
+        "id": "test_s3_put_bucket_cors_wrong_policy",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutBucketCORS"
+        ],
+        "Resource": [
+          "arn:aws:s3:::myapp-staging-2-pub"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309"
+      },
+      {
+        "id": "test_root_account_put_events",
+        "Effect": "allow",
+        "Action": [
+          "events:PutEvents"
+        ],
+        "Resource": [
+          "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:iam::accountID:root"
+      },
+      {
+        "id": "test_s3_put_bucket_website_wrong_policy",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutBucketWebsite"
+        ],
+        "Resource": [
+          "arn:aws:s3:::myapp-staging-2-pub"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309"
+      },
+      {
+        "id": "test_external_account_put_events",
+        "Effect": "deny",
+        "Action": [
+          "events:PutEvents"
+        ],
+        "Resource": [
+          "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:iam::999999:user/external-user"
+      },
+      {
+        "id": "test_vpc_endpoint_s3_restriction",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutBucketCORS"
+        ],
+        "Resource": [
+          "arn:aws:s3:::myapp-staging-2-pub"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef"
+          }
+        }
+      },
+      {
+        "id": "test_events_list_rules_denied",
+        "Effect": "deny",
+        "Action": [
+          "events:ListRules"
+        ],
+        "Resource": [
+          "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:iam::accountID:root"
+      },
+      {
+        "id": "test_s3_get_bucket_cors_wrong_service",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketCors"
+        ],
+        "Resource": [
+          "arn:aws:s3:::myapp-staging-2-pub"
+        ],
+        "Principal": "arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309"
+      },
+      {
+        "id": "test_org_member_different_region",
+        "Effect": "deny",
+        "Action": [
+          "events:PutEvents"
+        ],
+        "Resource": [
+          "arn:aws:events:us-west-2:accountID:event-bus/eventbusname"
+        ],
+        "Principal": "arn:aws:iam::888888:user/org-member",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalOrgID": "OrgID"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    },
+    "repaired_policy": {
+      "accuracy": 50.0,
+      "total_requests": 10,
+      "correct": 5,
+      "incorrect": 5
+    }
+  },
+  "metadata": {
+    "file_number": "41",
+    "user_intent": "I'm getting the following error when using the Java AWS SDK 2.x from my ECS container.  Here is my error:\n\n\nsoftware.amazon.awssdk.services.s3.model.S3Exception: User: arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309 is not authorized to perform: s3:PutBucketCORS on resource: \"arn:aws:s3:::myapp-staging-2-pub\" because no VPC endpoint policy allows the s3:PutBucketCORS action (Service: S3, Status Code: 403, Request ID: 747ADD3QA29N29Q0, Extended Request ID: MmZZYUlsM/r5kFS+lNVFmUHqKIEbfORtXIlD1roMzCtBkmaBSB2AbC9DPN4lMo40bqDxJSu33Pw=) (SDK Attempt Count: 1)\n\n\n\nI'm using the default credential provider which should pick up the ECS credentials from the environment.  I've confirmed that the environment variable is set inside my docker container:\n\n\n wget -O - 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI\n\n\n\nAnd that the RoleARN is pointing to my expected role.\n\n\nMy code is this:\n\n\n        s3 = S3AsyncClient.builder().multipartEnabled(true).build();\n        transferManager = S3TransferManager.builder().s3Client(s3).build();\n        ....\n            s3.putBucketCors((r) ->\n                    r.bucket(bucket)\n                            .corsConfiguration((cors) ->\n                                    cors.corsRules((rule) ->\n                                            rule.allowedMethods(\"GET\", \"HEAD\")\n                                                    .allowedOrigins(String.format(\"https://*.%s\", domain))\n                                    )\n                            )\n            ).join();\n            s3.putBucketWebsite((r) ->\n                    r.bucket(bucket)\n                            .websiteConfiguration((www) -> www.indexDocument((doc) -> doc.suffix(\"index.html\")))\n            ).join();\n\n\n\nMy container's Task Role is set so I'm granting permissions to my container based on this role.  The policy attached to the role contains the following permissions:\n\n\n\n\n\n\nOriginally I didn't have the PutBucketCORS permission attached to the role.  I modified my policy and added it as you see above.  I even tested this new version in the policy simulator using the same names of resources and permissions in the error, and it said it passed.  I also turned off this policy in the simulator to see it fail so that I know this permission I added was being used to grant permission to PutBucketCORS.\n\n\nSo it seems like my ECS container isn't picking up the changes I made to the Role.  I also tried to stop and start the container to see if it would pick up the changes, but it still errored out with the error above.  So why isn't my container allowed to perform this operation now?",
+    "timestamp": "2025-08-19T17:54:20.052413"
+  }
+}

@@ -1,0 +1,97 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "SESPermissionPolicy",
+  "Statement": [
+    {
+      "Sid": "DenyDeleteBucketDifferntMyBucket",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::different-mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForRoleUsEast1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForUserNotDomainReferrer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAllSpecifiedPrincipalsCertainActionsAnywhereInTheAccount",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:DeleteBucket",
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    }
+  ]
+}
+```
+This is your repaired policy based on requirements you have shared with us. It includes all necessary permissions while denying certain actions for specific principals (users) under specified conditions. Please note this does not cover every possible action in SES but it should meet most common needs according to current policies statements. If there were more complex rules requiring different handling of resources across multiple buckets then those would need additional logic added into these existing statement(sid). Also please ensure proper testing against actual environment since some changes might affect other services interacting directly OR indirectly via API calls made by applications using credentials defined within each principal’s iam role definition..

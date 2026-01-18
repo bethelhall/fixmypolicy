@@ -1,0 +1,211 @@
+{
+  "Requests": [
+    {
+      "id": "deny_6c7af92f",
+      "Effect": "Deny",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "forbidden-arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%-specific",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "id": "deny_a7ca7b06",
+      "Effect": "Deny",
+      "Action": "kms:RetireGrant",
+      "Resource": "authorized/arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "deny_7f49fd47",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "authorized/arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "id": "allow_da58ffb4",
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/file-6-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "deny_d0b0ca8a",
+      "Effect": "Deny",
+      "Action": "kinesis:DeleteStream",
+      "Resource": "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "id": "deny_ba901a75",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "authorized/arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "id": "allow_09656fb7",
+      "Effect": "Allow",
+      "Action": "config:GetComplianceDetailsByConfigRule",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-17",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_69c26c74",
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-61",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "deny_2a625d8d",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_3acba828",
+      "Effect": "Allow",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:resource-46-5",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_cae33480",
+      "Effect": "Allow",
+      "Action": "kms:RetireGrant",
+      "Resource": "arn:aws:s3:::bucket-48/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "not-s3.us-west-2.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_2fd6de79",
+      "Effect": "Allow",
+      "Action": "codedeploy:GetDeployment",
+      "Resource": "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:resource-22-7",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "not-s3.us-west-2.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "allow_1c9d9e40",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/file-19-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_6efcbc30",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListEndpointConfigs",
+      "Resource": "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:resource-15-13",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "not-kinesis.us-west-2.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_b8ca3624",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogStream",
+      "Resource": "arn:aws:s3:::demo-amazon-s3-bucket/file-21-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

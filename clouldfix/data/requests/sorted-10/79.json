@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "allow_b8540058",
+      "Effect": "Allow",
+      "Action": "es:DeleteElasticsearchDomain",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_528d6695",
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_38488769",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_8340e84e",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_37f7ddae",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_5defa1d6",
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_bb2fb265",
+      "Effect": "Deny",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_9eb643c1",
+      "Effect": "Deny",
+      "Action": "iam:ListGroups",
+      "Resource": "forbidden-arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_29c2dafe",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "authorized/arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_3fb286ad",
+      "Effect": "Deny",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "authorized/arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

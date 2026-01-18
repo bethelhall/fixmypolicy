@@ -1,0 +1,374 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipal",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam:: xxxxxx:root"
+        ]
+      },
+      "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-39-16.txt",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "glue:CreateTable",
+        "glue:GetCrawlers",
+        "glue:GetCrawler",
+        "codecommit:GetRepository",
+        "route53:ChangeResourceRecordSets",
+        "s3:RestoreObject",
+        "codebuild:StartBuild",
+        "kms:CreateAlias"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-16-1.txt",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-29-6.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-13-19.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-48-5.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-10-16.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-35-10.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-24-16.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-39-14.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-4-15.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-11-12.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-34-3.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-17-5.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-47-17.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::850597137271:root"
+        ]
+      },
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-28-2.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-29-13.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::578228386347:root"
+        ]
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-39-14.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "sns:Subscribe",
+        "sqs:SendMessage",
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem",
+        "rds:DeleteDBInstance",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"
+        }
+      },
+      "Sid": "statement7"
+    },
+    {
+      "Sid": "AllowCloudFrontServicePrincipal",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam:: xxxxxx:root"
+        ]
+      },
+      "Action": [
+        "s3:DeleteObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:GetObject*",
+        "s3:List*",
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-39-16.txt",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "glue:CreateTable",
+        "glue:GetCrawlers",
+        "glue:GetCrawler",
+        "codecommit:GetRepository",
+        "route53:ChangeResourceRecordSets",
+        "s3:RestoreObject",
+        "codebuild:StartBuild",
+        "kms:CreateAlias"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-16-1.txt",
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-29-6.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-13-19.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-48-5.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-10-16.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-35-10.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-24-16.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-39-14.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-4-15.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-11-12.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-34-3.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-17-5.txt",
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-47-17.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::850597137271:root"
+        ]
+      },
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": [
+        "arn:aws:s3::: xxxx-bucket-name-xxxx/file-28-2.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-29-13.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::578228386347:root"
+        ]
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx/file-39-14.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "sns:Subscribe",
+        "sqs:SendMessage",
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem",
+        "rds:DeleteDBInstance",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxx-bucket-name-xxxx-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"
+        }
+      },
+      "Sid": "statement7"
+    }
+  ]
+}

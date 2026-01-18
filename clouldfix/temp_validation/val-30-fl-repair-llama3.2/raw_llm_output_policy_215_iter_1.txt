@@ -1,0 +1,70 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*",
+        "s3-object-lambda:*",
+        "logs:DescribeLogStreams",
+        "iam:ListAccessKeys",
+        "ec2:DeleteVolume",
+        "s3:DeleteObject",
+        "dynamodb:CreateTable",
+        "athena:StopQueryExecution",
+        "iam:UpdateLoginProfile",
+        "guardduty:CreateIPSet",
+        "s3:CreateBucket",
+        "kms:ListAliases",
+        "sqs:SetQueueAttributes",
+        "cloudfront:DeleteDistribution",
+        "s3:GetBucketPolicy",
+        "s3:GetObjectTagging",
+        "iam:CreateUser",
+        "sqs:DeleteQueue",
+        "rds:DeleteDBInstance",
+        "lambda:CreateFunction",
+        "sns:Publish",
+        "cloudfront:ListDistributions"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:SourceIp": "203.0.113.0/24",
+          "aws:SourceArn": "arn:aws:iam::987654321098:user/charlie",
+          "aws:userid": "AIDAI",
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "iam:CreateUser",
+        "rds:CreateDBInstance",
+        "lambda:CreateFunction",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

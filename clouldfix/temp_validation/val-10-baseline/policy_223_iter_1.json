@@ -1,0 +1,93 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:DescribeTable"
+      ],
+      "Resource": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "iam:CreateUser",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ForAnyValue:StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "sid2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "athena:DeleteWorkGroup",
+        "cloudfront:GetDistribution",
+        "codedeploy:CreateDeployment",
+        "iam:CreateUser",
+        "ec2:CreateTags",
+        "autoscaling:DeleteAutoScalingGroup"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}"
+        }
+      },
+      "Sid": "sid3"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "sid4"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "sid5"
+    }
+  ]
+}

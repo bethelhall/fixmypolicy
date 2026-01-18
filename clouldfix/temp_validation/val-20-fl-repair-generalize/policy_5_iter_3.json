@@ -1,0 +1,143 @@
+{
+  "Version": "2012-10-17",
+  "Id": "BackupPolicy01",
+  "Statement": [
+    {
+      "Sid": "BackupPolicy01",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::my-backup/*",
+        "arn:aws:s3:::my-backup"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "allow_7780b806",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:s3:::my-backup/file-36-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_591497af",
+      "Effect": "Allow",
+      "Action": "es:DescribeElasticsearchDomains",
+      "Resource": "arn:aws:s3:::my-backup/file-4-14.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a60d2569",
+      "Effect": "Allow",
+      "Action": "codebuild:StopBuild",
+      "Resource": "arn:aws:s3:::my-backup/file-18-13.txt",
+      "Principal": "arn:aws:iam::131205273899:user/user-backup",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a6377a4d",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::my-backup/file-6-1.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_67397b1c",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:s3:::my-backup/file-5-4.txt",
+      "Principal": "arn:aws:iam::383590215251:user/user-backup",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ffbf754a",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::my-backup/file-0-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_2fd1f411",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::my-backup-forbidden/file.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "deny_cf914fa1",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "deny_d1db1772",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "deny_01b2acbe",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::different-my-backup/file.txt",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    }
+  ]
+}

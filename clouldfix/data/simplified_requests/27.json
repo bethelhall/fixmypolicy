@@ -1,0 +1,150 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_list_bucket_metrics",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucketMetricsConfigurations"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_s3_get_metrics_configuration",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetMetricsConfiguration"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_cloudwatch_get_metric_statistics",
+        "Effect": "deny",
+        "Action": [
+          "cloudwatch:GetMetricStatistics"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader",
+        "Condition": {
+          "StringEquals": {
+            "cloudwatch:namespace": "AWS/S3"
+          }
+        }
+      },
+      {
+        "id": "test_cloudwatch_list_metrics",
+        "Effect": "deny",
+        "Action": [
+          "cloudwatch:ListMetrics"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader",
+        "Condition": {
+          "StringEquals": {
+            "cloudwatch:namespace": "AWS/S3"
+          }
+        }
+      },
+      {
+        "id": "test_s3_list_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_s3_get_bucket_location",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_cloudfront_get_object",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website/*"
+        ],
+        "Principal": "arn:aws:sts::cloudfront:assumed-role/service-role/cloudfront.amazonaws.com",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceArn": "arn:aws:cloudfront::1234:distribution/1234"
+          }
+        }
+      },
+      {
+        "id": "test_user_direct_s3_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website/*"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_cloudwatch_get_metric_data",
+        "Effect": "deny",
+        "Action": [
+          "cloudwatch:GetMetricData"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      },
+      {
+        "id": "test_s3_get_bucket_tagging",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketTagging"
+        ],
+        "Resource": [
+          "arn:aws:s3:::example-cloud-website"
+        ],
+        "Principal": "arn:aws:iam::1234:user/metrics-reader"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "27",
+    "user_intent": "Morning, I am looking to give a user access to the metrics tab of an S3 bucket.  He has the following policy;\n\nNow he can get to the S3 bucket with the URL in the console, but when the metrics tab is clicked, it does nothing.  The user wants to get the size and number of directories inside each of the top level folders.  I can probably do a custom metric, but just curious on why the metrics tab doesn't work and am I on the right track for those values.",
+    "timestamp": "2025-08-19T17:46:17.497572"
+  }
+}

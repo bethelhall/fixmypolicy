@@ -1,0 +1,313 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "lex:GetSession",
+        "lex:RecognizeText",
+        "lex:PutSession",
+        "lex:DeleteSession",
+        "lex:StartConversation",
+        "lex:RecognizeUtterance"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLogsFiltering",
+      "Effect": "Allow",
+      "Action": [
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSKeyDeletion",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CancelKeyDeletion",
+        "kms:CreateKey",
+        "kms:EnableKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDatabaseCreation",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:DeleteDatabase"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3BucketLogging",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketLogging"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloud9EnvironmentCreation",
+      "Effect": "Allow",
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesCreation",
+      "Effect": "Allow",
+      "Action": [
+        "workspaces:CreateWorkspaces"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticBeanstalkApplicationCreation",
+      "Effect": "Allow",
+      "Action": [
+        "elasticbeanstalk:CreateApplication"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKinesisRecordGetting",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:GetRecords"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMGroupListing",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListGroupsForUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaQueryExecution",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerNotebookInstanceListing",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListNotebookInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLexSessionManagement",
+      "Effect": "Allow",
+      "Action": [
+        "lex:GetSession",
+        "lex:RecognizeText",
+        "lex:PutSession",
+        "lex:DeleteSession",
+        "lex:StartConversation",
+        "lex:RecognizeUtterance"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyLambdaFunctionCreation",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountRoleUsage",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction",
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSInstanceCreation",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSKeyDeletionInOtherRegions",
+      "Effect": "Deny",
+      "Action": [
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEqual": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBItemDeletion",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountAdminRoleUsage",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser",
+        "iam:CreatePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountRoleUsageInOtherRegions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEqual": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountRoleUsageWithSecureTransport",
+      "Effect": "Deny",
+      "Action": [
+        "cloud9:CreateEnvironmentEC2",
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountRoleUsageWithIPRestriction",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

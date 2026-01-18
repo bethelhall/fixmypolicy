@@ -1,0 +1,232 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Access-to-specific-bucket-only",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::prod-region-starport-layer-bucket/*"
+      ]
+    },
+    {
+      "Sid": "Deny-put-bucket-tagging-in-us-west-2",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny-delete-db-instance-in-us-west-2",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-start-pipeline-execution-in-us-west-2",
+      "Effect": "Allow",
+      "Action": "codepipeline:StartPipelineExecution",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-44-6.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-list-queue-tags-in-eu-west-1",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-30-9.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-put-bucket-versioning-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-44-16.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny-publish-in-us-west-2",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-create-ip-set-in-eu-west-1",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateIPSet",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-18-16.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-describe-key-in-us-west-2",
+      "Effect": "Allow",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-42-13.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-put-bucket-lifecycle-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-16-7.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-create-bucket-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-40-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny-put-object-tagging-with-userid-AIDAI",
+      "Effect": "Deny",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::different-prod-region-starport-layer-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-enable-key-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-35-19.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-publish-in-us-west-2",
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-25-17.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny-put-object-in-less-than-10-keys",
+      "Effect": "Deny",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-delete-function-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-15-3.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-put-metric-data-in-us-west-2",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-47-13.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow-delete-volume-in-us-east-1",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:s3:::prod-region-starport-layer-bucket/file-27-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny-create-bucket-in-ip-address-203-0-113-0-24",
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

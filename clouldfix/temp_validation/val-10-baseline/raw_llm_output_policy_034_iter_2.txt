@@ -1,0 +1,149 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "Policy1234567890",
+  "Statement": [
+    {
+      "Sid": "deny_d7c4dc53",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::bucketname-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9a5b5f3d",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::bucketname/file-13-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_b546cf4b",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::different-bucketname/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_90f20038",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucketname/file-26-6.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_338e7431",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_89bb8836",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucketname/file-4-6.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_fe744225",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucketname/file-21-2.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_19d4bd2d",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucketname/file-27-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_7d950795",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "deny_53bed3ce",
+      "Effect": "Deny",
+      "Action": "s3:ReceiveMessage",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requested changes implemented. Please note I have changed `s3:GetObject` action for some of statements because it was not present among actions you wanted to allow according to requirements list. If there were other specific s3 operations needed please let me know which ones! Also added missing Id field per standard practice. Let me know if this meets expectations.

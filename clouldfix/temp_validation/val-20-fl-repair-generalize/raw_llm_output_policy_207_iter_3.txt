@@ -1,0 +1,133 @@
+
+        {
+  "Statement": [
+    {
+      "Sid": "AutomatedRestrictiveAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": "333344445555"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESListIdentities",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeSecurityGroups",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeSecurityGroups",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAllowAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:*",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerDescribeTrainingJob",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigGetComplianceDetailsByConfigRule",
+      "Effect": "Allow",
+      "Action": "config:GetComplianceDetailsByConfigRule",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": "333344445555"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLifecycle",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::vpc-flow-log-sudsark-forbidden/*",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": "333344445555"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSCreateDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::different-vpc-flow-log-sudsark/*",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": "333344445555"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": "333344445555"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

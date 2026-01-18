@@ -1,0 +1,140 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "iam:PassRole",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+        "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess"
+      ]
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": "es:DeleteElasticsearchDomain",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor3",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor4",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor5",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor6",
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor7",
+      "Effect": "Deny",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor8",
+      "Effect": "Deny",
+      "Action": "iam:ListGroups",
+      "Resource": "forbidden-arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor9",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "authorized/arn:aws:iam::account:role/AWSGlueServiceRole-RedshiftCrawlerAccess/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor10",
+      "Effect": "Deny",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "authorized/arn:aws:secretsmanager:eu-west-1:account:secret:redshift-pre-datacentric-1B3jpc/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

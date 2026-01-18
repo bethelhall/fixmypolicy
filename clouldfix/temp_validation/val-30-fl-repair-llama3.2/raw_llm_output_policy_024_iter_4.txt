@@ -1,0 +1,230 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFormationStackCreation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "cloudformation:CreateStack",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSRetireGrant",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "kms:RetireGrant",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBPutItem",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSPutKeyPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationStackUpdate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53GetHostedZone",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueCreateDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "glue:CreateDatabase",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESSENDEMAIL",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ses:SendEmail",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowESCreateElasticsearchDomain",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSCreateKey",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:CreateKey",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSListKeys",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:ListKeys",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSDeleteAlias",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:DeleteAlias",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSRetireGrant",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:RetireGrant",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSPutKeyPolicy",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSDescribeKey",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "kms:DescribeKey",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

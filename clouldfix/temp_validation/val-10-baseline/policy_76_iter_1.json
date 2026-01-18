@@ -1,0 +1,145 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "iot:Connect",
+        "iot:ListRetainedMessages"
+      ],
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}"
+    },
+    {
+      "Sid": "DenyIAMCreateUserForbidSpecificARNandPrincipleAndConditions",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstancesFromDifferentAccountWithSSLOnly",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "SQSAccessByServiceRoleInSpecifiedRegion",
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AccessToIoTResourcesViaIamUsersOrRolesBasedOnRegions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObjectAcl",
+        "sagemaker:ListModels"
+      ],
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DeletionOfLoginProfilesIsDeniedExceptBob",
+      "Effect": "Deny",
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {}
+    },
+    {
+      "Sid": "PublishingToAuthorizedTopicNotAllowed",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBOperationsArePermittedIfRequestingCertainRegion",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "WorkspaceDeletionRestrictedUnlessAlice",
+      "Effect": "Allow",
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DisallowDeletingAnyIAMUserOutsideEUWest1",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

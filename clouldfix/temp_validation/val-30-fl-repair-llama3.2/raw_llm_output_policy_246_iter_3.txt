@@ -1,0 +1,286 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSQSRemovePermission",
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeKeyPairs",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticLoadBalancingDescribeLoadBalancers",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDecrypt",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBCreateTable",
+      "Effect": "Allow",
+      "Action": "dynamodb:CreateTable",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "not-['EC2 Image Builder']"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeleteUser",
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudSearchCreateDomain",
+      "Effect": "Allow",
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaGetWorkGroup",
+      "Effect": "Allow",
+      "Action": "athena:GetWorkGroup",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutObjectAcl",
+      "Effect": "Allow",
+      "Action": "s3:PutObjectAcl",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "not-['EC2 Image Builder']"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsDescribeLogGroups",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSSubscribe",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunction",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSReceiveMessage",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeletePolicy",
+      "Effect": "Deny",
+      "Action": "iam:DeletePolicy",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2ImportKeyPair",
+      "Effect": "Deny",
+      "Action": "ec2:ImportKeyPair",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeleteUser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "EC2 Image Builder"
+        }
+      }
+    }
+  ]
+}

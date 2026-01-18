@@ -1,0 +1,111 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": ["iot:Publish", "iot:Receive"],
+      "Resource": [
+        "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+        "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications"
+      ]
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": [
+        "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications"
+      ]
+    },
+    {
+      "Sid": "deniedSqsWithSpecificArnAndMaxKeysLowerThan10",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications-specific",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+    },
+    {
+      "Sid": "deniedReceivingFromAuthorizedFileWithMaxKeysLowerThan10",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+    },
+    {
+      "Sid": "allowedDeletingOfTrailsInUsEast1Only",
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allowedPuttingRecordsToNotificationsTopicInEuWest1Only",
+      "Effect": "Allow",
+      "Action": "kinesis:PutRecord",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "deniedSubscribingForbidddenResourcesBasedOnIP",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+    },
+    {
+      "Sid": "deniedPutttingItemsIntoStatusSpecificARNbasedOnIP",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+    },
+    {
+      "Sid": "allowedPuttingIntoStatusTopicEUWest1only",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allowedCancelingKeyDeletionInEUWest1Only",
+      "Effect": "Allow",
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allowedListingGrantsAsAliceInEUWest1Only",
+      "Effect": "Allow",
+      "Action": "kms:ListGrants",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allowedUpdatingTablesByBobInEUWest1Only",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed correctly according to their specifications. Please replace `<account-id>` placeholder value by actual account id you want this policy for. This will allow IoT service access based on specific conditions set out within each request from `requirements`. Note also how I have used placeholders (`${...}`) where necessary due to lack of explicit details about these variables’ values. Be sure they represent real identifiers relevant to our scenario! Lastly remember always double check policies like above because small mistakes can lead big issues later when trying execute operations against aws services related covered here inside such document (like S3 bucket management). Always follow principle least privilege while creating them which means give only those permissions what exactly needed rather than providing full control over resources accidentally leading potential breach if misused inadvertently someday down line. Happy coding!

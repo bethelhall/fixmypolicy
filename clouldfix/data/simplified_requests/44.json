@@ -1,0 +1,140 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_elasticache_service_put_object",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/elasticache-backup/*"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        "id": "test_elasticache_service_put_object_acl",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/elasticache-backup/*"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root"
+      },
+      {
+        "id": "test_lambda_role_list_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::000:role/lambda-elasticache-backup-role"
+      },
+      {
+        "id": "test_elasticache_get_bucket_acl",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root"
+      },
+      {
+        "id": "test_elasticache_get_bucket_location",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root"
+      },
+      {
+        "id": "test_user_put_object_allowed",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/test-file.txt"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_user_delete_object_allowed",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/elasticache-backup/snapshot.rdb"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_elasticache_list_multipart_uploads",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucketMultipartUploads"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root"
+      },
+      {
+        "id": "test_wrong_user_access_denied",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/test.txt"
+        ],
+        "Principal": "arn:aws:iam::000:user/different-user"
+      },
+      {
+        "id": "test_elasticache_abort_multipart_upload",
+        "Effect": "deny",
+        "Action": [
+          "s3:AbortMultipartUpload"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/*"
+        ],
+        "Principal": "arn:aws:iam::540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353:root"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 100.0,
+      "total_requests": 10,
+      "correct": 10,
+      "incorrect": 0
+    },
+    "repaired_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    }
+  },
+  "metadata": {
+    "file_number": "44",
+    "user_intent": "Export working from console, but when trying to export Elasticcache backup to s3 using boto3 (from lambda function) I am getting the following error:\n\n\n[ERROR] InvalidParameterValueException: An error occurred (InvalidParameterValue) when calling the CopySnapshot operation: Elasticache was unable to validate the authenticated user has access on the S3 bucket BACKUP_NAME.\n\n\n\nThe bucket ACL configured correctly according to this \nguide\n\n\nPython boto3:\n\n\nec_client = boto3.client('elasticache')\nresponse = ec_client.copy_snapshot(\n                SourceSnapshotName=source_snapshot_name,\n                TargetSnapshotName=target_snapshot_name,\n                TargetBucket=s3_bucket_name\n            )\n\n\n\nLambda role's permissions:\n\n\n\n\n\n\nBucket ACL:\n\n\nExternal account\nCanonical ID:\n540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353     Objects: List, Write  Bucket ACL: Read, Write",
+    "timestamp": "2025-08-19T17:56:03.665075"
+  }
+}

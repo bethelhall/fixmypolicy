@@ -1,0 +1,392 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EC2DescribeInstances",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceConnectEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2InstanceConnect",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey",
+        "ec2-instance-connect:OpenTunnel",
+        "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
+        "ec2:CreateInstanceConnectEndpoint",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateTags",
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSQS",
+      "Action": [
+        "sqs:SetQueueAttributes"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-32/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRedshift",
+      "Action": [
+        "redshift:CreateCluster"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-15/table-1",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudTrail",
+      "Action": [
+        "cloudtrail:StopLogging"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-11/table-2",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlue",
+      "Action": [
+        "glue:DeleteTable"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-12/table-4",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3",
+      "Action": [
+        "ec2:DescribeInstanceConnectEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-48/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfig",
+      "Action": [
+        "config:DescribeConfigRules"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-9/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc2",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIam",
+      "Action": [
+        "iam:ListAttachedGroupPolicies"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIam2",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIam3",
+      "Action": [
+        "iam:AttachUserPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS32",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-8/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc22",
+      "Action": [
+        "ec2:StartInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFront",
+      "Action": [
+        "cloudfront:CreateDistribution"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-10/table-4",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIam4",
+      "Action": [
+        "iam:ListRoles"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMS",
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-36/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqs",
+      "Action": [
+        "s3:DeleteObjectTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-49/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthena",
+      "Action": [
+        "athena:GetWorkGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-20",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqs2",
+      "Action": [
+        "sqs:ListDeadLetterSourceQueues"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-8",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIam5",
+      "Action": [
+        "iam:CreateAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc23",
+      "Action": [
+        "ec2:DeleteKeyPair"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2",
+      "Action": [
+        "ec2:DescribeKeyPairs"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-5/table-16",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc22",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-10/table-2",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodePipeline",
+      "Action": [
+        "codepipeline:GetPipeline"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-8/table-11",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlue2",
+      "Action": [
+        "glue:GetTable"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-6/table-11",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS33",
+      "Action": [
+        "ec2:DescribeKeyPairs"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-5/table-16",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc23",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-10/table-2",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

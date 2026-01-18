@@ -1,0 +1,90 @@
+
+        {
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "Allow access through SNS for all principals in the account that are authorized to use SNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access to SNS for specific principals in the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::516732770597:root",
+          "arn:aws:iam::123456789012:role/test-role",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::361567453596:root",
+          "arn:aws:iam::486757821305:root",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:role/forbidden-role",
+          "arn:aws:iam::248284580414:root",
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::123456789012:role/forbidden-role",
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::123456789012:role/forbidden-role"
+        ]
+      },
+      "Action": [
+        "sns:Subscribe",
+        "sqs:CreateQueue",
+        "rds:CreateDBInstance",
+        "route53:ChangeResourceRecordSets",
+        "config:PutConfigRule",
+        "glue:GetCrawlers",
+        "iam:ListAttachedUserPolicies",
+        "s3:GetBucketLogging",
+        "s3:GetBucketVersioning",
+        "cloudwatch:GetMetricStatistics",
+        "ses:ListIdentities",
+        "ec2:ModifyInstanceAttribute",
+        "cloudformation:DescribeStacks",
+        "s3:GetBucketPolicy",
+        "guardduty:DeleteDetector",
+        "s3:DeleteBucketPolicy",
+        "glue:StartCrawler"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

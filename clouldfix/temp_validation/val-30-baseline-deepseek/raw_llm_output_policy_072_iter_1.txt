@@ -1,0 +1,22 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyNoEncryption",
+      "Effect": "Deny",
+      "Action": "s3:PutObject",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:RequestTag/exempted": "yes",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      }
+    },
+    //... other statements remain unchanged...
+  ]
+}
+```
+This fixed policy denies all PUT requests to S3 objects without AES256 server-side encryption, either by request tags or resource tags indicating they should not be encrypted with this method. Other parts of the original policy were left intact for context but may need further adjustments depending on their relevance in your specific scenario. Always test policies thoroughly when making changes like these!

@@ -1,0 +1,282 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGeneralAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowKinesisVideoActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "kinesisvideo:DescribeStream",
+        "kinesisvideo:PutMedia",
+        "kinesisvideo:TagStream",
+        "kinesisvideo:GetDataEndPoint"
+      ],
+      "Resource": "arn:aws:kinesisvideo:*:*:stream/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[eu-west-1, us-west-2, us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:ListObjectVersions",
+        "s3:GetBucketTagging",
+        "s3:GetBucketLifecycle"
+      ],
+      "Resource": "arn:aws:s3:::*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[eu-west-1, us-west-2, us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudTrailActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "cloudtrail:GetTrailStatus"
+      ],
+      "Resource": "arn:aws:cloudtrail:*::*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-west-2, eu-west-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:dynamodb:*::*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1, us-west-2]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "iam:CreateGroup",
+        "iam:CreateUser",
+        "iam:AddUserToGroup",
+        "iam:RemoveUserFromGroup",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-west-2, eu-west-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "ses:DeleteIdentity"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "workspaces:DescribeWorkspaceDirectories"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[eu-west-1]"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Actions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSActions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSActions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSActions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/alice"
+      },
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[us-east-1]"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSActions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[eu-west-1]"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaActions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,1107 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:GetObjectVersion",
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionTagging",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetObjectTagging",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement5"
+    },
+    {
+      "Sid": "AllowS3ReplicationSourceRoleToUseTheKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:PutBucketVersioning",
+        "s3:ReplicateObject",
+        "s3:ReplicateTags",
+        "s3:ReplicateDelete",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:ObjectOwnerOverrideToBucketOwner"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket",
+        "arn:aws:s3:::destinationbucket",
+        "arn:aws:s3:::sourcebucket/*",
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement7"
+    },
+    {
+      "id": "deny_1cecd4fb",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_1f66db9b",
+      "Effect": "Deny",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:s3:::different-reportbucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_13997e47",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::bucket-12/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_f2dcfdfd",
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:s3::: sourcebucket/file-28-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_963e8fa6",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_6017b6e0",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:s3:::sourcebucket/file-48-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_810d92e4",
+      "Effect": "Allow",
+      "Action": "sqs:DeleteMessageBatch",
+      "Resource": "arn:aws:s3:::bucket-27/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_4c3f6d6f",
+      "Effect": "Allow",
+      "Action": "cloudsearch:DescribeDomains",
+      "Resource": "arn:aws:s3:::reportbucket/file-35-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_110f8278",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3::: sourcebucket/file-11-18.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_6494b587",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::sourcebucket-forbidden/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "id": "allow_5aba0875",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-42",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_78ecbe34",
+      "Effect": "Deny",
+      "Action": "kms:CreateGrant",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "allow_b02cd0d4",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibility",
+      "Resource": "arn:aws:s3:::sourcebucket/file-32-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_c2dba984",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::reportbucket-forbidden/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_6118be20",
+      "Effect": "Allow",
+      "Action": "sns:CreateTopic",
+      "Resource": "arn:aws:s3:::bucket-8/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_8686141b",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_81020ecc",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::sourcebucket/file-12-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_98aa71dd",
+      "Effect

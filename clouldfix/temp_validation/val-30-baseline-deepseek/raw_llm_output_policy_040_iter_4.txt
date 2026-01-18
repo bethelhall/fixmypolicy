@@ -1,0 +1,55 @@
+[
+  {
+    "Sid": "DenyDetachUserPolicy",
+    "Effect": "Deny",
+    "Action": "iam:DetachUserPolicy",
+    "Resource": "*",
+    "Condition": {
+      "StringEquals": {
+        "iam:PolicyArn": "arn:aws:iam::111222333444:policy/restricted-policy"
+      }
+    }
+  },
+  {
+    "Sid": "AllowAdminRead",
+    "Effect": "Allow",
+    "Action": "iam:Get*",
+    "Resource": "arn:aws:iam::123456789012:role/admin-role"
+  },
+  {
+    "Sid": "DenyDeleteRole",
+    "Effect": "Deny",
+    "Action": "iam:DeleteRole",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Condition": {
+      "Bool": {
+        "aws:SecureTransport": "true"
+      }
+    }
+  },
+  {
+    "Sid": "DenyLambdaCreation",
+    "Effect": "Deny",
+    "Action": "lambda:CreateFunction",
+    "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    "Condition": {
+      "IpAddress": {
+        "aws:SourceIp": "203.0.113.0/24"
+      }
+    }
+  },
+  {
+    "Sid": "DenyDynamoDBDeletion",
+    "Effect": "Deny",
+    "Action": "dynamodb:DeleteItem",
+    "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+    "Condition": {
+      "Bool": {
+        "aws:SecureTransport": "true"
+      }
+    }
+  }
+]

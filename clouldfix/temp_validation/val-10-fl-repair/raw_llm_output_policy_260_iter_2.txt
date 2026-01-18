@@ -1,0 +1,140 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreateBucket",
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "cloudfront.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateDeployment",
+      "Effect": "Allow",
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:s3:::cik-front-end/file-7-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::cik-front-end-forbidden/file.txt",
+      "Principal": "cloudfront.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateLoginProfile",
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::cik-front-end/file-45-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyListObjectVersions",
+      "Effect": "Deny",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "cloudfront.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::different-cik-front-end/file.txt",
+      "Principal": "cloudfront.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteDomain",
+      "Effect": "Allow",
+      "Action": "cloudsearch:DeleteDomain",
+      "Resource": "arn:aws:s3:::cik-front-end/file-13-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateAlias",
+      "Effect": "Allow",
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::cik-front-end/file-6-8.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::cik-front-end/file-2-15.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowTerminateInstances",
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::cik-front-end/file-36-16.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

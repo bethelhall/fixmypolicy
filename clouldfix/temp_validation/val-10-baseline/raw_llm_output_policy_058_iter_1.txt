@@ -1,0 +1,64 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:StartBuild",
+        "codebuild:BatchGetBuilds",
+        "codecommit:GitPull",
+        "sqs:SendMessageBatch",
+        "ec2:CreateVolume",
+        "kms:Encrypt",
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:*:*:project/file-27-12.txt",
+        "arn:aws:codebuild:*:*:project/file-14-16.txt",
+        "arn:aws:codebuild:*:*:project/file-0-3.txt",
+        "arn:aws:codebuild:*:*:project/file-37-6.txt"
+      ],
+      "Principal": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": ["us-west-2", "us-east-1"]}}
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "codecommit:ListRepositories",
+        "lambda:CreateFunction",
+        "rds:DeleteDBInstance",
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:*:*:project/*-forbidden-resource",
+        "arn:aws:codecommit:*:*:*",
+        "arn:aws:codecommit:*:*:*/file.txt",
+        "arn:aws:codecommit:*:*:resource-0-14"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"},
+        "Bool": {"aws:SecureTransport": true},
+        "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:codebuild:*:*:project/file-36-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-2"}}
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetJobRun",
+      "Resource": "arn:aws:codecommit:*:*:resource-0-14",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    }
+  ]
+}
+```
+This is your final output in json format without additional information. Please note this does not cover all requirements but only those mentioned above for clarity of understanding how policies can get complex with multiple conditions on different actions across various resources by varying principals under varied circumstances (regions etc). It also assumes you want blanket access ("*") rather than specific users due lack thereof from original statement(s) which would require more granular control over who has what permissions within each region separately if needed later down line when new user accounts come up needing limited rights instead full ones currently granted here based off current request set alone. Lastly please remember always follow least privilege principle while creating such kind permission setups where possible limiting scope & impact should something go wrong inadvertently granting too much power upfront! Always review regularly afterwards ensuring necessary changes made per business needs / threats landscape evolution overtime securely managing sensitive data accordingly along way.. Happy coding!

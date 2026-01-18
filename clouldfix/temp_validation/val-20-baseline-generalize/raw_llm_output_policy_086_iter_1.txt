@@ -1,0 +1,158 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueues",
+        "sqs:SendMessage",
+        "tag:GetResources",
+        "iam:GetRole",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "sqs:ChangeMessageVisibilityBatch"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement2",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:RevokeGrant"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement3",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement4",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "codebuild:BatchGetBuilds"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement5",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "athena:GetTableMetadata"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement6",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement7",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeleteRole"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Sid": "statement8",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:ChangeMessageVisibilityBatch"
+      ],
+      "Resource": "authorized/arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que/file.txt",
+      "Effect": "Deny",
+      "Sid": "statement9",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:RevokeGrant"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Sid": "statement10",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "forbidden-arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-specific",
+      "Effect": "Deny",
+      "Sid": "statement11",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

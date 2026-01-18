@@ -1,0 +1,169 @@
+{
+  "Requests": [
+    {
+      "id": "api_invoke_from_ec2_bastion",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "execute-api:/*/*/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/EC2BastionRole",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "10.0.1.5"
+        }
+      }
+    },
+    {
+      "id": "api_invoke_post_method",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:us-east-1:123456789012:xsdxxxsdx/stg/POST/my-resource"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/TestUser"
+    },
+    {
+      "id": "api_invoke_anonymous_user",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:us-west-2:987654321098:api123/prod/GET/users"
+      ],
+      "Principal": "anonymous"
+    },
+    {
+      "id": "api_invoke_cross_account",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "execute-api:/*/GET/*"
+      ],
+      "Principal": "arn:aws:iam::555555555555:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "555555555555"
+        }
+      }
+    },
+    {
+      "id": "api_invoke_from_lambda",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:eu-west-1:111111111111:gateway1/*/POST/*"
+      ],
+      "Principal": "arn:aws:iam::111111111111:role/LambdaExecutionRole",
+      "Condition": {
+        "Bool": {
+          "aws:ViaAWSService": "true"
+        }
+      }
+    },
+    {
+      "id": "api_invoke_vpc_endpoint",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "execute-api:/stage/method/resource"
+      ],
+      "Principal": "arn:aws:iam::222222222222:role/ServiceRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceVpce": "vpce-1234567890abcdef0"
+        }
+      }
+    },
+    {
+      "id": "api_invoke_specific_ip_range",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:ap-south-1:333333333333:api456/production/*/*"
+      ],
+      "Principal": "arn:aws:iam::333333333333:user/ApiUser",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": [
+            "192.168.1.0/24",
+            "10.0.0.0/16"
+          ]
+        }
+      }
+    },
+    {
+      "id": "api_invoke_with_referer",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "execute-api:/*/DELETE/*"
+      ],
+      "Principal": "arn:aws:iam::444444444444:role/WebAppRole",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": "https://example.com/*"
+        }
+      }
+    },
+    {
+      "id": "api_invoke_temporary_credentials",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:ca-central-1:666666666666:restapi789/beta/PUT/items"
+      ],
+      "Principal": "arn:aws:sts::666666666666:assumed-role/TempRole/session-name"
+    },
+    {
+      "id": "api_invoke_all_methods_wildcard",
+      "Effect": "allow",
+      "Action": [
+        "execute-api:Invoke"
+      ],
+      "Resource": [
+        "execute-api:/*/*/*/*"
+      ],
+      "Principal": "arn:aws:iam::777777777777:root"
+    },
+    {
+      "id": "api_invoke_manage_action",
+      "Effect": "deny",
+      "Action": [
+        "execute-api:ManageConnections"
+      ],
+      "Resource": [
+        "arn:aws:execute-api:us-east-2:888888888888:websocket123/*"
+      ],
+      "Principal": "arn:aws:iam::888888888888:user/AdminUser"
+    },
+    {
+      "id": "dynamodb_action_test",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:GetItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-west-1:999999999999:table/TestTable"
+      ],
+      "Principal": "arn:aws:iam::999999999999:role/DynamoRole"
+    }
+  ]
+}

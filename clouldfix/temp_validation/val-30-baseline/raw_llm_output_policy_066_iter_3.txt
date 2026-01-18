@@ -1,0 +1,125 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEastAndWest",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSecurityGroup",
+        "s3:PutObjectAcl",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "glue:UpdateTable",
+        "athena:GetQueryResults",
+        "cloudtrail:CreateTrail",
+        "logs:DescribeLogStreams",
+        "sqs:ChangeMessageVisibilityBatch",
+        "sagemaker:CreateEndpoint",
+        "kms:UpdateKeyDescription"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-33/file-2.txt",
+        "arn:aws:s3:::bucket-42/file-6.txt",
+        "arn:aws:s3:::bucket-16/file-6.txt",
+        "arn:aws:s3:::bucket-8/file-3.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/db-3/table-1",
+        "arn:aws:s3:::bucket-10/file-8.txt",
+        "arn:aws:s3:::bucket-4/file-5.txt",
+        "arn:aws:s3:::bucket-48/file-4.txt",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-64"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-east-2",
+            "us-west-1",
+            "us-west-2"
+          ]
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowAllUsers",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe",
+        "dynamodb:CreateTable",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "iam:GetRolePolicy",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-east-2",
+            "us-west-1",
+            "us-west-2"
+          ]
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyOtherRegions",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-east-2",
+            "us-west-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedUsers",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david",
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyBlockedUser",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      }
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "dynamodb:Query",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowAll",
+      "Effect": "Allow",
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyAll",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyAll",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "DenyAll",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "DenyAll",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

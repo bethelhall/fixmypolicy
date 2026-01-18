@@ -1,0 +1,116 @@
+
+        {
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ses:SendTemplatedEmail",
+        "ses:SendEmail"
+      ],
+      "Resource": [
+        "arn:aws:ses:${region}:${account_Y}:identity/${email_identity}",
+        "arn:aws:ses:${region}:${account_Y}:template/TEMPLATE"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:identity/${email_identity}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:ListDeadLetterSourceQueues",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:template/TEMPLATE",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ses:ListIdentities",
+      "Resource": "forbidden-arn:aws:ses:${region}:${account_Y}:template/TEMPLATE-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:identity/${email_identity}-forbidden-resource",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "authorized/arn:aws:ses:${region}:${account_Y}:template/TEMPLATE/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:DeleteWorkGroup",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:identity/${email_identity}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:DeleteDetector",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:identity/${email_identity}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:template/TEMPLATE",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:GetDatabase",
+      "Resource": "arn:aws:ses:${region}:${account_Y}:template/TEMPLATE",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketPolicy",
+        "s3:PutBucketPolicy",
+        "s3:GetAccelerateConfiguration",
+        "s3:PutAccelerateConfiguration",
+        "ses:DeleteIdentity",
+        "logs:PutLogEvents",
+        "kms:Encrypt",
+        "cloudfront:ListDistributions",
+        "glue:UpdateTable",
+        "sns:DeleteTopic",
+        "workspaces:StopWorkspaces",
+        "athena:GetDatabase",
+        "s3:DeleteObjectTagging",
+        "iam:PutRolePolicy",
+        "sqs:CreateQueue"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>",
+        "arn:aws:ses:::/*",
+        "arn:aws:logs:::/*",
+        "arn:aws:kms:::/*",
+        "arn:aws:cloudfront:::/*",
+        "arn:aws:glue:::/*",
+        "arn:aws:sns:::/*",
+        "arn:aws:workspaces:::/*",
+        "arn:aws:athena:::/*",
+        "arn:aws:s3:::/*",
+        "arn:aws:iam:::/*"
+      ]
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketPolicy",
+        "s3:PutBucketPolicy",
+        "s3:GetAccelerateConfiguration",
+        "s3:PutAccelerateConfiguration",
+        "s3:GetObjectTagging",
+        "s3:DeleteObjectTagging",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteBucketLifecycle",
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>",
+        "arn:aws:s3:::/*"
+      ]
+    },
+    {
+      "Sid": "AllowS3ConditionalActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetBucketWebsite",
+        "s3:GetBucketLifecycle",
+        "s3:PutBucketLifecycle",
+        "s3:DeleteBucketLifecycle",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::/*",
+        "arn:aws:s3:::<our_bucket_name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "Bool": {
+          "aws:SecureTransport": "false"
+        },
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:PutRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ConditionalActions2",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObjectTagging",
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ConditionalActions3",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObjectTagging",
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "cloudfront:ListDistributions"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "glue:UpdateTable"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sns:DeleteTopic"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkspacesActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "workspaces:StopWorkspaces"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "athena:GetDatabase"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sqs:CreateQueue"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

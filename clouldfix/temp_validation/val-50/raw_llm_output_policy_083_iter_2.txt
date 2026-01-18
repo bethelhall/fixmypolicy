@@ -1,0 +1,1179 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaCrossAccountAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::account_b_bucket_name",
+        "arn:aws:s3:::account_b_bucket_name/*"
+      ]
+    },
+    {
+      "Sid": "AllowBedrockAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-12-18.txt"
+    },
+    {
+      "Sid": "AllowElasticBeanstalkAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Action": "elasticbeanstalk:DeleteApplication",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-16-15.txt"
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-11-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-28-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2StopInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-20-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDeleteWorkspaces",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-38-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550479965151:role/lambda_execution_role"
+      },
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-45-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::642135308770:role/lambda_execution_role"
+      },
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-21-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteDatabase",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-15-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource":

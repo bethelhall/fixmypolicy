@@ -1,0 +1,106 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DocuFlowSID",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteKeyPair",
+        "iam:RemoveUserFromGroup",
+        "route53:GetHostedZone",
+        "ses:SetIdentityDkimEnabled",
+        "sagemaker:StartNotebookInstance",
+        "iam:DeletePolicy",
+        "lambda:CreateFunction",
+        "sagemaker:DescribeEndpoint",
+        "s3:PutObject",
+        "redshift:DescribeClusters",
+        "ses:SendEmail",
+        "s3:DeleteObjectTagging",
+        "athena:CreateWorkGroup",
+        "cloudwatch:PutDashboard",
+        "es:DescribeElasticsearchDomains",
+        "kms:Encrypt"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3Actions",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteObject",
+        "s3:GetObject",
+        "s3:DeleteObjectTagging",
+        "s3:PutObject",
+        "s3:DeleteBucketLifecycle",
+        "s3:PutBucketCors",
+        "s3:GetBucketAcl",
+        "s3:DeleteBucketCors"
+      ],
+      "Resource": "arn:aws:s3:::*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Actions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSActions",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaActions",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSActions",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

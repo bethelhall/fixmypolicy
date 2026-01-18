@@ -1,0 +1,70 @@
+I'm attempting to create s3 folders (prefixes) within a bucket that is only accessible to specific EC2 instances via IAM Role policies based on their name. The idea would be something like s3://mybucket/i-1234567890/* would only be accessible to EC2 instance i-1234567890 and s3://mybucket/i-987654321/* would only be accessible to EC2 instance i-987654321. Rather then create a custom IAM Role for each instance (they are pets), I thought I might be able to use policy variables to limit access to the prefix.
+It looks like the only variable this may work with is aws:username, which with IAM Role is set to be 
+role-id:ec2-instance-id
+ according to 
+https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html#policy-vars-infotouse
+ . So I created a folder named "AROAxxxxxxxxxxxx:i-1234567890/" in that s3 bucket and attached this policy to the IAM Role:
+
+
+
+
+
+
+I got the Role ID by running this powershell command: 
+(Get-IAMRole <RoleName>).RoleId
+
+
+I'm unable to get this working. If I hardcode "AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx" in place of ${aws:username} it works as expected. It is as if ${aws:username} is not returning what I expect it to be. I'm unable to determine what is returning instead though.
+
+
+I setup CloudTrail Trail on the s3 bucket and did a 
+aws s3 cp
+ download attempt. The log shows the correct RoleId:InstanceId as the PrincipalId but I get access denied.
+
+
+    {
+      "userIdentity": {
+        "type": "AssumedRole",
+        "principalId": "AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx",
+        "arn": "arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx",
+        "sessionContext": {
+          "sessionIssuer": {
+            "type": "Role",
+            "principalId": "AROAxxxxxxxxxxxxxx",
+            "arn": "arn:aws:iam::xxxxxxxxxxxxxx:role/ROLENAME",
+            "userName": "ROLENAME"
+          }
+        }
+      },
+      "eventSource": "s3.amazonaws.com",
+      "eventName": "HeadObject",
+      "errorCode": "AccessDenied",
+      "errorMessage": "User: arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx is not authorized to perform: s3:GetObject on resource: \"arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\" because no identity-based policy allows the s3:GetObject action",
+      "requestParameters": {
+        "bucketName": "MYBUCKET",
+        "Host": "MYBUCKET.s3.us-east-1.amazonaws.com",
+        "key": "AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt"
+      },
+      "resources": [
+        {
+          "type": "AWS::S3::Object",
+          "ARN": "arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt"
+        },
+        {
+          "type": "AWS::S3::Bucket",
+          "ARN": "arn:aws:s3:::MYBUCKET"
+        }
+      ],
+      "eventType": "AwsApiCall",
+      "managementEvent": false,
+      "eventCategory": "Data"
+    }
+
+
+
+removed some properties to save space
+
+
+Is there a way to determine what aws:username is exactly returning in this case? I'm also not tied to using aws:username if there is another variable that would help tie the ec2 instance to a folder. I did try using ec2:* variables and tags but since this is a s3 policy I don't think that will work.
+This is basically attempting to implement that is brought up in this stackoverflow question but I can't get it to work.
+

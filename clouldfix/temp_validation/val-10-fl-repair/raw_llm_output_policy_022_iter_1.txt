@@ -1,0 +1,131 @@
+
+        {
+  "Statement": [
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/*"
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListEndpoints",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-15-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor3",
+      "Effect": "Allow",
+      "Action": "cloudformation:CreateStack",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-13-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor4",
+      "Effect": "Allow",
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-31-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor5",
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-15-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor6",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-2-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor7",
+      "Effect": "Allow",
+      "Action": "iam:UpdateLoginProfile",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B/file-28-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor8",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::different-LOG_BUCKET_IN_ACCOUNT_B/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor9",
+      "Effect": "Deny",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor10",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::LOG_BUCKET_IN_ACCOUNT_B-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor11",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

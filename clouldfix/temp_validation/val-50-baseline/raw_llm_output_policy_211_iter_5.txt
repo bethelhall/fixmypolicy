@@ -1,0 +1,45 @@
+{
+  "Version": "2012-10-17",
+  "Id": "SESPermissionPolicy",
+  "Statement": [
+    {
+      "Sid": "AllowSESPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESReceiveEmails",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    }
+  ]
+}

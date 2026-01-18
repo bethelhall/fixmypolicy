@@ -1,0 +1,68 @@
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudsearch:DescribeDomains",
+        "sqs:CreateQueue",
+        "glue:UpdateTable",
+        "s3:DeleteObject",
+        "glue:GetCrawlers",
+        "iam:ListGroupsForUser",
+        "codecommit:CreateRepository",
+        "dynamodb:PutItem",
+        "workspaces:StopWorkspaces",
+        "redshift:DeleteCluster",
+        "s3:DeleteBucketWebsite",
+        "kms:DeleteAlias",
+        "lambda:DeleteFunction",
+        "sagemaker:ListEndpointConfigs"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2",
+            "eu-west-1"
+          ]
+        },
+        "StringLike": {
+          "aws:RequestTag/eks:kubernetes-node-class-name": "*",
+          "aws:RequestTag/eks:kubernetes-node-pool-name": "*"
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "ec2:CreateFleet",
+        "ec2:RunInstances",
+        "ec2:CreateLaunchTemplate",
+        "ec2:DeleteKeyPair",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:DeleteVolume",
+        "ec2:ModifyInstanceAttribute",
+        "ec2:StartInstances",
+        "ec2:CreateVolume",
+        "sqs:SendMessage",
+        "dynamodb:DeleteItem",
+        "ec2:DeleteVolume",
+        "ec2:DescribeVolumes"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/eks:eks-cluster-name": "${aws:PrincipalTag/eks:eks-cluster-name}"
+        },
+        "StringLike": {
+          "aws:RequestTag/eks:kubernetes-node-class-name": "*",
+          "aws:RequestTag/eks:kubernetes-node-pool-name": "*"
+        }
+      },
+      "Sid": "statement1"
+    }
+  ],
+  "Version": "2012-10-17"
+}

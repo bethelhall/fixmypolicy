@@ -1,0 +1,238 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:StartBuild",
+        "codebuild:BatchGetBuilds",
+        "codecommit:GitPull"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:*:*:project/*",
+        "arn:aws:codecommit:*:*:*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:codebuild:*:*:project/file-22-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "arn:aws:codecommit:*:*:resource-30-9",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:codebuild:*:*:project/*-forbidden-resource",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:codebuild:*:*:project/file-48-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "codebuild:StopBuild",
+      "Resource": "arn:aws:codecommit:*:*:*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "authorized/arn:aws:codebuild:*:*:project/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:codebuild:*:*:project/file-21-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:codecommit:*:*:resource-34-3",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:codecommit:*:*:resource-26-0",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:codecommit:*:*:resource-13-0",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:codebuild:*:*:project/file-32-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "codebuild:ListBuilds",
+      "Resource": "forbidden-arn:aws:codecommit:*:*:*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "forbidden-arn:aws:codebuild:*:*:project/*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:codecommit:*:*:resource-27-0",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:codecommit:*:*:resource-37-11",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "codecommit:GetRepository",
+      "Resource": "authorized/arn:aws:codecommit:*:*:*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:codebuild:*:*:project/file-45-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:codecommit:*:*:resource-24-0",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

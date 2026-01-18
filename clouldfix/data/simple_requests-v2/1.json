@@ -1,0 +1,111 @@
+{
+  "Requests": [
+    {
+      "id": "deny_devuser_decrypt",
+      "Effect": "deny",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/DevUser"
+    },
+    {
+      "id": "deny_unrelatedrole_gendatakey",
+      "Effect": "deny",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/UnrelatedAppRole"
+    },
+    {
+      "id": "deny_crossacct_encrypt",
+      "Effect": "deny",
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::999999999999:role/CrossAccountApp"
+    },
+    {
+      "id": "deny_ec2role_creategrant_noawsresource",
+      "Effect": "deny",
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/EC2IAMRole",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "id": "deny_ssmrole_describekey",
+      "Effect": "deny",
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/SSMServiceRole"
+    },
+    {
+      "id": "deny_lambda_reencrypt",
+      "Effect": "deny",
+      "Action": [
+        "kms:ReEncryptFrom",
+        "kms:ReEncryptTo"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/LambdaExecutionRole"
+    },
+    {
+      "id": "deny_devuser_disable_schedule_delete",
+      "Effect": "deny",
+      "Action": [
+        "kms:DisableKey",
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/Developer"
+    },
+    {
+      "id": "deny_dbarole_list_revoke",
+      "Effect": "deny",
+      "Action": [
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/DBARole"
+    },
+    {
+      "id": "deny_batchrole_gendatakey_wo_plaintext",
+      "Effect": "deny",
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/BatchJobRole"
+    }
+  ]
+}

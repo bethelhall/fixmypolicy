@@ -1,0 +1,170 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "console_getsecret_without_vpce",
+        "Effect": "deny",
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:production/database/credentials-AbCdEf"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:userid": "AIDACKCEVSQ6C2EXAMPLE"
+          }
+        }
+      },
+      {
+        "id": "console_getsecret_with_correct_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:production/api/keys-XyZaBc"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-myvpce"
+          }
+        }
+      },
+      {
+        "id": "console_describesecret_without_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:DescribeSecret"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:staging/config/settings-LmNoPq"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "203.0.113.0/24"
+          }
+        }
+      },
+      {
+        "id": "console_putsecretvalue_without_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:PutSecretValue"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:dev/application/token-RsTuVw"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringLike": {
+            "aws:userid": "AIDACKCEVSQ6C2EXAMPLE"
+          }
+        }
+      },
+      {
+        "id": "cli_getsecret_from_vpc_endpoint",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:production/rds/master-password-HgFeDc"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-myvpce"
+          }
+        }
+      },
+      {
+        "id": "console_listsecrets_general",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:ListSecrets"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com"
+      },
+      {
+        "id": "console_getsecret_different_vpce",
+        "Effect": "deny",
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:qa/service/apikey-QwErTy"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-differentvpce"
+          }
+        }
+      },
+      {
+        "id": "console_updatesecret_without_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:UpdateSecret"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:production/certificates/ssl-cert-AsDfGh"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com"
+      },
+      {
+        "id": "console_tagsecret_without_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:TagResource"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:shared/oauth/tokens-ZxCvBn"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Environment": "Production"
+          }
+        }
+      },
+      {
+        "id": "console_createsecret_without_vpce",
+        "Effect": "allow",
+        "Action": [
+          "secretsmanager:CreateSecret"
+        ],
+        "Resource": [
+          "arn:aws:secretsmanager:us-east-1:123456789012:secret:test/new/secret-*"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecretsManagerReadWrite_1234567890abcdef/user@example.com"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 20.0,
+      "total_requests": 10,
+      "correct": 2,
+      "incorrect": 8
+    },
+    "repaired_policy": {
+      "accuracy": 20.0,
+      "total_requests": 10,
+      "correct": 2,
+      "incorrect": 8
+    }
+  },
+  "metadata": {
+    "file_number": "6",
+    "user_intent": "I get error \"Failed to get the secret value\" when pressing 'Retrieve Secret Value'\n\n\n\n\nI am not an IAM user with a role, but logged in as an IAM-identity-center user.\n\n\nMy group has a permission-set containing the AWS-managed policy \nSecretsManagerReadWrite\n.\n\n\nThe resource policy of the secret is set to deny all requests not coming from a specified VPCE (e.g. \nvpce-myvpce\n) as follows:\n\n\n\n\n\n\nHow should I modify this policy in order to allow myself access to my secrets via the AWS Console, i.e. view and edit the key/value pairs?",
+    "timestamp": "2025-08-19T17:33:07.820346"
+  }
+}

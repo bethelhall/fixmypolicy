@@ -1,0 +1,135 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_rds_connect_john",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:123456789012:dbuser:db-KF123456/john"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_rds_connect_michael",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:123456789012:dbuser:db-KF123456/michael"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/michael"
+      },
+      {
+        "id": "test_rds_connect_impersonation",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:123456789012:dbuser:db-KF123456/michael"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_dynamodb_stream_read",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:GetRecords"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TABLE1/stream/2024-01-15T10:00:00.000"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_dynamodb_putitem",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:PutItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TABLE2"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/michael"
+      },
+      {
+        "id": "test_dynamodb_wrong_table",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:PutItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TABLE1"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_rds_describe_db",
+        "Effect": "deny",
+        "Action": [
+          "rds:DescribeDBInstances"
+        ],
+        "Resource": [
+          "arn:aws:rds:us-east-1:123456789012:db:db-KF123456"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_dynamodb_malformed_stream",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:GetRecords"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TABLE1/stream/2024-01-15T10:00:00.000"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_rds_wildcard_user",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:123456789012:dbuser:db-KF123456/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/john"
+      },
+      {
+        "id": "test_dynamodb_list_streams",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:ListStreams"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TABLE1/stream/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:assumed-role/TeamLeaderAccess/michael"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "32",
+    "user_intent": "Hi all,\n\n\nI have 2 accounts:\n\n\n\n\nMgmt (SSO enabled)\n\n\nDevelopment (RDS)\n\n\n\n\nI have \nSSO\n configured with a group (team_leaders) and permission set (TeamLeaderAccess).\n\n\nAre part of this group:\n\n\n\n\njohn\n\n\nmichael\n\n\n\n\nI've configured a RDS DB (Postgre) with IAM Auth and created these users into the database.\n\n\nNow I'm trying to configure the \nPermission Set\n with this policy:\n\n\n\n\n\n\nIn this case, John is able to get his SSO credentials and log-in into RDS \nas john AND michael\n (impersonation), because I have this \"/*\" in my policy.\n\n\nOn the other hand, if I replace that by:\n\n\n{\n    \"Action\": \"rds-db:connect\",\n    \"Effect\": \"Allow\",\n    \"Resource\": \"arn:aws:rds-db:us-east-1:<account>:dbuser:db-KF.../john\"\n}\n\n\n\nMichael won't be able to log in.\n\n\nHow to setup a policy per user?\n\n\nHas anyone faced this scenario and found a solution for it?\n\n\nThanks,",
+    "timestamp": "2025-08-19T17:48:55.581977"
+  }
+}

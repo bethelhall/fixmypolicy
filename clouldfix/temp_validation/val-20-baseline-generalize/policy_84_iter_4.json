@@ -1,0 +1,90 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowRootLevelListingOfBucket",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderListing",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderReadAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*"
+    },
+    {
+      "Sid": "AllowAllActionsOnSpecificResources",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DeleteAutoScalingGroup",
+        "sagemaker:DeleteNotebookInstance",
+        "sagemaker:ListNotebookInstances",
+        "elasticbeanstalk:CreateApplication",
+        "kms:UpdateKeyDescription",
+        "kinesis:CreateStream",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/users/chris/file-9-11.txt",
+        "arn:aws:s3:::my-bucket/users/chris/file-43-14.txt",
+        "arn:aws:s3:::my-bucket/users/chris/file-6-5.txt",
+        "arn:aws:s3:::my-bucket/users/chris/file-10-19.txt",
+        "arn:aws:s3:::my-bucket/users/chris/file-28-18.txt",
+        "arn:aws:s3:::my-bucket/users/chris/file-0-18.txt"
+      ]
+    },
+    {
+      "Sid": "DenyAllActionsOnSpecificResources",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-my-bucket/file.txt",
+        "arn:aws:s3:::my-bucket-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ]
+    }
+  ]
+}

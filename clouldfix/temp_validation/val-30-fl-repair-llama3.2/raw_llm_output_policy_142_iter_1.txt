@@ -1,0 +1,203 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyCreatePermissionSetWithoutBoundary",
+      "Effect": "Deny",
+      "Action": [
+        "sso:AttachManagedPolicyToPermissionSet",
+        "sso:CreateAccountAssignment",
+        "sso:CreatePermissionSet",
+        "sso:DeleteAccountAssignment",
+        "sso:DeleteInlinePolicyFromPermissionSet",
+        "sso:DeletePermissionSet",
+        "sso:DetachManagedPolicyFromPermissionSet",
+        "sso:ProvisionPermissionSet",
+        "sso:PutInlinePolicyToPermissionSet",
+        "sso:UpdatePermissionSet"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "arn:aws:iam::123456789012:root"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAcl",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudSearchCreateDomain",
+      "Effect": "Allow",
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESdkOperations",
+      "Effect": "Allow",
+      "Action": [
+        "ses:GetIdentityVerificationAttributes",
+        "ses:SetIdentityDkimEnabled"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2|eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerOperations",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:InvokeEndpoint",
+        "sagemaker:DescribeEndpoint",
+        "sagemaker:ListModels"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticBeanstalkOperations",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:DescribeApplications",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Operations",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateSecurityGroup",
+        "ec2:DeleteKeyPair"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1|us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMOperations",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateLoginProfile",
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueOperations",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetPartitions",
+        "glue:PutPartition"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyOperations",
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "arn:aws:iam::123456789012:root"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "arn:aws:iam::123456789012:root"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaOperations",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "arn:aws:iam::123456789012:root"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:GenerateDataKey",
+        "kms:Revoke",
+        "kms:Sign",
+        "kms:Verify"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "arn:aws:iam::123456789012:root"
+        }
+      }
+    }
+  ]
+}

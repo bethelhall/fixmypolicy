@@ -1,0 +1,294 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAnyEC2OperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyEC2OperationSCP2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnyEC2OperationSCP3",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:ModifyInstanceAttribute"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnyEC2OperationSCP4",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:ec2:*:*:instance/*-specific"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnySQSOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-3-14.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyKMSOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-45-7.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnySQSOperationSCP2",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyEC2OperationSCP5",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-31-8.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnyLambdaOperationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-1/file-1.txt"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnyRDSOperationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "authorized/arn:aws:ec2:*:*:volume/*/file.txt"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyKinesisOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:PutRecord"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-25-17.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnySESOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "ses:DeleteIdentity"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-0-15.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnySQSOperationSCP2",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:DeleteMessageBatch"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-22-12.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyCloudWatchOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-48-11.txt"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAnySQSOperationSCP3",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "authorized/arn:aws:ec2:*:*:instance/*/file.txt"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyIAMOperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-29-13.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyIAMActionSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-9-6.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

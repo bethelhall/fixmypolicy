@@ -1,0 +1,256 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AlexTestPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:StartInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_Athena",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetQueryExecution"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_Glue",
+      "Effect": "Allow",
+      "Action": [
+        "glue:StartJobRun",
+        "glue:UpdateTable"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_SQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_SES",
+      "Effect": "Allow",
+      "Action": [
+        "ses:ListIdentities",
+        "ses:SendEmail"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_KMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListGrants",
+        "kms:DeleteAlias",
+        "kms:RetireGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AlexTestPolicy_CloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Instances",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyEC2KeyPairs",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteKeyPair"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyEC2RevokeSGIngress",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "DenyEC2CreateVolume",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:CreateVolume"
+      ],
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "DenySESMessages",
+      "Effect": "Deny",
+      "Action": [
+        "ses:SendEmail"
+      ],
+      "Resource": "arn:aws:s3:::bucket-11/file-5.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyRDSDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Sid": "DenyKMSDeleteAlias",
+      "Effect": "Deny",
+      "Action": [
+        "kms:DeleteAlias"
+      ],
+      "Resource": "arn:aws:s3:::bucket-31/file-7.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenySNSSubscribe",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Sid": "DenyCloudWatchDescribeAlarms",
+      "Effect": "Deny",
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": "arn:aws:s3:::bucket-43/file-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyIAMUpdateLoginProfile",
+      "Effect": "Deny",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-8/table-20",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyEC2DescribeKeyPairs",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeKeyPairs"
+      ],
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Division": "*${ec2:ResourceTag/Division}*"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    }
+  ]
+}

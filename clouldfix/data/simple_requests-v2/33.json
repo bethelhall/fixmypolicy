@@ -1,0 +1,104 @@
+{
+  "Requests": [
+    {
+      "id": "allow_put_resolver_logs_awslogs_path",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/AWSLogs/123456789012/Route53Resolver/us-east-1/2025/08/21/15/15-30-00-abcdef123456.log.gz"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX"
+        }
+      }
+    },
+    {
+      "id": "allow_get_bucket_acl_for_delivery",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX"
+        }
+      }
+    },
+    {
+      "id": "allow_put_resolver_logs_custom_prefix",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/route53resolver/query-logs/2025/08/21/queries-00001.json"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX"
+        }
+      }
+    },
+    {
+      "id": "allow_putobject_with_acl_header",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/AWSLogs/123456789012/Route53Resolver/us-west-2/2025/08/21/part-00000.gz"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX",
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "id": "allow_putobject_sse_kms",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/logs/route53/2025/08/21/part-00002.gz"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX"
+        },
+        "StringLike": {
+          "s3:x-amz-server-side-encryption": "aws:kms"
+        }
+      }
+    },
+    {
+      "id": "allow_putobject_generic_logfile",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/logs/route53/resolver/2025-08-21T12-00-00Z.gz"
+      ],
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceOrgID": "o-XXXXX"
+        }
+      }
+    }
+  ]
+}

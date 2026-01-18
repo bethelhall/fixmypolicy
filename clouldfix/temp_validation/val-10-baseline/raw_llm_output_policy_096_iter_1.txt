@@ -1,0 +1,101 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "allow_9b29b8c4"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Action": ["cloudformation:UpdateStack", "athena:GetQueryResults"],
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {"AWS:SourceAccount": "not-['account-b-id', 'account-a-id']"}
+      },
+      "Sid": "allow_c4937655",
+      "Sid": "allow_e84fc88e"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Sid": "allow_a6a725f4"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": ["athena:GetQueryResultsStream"],
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Sid": "allow_032513b2"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": ["*"]
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": ["account-b-id", "account-a-id"]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": ["account-b-id", "account-a-id"]
+        }
+      },
+      "Sid": "deny_68f3fcd1"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": ["account-b-id", "account-a-id"]
+        }
+      },
+      "Sid": "deny_5231e091"
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed correctly according to instructions above. Please note Sid fields have been used for each statement which should not affect functionality but will allow you track down specific statements if needed later on. Also please make sure this new version of Policy aligns well within context where it would operate since some actions might need additional permissions beyond what was initially specified here (like cross account access). Always test policies thoroughly when making changes like these!

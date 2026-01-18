@@ -1,0 +1,136 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "*"
+      ],
+      "Resource": [
+        "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search",
+        "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/*"
+      ],
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": "workspaces:StopWorkspaces",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-10-13.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_efed0f24"
+    },
+    {
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-13-4.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_df5db2b0"
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:es:us-east-1:1234567890:domain/ap-dev-search-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_6209f963"
+    },
+    {
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-18-13.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_3cb83c65"
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Resource": "authorized/arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "deny_bcdcbb0f"
+    },
+    {
+      "Action": "athena:GetQueryResults",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-8-1.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_4b523aca"
+    },
+    {
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "deny_cce46d76"
+    },
+    {
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-19-7.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_cdb0235f"
+    },
+    {
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/*-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Sid": "deny_0fdee90a"
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:es:us-east-1:1234567890:domain/ap-dev-search/file-29-17.txt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_1441a228"
+    }
+  ]
+}

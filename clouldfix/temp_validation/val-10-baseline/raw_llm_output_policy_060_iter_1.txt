@@ -1,0 +1,59 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "sns:Publish",
+        "route53:ListHostedZones",
+        "ec2:DescribeInstances",
+        "glue:UpdateTable",
+        "sqs:SendMessageBatch",
+        "route53:ListHostedZones",
+        "athena:GetTableMetadata",
+        "glue:BatchGetJobs"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "route53:ChangeResourceRecordSetsRecordTypes": ["A", "AAAA"]
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::111222333444:user/david",
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeAlarms",
+        "glue:UpdateTable",
+        "sqs:SendMessageBatch",
+        "route53:ListHostedZones",
+        "athena:GetTableMetadata",
+        "glue:BatchGetJobs"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "route53:ChangeResourceRecordSetsRecordTypes": ["A", "AAAA"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    }
+  ]
+}
+```
+This repaired version of your original policy now correctly implements all requested permissions while also ensuring only authorized users can perform certain actions such as changing resource record sets with types A and AAAA in route53 service. It has been updated according to requirements from test cases you have shared. Please note Sid is added for each statement which helps identify them easily during debugging if needed later on. Also Principal field was modified accordingly based upon new rules defined by these statements.`

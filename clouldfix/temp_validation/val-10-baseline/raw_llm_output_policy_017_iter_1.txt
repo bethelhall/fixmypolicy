@@ -1,0 +1,143 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyIamCreateUserFromForbiddenArn",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-arn:aws:events:us-east-1:xxxx:event-bus/default-specific",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSesListIdentitiesInEuWest1",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsFilterLogEventsToUsEast1ServiceRole",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc2RunInstancesWithUnauthorizedFileTxt",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "authorized/arn:aws:events:us-east-1:xxxx:event-bus/default/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteBucketInUsEast1",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreateFunctionOnForbiddenResource",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowIamListAttachedGroupPoliciesInUsEast1",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySqsSendMessageDeniedBucket0",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElastiLoadBalancingCreateLoadBalancerInUsEast1",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKinesisPutRecordInEuWest1",
+      "Effect": "Allow",
+      "Action": "kinesis:PutRecord",
+      "Resource": "arn:aws:events:us-east-1:xxxx:event-bus/default",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your final output in proper format with all requirements addressed correctly according to their respective conditions specified by each statement id from `requirements`. Please note this does not cover every possible condition but only those mentioned specifically for these actions within our current scope of knowledge about them being used here based on context clues present above. If there were other specific Conditions applied elsewhere they would need separate handling per Statement ID basis which isn’t covered presently due lack thereof information available currently. This should meet most common scenarios though! Let me know if you have further questions regarding it!

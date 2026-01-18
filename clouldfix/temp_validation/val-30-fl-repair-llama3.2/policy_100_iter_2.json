@@ -1,0 +1,247 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::my-bucket-data/*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetDashboard",
+        "cloudwatch:DeleteDashboards"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-data/*",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1|us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "SNS",
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": [
+        "arn:aws:s3:::my-bucket-data/*",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:user/bob"
+      ]
+    },
+    {
+      "Sid": "SQS",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibility",
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-1-2",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "EC2",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "GuardDuty",
+      "Effect": "Allow",
+      "Action": [
+        "guardduty:GetDetector",
+        "guardduty:ListDetectors"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-20-18",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "RDS",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Deny",
+      "Action": "kms:DisableKey",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "Glue",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "CodeDeploy",
+      "Effect": "Allow",
+      "Action": "codedeploy:GetDeployment",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::123456789012:user/alice"
+      ]
+    },
+    {
+      "Sid": "Route53",
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1|us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "S3Delete",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/test-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    }
+  ]
+}

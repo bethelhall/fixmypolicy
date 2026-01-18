@@ -1,0 +1,100 @@
+{
+  "Requests": [
+    {
+      "id": "allow_encrypt_bj_appuser",
+      "Effect": "allow",
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-north-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
+      ],
+      "Principal": "arn:aws-cn:iam::111122223333:user/AppUser",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_decrypt_bj_webrole",
+      "Effect": "allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-north-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
+      ],
+      "Principal": "arn:aws-cn:iam::111122223333:role/WebRole",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_generate_data_key_bj_assumedrole",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-north-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
+      ],
+      "Principal": "arn:aws-cn:sts::111122223333:assumed-role/DevOps/ci-session",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_create_grant_nx_dataproc",
+      "Effect": "allow",
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-northwest-1:111122223333:key/abcdefab-cdef-abcd-efab-cdefabcdef12"
+      ],
+      "Principal": "arn:aws-cn:iam::111122223333:user/DataProc",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_describekey_nx_root_cn",
+      "Effect": "allow",
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-northwest-1:111122223333:key/abcdefab-cdef-abcd-efab-cdefabcdef12"
+      ],
+      "Principal": "arn:aws-cn:iam::111122223333:root",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_schedule_delete_global_root_wrong_context",
+      "Effect": "deny",
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws-cn:kms:cn-north-1:111122223333:key/12345678-1234-1234-1234-1234567890ab"
+      ],
+      "Principal": "arn:aws:iam::111122223333:root",
+      "Condition": {
+        "Bool": {
+          "kms:AWSAccountId": "false"
+        }
+      }
+    }
+  ]
+}

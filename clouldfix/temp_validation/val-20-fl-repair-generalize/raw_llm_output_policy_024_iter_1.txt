@@ -1,0 +1,87 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Sid": "kms"
+    },
+    {
+      "Action": "secretsmanager:GetSecretValue",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Sid": "secretsmanager"
+    },
+    {
+      "Action": "guardduty:CreateIPSet",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "sqs:CreateQueue",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "logs:CreateLogStream",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "glue:UpdateTable",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "sqs:SendMessage",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

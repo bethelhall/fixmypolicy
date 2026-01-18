@@ -1,0 +1,187 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "backup_service_list_bucket_outside_vpc",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_get_object_outside_vpc",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "ec2_instance_get_object_inside_vpc",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document/data/file.txt"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/ec2-instance-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_get_bucket_versioning",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketVersioning"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_get_bucket_location",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "lambda_function_put_object_inside_vpc",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document/backup/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/lambda-vpc-execution-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_list_object_versions",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucketVersions"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "console_user_get_object_outside_vpc",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document/reports/monthly.pdf"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_get_object_metadata",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObjectMetadata"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "backup_service_via_service_principal",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket",
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::s3-document",
+          "arn:aws:s3:::s3-document/*"
+        ],
+        "Principal": "backup.amazonaws.com",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpc": "vpc-0123456789abcdef0"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 84.6,
+      "total_requests": 13,
+      "correct": 11,
+      "incorrect": 2
+    },
+    "repaired_policy": {
+      "accuracy": 84.6,
+      "total_requests": 13,
+      "correct": 11,
+      "incorrect": 2
+    }
+  },
+  "metadata": {
+    "file_number": "7",
+    "user_intent": "I have a S3 bucket with the following permission added to the bucket permission:\n\n\n\n\n\n\nTogether with an VPC endpoint to S3, I successfully restricted access to my bucket objects only to my AWS resources in the specified VPC.\n\n\nI then would like to create a AWS backup plan to perform AWS backup on the S3 bucket. For testing, I tried to create an on-demand backup with a user role for AWS backup with AmazonS3FullAccess and AWSBackupServiceRolePolicyForS3Backup managed policies, but I am still with insufficient permission to perform the backup. I was able to perform the backup if I remove the above S3 bucket permission.\n\n\nMy question is: Is it possible to perform AWS backup on my S3 bucket if I want to keep the above S3 bucket permission to restrict access to my VPC? If it is possible, how should I specify the permissions of user role used for running the AWS backup?",
+    "timestamp": "2025-08-19T17:33:41.132892"
+  }
+}

@@ -1,0 +1,126 @@
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "aoss:APIAccessAll",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:DashboardsAccessAll",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:GetRepository",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "autoscaling:CreateAutoScalingGroup",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetCrawler",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:CreateTable",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}-specific",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "authorized/arn:aws:aoss:us-east-2:{accountNumber}:collection/{collectionId}/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

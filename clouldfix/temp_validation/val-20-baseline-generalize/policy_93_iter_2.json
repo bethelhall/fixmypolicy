@@ -1,0 +1,119 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "workspaces:StartWorkspaces",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetDashboard",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "forbidden-arn:aws:iam::89988644568:role/redshiftkinesisrole-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "authorized/arn:aws:iam::89988644568:role/redshiftkinesisrole/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

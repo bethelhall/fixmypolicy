@@ -1,0 +1,103 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AccessToGetBucketLocation",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*"
+      ]
+    },
+    {
+      "Sid": "AccessToWebsiteBuckets",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketWebsite",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>",
+        "arn:aws:s3:::<bucket-name>/*"
+      ]
+    },
+    {
+      "Sid": "AllowCloudSearch",
+      "Effect": "Allow",
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMS",
+      "Effect": "Allow",
+      "Action": "kms:ListKeys",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:CreateAccessKey",
+      "Resource": "arn:aws:s3:::resource-38-11",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53",
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZones",
+      "Resource": "arn:aws:s3:::resource-31-13",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMaker",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthena",
+      "Effect": "Allow",
+      "Action": "athena:GetQueryResults",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

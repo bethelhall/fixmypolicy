@@ -1,0 +1,153 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1721248399622",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111111111111:root"
+      },
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:ses:eu-west-1:222222222222:identity/mydomain.com"
+    },
+    {
+      "Sid": "createkey",
+      "Effect": "Allow",
+      "Action": "kms:CreateKey",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "getrepository",
+      "Effect": "Allow",
+      "Action": "codecommit:GetRepository",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "updatedatabase",
+      "Effect": "Allow",
+      "Action": "glue:UpdateDatabase",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::875797485194:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "encryptdata",
+      "Effect": "Allow",
+      "Action": "kms:Encrypt",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::335557960228:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deletestack",
+      "Effect": "Allow",
+      "Action": "cloudformation:DeleteStack",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "createsecuritygroup",
+      "Effect": "Allow",
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "verifyemailidentity",
+      "Effect": "Deny",
+      "Action": "ses:VerifyEmailIdentity",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111111111111:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "getidentitydkimattributes",
+      "Effect": "Deny",
+      "Action": "ses:GetIdentityDkimAttributes",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111111111111:root"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "receivedmessage",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111111111111:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "receivemessagedenied",
+      "Effect": "Deny",
+      "Action": "s3:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111111111111:root"
+      }
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed correctly according to their specifications. Please note I have replaced `*` for resource fields where specific resources were not specified but should apply universally (like KMS key creation). If you need more granular control over which actions can occur on what resources please provide additional details about those specifics within each action rule set. Otherwise this will cover most general cases without being overly restrictive due to '*'. Also remember every statement needs unique Sid(statement identifier) otherwise it may cause conflicts when using multiple policies together hence adding prefix like createkey etc.. This way we avoid conflict between different statements having same sid causing unexpected behavior during execution time based upon order of precedence if there would happen such situation. So always ensure uniqueness across entire document level including nested ones too!  
+Please replace '*' back by actual arn values once they become available from further inputs related specifically towards these rules only then make necessary changes accordingly keeping above mentioned points into consideration while doing modifications next times around! Thankyou!!

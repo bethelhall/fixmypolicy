@@ -1,0 +1,157 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "rds-db:connect",
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>",
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "cloud9:DeleteEnvironment",
+        "glue:GetTable",
+        "redshift:DescribeClusters",
+        "athena:CreateWorkGroup",
+        "athena:GetQueryResultsStream",
+        "s3:ListAllMyBuckets",
+        "cloudfront:GetDistribution",
+        "iam:DeleteGroup",
+        "elasticbeanstalk:CreateApplication",
+        "s3:PutBucketLifecycle",
+        "s3:GetObjectAcl",
+        "iam:ListGroupsForUser",
+        "kms:RetireGrant",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "guardduty:CreateIPSet",
+        "s3:GetBucketCors",
+        "sagemaker:DeleteNotebookInstance",
+        "athena:DeleteWorkGroup"
+      ],
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "eu-west-2",
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>-forbidden-resource",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "forbidden-arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>-specific",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "*",
+      "Condition": {
+        "StringLike": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>/file.txt",
+      "Principal": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,647 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSKafkaResourcePolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": [
+        "secretsmanager:getSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345"
+    },
+    {
+      "Sid": "SQSServiceAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "sqs.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "dynamodb.amazonaws.com"
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "EC2Access",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CloudFrontAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3Access",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "EC2KeyPairAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CodePipelineAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "codepipeline.amazonaws.com"
+      },
+      "Action": "codepipeline:ListPipelines",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatchAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "cloudwatch:DescribeAlarms",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "IAMAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBScanAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "dynamodb.amazonaws.com"
+      },
+      "Action": "dynamodb:Scan",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectTaggingAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ELBAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "elasticloadbalancing.amazonaws.com"
+      },
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectAclAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "RDSAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "SNSAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2KeyPairDeleteAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CodePipelineCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "codepipeline.amazonaws.com"
+      },
+      "Action": "codepipeline:CreatePipeline",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatchCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "cloudwatch:CreateAlarm",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "IAMCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "dynamodb.amazonaws.com"
+      },
+      "Action": "dynamodb:CreateTable",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3CreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:CreateBucket",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2CreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:CreateInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudFrontGetDistributionAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "ElasticLoadBalancingCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "elasticloadbalancing.amazonaws.com"
+      },
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectTaggingAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObjectTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "RDSCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "SNSPublishAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2KeyPairDelete",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CodePipelineCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "codepipeline.amazonaws.com"
+      },
+      "Action": "codepipeline:CreatePipeline",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatchCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "cloudwatch:CreateAlarm",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "IAMCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "dynamodb.amazonaws.com"
+      },
+      "Action": "dynamodb:CreateTable",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3Create",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:CreateBucket",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2Create",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:CreateInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudFrontGetDistribution",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "ElasticLoadBalancingCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "elasticloadbalancing.amazonaws.com"
+      },
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetObjectAcl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "RDSCreate",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "SNSPublish",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2KeyPairDelete",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    } ] }

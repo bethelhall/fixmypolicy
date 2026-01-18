@@ -1,0 +1,113 @@
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "autoscaling:CreateAutoScalingGroup"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*"
+      ]
+    },
+    {
+      "Sid": "AllowEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser",
+        "iam:CreateRole",
+        "s3:PutObjectAcl",
+        "cloudsearch:DeleteDomain",
+        "glue:UpdateDatabase",
+        "glue:StartCrawler"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-0.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-1.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-2.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-3.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-4.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-5.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-6.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-7.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-8.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-9.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*-specific",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*-forbidden-resource"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      },
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "authorized/arn:aws:autoscaling:*:*:autoScalingGroup/*/file.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

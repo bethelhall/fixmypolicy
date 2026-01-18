@@ -1,0 +1,170 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole",
+        "backup:StartCopyJob",
+        "backup:DescribeRecoveryPoint",
+        "backup:ListTags"
+      ],
+      "Resource": [
+        "arn:aws:backup:us-east-2:222222222222:backup-vault:zzush-intermediate-vault-ohio"
+      ]
+    },
+    {
+      "Sid": "Statement2",
+      "Effect": "Allow",
+      "Action": [
+        "kms:"
+      ],
+      "Resource": "arn:aws:kms:us-east-2:222222222222:key/11111111"
+    },
+    {
+      "Sid": "Statement3",
+      "Effect": "Allow",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::222222222222:role/",
+        "arn:aws:iam::777777777777:role/"
+      ]
+    },
+    {
+      "Sid": "Statement4",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents",
+        "logs:CreateLogStream",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": [
+        "arn:aws:logs:::*"
+      ]
+    },
+    {
+      "Sid": "allow_37c5f938",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:logs:::resource-39-12",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_067e20a6",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListModels",
+      "Resource": "arn:aws:logs:::resource-28-11",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_7402c268",
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:logs:::resource-18-5",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_49e5117e",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:logs:::resource-19-4",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_44982603",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:logs:::resource-29-17",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1daca073",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:logs:::resource-5-0",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_d389aaf3",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:backup:us-east-2:222222222222:backup-vault:zzush-intermediate-vault-ohio-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_4cdaed3a",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:iam::222222222222:role//file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "deny_361b9f86",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:iam::222222222222:role/-specific",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_c4190837",
+      "Effect": "Deny",
+      "Action": "iam:ListRoles",
+      "Resource": "authorized/arn:aws:iam::777777777777:role//file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

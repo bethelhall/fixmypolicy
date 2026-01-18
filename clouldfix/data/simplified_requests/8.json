@@ -1,0 +1,157 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_root_principal_standard_region",
+        "Effect": "allow",
+        "Action": [
+          "kms:CreateKey"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::111122223333:root",
+        "Condition": {}
+      },
+      {
+        "id": "test_iam_user_kms_encrypt",
+        "Effect": "allow",
+        "Action": [
+          "kms:Encrypt"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:111122223333:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::111122223333:user/data-engineer",
+        "Condition": {}
+      },
+      {
+        "id": "test_china_root_principal_attempt",
+        "Effect": "deny",
+        "Action": [
+          "kms:CreateKey"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws-cn:iam::111122223333:root",
+        "Condition": {}
+      },
+      {
+        "id": "test_iam_role_kms_decrypt",
+        "Effect": "allow",
+        "Action": [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-west-2:111122223333:key/abcdef12-3456-7890-abcd-ef1234567890"
+        ],
+        "Principal": "arn:aws:iam::111122223333:role/lambda-execution-role",
+        "Condition": {}
+      },
+      {
+        "id": "test_cross_account_access_denied",
+        "Effect": "deny",
+        "Action": [
+          "kms:GenerateDataKey"
+        ],
+        "Resource": [
+          "arn:aws:kms:eu-west-1:111122223333:key/98765432-dcba-4321-abcd-210987654321"
+        ],
+        "Principal": "arn:aws:iam::444455556666:user/external-user",
+        "Condition": {}
+      },
+      {
+        "id": "test_china_iam_user_direct",
+        "Effect": "deny",
+        "Action": [
+          "kms:Encrypt"
+        ],
+        "Resource": [
+          "arn:aws-cn:kms:cn-beijing-1:111122223333:key/11111111-2222-3333-4444-555555555555"
+        ],
+        "Principal": "arn:aws-cn:iam::111122223333:user/beijing-user",
+        "Condition": {}
+      },
+      {
+        "id": "test_key_administrative_actions",
+        "Effect": "allow",
+        "Action": [
+          "kms:PutKeyPolicy",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        "Resource": [
+          "arn:aws:kms:ap-southeast-1:111122223333:key/fedcba98-7654-3210-fedc-ba9876543210"
+        ],
+        "Principal": "arn:aws:iam::111122223333:role/kms-admin-role",
+        "Condition": {}
+      },
+      {
+        "id": "test_grant_operations",
+        "Effect": "allow",
+        "Action": [
+          "kms:CreateGrant",
+          "kms:RetireGrant",
+          "kms:ListGrants"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:111122223333:key/aaaabbbb-cccc-dddd-eeee-ffffgggghhhh"
+        ],
+        "Principal": "arn:aws:iam::111122223333:user/app-service-account",
+        "Condition": {
+          "StringEquals": {
+            "kms:GrantConstraintType": "EncryptionContextSubset"
+          }
+        }
+      },
+      {
+        "id": "test_alias_operations",
+        "Effect": "allow",
+        "Action": [
+          "kms:CreateAlias",
+          "kms:DeleteAlias",
+          "kms:ListAliases"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:111122223333:alias/my-application-key"
+        ],
+        "Principal": "arn:aws:iam::111122223333:user/devops-engineer",
+        "Condition": {}
+      },
+      {
+        "id": "test_china_specific_principal_format",
+        "Effect": "deny",
+        "Action": [
+          "kms:DescribeKey",
+          "kms:GetKeyPolicy"
+        ],
+        "Resource": [
+          "arn:aws-cn:kms:cn-northwest-1:111122223333:key/zzzzyyyy-xxxx-wwww-vvvv-uuuuttttssss"
+        ],
+        "Principal": "arn:aws-cn:iam::111122223333:user/ningxia-admin",
+        "Condition": {}
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 33.3,
+      "total_requests": 18,
+      "correct": 6,
+      "incorrect": 12
+    },
+    "repaired_policy": {
+      "accuracy": 27.8,
+      "total_requests": 18,
+      "correct": 5,
+      "incorrect": 13
+    }
+  },
+  "metadata": {
+    "file_number": "8",
+    "user_intent": "In most regions the following KMS key policy\n\n\n\n\n\n\nallows the account to use IAM policies to allow access to the KMS key, in addition to the key policy\n.\n\n\nHowever, \nin the Beijing and Ningxia Regions, there is no concept of the \"root user\" or \"account user\" credentials\n. Creating KMS key with such policy (replacing \narn:aws:\n with \narn:aws-cn:\n) fails. Is it possible to enable IAM policies for KMS keys in Chinese regions? If so, how?",
+    "timestamp": "2025-08-19T17:34:18.872451"
+  }
+}

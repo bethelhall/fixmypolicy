@@ -1,0 +1,146 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_greengrass_deployment_create",
+        "Effect": "allow",
+        "Action": [
+          "greengrass:CreateDeployment"
+        ],
+        "Resource": [
+          "arn:aws:greengrass:us-east-1:123456789012:deployments:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/greengrass-admin"
+      },
+      {
+        "id": "test_iot_thing_describe",
+        "Effect": "allow",
+        "Action": [
+          "iot:DescribeThing"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:thing/MyGreengrassCore"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/greengrass-admin"
+      },
+      {
+        "id": "test_greengrass_component_list",
+        "Effect": "allow",
+        "Action": [
+          "greengrass:ListComponents"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/greengrass-admin"
+      },
+      {
+        "id": "test_sts_assume_role",
+        "Effect": "allow",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/credentials.iot.amazonaws.com/greengrass-session",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestedRegion": "us-east-1"
+          }
+        }
+      },
+      {
+        "id": "test_logs_create_stream",
+        "Effect": "allow",
+        "Action": [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-1:123456789012:log-group:/aws/greengrass/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole"
+      },
+      {
+        "id": "test_s3_get_greengrass_artifacts",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::greengrass-component-artifacts-123456789012/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole"
+      },
+      {
+        "id": "test_iot_mqtt_publish",
+        "Effect": "allow",
+        "Action": [
+          "iot:Publish"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:topic/$aws/things/MyGreengrassCore/greengrass/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole"
+      },
+      {
+        "id": "test_greengrass_get_deployment_status",
+        "Effect": "allow",
+        "Action": [
+          "greengrass:GetDeploymentStatus"
+        ],
+        "Resource": [
+          "arn:aws:greengrass:us-east-1:123456789012:deployments:deployment-12345"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/greengrass-admin"
+      },
+      {
+        "id": "test_iot_certificate_describe",
+        "Effect": "allow",
+        "Action": [
+          "iot:DescribeCertificate"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:cert/abc123def456"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole"
+      },
+      {
+        "id": "test_lambda_invoke_greengrass",
+        "Effect": "allow",
+        "Action": [
+          "lambda:InvokeFunction"
+        ],
+        "Resource": [
+          "arn:aws:lambda:us-east-1:123456789012:function:GreengrassLambdaFunction"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/GreengrassV2TokenExchangeRole",
+        "Condition": {
+          "StringLike": {
+            "aws:userid": "AIDAI*"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 0.0,
+      "total_requests": 11,
+      "correct": 0,
+      "incorrect": 11
+    },
+    "repaired_policy": {
+      "accuracy": 0.0,
+      "total_requests": 11,
+      "correct": 0,
+      "incorrect": 11
+    }
+  },
+  "metadata": {
+    "file_number": "14",
+    "user_intent": "it has been weeks already stiil cannot find the correct result\n\n\nI also have tried with the command which recommend\n--timeout-multiplier 5\n\n\nbut did not work out\nwhat I have done is under the link\n\nhttps://repost.aws/questions/QUfFmnIZhqQTa2qcwMpale-A/nucleus-idt-4-7-0-for-greengrass-v2-cloudcomponent-test-failed-failed-at-the-greengrass-deployment-is-completed-on-the-device-after-180-seconds\n\nhere is my user credential\n\nhope someone can help me out with the mass\nGreengrassV2IoTThingPolicy\n\nmy GreengrassV2TokenExchangeRole  role credential\n\nGreengrassV2TokenExchangeRoleAccess\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"iot:DescribeCertificate\",\n                \"logs:CreateLogGroup\",\n                \"logs:CreateLogStream\",\n                \"logs:PutLogEvents\",\n                \"logs:DescribeLogStreams\",\n                \"iot:Connect\",\n                \"iot:Publish\",\n                \"iot:Subscribe\",\n                \"iot:Receive\",\n                \"iot:ListThingPrincipals\",\n                \"iot:GetThingShadow\",\n                \"iot:UpdateThingShadow\",\n                \"s3:GetBucketLocation\",\n                \"s3:GetObject\",\n                \"s3:PutObject\",\n                \"s3:AbortMultipartUpload\",\n                \"s3:ListMultipartUploadParts\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\nIAM role must be configured with the following minimum trust policy:\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"Service\": [\n                    \"lambda.amazonaws.com\",\n                    \"sagemaker.amazonaws.com\",\n                    \"credentials.iot.amazonaws.com\"\n                ]\n            },\n            \"Action\": \"sts:AssumeRole\"\n        }\n    ]\n}",
+    "timestamp": "2025-08-19T17:38:25.132102"
+  }
+}

@@ -1,0 +1,314 @@
+{
+  "Statement": [
+    {
+      "Action": "dynamodb:CreateTable",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Action": "rds:CreateDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": "codedeploy:ListDeployments",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "sqs:ListQueues",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "cloudtrail:CreateTrail",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "s3:PutBucketLogging",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": "sqs:DeleteMessage",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "lambda:InvokeFunction",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": "lambda:CreateFunction",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}-specific",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": "sqs:SendMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": "cloudwatch:DescribeAlarms",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "ses:SendEmail",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "ec2:DescribeInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": "dynamodb:GetItem",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "s3:DeleteBucketLifecycle",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": "iam:CreateLoginProfile",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "sagemaker:ListEndpointConfigs",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "ses:SetIdentityDkimEnabled",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "codedeploy:GetDeployment",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "dynamodb:DeleteItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": "ec2:DescribeSecurityGroups",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "iam:CreateUser",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

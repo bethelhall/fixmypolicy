@@ -1,0 +1,128 @@
+{
+  "Requests": [
+    {
+      "id": "allow_9647c758",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_aee4f201",
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_aae0c329",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_b13fdded",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "authorized/arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_3a054a74",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "id": "allow_a28206aa",
+      "Effect": "Allow",
+      "Action": "redshift:CreateCluster",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "id": "allow_57ce39df",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_3dcf10cf",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_5e6a7f88",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_f4a55a33",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    }
+  ]
+}

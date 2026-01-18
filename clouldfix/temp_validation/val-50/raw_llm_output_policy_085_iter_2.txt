@@ -1,0 +1,1679 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EC2DescribeInstances",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceConnectEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2InstanceConnect",
+      "Action": [
+        "ec2-instance-connect:SendSSHPublicKey",
+        "ec2-instance-connect:OpenTunnel",
+        "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
+        "ec2:CreateInstanceConnectEndpoint",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateTags",
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      }
+    },
+    {
+      "Sid": "AllowDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "AllowListGroups",
+      "Action": [
+        "iam:ListGroups"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/test-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListGroupsForUser",
+      "Action": [
+        "iam:ListGroupsForUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyRemoveUserFromGroup",
+      "Action": [
+        "iam:RemoveUserFromGroup"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:role/developer-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreatePolicy",
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyUpdateLoginProfile",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketPolicy",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteVolume",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDescribeSecurityGroups",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreateLoginProfile",
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreatePolicy",
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyUpdateLoginProfile",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketPolicy",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteVolume",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDescribeSecurityGroups",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreateLoginProfile",
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreatePolicy",
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyUpdateLoginProfile",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketPolicy",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteVolume",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDescribeSecurityGroups",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreateLoginProfile",
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreatePolicy",
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyUpdateLoginProfile",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketPolicy",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteVolume",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDescribeSecurityGroups",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreateLoginProfile",
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetUser",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreatePolicy",
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/unauthorized"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyUpdateLoginProfile",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketPolicy",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteVolume",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDescribeSecurityGroups",
+      "Action": [
+        "ec2:DescribeSecurityGroups"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteAccessKey",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyCreateLoginProfile",
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeletePolicy",
+      "Action": [
+        "iam:DeletePolicy"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyListAccessKeys",
+      "Action": [
+        "iam:ListAccessKeys"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDetachVolume",
+      "Action": [
+        "ec2:DetachVolume"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyStopInstances",
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenyGetRole",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Effect": "Deny",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456

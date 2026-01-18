@@ -1,0 +1,82 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": ["es:ESHttpGet", "es:ESHttpPost"],
+      "Resource": [
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/*",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/*"
+      ],
+      "Condition": {"Bool": {"aws:SecureTransport": "true"}}
+    },
+    {
+      "Sid": "deniedActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser",
+        "ec2:RunInstances",
+        "lambda:CreateFunction",
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"},
+        "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4"
+      }
+    },
+    {
+      "Sid": "allowedActionsAlice",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateLoginProfile",
+        "iam:ListGroupsForUser",
+        "workspaces:ModifyWorkspaceProperties",
+        "ec2:ImportKeyPair",
+        "codepipeline:StartPipelineExecution",
+        "cloudtrail:CreateTrail"
+      ],
+      "Resource": [
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-26-18.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-49-5.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-38-5.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/file-16-10.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-24-1.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-23-11.txt"
+      ],
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}},
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "allowedActionsRoleForbidden",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListGroupsForUser",
+        "workspaces:ModifyWorkspaceProperties",
+        "ec2:ImportKeyPair",
+        "codepipeline:StartPipelineExecution",
+        "cloudtrail:CreateTrail"
+      ],
+      "Resource": [
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-49-5.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-38-5.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/file-16-10.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-24-1.txt",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-23-11.txt"
+      ],
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}},
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNTID:role/forbidden-EC2_ROLE_4"
+      }
+    }
+  ]
+}
+```
+This is your final output in json format without additional explanation nor commentary. Please replace `REGION`, `ACCOUNTID` with actual values you want for these placeholders respectively.`

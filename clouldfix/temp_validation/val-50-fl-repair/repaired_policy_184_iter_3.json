@@ -1,0 +1,73 @@
+{
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "Allow access through SNS for all principals in the account that are authorized to use SNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access to specific actions for specific resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListObjects"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-1/*",
+        "arn:aws:s3:::bucket-2/*"
+      ]
+    },
+    {
+      "Sid": "Deny access to specific actions for specific resources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-1/*",
+        "arn:aws:s3:::bucket-2/*"
+      ]
+    }
+  ]
+}

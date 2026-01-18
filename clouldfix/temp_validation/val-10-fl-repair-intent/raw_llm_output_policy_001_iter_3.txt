@@ -1,0 +1,75 @@
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "__default_statement_ID",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::1234567895:user/testuser",
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "SNS:GetTopicAttributes",
+        "SNS:SetTopicAttributes",
+        "SNS:AddPermission",
+        "SNS:RemovePermission",
+        "SNS:DeleteTopic",
+        "SNS:Subscribe",
+        "SNS:ListSubscriptionsByTopic",
+        "SNS:Publish"
+      ],
+      "Resource": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f8a4c2e1",
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:kms:us-east-1:123456789:key/12345678-1234-1234-1234-123456789012"
+    },
+    {
+      "Sid": "allow_b3d7e9f2",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:us-east-1:123456789:key/12345678-1234-1234-1234-123456789012"
+    },
+    {
+      "Sid": "deny_c5a8f1d4",
+      "Effect": "Deny",
+      "Action": "SNS:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+    },
+    {
+      "Sid": "deny_e2b6a9c7",
+      "Effect": "Deny",
+      "Action": "SNS:GetTopicAttributes",
+      "Resource": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+    },
+    {
+      "Sid": "deny_a7f3d8e5",
+      "Effect": "Deny",
+      "Action": "kms:Encrypt",
+      "Resource": "arn:aws:kms:us-east-1:123456789:key/12345678-1234-1234-1234-123456789012"
+    },
+    {
+      "Sid": "allow_d9e4b2f6",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:ap-southeast-2:123456789:key/abcdef12-3456-7890-abcd-ef1234567890"
+    },
+    {
+      "Sid": "deny_f1c8a5b3",
+      "Effect": "Deny",
+      "Action": "SNS:Subscribe",
+      "Resource": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+    }
+  ]
+}

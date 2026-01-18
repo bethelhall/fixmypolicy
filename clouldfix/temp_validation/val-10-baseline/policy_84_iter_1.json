@@ -1,0 +1,33 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowDeletionAndModificationToSpecificFilesInUserDirectory",
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "/"
+        }
+      }
+    },
+    {
+      "Sid": "ExplicitlyDeniedAllOtherActionsOnTheSameResources",
+      "Effect": "Deny",
+      "NotAction": [
+        "s3:*"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*"
+    },
+    {
+      "Sid": "ImplicitlyAllowedEverythingElseAtThisPoint",
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
+}

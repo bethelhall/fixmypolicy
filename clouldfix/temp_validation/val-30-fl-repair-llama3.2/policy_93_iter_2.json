@@ -1,0 +1,365 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EC2",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "RDS",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": "kms:DisableKey",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CodeCommit",
+      "Effect": "Allow",
+      "Action": "codecommit:CreateRepository",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CodeCommitDelete",
+      "Effect": "Allow",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "RDSDelete",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "EBSAttach",
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "WorkSpacesReboot",
+      "Effect": "Allow",
+      "Action": "workspaces:RebootWorkspaces",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DF2417F5",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "IAMDeleteUser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "LambdaCreate",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "forbidden-arn:aws:iam::89988644568:role/redshiftkinesisrole-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBPut",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "authorized/arn:aws:iam::89988644568:role/redshiftkinesisrole/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "SESGet",
+      "Effect": "Allow",
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "CodeCommitList",
+      "Effect": "Allow",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQSSend",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "SQSReceive",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "WorkSpacesDescribe",
+      "Effect": "Allow",
+      "Action": "workspaces:DescribeWorkspaceDirectories",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2Start",
+      "Effect": "Allow",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "LambdaInvoke",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "S3PutACL",
+      "Effect": "Allow",
+      "Action": "s3:PutObjectAcl",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "GuardDutyGet",
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "SESPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "CloudSearchCreate",
+      "Effect": "Allow",
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQSList",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueues",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "IAMDeleteForbidden",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "LambdaUpdate",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "SagemakerCreate",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateEndpoint",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "ELBDescribe",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "IAMForbidden",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "CFDelete",
+      "Effect": "Allow",
+      "Action": "cloudformation:DeleteStack",
+      "Resource": "arn:aws:iam::89988644568:role/redshiftkinesisrole",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

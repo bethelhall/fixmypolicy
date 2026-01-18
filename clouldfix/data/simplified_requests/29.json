@@ -1,0 +1,135 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_dynamodb_describe_stream",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:DescribeStream"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/UserActivityTable/stream/2024-01-15T10:30:00.000"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_dynamodb_get_records",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:GetRecords"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-west-2:123456789012:table/OrdersTable/stream/2024-01-15T11:45:00.000"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_dynamodb_get_shard_iterator",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:GetShardIterator"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:eu-west-1:123456789012:table/TransactionsTable/stream/2024-01-15T09:00:00.000"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_dynamodb_list_streams",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:ListStreams"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_lambda_create_event_source_mapping",
+        "Effect": "deny",
+        "Action": [
+          "lambda:CreateEventSourceMapping"
+        ],
+        "Resource": [
+          "arn:aws:lambda:us-east-1:123456789012:function:AggregateDataFunction"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_s3_get_object",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket/config.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_s3_put_object",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket/aggregated-results/2024-01-15.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_dynamodb_put_item",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:PutItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/AggregatedResultsTable"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_iam_pass_role",
+        "Effect": "deny",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      },
+      {
+        "id": "test_s3_list_bucket",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaDynamoDBTriggerRole"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "29",
+    "user_intent": "I'm trying to attach a trigger which will invoke a Lambda function when a dynamoDB table is updated. (Briefly, this is aggregating results from one table to another.)\n\n\nI get an error:\nInvalidParameterValueException: Cannot access stream arn:aws:dynamodb:[LOCATION]:[ACCOUNT]:table/[TABLE1]/stream/[DATETIME]. Please ensure the role can perform the GetRecords, GetShardIterator, DescribeStream, and ListStreams Actions on your stream in IAM.\n\n\nThis occurs both if I try to attach a trigger to the function and point at the table, and if I try to create a new (or attach an existing) function on the table.\n\n\nIn the attached role, I have added an in-line policy:",
+    "timestamp": "2025-08-19T17:47:17.528385"
+  }
+}

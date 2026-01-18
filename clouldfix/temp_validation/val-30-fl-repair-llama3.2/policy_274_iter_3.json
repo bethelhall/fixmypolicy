@@ -1,0 +1,89 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1408118336209",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::owrvideos/*",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": [
+            "MY FIRST DOMAIN/*",
+            " MY NEW DOMAIN/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Stmt1408118336210",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "codecommit:GetRepository",
+        "athena:CreateWorkGroup",
+        "athena:StopQueryExecution",
+        "cloudtrail:StopLogging",
+        "cloudwatch:PutDashboard",
+        "config:GetComplianceDetailsByConfigRule",
+        "glue:GetJobRun",
+        "guardduty:ListDetectors",
+        "iam:GetRolePolicy",
+        "iam:ListPolicies",
+        "kms:GenerateDataKey",
+        "redshift:CreateCluster",
+        "s3:GetObject",
+        "s3:GetBucketTagging",
+        "s3:GetBucketWebsite",
+        "s3:ListBucket",
+        "s3:PutBucketLogging",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketTagging",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:RestoreObject",
+        "sagemaker:InvokeEndpoint",
+        "workspaces:ModifyWorkspaceProperties"
+      ],
+      "Resource": "arn:aws:s3:::owrvideos/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1|us-east-1|us-west-2"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI|forbidden-role|cross-account-role|test-user|blocked-user"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt1408118336211",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "autoscaling:DeleteAutoScalingGroup",
+        "ec2:RunInstances",
+        "iam:DeleteUser",
+        "s3:PutBucketTagging"
+      ],
+      "Resource": "arn:aws:s3:::owrvideos/*",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": [
+            "MY FIRST DOMAIN/*",
+            " MY NEW DOMAIN/*"
+          ]
+        }
+      }
+    }
+  ]
+}

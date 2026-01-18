@@ -1,0 +1,154 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyDynamoDBDeletionAndSubscriptionToForbiddenResources",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/*-forbidden-resource",
+        "arn:aws:ec2:*:*:instance/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "Null": {
+          "aws:ResourceTag/AllowTagRemoval": true
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie",
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      }
+    },
+    {
+      "Sid": "DenySpecificRDSoperationsOnForbiddenARNs",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*-specific",
+        "arn:aws:ec2:*:*:volume/*-specific"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "Null": {
+          "aws:ResourceTag/AllowTagRemoval": true
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      }
+    },
+    {
+      "Sid": "AllowCloud9DeletionWithCorrectConditions",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "ArnNotLike": {
+          "aws:PrincipalArn": "*david*"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowAccessToNonRestrictedBuckets",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:ec2:*:*:volume/file-32-0.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowIAMActionsBasedOnRegions",
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-17-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowMonitoringFromCertainIPsOnly",
+      "Effect": "Allow",
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:ec2:*:*:instance/file-46-18.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowCreationOfDatabasesInUSWest",
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:ec2:*:*:volume/file-31-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowModificationOfBucketTagsEUWest",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    }
+  ]
+}
+```

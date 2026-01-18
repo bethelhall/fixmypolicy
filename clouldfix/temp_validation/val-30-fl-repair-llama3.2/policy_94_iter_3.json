@@ -1,0 +1,424 @@
+{
+  "Version": "2012-10-17",
+  "Id": "corrected-ID",
+  "Statement": [
+    {
+      "Sid": "Example SNS topic policy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "SNS:Publish",
+        "SNS:Subscribe",
+        "S3:GetBucketVersioning"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "bucket-owner-account-id"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 Get Bucket Versioning",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudTrail Start Logging",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudtrail.amazonaws.com"
+      },
+      "Action": [
+        "cloudtrail:StartLogging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Logs Filter Log Events",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "logs.amazonaws.com"
+      },
+      "Action": [
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Athena Get Query Results",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "athena.amazonaws.com"
+      },
+      "Action": [
+        "athena:GetQueryResults"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM Delete User",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": "arn:aws:iam::*:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow GuardDuty Create Detector",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "guardduty.amazonaws.com"
+      },
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny Lambda Invoke Function",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 Run Instances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS Receive Message",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "sqs.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-7/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Glue Get Partitions",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "glue.amazonaws.com"
+      },
+      "Action": [
+        "glue:GetPartitions"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM Create User",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM List Policies",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": [
+        "iam:ListPolicies"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS List Aliases",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kms.amazonaws.com"
+      },
+      "Action": [
+        "kms:ListAliases"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Elastic Load Balancer Create Load Balancer",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "elbv2.amazonaws.com"
+      },
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB Delete Item",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:dynamodb:*:*:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS SendMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM Attach Role Policy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": [
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS Publish",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:sns:*:*:*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM List Attached Group Policies",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": [
+        "iam:ListAttachedGroupPolicies"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB Put Item",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:dynamodb:*:*:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 Describe Instances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS Revoke Grant",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kms.amazonaws.com"
+      },
+      "Action": [
+        "kms:RevokeGrant"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Kinesis Get Records",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kinesis.amazonaws.com"
+      },
+      "Action": [
+        "kinesis:GetRecords"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS Update Key Description",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kms.amazonaws.com"
+      },
+      "Action": [
+        "kms:UpdateKeyDescription"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Logs Get Log Events",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "logs.amazonaws.com"
+      },
+      "Action": [
+        "logs:GetLogEvents"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

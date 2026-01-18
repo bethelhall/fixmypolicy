@@ -1,0 +1,260 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name-forbidden-resource",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "authorized/arn:aws:sns:eu-west-1:account-b-id:sns-topic-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "forbidden-arn:aws:sns:eu-west-1:account-b-id:sns-topic-name-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "not-['account-b-id', 'account-a-id']"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "not-['account-b-id', 'account-a-id']"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "not-['account-b-id', 'account-a-id']"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "not-['account-b-id', 'account-a-id']"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:CreateTopic",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:DeleteTable",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:CreateTopic",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:Scan",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketVersioning",
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*",
+        "arn:aws:s3:::my-bucket-data/*"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-data/*",
+        "arn:aws:s3:::my-bucket-data-forbidden/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetDashboard",
+        "cloudwatch:DeleteDashboards"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*",
+        "arn:aws:s3:::my-bucket-data/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1|us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "SNS",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish",
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*",
+        "arn:aws:s3:::my-bucket-data/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:user/bob"
+      ]
+    },
+    {
+      "Sid": "SQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ChangeMessageVisibility",
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-1-2",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "EC2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeRegions"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::123456789012:user/alice"
+      ]
+    },
+    {
+      "Sid": "GuardDuty",
+      "Effect": "Allow",
+      "Action": [
+        "guardduty:GetDetector",
+        "guardduty:ListDetectors"
+      ],
+      "Resource": [
+        "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-20-18",
+        "arn:aws:s3:::my-bucket-test/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "RDS",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:EnableKey",
+        "kms:DisableKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::123456789012:user/alice"
+      ]
+    },
+    {
+      "Sid": "Glue",
+      "Effect": "Allow",
+      "Action": [
+        "glue:UpdateTable",
+        "glue:CreateDatabase"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "CodeDeploy",
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:GetDeployment",
+        "codedeploy:CreateDeployment"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::123456789012:user/alice"
+      ]
+    },
+    {
+      "Sid": "Route53",
+      "Effect": "Allow",
+      "Action": [
+        "route53:ChangeResourceRecordSets",
+        "route53:GetRecordSets"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1|us-west-2"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:role/service-role"
+      ]
+    },
+    {
+      "Sid": "S3Delete",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteObject",
+        "s3:DeleteBucketTagging",
+        "s3:PutBucketLifecycle"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/test-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-data/*",
+        "arn:aws:s3:::my-bucket-data-forbidden/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketTagging",
+        "s3:PutBucketWebsite"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ]
+    }
+  ]
+}

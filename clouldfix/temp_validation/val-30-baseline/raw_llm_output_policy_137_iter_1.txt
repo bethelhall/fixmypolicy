@@ -1,0 +1,144 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::demo-amazon-s3-bucket",
+        "arn:aws:s3:::demo-amazon-s3-bucket/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:*",
+      "Resource": "arn:aws:aoss:us-west-2:654654323652:collection/rnp6cshlcpnjcqrz1d61",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomain",
+        "es:DescribeElasticsearchDomains",
+        "es:DescribeElasticsearchDomainConfig",
+        "es:ESHttpPost",
+        "es:ESHttpPut"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_cluster/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:*",
+        "arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Sid": "statement10"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "Version": "2012-10-17",
+  "Id": "my-app-efs-pol",
+  "Statement": [
+    {
+      "Sid": "my-app-efs-pol-sid",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:ClientRootAccess",
+        "elasticfilesystem:DescribeMountTargets"
+      ],
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9647c758",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_aee4f201",
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_aae0c329",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_b13fdded",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "authorized/arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3a054a74",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a28206aa",
+      "Effect": "Allow",
+      "Action": "redshift:CreateCluster",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "allow_57ce39df",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3dcf10cf",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_5e6a7f88",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_f4a55a33",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    }
+  ]
+}

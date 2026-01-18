@@ -1,0 +1,17 @@
+Let's say an organization has a policy that denies the CreateRole action for most users. However, this restriction hinders rapid development as it blocks users from using the console wizard's create role features for various AWS services.
+
+
+My goal is to allow users to create IAM roles using the console wizard, but restrict them from creating roles with trust policies that include external AWS account numbers or IAM users/roles from different accounts. The trust policies should only allow resources within the current AWS account. (Any other restrictions I should consider?)
+
+
+I have come up with an IAM policy that uses the StringNotLike condition operator on the aws:PrincipalARN condition key. Here's the IAM policy I have in mind:
+
+
+
+
+
+
+And then I would add an SCP in AWS Organizations to only allow CreateRole (with the above restrictions) in development accounts.
+
+
+I am concerned that this approach might not cover all cases, especially when the trust policy includes an AWS IAM user ARN from a different account. Is this the best approach for achieving my goal, or is there a better way to restrict CreateRole action to trust policies containing only the current AWS account's resources?

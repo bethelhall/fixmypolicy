@@ -1,0 +1,161 @@
+{
+  "Requests": [
+    {
+      "id": "test_1_allow_create_bucket",
+      "Effect": "allow",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-new-bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-differentendpoint"
+        }
+      }
+    },
+    {
+      "id": "test_2_allow_put_object",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "test_3_allow_get_object",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/lambda-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.1"
+        }
+      }
+    },
+    {
+      "id": "test_4_allow_list_bucket",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/charlie"
+    },
+    {
+      "id": "test_5_deny_put_public_access_block",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock"
+      ],
+      "Resource": [
+        "arn:aws:s3:::any-bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/admin"
+    },
+    {
+      "id": "test_6_allow_delete_object",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/old-file.pdf"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/dave",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:sourceVpce": [
+            "vpce-xxxxxxxxxxxxxxxxx"
+          ]
+        }
+      }
+    },
+    {
+      "id": "test_7_allow_put_bucket_policy",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::public-website-bucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/webmaster"
+    },
+    {
+      "id": "test_8_deny_put_account_public_access",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutAccountPublicAccessBlock"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:root"
+    },
+    {
+      "id": "test_9_allow_put_bucket_acl",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/eve"
+    },
+    {
+      "id": "test_10_allow_get_bucket_location",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/frank",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI*"
+        }
+      }
+    },
+    {
+      "id": "test_11_allow_multipart_upload",
+      "Effect": "allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/grace"
+    },
+    {
+      "id": "test_12_deny_both_public_access_actions",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutBucketPublicAccessBlock",
+        "s3:PutAccountPublicAccessBlock"
+      ],
+      "Resource": [
+        "arn:aws:s3:::test-bucket",
+        "*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/henry"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+We're trying to lock things down on our S3 buckets, and I'm running into a weird error.
+When my policy looks like this:
+
+
+    ,
+    {
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "s3:*",
+        "Resource": [
+            "arn:aws:s3:::bucketname",
+            "arn:aws:s3:::bucketname/*"
+        ],
+        "Condition": {
+            "Bool": {
+                "aws:SecureTransport": "false"
+            }
+        }
+    }
+
+
+
+I get an error saying:
+
+
+User: arn:aws:iam::000:user/username is not authorized to perform: s3:ListBucket on resource: "arn:aws:s3:::bucketname" with an explicit deny in a resource-based policy
+
+
+If I remove the Deny part it starts working again.
+
+
+What is the right way to do this?

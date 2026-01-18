@@ -1,0 +1,337 @@
+{
+  "Statement": [
+    {
+      "Sid": "DescribeCryptoTrail",
+      "Action": "logs:GetLogEvents",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*"
+      ]
+    },
+    {
+      "Sid": "AllowIamDeleteUser",
+      "Action": "iam:DeleteUser",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreateEndpoint",
+      "Action": "sagemaker:CreateEndpoint",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLogsDescribeLogStreams",
+      "Action": "logs:DescribeLogStreams",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2RunInstances",
+      "Action": "ec2:RunInstances",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaCreateWorkGroup",
+      "Action": "athena:CreateWorkGroup",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIamCreateUser",
+      "Action": "iam:CreateUser",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenySqsSendMessage",
+      "Action": "sqs:SendMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteBucket",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDbScan",
+      "Action": "dynamodb:Scan",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaUpdateTable",
+      "Action": "athena:UpdateTable",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigDescribeConfigRules",
+      "Action": "config:DescribeConfigRules",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySnsPublish",
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::987654321098:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLogsDeleteLogGroup",
+      "Action": "logs:DeleteLogGroup",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchDescribeAlarms",
+      "Action": "cloudwatch:DescribeAlarms",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitListRepositories",
+      "Action": "codecommit:ListRepositories",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySnsSubscribe",
+      "Action": "sns:Subscribe",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc2RunInstances",
+      "Action": "ec2:RunInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsGetLogEvents",
+      "Action": "logs:GetLogEvents",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIamDeleteUser",
+      "Action": "iam:DeleteUser",
+      "Effect": "Deny",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetPartitions",
+      "Action": "glue:GetPartitions",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodePipelineListPipelines",
+      "Action": "codepipeline:ListPipelines",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketTagging",
+      "Action": "s3:PutBucketTagging",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2DescribeVolumes",
+      "Action": "ec2:DescribeVolumes",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteBucketWebsite",
+      "Action": "s3:DeleteBucketWebsite",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSesGetIdentityVerificationAttributes",
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListAllMyBuckets",
+      "Action": "s3:ListAllMyBuckets",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerDeleteNotebookInstance",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Effect": "Allow",
+      "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

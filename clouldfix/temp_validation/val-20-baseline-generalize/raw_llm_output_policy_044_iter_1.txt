@@ -1,0 +1,145 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AttachVolume"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "logs:DescribeLogGroups"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteRole"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "authorized/arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "forbidden-arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin-specific",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

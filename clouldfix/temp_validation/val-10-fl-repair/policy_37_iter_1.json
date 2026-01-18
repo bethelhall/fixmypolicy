@@ -1,0 +1,111 @@
+{
+  "Version": "2012-10-17",
+  "Id": "AWSLogDeliveryWrite",
+  "Statement": [
+    {
+      "Sid": "AWSLogDeliveryAclCheck",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::[destination-bucket]",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AWSLogDeliveryWrite",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_d98d55ab",
+      "Effect": "Allow",
+      "Action": "athena:StartQueryExecution",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-1-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3310e369",
+      "Effect": "Allow",
+      "Action": "glue:GetJobRun",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-35-15.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_60009ec2",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-37-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['[My Account ID]']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bc241734",
+      "Effect": "Allow",
+      "Action": "kms:ListGrants",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-45-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_924d1032",
+      "Effect": "Allow",
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-1-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['My Account ID']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_997b8d14",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-26-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

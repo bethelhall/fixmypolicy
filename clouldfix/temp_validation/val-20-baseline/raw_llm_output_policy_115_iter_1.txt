@@ -1,0 +1,302 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "SecureBucketPolicy0",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketObjectLockConfiguration",
+        "s3:ListMultipartUploadParts",
+        "s3:AbortMultipartUpload",
+        "s3:ListBucketVersions"
+      ],
+      "Resource": [
+        "arn:aws:s3:::east1-vcc-test",
+        "arn:aws:s3:::east1-vcc-test/*"
+      ]
+    },
+    {
+      "Sid": "SecureBucketPolicy1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:ListBucket"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowIAMUserCreation",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetPolicyVersion",
+        "iam:DeleteAccessKey",
+        "iam:GetPolicy",
+        "iam:AttachUserPolicy",
+        "iam:DeleteUserPolicy",
+        "iam:DeletePolicy",
+        "iam:DeleteUser",
+        "iam:ListUserPolicies",
+        "iam:CreateUser",
+        "iam:TagUser",
+        "iam:CreateAccessKey",
+        "iam:CreatePolicy",
+        "iam:ListPolicyVersions",
+        "iam:GetUserPolicy",
+        "iam:PutUserPolicy",
+        "iam:ListAttachedUserPolicies",
+        "iam:GetUser",
+        "iam:CreatePolicyVersion",
+        "iam:DetachUserPolicy",
+        "iam:DeletePolicyVersion",
+        "iam:ListAccessKeys",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": "arn:aws:iam::*:user/Veeam-*"
+    },
+    {
+      "Sid": "AllowC2AB6032",
+      "Effect": "Allow",
+      "Action": "iam:PutRolePolicy",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-5/table-4",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyF43BFD77",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowB95ADCB2",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpointConfig",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-12-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAE0E2FC2",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-5-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny42D4EF23",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "authorized/arn:aws:iam::*:user/Veeam-*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow44683205",
+      "Effect": "Allow",
+      "Action": "cloudfront:ListDistributions",
+      "Resource": "arn:aws:s3:::bucket-0/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow01C0E913",
+      "Effect": "Allow",
+      "Action": "iam:GetUserPolicy",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-61",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny96910394",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::different-east1-vcc-test/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowE99BF8F0",
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-21-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyACE2F4D1",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::east1-vcc-test-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny43B1021F",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyD96EB8FE",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow018E4929",
+      "Effect": "Allow",
+      "Action": "iam:ListUserPolicies",
+      "Resource": "arn:aws:iam::*:user/Veeam-resource-9-16",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny083E5649",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iam::*:user/Veeam-*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Allow549702E9",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-35-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow38321697",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": "arn:aws:iam::*:user/Veeam-resource-18-1",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowC1A8BAC9",
+      "Effect": "Allow",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-69",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny23D49EF4",
+      "Effect": "Deny",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow17C50576",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:s3:::bucket-17/file-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow436CCB36",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-12-12.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

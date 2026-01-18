@@ -1,0 +1,93 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow root to perform all actions on all resources in us-west-2",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::[account-id]:root"},
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Allow bob to perform DescribeInstances on denied-bucket-0/file-0.txt in us-west-2",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"},
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Allow alice to perform CreateNotebookInstance on bucket-47/file-5.txt in eu-west-1",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Action": "sagemaker:CreateNotebookInstance",
+      "Resource": "arn:aws:s3:::bucket-47/file-5.txt",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "Allow alice to perform DeleteConfigRule on db-19/table-22 in eu-west-1",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-22",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "Allow root to perform BatchGetQueryExecution on bucket-44/file-0.txt in eu-west-1",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::632350622325:root"},
+      "Action": "athena:BatchGetQueryExecution",
+      "Resource": "arn:aws:s3:::bucket-44/file-0.txt",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "Allow root to perform CreateDeployment on db-11/table-18 in us-west-2",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::906998889616:root"},
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-11/table-18",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Deny root to perform InvokeFunction on key/09348485-1234-5678-90ab-cdef12345678 in us-east-1 if aws:userid is AIDAI",
+      "Effect": "Deny",
+      "Principal": {"AWS": "arn:aws:iam::[account-id]:root"},
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {"StringLike": {"aws:userid": "AIDAI"}}
+    },
+    {
+      "Sid": "Deny root to perform DeleteDBInstance on role/admin-role in eu-west-1 if aws:userid is AIDAI",
+      "Effect": "Deny",
+      "Principal": {"AWS": "arn:aws:iam::[account-id]:root"},
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {"StringLike": {"aws:userid": "AIDAI"}}
+    },
+    {
+      "Sid": "Allow root to perform Query on workgroup/wg-52 in us-east-1",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::396245459295:root"},
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-52",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "Deny root to perform DeleteItem on admin-bucket/document.txt in eu-west-1",
+      "Effect": "Deny",
+      "Principal": {"AWS": "arn:aws:iam::[account-id]:root"},
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "Allow alice to perform GetTrailStatus on db-16/table-21 in us-east-1",
+      "Effect": "Allow",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-21",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    }
+  ]
+}

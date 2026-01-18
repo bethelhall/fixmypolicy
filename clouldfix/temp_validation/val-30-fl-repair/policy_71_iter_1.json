@@ -1,0 +1,320 @@
+{
+  "Version": "2012-10-17",
+  "Id": "Cross-account account A to account B SNS, and Cloudwatch encryption key",
+  "Statement": [
+    {
+      "Sid": "EnableIAMUserPermissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key in account a when account b calls",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "444555666"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAccessThroughSNS",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessThroughCloudwatch",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowUseOfKeyFor444555666",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key in Account B when Account A calls",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "111222333"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSServiceForAccountB",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudwatchServiceForAccountB",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_d94bcd38",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:s3:::bucket-36/file-2.txt",
+      "Principal": "arn:aws:iam::759883940058:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_736de297",
+      "Effect": "Allow",
+      "Action": "redshift:DeleteCluster",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-65",
+      "Principal": "arn:aws:iam::403854773290:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_fb2355ce",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-11/table-16",
+      "Principal": "arn:aws:iam::522686414129:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a1243676",
+      "Effect": "Allow",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "arn:aws:s3:::bucket-18/file-5.txt",
+      "Principal": "arn:aws:iam::664020200778:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d03289b0",
+      "Effect": "Allow",
+      "Action": "guardduty:GetIPSet",
+      "Resource": "arn:aws:s3:::bucket-17/file-5.txt",
+      "Principal": "arn:aws:iam::299086018602:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['111222333', '444555666']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_26d281ae",
+      "Effect": "Allow",
+      "Action": "autoscaling:DescribeAutoScalingGroups",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-18",
+      "Principal": "arn:aws:iam::729809307832:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-444555666"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c59b3f0a",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-6/table-4",
+      "Principal": "arn:aws:iam::278775547731:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-444555666"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a3e4a57e",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::bucket-2/file-1.txt",
+      "Principal": "arn:aws:iam::127397416074:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_54459a35",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:s3:::bucket-33/file-8.txt",
+      "Principal": "arn:aws:iam::726839472366:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_00765042",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:s3:::bucket-31/file-5.txt",
+      "Principal": "arn:aws:iam::876827822294:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['111222333', '444555666']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_5aeae602",
+      "Effect": "Allow",
+      "Action": "sqs:ListDeadLetterSourceQueues",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-5/table-11",
+      "Principal": "arn:aws:iam::928403658695:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['111222333', '444555666']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_b0235144",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-58",
+      "Principal": "arn:aws:iam::506217649548:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_b9956763",
+      "Effect": "Allow",
+      "Action": "glue:GetJob",
+      "Resource": "arn:aws:s3:::bucket-13/file-4.txt",
+      "Principal": "arn:aws:iam::137773050163:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['111222333', '444555666']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f155b4d9",
+      "Effect": "Allow",
+      "Action": "iam:UpdateLoginProfile",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-5",
+      "Principal": "arn:aws:iam::927232435435:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c619dce0",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-18",
+      "Principal": "arn:aws:iam::165172744191:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-444555666"
+        }
+      }
+    },
+    {
+      "Sid": "allow_b6889d92",
+      "Effect": "Allow",
+      "Action": "glue:DeleteTable",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-0",
+      "Principal": "arn:aws:iam::498596642744:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d1d07157",
+      "Effect": "Allow",
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::bucket-43/file-9.txt",
+      "Principal": "arn:aws:iam::241661147240:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-111222333"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1b6044f8",
+      "Effect": "Allow",
+      "Action": "athena:GetDatabase",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-68",
+      "Principal": "arn:aws:iam::378313497536:root",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-444555666"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeDeployServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "codedeploy.amazonaws.com"
+      },
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "iam.amazonaws.com"
+      },
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kms.amazonaws.com"
+      },
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2ServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAllOthers",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
+}

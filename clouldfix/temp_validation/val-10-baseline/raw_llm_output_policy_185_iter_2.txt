@@ -1,0 +1,89 @@
+```json
+[
+  {
+    "Sid": "statement1",
+    "Effect": "Allow",
+    "Action": "execute-api:Invoke",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/*",
+    "Principal": {
+      "AWS": [
+        "arn:aws:iam::account-id:role/your-irsa-role",
+        "arn:aws:iam::account-id:user/your-user"
+      ]
+    }
+  },
+  {
+    "Sid": "createworkgroup",
+    "Effect": "Allow",
+    "Action": "athena:CreateWorkGroup",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-29-18.txt",
+    "Principal": "arn:aws:iam::account-id:user/forbidden-your-user",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "deletedbinstance",
+    "Effect": "Deny",
+    "Action": "rds:DeleteDBInstance",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": "arn:aws:iam::account-id:role/your-irsa-role",
+    "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+  },
+  {
+    "Sid": "listdistributions",
+    "Effect": "Allow",
+    "Action": "cloudfront:ListDistributions",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-42-8.txt",
+    "Principal": "arn:aws:iam::641930057962:user/your-user",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "createdomain",
+    "Effect": "Allow",
+    "Action": "cloudsearch:CreateDomain",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-31-11.txt",
+    "Principal": "arn:aws:iam::account-id:role/forbidden-your-irsa-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "attachvolume",
+    "Effect": "Allow",
+    "Action": "ec2:AttachVolume",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-47-2.txt",
+    "Principal": "arn:aws:iam::account-id:role/forbidden-your-irsa-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "getdeployment",
+    "Effect": "Allow",
+    "Action": "codedeploy:GetDeployment",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-1-5.txt",
+    "Principal": "arn:aws:iam::180655097741:user/your-user",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "getmetricstatistics",
+    "Effect": "Allow",
+    "Action": "cloudwatch:GetMetricStatistics",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/file-11-5.txt",
+    "Principal": "arn:aws:iam::account-id:role/forbidden-your-irsa-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "sendmessage",
+    "Effect": "Deny",
+    "Action": "sqs:SendMessage",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/*-forbidden-resource",
+    "Principal": "arn:aws:iam::account-id:user/your-user",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "deleteuser",
+    "Effect": "Deny",
+    "Action": "iam:DeleteUser",
+    "Resource": "arn:aws:execute-api:region:account-id:appsync-api-id/*-specific",
+    "Principal": "arn:aws:iam::account-id:user/your-user",
+    "Condition": {"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+  }
+]
+```
+This is your repaired policy in proper format with all requirements implemented correctly according to instructions above. Please note this does not cover every possible scenario but should provide you enough information on how it can look like when fixed properly based off of current inputs. If there were more specific rules needed for other actions then those would need additional entries within array brackets similar structure used here while maintaining same overall syntax expected by service being interfaced (in our case Amazon Web Services). Always remember each entry needs unique `sid` attribute value inside its parent object bracket "{". This will help identify individual statements easily during debugging process if necessary later down line..

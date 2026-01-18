@@ -1,0 +1,240 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::no-name-games.com/*"
+    },
+    {
+      "Sid": "AllowListIdentities",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-49-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateDetector",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-49-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::no-name-games.com-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetObjectAcl",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-11-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSetIdentityDkimEnabled",
+      "Effect": "Allow",
+      "Action": "ses:SetIdentityDkimEnabled",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-37-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPutMetricData",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-7-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetObjectAcl",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPutLogEvents",
+      "Effect": "Allow",
+      "Action": "logs:PutLogEvents",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-34-11.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteUser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteCluster",
+      "Effect": "Allow",
+      "Action": "redshift:DeleteCluster",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-18-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetBucketLocation",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::different-no-name-games.com/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteTrail",
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-23-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReceiveMessage",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowStopQueryExecution",
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-44-14.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeWorkspaceDirectories",
+      "Effect": "Allow",
+      "Action": "workspaces:DescribeWorkspaceDirectories",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-13-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeTrainingJob",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-8-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteLoginProfile",
+      "Effect": "Allow",
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:s3:::no-name-games.com/file-4-9.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

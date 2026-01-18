@@ -1,0 +1,134 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>",
+        "arn:aws:s3:::*"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*",
+        "arn:aws:s3:::*"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucketMultipartUploads",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>",
+        "arn:aws:s3:::*"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*",
+        "arn:aws:s3:::*"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreateEndpointConfig",
+        "ec2:ModifyInstanceAttribute",
+        "athena:GetTableMetadata",
+        "workspaces:DescribeWorkspaces",
+        "ses:GetIdentityVerificationAttributes",
+        "kms:Encrypt",
+        "kms:EnableKey",
+        "kms:DeleteAlias",
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketTagging",
+        "rds:CreateDBInstance",
+        "sns:CreateTopic",
+        "sqs:ChangeMessageVisibilityBatch",
+        "ec2:AuthorizeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*",
+        "arn:aws:s3:::*",
+        "arn:aws:rds::*",
+        "arn:aws:es::*",
+        "arn:aws:kms::*",
+        "arn:aws:ses::*",
+        "arn:aws:ec2::*",
+        "arn:aws:sns::*",
+        "arn:aws:sqs::*",
+        "arn:aws:ec2::*"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser",
+        "rds:CreateDBInstance",
+        "dynamodb:DeleteItem",
+        "s3:PutBucketWebsite",
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-6/*",
+        "arn:aws:s3:::denied-bucket-1/*",
+        "arn:aws:dynamodb:::<data lake bucket>-forbidden/*",
+        "arn:aws:s3:::denied-bucket-2/*",
+        "arn:aws:sqs:::different-<data lake bucket>/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized",
+        "arn:aws:iam::123456789012:user/temp-user",
+        "arn:aws:iam::111222333444:user/david",
+        "arn:aws:iam::987654321098:user/charlie",
+        "arn:aws:iam::111222333444:user/david"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

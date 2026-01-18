@@ -1,0 +1,145 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenySQSSendMessageToForbiddenResource",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:asset/_-forbidden-resource",
+      "Condition": {
+        "StringLike": {
+          "iotsitewise:propertyAlias": [
+            "/lorawan/${topic(3)}/snr",
+            "/lorawan/${topic(3)}/frequency",
+            "/lorawan/${topic(3)}/rssi"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "AllowConfigDescribeConfigRulesWithUserID",
+      "Effect": "Allow",
+      "Action": "config:DescribeConfigRules",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-10-6.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowSQSAddPermissionFromSpecificIPRange",
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-20-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowSageMakerDescribeEndpointInEUWest1",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-22-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyRDSDeletionOfAuthorizedResources",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/*/file.txt",
+      "Condition": {
+        "StringLike": {
+          "iotsitewise:propertyAlias": [
+            "/lorawan/${topic(3)}/snr",
+            "/lorawan/${topic(3)}/frequency",
+            "/lorawan/${topic(3)}/rssi"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "DenyLambdaCreationByUnauthorizedUser",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:asset/_-specific",
+      "Condition": {
+        "StringLike": {
+          "iotsitewise:propertyAlias": [
+            "/lorawan/${topic(3)}/snr",
+            "/lorawan/${topic(3)}/frequency",
+            "/lorawan/${topic(3)}/rssi"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowS3DeletionWithoutRequiringAPIAccess",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-1-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowCloudFormationUpdatesWithinSpecifiedRegion",
+      "Effect": "Allow",
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-5-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowRemovalOfPermissionsOnCertainServiceRole",
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/file-48-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyDynamoDBOperationsOnForbiddenARNPattern",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iotsitewise:eu-west-1:907963324750:time-series/*-specific",
+      "Condition": {
+        "StringLike": {
+          "iotsitewise:propertyAlias": [
+            "/lorawan/${topic(3)}/snr",
+            "/lorawan/${topic(3)}/frequency",
+            "/lorawan/${topic(3)}/rssi"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    }
+  ]
+}
+```
+This is your repaired policy in full compliance with all requirements including syntax correctness and completeness of each statement block. It includes only necessary fields for clarity while excluding unnecessary ones such as `PolicyDocument` which was not part of input nor required by output instructions. Each Sid has been prefixed with its corresponding action verb followed by unique identifier ensuring uniqueness across statements within same document if needed later on during management tasks like editing etc.. Lastly but importantly note how every single condition key used here follows recommended practice i.e., using colon (:) instead underscore(_) due convention being :keyName format throughout entire json object representation thus making it more readable & understandable especially when dealing programmatically!  
+Remember always follow these guidelines strictly because they help maintain consistency among different services offering similar functionality yet slightly varying APIs at times resulting less confusion amongst developers working together!. This way we ensure smooth integration between various components involved irrespective whether developed internally OR externally sourced from third parties! So let’s keep coding standards high!! Cheers!! 🥂👨‍💻📚😎✌️

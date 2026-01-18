@@ -1,0 +1,230 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Publish",
+        "iot:Receive"
+      ],
+      "Resource": [
+        "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+        "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": [
+        "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteGroup",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:CreateTrail",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "autoscaling:DeleteAutoScalingGroup",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "authorized/arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status/file.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:Subscribe",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObjectAcl",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications-specific",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

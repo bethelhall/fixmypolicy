@@ -1,0 +1,83 @@
+{
+  "Requests": [
+    {
+      "id": "allow_startsession_bastion_i0a1",
+      "Effect": "allow",
+      "Action": [
+        "ssm:StartSession"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:aws:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:us-east-1:123456789012:instance/i-0a1b2c3d4e5f67890"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/ssm-user"
+    },
+    {
+      "id": "allow_startsession_bastion_i0b2",
+      "Effect": "allow",
+      "Action": [
+        "ssm:StartSession"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:aws:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:us-east-1:123456789012:instance/i-0123456789abcdef0"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/SSMPortForwardRole"
+    },
+    {
+      "id": "allow_ec2_describeinstances",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/ssm-user"
+    },
+    {
+      "id": "allow_startsession_assumed_role_i0c3",
+      "Effect": "allow",
+      "Action": [
+        "ssm:StartSession"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:aws:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:us-east-1:123456789012:instance/i-0fedcba9876543210"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/SSMPortForwardRole/AWSCLI-Session"
+    },
+    {
+      "id": "deny_s3_putobject_patching_json",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws-us-gov:s3:::prod-ssm/Patching/patch-run.json"
+      ],
+      "Principal": "arn:aws-us-gov:iam::<acct#>:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "id": "deny_s3_putobject_patching_log",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws-us-gov:s3:::prod-ssm/Patching/logs/2025-08-20.log"
+      ],
+      "Principal": "arn:aws-us-gov:iam::<acct#>:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      }
+    }
+  ]
+}

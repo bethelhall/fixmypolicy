@@ -1,0 +1,130 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyWithConditionsAndPrincipals",
+  "Statement": [
+    {
+      "Sid": "AlllowGlueUpdateTableFromBobInUsWest2",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"}
+      }
+    },
+    {
+      "Sid": "AllowSageMakerStopNotebookInstancceFromAliceInUsWest2",
+      "Effect": "Allow",
+      "Action": "sagemaker:StopNotebookInstance",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"}
+      }
+    },
+    {
+      "Sid": "DenyEC2DescribrInstancesToNonFinancialUsersOnWrongBucketTags",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Condition": {
+        "StringNotEquals": {"s3:ExistingObjectTag/Department": "Finance"}
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletionByRoleInEuWest1",
+      "Effect": "Allow",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      }
+    },
+    {
+      "Sid": "AllowIAMListGroupsForUserBobInEuWest1",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      }
+    },
+    {
+      "Sid": "AllowEC2ImportKeyPairOnlyForBobInUSWESTandUSEAST",
+      "Effect": "Allow",
+      "Action": "ec2:ImportKeyPair",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "ArnLike": {"aws:SourceArn": "arn:aws:s3:*"},
+        "StringEquals": {"aws:RequestedRegion": ["us-east-1", "us-west-2"]}
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstancesTooManyKeys",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Condition": {
+        "NumericLessThan": {"s3:max-keys": "10"}
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationAuthorizedFiles",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "authorized/SNS-topic-ARN/file.txt",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifyInstanceAttributesOfAliceInUSEAST",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "SNS-topic-ARN",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-east-1"}
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeleteItemsBasedOnIP",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-SNS-topic-ARN-specific",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Condition": {
+        "NotIpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    }
+  ]
+}
+```
+This is your final output in proper format with all conditions correctly set up according to requirements. Please replace `"SNS-topic-ARN"` placeholder values accordingly when using this template for real scenarios. This should satisfy every condition mentioned above except one which requires specific ARN of bucket instead generic string but I can not provide it without knowing exact name because ARNs contain account ID part too. If you need help on how certain actions work please refer official documentation at https://docs.aws.amazon.com/. For more complex policies consider hiring professional consultant who has experience working within Amazon Web Services environment due to its complexity level compared other cloud providers offerings like Google Cloud Platform (GCP) or Microsoft Azure.

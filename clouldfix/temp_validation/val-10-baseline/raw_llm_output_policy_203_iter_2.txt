@@ -1,0 +1,148 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CEC1F8C4",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_7672F244",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::*-forbidden/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "FE13F3D0",
+      "Effect": "Deny",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:logs:*:*:*-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_4E7AF2CD",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DeleteDashboards",
+      "Resource": "arn:aws:logs:*:*:resource-*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "A72D196C",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::*/file-16-7.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_74DEAE18",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_A2867CC9",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_36F4463B",
+      "Effect": "Allow",
+      "Action": "logs:PutLogEvents",
+      "Resource": "arn:aws:logs:*:*:resource-38-16",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_4C431299",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListTrainingJobs",
+      "Resource": "arn:aws:logs:*:*:resource-41-19",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_29754932",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::*/file-12-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your requested repaired Policy in proper format with all conditions correctly mapped out for each statement Sid respectively. Please note I have made some assumptions based on context such as Principal being of type AWS which seems more appropriate than User considering you mentioned Role Principals earlier too but not used here now only user principals exist hence assumed it would apply universally unless otherwise specified by request id. Also please ensure this meets legal requirements regarding handling sensitive data like Department tag value equals Finance condition etc., if they don’t pertain then kindly remove those parts from Condition block accordingly..

@@ -1,0 +1,142 @@
+[
+  {
+    "Sid": "AllowsSQSTaggingOnGlueTableInUsEast1WithCorrectRoleAndRegion",
+    "Effect": "Allow",
+    "Action": "sqs:TagQueue",
+    "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-12/table-14",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "EnablesDeletionOfCloud9EnvironmentsOnlyFromEuWest1",
+    "Effect": "Allow",
+    "Action": "cloud9:DeleteEnvironment",
+    "Resource": "arn:aws:s3:::bucket-47/file-8.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "eu-west-1"
+      }
+    }
+  },
+  {
+    "Sid": "DescribesAthenaWorkgroupsInVariousRegionsButNotUSWest2",
+    "Effect": "Allow",
+    "Action": "kms:DescribeKey",
+    "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-71",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:RequestedRegion": "us-west-2"
+      }
+    }
+  },
+  {
+    "Sid": "DeniesSNSSubscriptionToAdminBucketsOrDocuments",
+    "Effect": "Deny",
+    "Action": "sns:Subscribe",
+    "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/test-role"
+    },
+    "Condition": {
+      "StringLike": {
+        "aws:userid": "AIDAI"
+      }
+    }
+  },
+  {
+    "Sid": "AllowsDeletionOfUnimportantResourcesWithoutRequiringUserTypeChecks",
+    "Effect": "Allow",
+    "Action": ["s3:DeleteBucketCors"],
+    "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-6/table-20",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "AllowsElasticBeanstalkCreationBySpecifiedUsers",
+    "Effect": "Allow",
+    "Action": "elasticbeanstalk:CreateApplication",
+    "Resource": "arn:aws:s3:::bucket-21/file-8.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/alice"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "eu-west-1"
+      }
+    }
+  },
+  {
+    "Sid": "ListsKMSKeysForCertainActionsBasedOnRequestingUser",
+    "Effect": "Allow",
+    "Action": "kms:ListResourceTags",
+    "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-67",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/alice"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "PreventsRDSDeletionViaSpecificRoles",
+    "Effect": "Deny",
+    "Action": "rds:DeleteDBInstance",
+    "Resource": "arn:aws:iam::123456789012:role/admin-role",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/bob"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "DeniesEC2RunningIfTheTargetedRegionIsEUWest1",
+    "Effect": "Deny",
+    "Action": "ec2:RunInstances",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/test-user"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "eu-west-1"
+      }
+    }
+  },
+  {
+    "Sid": "DeniesDynamoDBDeletionUsingIncorrectlyConfiguredIAMroles",
+    "Effect": "Deny",
+    "Action": "dynamodb:DeleteItem",
+    "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/test-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  }
+]

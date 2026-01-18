@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "allow_16cb38e4",
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_7b7ef516",
+      "Effect": "Allow",
+      "Action": "sqs:CreateQueue",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_e4cdc533",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetDashboard",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_22bfc90c",
+      "Effect": "Allow",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_e99abe65",
+      "Effect": "Allow",
+      "Action": "workspaces:StopWorkspaces",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_f59d402f",
+      "Effect": "Allow",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_5610c13e",
+      "Effect": "Deny",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:sqs:<rest-of-the-arn>.fifo-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_6b44fbd8",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "id": "deny_d64720c2",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "forbidden-arn:aws:sqs:<rest-of-the-arn>.fifo-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_e09fcefc",
+      "Effect": "Deny",
+      "Action": "sqs:CreateQueue",
+      "Resource": "authorized/arn:aws:sqs:<rest-of-the-arn>.fifo/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

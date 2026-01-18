@@ -1,0 +1,112 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAutoscalingDeleteAutoScalingGroup",
+      "Effect": "Allow",
+      "Action": "autoscaling:DeleteAutoScalingGroup",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-9-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowSagemakerDeleteNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-43-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunctionDifferentAccount",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::different-my-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "/"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "AllowSagemakerListNotebookInstancesExceptUsersChirs",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-6-5.txt",
+      "Condition": {
+        "StringNotLike": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyCrossAccountRoleForS3Operations",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "/"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "AllowElasticBeanstalkCreationByBob",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:CreateApplication",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-10-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyKMSOperationFromAnotherAccount",
+      "Effect": "Deny",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-28-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowKinesisCreateStreamWithNoDelimiter",
+      "Effect": "Allow",
+      "Action": "kinesis:CreateStream",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-0-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

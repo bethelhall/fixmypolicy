@@ -1,0 +1,201 @@
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": [
+        "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/*",
+        "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-49-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/*-forbidden-resource",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-45-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-17-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/file-43-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateAccessKey",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/file-48-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-47-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "authorized/arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-3-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-48-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudsearch:DeleteDomain",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/file-30-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "authorized/arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/*/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/$aws/things/${iot:Connection.Thing.ThingName}/jobs/file-32-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListGroups",
+      "Resource": "arn:aws:iot:eu-west-2:000000000000:topicfilter/*/${iot:Connection.Thing.ThingName}/file-19-19.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

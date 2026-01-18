@@ -1,0 +1,149 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::import-to-ec2-*",
+        "arn:aws:s3:::import-to-ec2-resource-12-8",
+        "arn:aws:s3:::import-to-ec2-resource-40-3",
+        "arn:aws:s3:::import-to-ec2-resource-48-1"
+      ]
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:ModifySnapshotAttribute",
+        "ec2:CopySnapshot",
+        "ec2:RegisterImage",
+        "ec2:Describe*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyIncorrectKMSKeyDeletion",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::import-to-ec2-resource-40-3",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCorrectUserToManageCloudFormationStacksInWestUS",
+      "Effect": "Allow",
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:s3:::import-to-ec2-resource-12-8",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowBobToDeleteUnprotectedDynamoDBItemsOnlyFromHisOwnTable",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:dynamodb:us-west-2:123456789012:table/my-own-table/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "Null": {
+          "dynamodb:LeadingKeys": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAdminRoleAccessingSecuredEndpointWithWrongProtocol",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::import-to-ec2-resource-40-3",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyNonAdminUsersModifyingTagsOnResourcesTheyDoNotOwn",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      }
+    },
+    {
+      "Sid": "AllowServiceRolesManagingAthenaQueries",
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:s3:::import-to-ec2-resource-48-1",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "DenyListingAllIAMrolesWithoutPermission",
+      "Effect": "Deny",
+      "Action": "iam:ListRoles",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitPowerUserActions",
+      "Effect": "Allow",
+      "Action": [
+        "codecommit:GitPull",
+        "codecommit:GitPush",
+        "codecommit:BatchGetRepositories",
+        "codecommit:CreateBranch",
+        "codecommit:DeleteBranch",
+        "codecommit:MergeBranchesByFastForward",
+        "codecommit:MergeBranchesBySquash",
+        "codecommit:MergeBranchesByThreeWay",
+        "codecommit:UpdateDefaultBranch",
+        "codecommit:GetBranch",
+        "codecommit:ListBranches",
+        "codecommit:GetCommit",
+        "codecommit:BatchGetCommits",
+        "codecommit:ListCommits",
+        "codecommit:GetDifferences",
+        "codecommit:BatchDescribeMergeConflicts",
+        "codecommit:DescribeMergeConflicts",
+        "codecommit:EvaluatePullRequestApprovalRules",
+        "codecommit:OverridePullRequestApprovalRules",
+        "codecommit:PostCommentForComparedCommit",
+        "codecommit:PostCommentReply",
+        "codecommit:DeleteCommentContent",
+        "codecommit:Subscribe",
+        "codecommit:Unsubscribe"
+      ],
+      "Resource": "arn:aws:codecommit:us-east-1:123456789012:MyDemoRepo",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    }
+  ]
+}

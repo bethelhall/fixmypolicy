@@ -1,0 +1,84 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowVpcEndpoint",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateElasticsearchDomain",
+      "Effect": "Allow",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "AllowPutBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "AllowGetObjectVersion",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "AllowRunInstances",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "AllowGetHostedZone",
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyPutItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::different-great-expectations-docs/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyDeleteItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::great-expectations-docs-forbidden/*",
+      "Principal": "*"
+    }
+  ]
+}

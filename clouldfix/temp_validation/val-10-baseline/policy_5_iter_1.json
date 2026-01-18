@@ -1,0 +1,107 @@
+{
+  "Version": "2012-10-17",
+  "Id": "BackupPolicy01",
+  "Statement": [
+    {
+      "Sid": "Stmt1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::83743546469343:user/user-backup",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Action": [
+        "iam:ListAttachedGroupPolicies",
+        "s3:*"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/forbidden-user-backup"
+      },
+      "Action": [
+        "es:DescribeElasticsearchDomains",
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::131205273899:user/user-backup"
+      },
+      "Action": "codebuild:StopBuild",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt4",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage",
+        "ec2:RunInstances",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt5",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::383590215251:user/user-backup"
+      },
+      "Action": "ec2:CreateVolume",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt6",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:DeleteObject",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    }
+  ]
+}

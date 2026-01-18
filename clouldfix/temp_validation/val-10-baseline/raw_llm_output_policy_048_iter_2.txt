@@ -1,0 +1,108 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowBobToAccessSpecificFilesInMyBucketAndOtherBuckets",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "sqs:ChangeMessageVisibility",
+        "route53:ListHostedZones",
+        "s3:GetObjectVersion",
+        "kms:ScheduleKeyDeletion",
+        "cloudwatch:GetMetricStatistics",
+        "elasticbeanstalk:DescribeApplications"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucketname/*",
+        "arn:aws:s3:::my-bucketname/file-45-15.txt",
+        "arn:aws:s3:::my-bucketname/file-41-2.txt",
+        "arn:aws:s3:::my-bucketname/file-34-14.txt",
+        "arn:aws:s3:::my-bucketname/file-31-18.txt",
+        "arn:aws:s3:::my-bucketname/file-44-17.txt",
+        "arn:aws:s3:::my-bucketname/file-11-4.txt",
+        "arn:aws:s3:::another-allowed-bucket/*"
+      ],
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleForElasticBeanstalkToListApplicationVersions",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:DescribeApplications",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedUsersFromChangingQueueMessagesOrListingRoute53Zones",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ChangeMessageVisibility",
+        "route53:ListHostedZones"
+      ],
+      "Resource": "*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "DenyDavidDynamoDBOperationsOnDifferentBucketFile",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::different-my-bucketname/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyNonAliceCloudWatchActionsOnAnyOfBobsFiles",
+      "Effect": "Deny",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:s3:::my-bucketname/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/non-alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCertainIPAddressesTheAbilityToReadACLsOrManagePolicies",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObjectAcl",
+        "s3:DeleteBucketPolicy"
+      ],
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed including Sid fields for better readability of statements within this document. Please note Principal field can only contain either User ARN (in case Allow) or Role ARN(in case Deny). I have used both types based on existing policies but you might want adjust them according to actual needs. Also Condition block now contains array under StringEquals key instead single value which was present previously due to multiple regions specified by Bob. Lastly added missing actions from original request into corresponding statement where it made sense i.e., DescribeApplications action granted not just directly via bob user role but also indirectly through service roles since they were mentioned earlier without explicit permissions attached thus making assumption here about their intended usage if needed at all. All these changes should meet current set criteria while maintaining previous functionality when possible considering new restrictions imposed upon certain users / IP addresses etc.. Let me know how we proceed!

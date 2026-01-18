@@ -1,0 +1,77 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteBucketTagging",
+        "s3:DeleteObject",
+        "s3:GetBucketLifecycle",
+        "s3:GetBucketWebsite",
+        "s3:PutBucketLogging",
+        "s3:PutBucketVersioning",
+        "sqs:ListQueueTags",
+        "sqs:SendMessageBatch",
+        "sqs:ReceiveMessage",
+        "ses:SendBulkEmail",
+        "ses:SendEmail",
+        "ses:SetIdentityDkimEnabled",
+        "ses:DeleteIdentity",
+        "sns:Publish",
+        "config:DescribeConfigRules",
+        "autoscaling:CreateAutoScalingGroup",
+        "glue:BatchGetJobs",
+        "guardduty:ListDetectors",
+        "lambda:CreateFunction",
+        "sagemaker:StartNotebookInstance",
+        "codecommit:CreateRepository"
+      ],
+      "Resource": [
+        "arn:aws:ses:eu-west-3:111222333444:template/*",
+        "arn:aws:ses:eu-west-3:111222333444configuration-set/*",
+        "arn:aws:s3:::denied-bucket-0/*",
+        "arn:aws:s3:::denied-bucket-1/*",
+        "arn:aws:s3:::denied-bucket-2/*",
+        "arn:aws:sns:eu-west-3:111222333444:template/*",
+        "arn:aws:rds:eu-west-3:111222333444:db-instance/*",
+        "arn:aws:cloudwatch:eu-west-3:111222333444:log-group/*",
+        "arn:aws:iam::123456789012:role/service-role/*",
+        "arn:aws:iam::123456789012:user/*",
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:user/test-user",
+        "arn:aws:iam::123456789012:user/blocked-user",
+        "arn:aws:iam::123456789012:user/unauthorized",
+        "arn:aws:iam::987654321098:user/charlie"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role/*",
+        "arn:aws:iam::123456789012:user/*",
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:user/alice",
+        "arn:aws:iam::123456789012:user/test-user",
+        "arn:aws:iam::123456789012:user/blocked-user",
+        "arn:aws:iam::123456789012:user/unauthorized",
+        "arn:aws:iam::987654321098:user/charlie"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "Bool": {
+          "aws:SecureTransport": "true"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

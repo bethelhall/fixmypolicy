@@ -1,0 +1,88 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "sqs:ChangeMessageVisibilityBatch",
+        "glue:StartJobRun",
+        "s3:DeleteBucketTagging",
+        "kinesis:GetRecords",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*/*",
+        "arn:aws:s3:::securitylake-glue-assets-*/*",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-0.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-5-11.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-46-5.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-6-5.txt",
+        "arn:aws:s3:::aws-security-data-lake-*/file-25-6.txt",
+        "arn:aws:s3:::aws-security-data-lake-*/file-31-4.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*"
+      ],
+      "Effect": "Allow",
+      "Sid": "listBuckets"
+    },
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Effect": "Allow",
+      "Sid": "assumeRoles"
+    },
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Effect": "Allow",
+      "Sid": "assumeAliceUser"
+    },
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Effect": "Allow",
+      "Sid": "assumeBobUser"
+    },
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Effect": "Deny",
+      "Sid": "blockUnauthorizedUsers"
+    },
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::111222333444:role/developer-role"
+      ],
+      "Effect": "Deny",
+      "Sid": "blockDeveloperRole"
+    }
+  ]
+}

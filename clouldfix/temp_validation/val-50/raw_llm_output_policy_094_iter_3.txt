@@ -1,0 +1,1510 @@
+{
+  "Version": "2012-10-17",
+  "Id": "example-ID",
+  "Statement": [
+    {
+      "Sid": "Example SNS topic policy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "SNS:Publish"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "bucket-owner-account-id"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS Publish",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS SendMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM DeleteUser",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": "forbidden-SNS-topic-ARN-specific",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 PutBucketTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "s3:PutBucketTagging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM CreateUser",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction3",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction5",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM ListRoles",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "iam:ListRoles"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 RunInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction2",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction1",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction0",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM DeleteUser",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB PutItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "authorized/SNS-topic-ARN/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny Lambda CreateFunction",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM ListAttachedGroupPolicies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "iam:ListAttachedGroupPolicies"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow SQS AddPermission",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "sqs:AddPermission"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow SQS ChangeMessageVisibility",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "sqs:ChangeMessageVisibility"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS DeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-9/file-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Lambda InvokeFunction",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DeniedAction4",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ELB CreateLoadBalancer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow SES VerifyEmailIdentity",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ses:VerifyEmailIdentity"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeBuild StopBuild",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "codebuild:StopBuild"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS CreateDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudWatch PutMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Cloud9 CreateEnvironmentEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS Subscribe",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudWatch PutMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Cloud9 CreateEnvironmentEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 RestoreObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "s3:RestoreObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Athena BatchGetQueryExecution",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Glue GetJob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "glue:GetJob"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit ListRepositories",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS CreateDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 DeleteBucketTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 DeleteTags",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit CreateRepository",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 PutObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS PutKeyPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "kms:PutKeyPolicy"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow RDS DescribeDBInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudWatch PutMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Cloud9 CreateEnvironmentEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 RestoreObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "s3:RestoreObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Athena BatchGetQueryExecution",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Glue GetJob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "glue:GetJob"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit ListRepositories",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS CreateDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 DeleteBucketTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 DeleteTags",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit CreateRepository",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 PutObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS PutKeyPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "kms:PutKeyPolicy"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow RDS DescribeDBInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudWatch PutMetricData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Cloud9 CreateEnvironmentEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 RestoreObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "s3:RestoreObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Athena BatchGetQueryExecution",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Glue GetJob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "glue:GetJob"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit ListRepositories",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS CreateDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 DeleteBucketTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 DeleteTags",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit CreateRepository",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 PutObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS PutKeyPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "kms:PutKeyPolicy"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow RDS DescribeDBInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit ListRepositories",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS CreateDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 DeleteBucketTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 DeleteTags",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CodeCommit CreateRepository",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "

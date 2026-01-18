@@ -1,0 +1,157 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_list_buckets_for_backup",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListAllMyBuckets"
+        ],
+        "Resource": [
+          "arn:aws:s3:::*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceAccount": "123456789012"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_bucket_location",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backup-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "124.215.101.111"
+          }
+        }
+      },
+      {
+        "id": "test_backup_create_backup_plan",
+        "Effect": "deny",
+        "Action": [
+          "backup:CreateBackupPlan"
+        ],
+        "Resource": [
+          "arn:aws:backup:us-east-1:123456789012:backup-plan:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user"
+      },
+      {
+        "id": "test_s3_get_bucket_versioning",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketVersioning"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backup-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role"
+      },
+      {
+        "id": "test_backup_start_backup_job",
+        "Effect": "deny",
+        "Action": [
+          "backup:StartBackupJob"
+        ],
+        "Resource": [
+          "arn:aws:backup:us-east-1:123456789012:backup-vault:Default"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role"
+      },
+      {
+        "id": "test_s3_put_object_from_allowed_ip",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backup-bucket/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "60.112.161.29"
+          }
+        }
+      },
+      {
+        "id": "test_cloudfront_list_vpc_origins",
+        "Effect": "allow",
+        "Action": [
+          "cloudfront:ListVpcOrigins"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user"
+      },
+      {
+        "id": "test_backup_describe_backup_vault",
+        "Effect": "deny",
+        "Action": [
+          "backup:DescribeBackupVault"
+        ],
+        "Resource": [
+          "arn:aws:backup:us-east-1:123456789012:backup-vault:Default"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user"
+      },
+      {
+        "id": "test_s3_list_bucket_for_backup_selection",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backup-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-backup-service-role",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": [
+              "backup/*"
+            ]
+          }
+        }
+      },
+      {
+        "id": "test_cloudfront_create_vpc_origin",
+        "Effect": "allow",
+        "Action": [
+          "cloudfront:CreateVpcOrigin"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/specific-iam-user"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    },
+    "repaired_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    }
+  },
+  "metadata": {
+    "file_number": "28",
+    "user_intent": "Details\n\n\nI am currently building an S3 environment that meets all of the following requirements.\n\n\nAccess is only possible from a specific IP address.\nAccess is only possible from a specific IAM user.\n\n\nI have built an S3 environment that meets the above requirements.\n\n\nHowever, I am unable to build an environment that uses the AWS Backup service to periodically obtain backups. Specifically, when allocating resources in a backup plan, the bucket I created is not displayed. The following are the steps I have tried to resolve the issue.\n\n\n1.Check the IAM policy\n\n\n2.Check the bucket policy\n\n\n3.Check that the region matches\n\n\n*Please check each policies that written end of sentence.\n\n\nIdeal state\n\n\nMeet the requirements of \"access is only possible from a specific IP address\" and \"access is only possible from a specific IAM user\" and also use AWS Backup to periodically obtain backups.\n\n\nI am sorry my bad english. Thanks.\n\n\n\uff1d\uff1d\uff1d\uff1d\uff1d\uff1d\uff1d\n\n\nIAM Policy\n\n\nI assigned \"AmazonS3FullAccess\" and \"AWSBackupFullAccess\". I also attached the following .json.\n\n\n\n\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:*\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}t\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"backup:*\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:ListBucket\",\n                \"s3:PutBucketAcl\",\n                \"s3:GetBucketLocation\",\n                \"s3:GetBucketVersioning\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:PutObject\",\n                \"s3:GetObject\",\n                \"s3:DeleteObject\",\n                \"s3:GetBucketVersioning\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        }\n    ]\n}\n\n\n\nBucket Policy\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Deny\",\n            \"Principal\": \"*\",\n            \"Action\": \"s3:*\",\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ],\n            \"Condition\": {\n                \"StringNotEquals\": {\n                    \"aws:username\": \"{created_iam_user_name}\"\n                }\n            }\n        },\n        {\n            \"Effect\": \"Deny\",\n            \"Principal\": \"*\",\n            \"Action\": \"s3:*\",\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ],\n            \"Condition\": {\n                \"NotIpAddress\": {\n                    \"aws:VpcSourceIp\": [\n                        \"124.215.101.111/32\",\n                        \"60.112.161.29/32\"\n                    ]\n                }\n            }\n        }\n    ]\n}",
+    "timestamp": "2025-08-19T17:46:49.914966"
+  }
+}

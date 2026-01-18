@@ -1,0 +1,94 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "*",
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:GetItem",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement11"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:ListQueues",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement12"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-46-*",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement13"
+    }
+  ]
+}

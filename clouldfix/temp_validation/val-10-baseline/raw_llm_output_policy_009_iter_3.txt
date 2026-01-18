@@ -1,0 +1,135 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "AllowAliceToDescribeLogStreams",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-4",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "DenyAdminRoleToCreateLambdaFunction",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ["76.76.21.0/24", "85.224.0.0/13"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      }
+    },
+    {
+      "Sid": "DenyTestUserToCreateDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ["76.76.21.0/24", "85.224.0.0/13"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleToRebootWorkspaces",
+      "Effect": "Allow",
+      "Action": "workspaces:RebootWorkspaces",
+      "Resource": "arn:aws:s3:::bucket-16/file-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowBobToUpdateLambdaFunctionCode",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-58",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowBobToCreateGlueDatabase",
+      "Effect": "Allow",
+      "Action": "glue:CreateDatabase",
+      "Resource": "arn:aws:s3:::bucket-17/file-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "DenyTempUserToDescribeInstances",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ["76.76.21.0/24", "85.224.0.0/13"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedToPutItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ["76.76.21.0/24", "85.224.0.0/13"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      }
+    },
+    {
+      "Sid": "Allow91a71d5c",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-26/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    }
+  ]
+}
+```
+This is your repaired Policy in proper format with all required fields included for each statement including Principal field which was missing from some of them based on requirements you have shared above. Please note I added `"Id": "PolicyForTests"` at top level too because it seems like this should exist according to standard structure of aws policies. If there were other specific instructions not mentioned here please let me know otherwise feel free to proceed using this fixed version of policy.

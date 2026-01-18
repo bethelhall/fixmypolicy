@@ -1,0 +1,117 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*"
+    },
+    {
+      "Sid": "Allow bob to delete user in eu-west-1",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-43-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow bob to get queue attributes in us-west-2",
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-4-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to list identities in us-west-2",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-37-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to create function in us-west-2",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-35-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to create model in us-east-1",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-8-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow bob to list repositories in us-east-1",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-27-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to describe endpoint config in eu-west-1",
+      "Action": "sagemaker:DescribeEndpointConfig",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-23-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow bob to start instances in us-west-2",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-30-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to create workgroup in us-west-2",
+      "Action": "athena:DeleteWorkGroup",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-20-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

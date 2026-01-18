@@ -1,0 +1,239 @@
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "sms-voice:SendTextMessage",
+        "sms-voice:SendVoiceMessage",
+        "sms-voice:SendMediaMessage",
+        "sms-voice:DescribeSenderIds"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::550619692393:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:BatchGetQueryExecution",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO/file.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-forbidden-resource",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-specific",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::890087450133:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "redshift:DeleteCluster",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::748300590517:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::B-ID:root",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sms-voice:DescribeSenderIds",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

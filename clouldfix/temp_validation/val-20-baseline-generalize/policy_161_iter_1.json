@@ -1,0 +1,95 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateServiceLinkedRole",
+      "Resource": "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kms:GetKeyPolicy",
+        "s3:GetBucketCors",
+        "sqs:ListDeadLetterSourceQueues",
+        "glue:DeleteTable",
+        "codecommit:CreateRepository"
+      ],
+      "Resource": [
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot-forbidden-resource",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot-specific",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC0Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC1Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC3Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC4Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC5Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC6Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC7Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC8Spot",
+        "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC9Spot"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:PutRolePolicy",
+      "Resource": "arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:GetUser",
+      "Resource": "forbidden-arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "authorized/arn:aws:iam::{ACCOUNT_ID}:role/aws-service-role/spot.amazonaws.com/AWSServiceRoleForEC2Spot/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ec2_instance_connect_basic",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/developer"
+      },
+      {
+        "id": "test_ec2_instance_connect_wrong_instance",
+        "Effect": "deny",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0a123b4567c8d9e0f"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/developer"
+      },
+      {
+        "id": "test_ec2_instance_connect_with_ip_condition",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/admin",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "203.0.113.0/24"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_instance_connect_serial_console",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSerialConsoleSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/operator"
+      },
+      {
+        "id": "test_ec2_instance_connect_time_condition",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey",
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/contractor",
+        "Condition": {
+          "DateGreaterThan": {
+            "aws:CurrentTime": "2024-01-01T00:00:00Z"
+          },
+          "DateLessThan": {
+            "aws:CurrentTime": "2024-12-31T23:59:59Z"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_instance_connect_wrong_region",
+        "Effect": "deny",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/developer"
+      },
+      {
+        "id": "test_ec2_instance_connect_mfa_condition",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/admin",
+        "Condition": {
+          "Bool": {
+            "aws:MultiFactorAuthPresent": "true"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_instance_connect_tag_condition",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "ec2:ResourceTag/Environment": "development"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_describe_action_denied",
+        "Effect": "deny",
+        "Action": [
+          "ec2:DescribeInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/developer"
+      },
+      {
+        "id": "test_cross_account_access_denied",
+        "Effect": "deny",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:742096941866:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/external-user"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 36.4,
+      "total_requests": 11,
+      "correct": 4,
+      "incorrect": 7
+    },
+    "repaired_policy": {
+      "accuracy": 36.4,
+      "total_requests": 11,
+      "correct": 4,
+      "incorrect": 7
+    }
+  },
+  "metadata": {
+    "file_number": "37",
+    "user_intent": "Hi,\nI am very new to creating resource-based policy. I created one from the template which AWS EventBridge has provided. Is it possible to merge the two statements by using two condition blocks?",
+    "timestamp": "2025-08-19T17:51:52.861856"
+  }
+}

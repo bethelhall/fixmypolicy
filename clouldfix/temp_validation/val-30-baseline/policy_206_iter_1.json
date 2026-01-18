@@ -1,0 +1,292 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXX:client/*",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/*",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "es:DeleteElasticsearchDomain",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-8-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "authorized/arn:aws:iot:us-east-1:XXXXXXXXXXX:client/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-13-15.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codebuild:StartBuild",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-17-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:XXXXXXXXXXX:client/*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXX:client/file-27-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXX:client/file-7-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "config:GetComplianceDetailsByConfigRule",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-15-8.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-47-13.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-17-10.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/*-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXX:client/file-48-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-12-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-15-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-48-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZones",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-47-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "authorized/arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/*/file.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloud9:DescribeEnvironments",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topic/$aws/rules/basic_ingest_rule/file-44-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXX:client/file-45-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

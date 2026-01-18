@@ -1,0 +1,121 @@
+{
+  "Requests": [
+    {
+      "id": "allow_alarm_invoke_basic",
+      "Effect": "allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:444455556666:function:function-name"
+      ],
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "111122223333"
+        }
+      }
+    },
+    {
+      "id": "allow_alarm_invoke_with_sourcearn_appA_lowcpu",
+      "Effect": "allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:444455556666:function:function-name"
+      ],
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "111122223333",
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:CPUUtilizationLow-AppA"
+        }
+      }
+    },
+    {
+      "id": "allow_alarm_invoke_with_sourcearn_prod_dynamic_scaling_low",
+      "Effect": "allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:444455556666:function:function-name"
+      ],
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "111122223333",
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:DynamicScalingAlarm-prod-CPU-Low"
+        }
+      }
+    },
+    {
+      "id": "allow_alarm_invoke_with_sourcearn_metricmath_lowcpu",
+      "Effect": "allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:444455556666:function:function-name"
+      ],
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "111122223333",
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:MM-LowCPU-Alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_alarm_invoke_with_sourcearn_tagged_scaledown",
+      "Effect": "allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-1:444455556666:function:function-name"
+      ],
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "111122223333",
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:111122223333:alarm:Tagged-ScaleDown-LowCPU"
+        }
+      }
+    },
+    {
+      "id": "deny_eventbridge_rule_invocation_old_function",
+      "Effect": "deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN"
+      ],
+      "Principal": "events.amazonaws.com",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:events:us-east-2:654654575452:rule/EC2_SI_Interruption_Warning"
+        }
+      }
+    },
+    {
+      "id": "deny_cloudwatch_alarm_invocation_legacy_principal_old_function",
+      "Effect": "deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN"
+      ],
+      "Principal": "cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "654654575452",
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-2:654654575452:alarm:DynamicScalingAlarm-ron.si.C.m-CPU-Low"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "textract:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<<my_bucket_name>>",
+        "arn:aws:s3:::<<my_bucket_name>>/*",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>/*",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>/*"
+      ]
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": [
+        "logs:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetDatabase",
+        "redshift:DescribeClusters",
+        "ec2:AttachVolume",
+        "s3:DeleteObject",
+        "cloudsearch:CreateDomain",
+        "cloudwatch:GetMetricData",
+        "sqs:SendMessageBatch",
+        "lambda:UpdateFunctionCode",
+        "es:CreateElasticsearchDomain",
+        "iam:CreatePolicy",
+        "ec2:TerminateInstances",
+        "kms:UpdateKeyDescription",
+        "s3:GetBucketWebsite",
+        "sqs:CreateQueue",
+        "cloudwatch:GetDashboard",
+        "kms:PutKeyPolicy",
+        "ses:DeleteIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-30/file-0.txt",
+        "arn:aws:s3:::<<my_bucket_name>>/file-30-15.txt",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>/file-5-4.txt",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>/file-25-11.txt",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>/file-40-18.txt",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>/file-27-11.txt",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>/file-7-5.txt",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>/file-17-3.txt",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>/file-48-6.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/db-10/table-23",
+        "arn:aws:s3:::<<my_bucket_name>>/file-29-3.txt",
+        "arn:aws:s3:::<<my_bucket_name>>/file-6-7.txt",
+        "arn:aws:s3:::<<my_bucket_name>>/file-24-0.txt",
+        "arn:aws:s3:::bucket-21/file-7.txt",
+        "arn:aws:s3:::textract-console-us-east-1-<<auto_created_id_1>>-forbidden/file.txt",
+        "arn:aws:s3:::textract-adapters-us-east-1-<<auto_created_id_2>>-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::different-textract-console-us-east-1-<<auto_created_id_1>>/file.txt",
+        "arn:aws:s3:::different-textract-adapters-us-east-1-<<auto_created_id_2>>/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2",
+          "aws:userid": "AIDAI"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObjectAcl",
+        "s3:PutBucketTagging",
+        "s3:DeleteBucketLifecycle",
+        "s3:DeleteBucketVersioning",
+        "s3:PutBucketWebsite",
+        "s3:GetBucketVersioning",
+        "iam:DeleteUser",
+        "sqs:DeleteMessageBatch",
+        "sqs:DeleteQueue",
+        "ses:DeleteIdentity"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-<<my_bucket_name>>/file.txt",
+        "arn:aws:s3:::admin-bucket/document.txt",
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::different-textract-console-us-east-1-<<auto_created_id_1>>/file.txt",
+        "arn:aws:s3:::different-textract-adapters-us-east-1-<<auto_created_id_2>>/file.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role",
+        "arn:aws:iam::555666777888:role/cross-account-role",
+        "arn:aws:iam::111222333444:role/developer-role",
+        "arn:aws:iam::987654321098:user/charlie",
+        "arn:aws:iam::999888777666:user/unauthorized",
+        "arn:aws:iam::555666777888:user/unauthorized",
+        "arn:aws:iam::111222333444:user/blocked-user"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

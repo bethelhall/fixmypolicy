@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "allow_87ae5cc8",
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_5ec23e7d",
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_9f3b485e",
+      "Effect": "Allow",
+      "Action": "dynamodb:GetItem",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_9f904689",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-9.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_d659243a",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-36-14.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_34cffd1b",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueues",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_a9a07b4e",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "authorized/arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_dfef93da",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/*-forbidden-resource",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_9f51b3dc",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "forbidden-arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/*-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "deny_dadd5291",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

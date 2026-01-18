@@ -1,0 +1,163 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForWebsiteAccess",
+  "Statement": [
+    {
+      "Sid": "AllowWebsiteAccessForViewing",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": [
+            "https://example.com/*",
+            "https://example.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowWebsiteAccessForUploads",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": [
+            "https://example.com/*",
+            "https://example.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontAccess",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Access",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "ec2:AttachVolume",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAccess",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "iam:RemoveUserFromGroup",
+        "iam:PutRolePolicy",
+        "iam:ListAttachedRolePolicies",
+        "iam:DeleteRole",
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        },
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCrossAccountAccess",
+      "Effect": "Allow",
+      "Principal": [
+        "arn:aws:iam::555666777888:role/cross-account-role",
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Action": [
+        "ec2:DescribeKeyPairs",
+        "glue:CreateTable",
+        "workspaces:DescribeWorkspaces",
+        "s3:GetObjectVersion",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucket",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        },
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3AccessWithReferer",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:GetObjectVersion",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucket",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringLike": {
+          "aws:Referer": [
+            "https://example.com/*",
+            "https://example.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3AccessWithoutReferer",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:GetObjectVersion",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucket",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NotStringLike": {
+          "aws:Referer": [
+            "https://example.com/*",
+            "https://example.com"
+          ]
+        }
+      }
+    }
+  ]
+}

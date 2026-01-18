@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "deny_e4d0f0bd",
+      "Effect": "Deny",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::<our_bucket_name>-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "allow_d5f88ce3",
+      "Effect": "Allow",
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-1-8.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "deny_07552923",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_51497588",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::different-<our_bucket_name>/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "id": "allow_f40013d4",
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-27-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_8c5fd2b7",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketCors",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "allow_47be808d",
+      "Effect": "Allow",
+      "Action": "iam:CreatePolicy",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-18-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_406e9657",
+      "Effect": "Allow",
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-5-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_a28959d7",
+      "Effect": "Allow",
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-12-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_5c0a8783",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DescribeAlarms",
+      "Resource": "arn:aws:s3:::<our_bucket_name>/file-1-9.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

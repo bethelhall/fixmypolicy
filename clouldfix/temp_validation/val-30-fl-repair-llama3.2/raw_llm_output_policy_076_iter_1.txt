@@ -1,0 +1,267 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFormationUpdates",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:UpdateStack"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSGetKeyPolicies",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GetKeyPolicy"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSCreateAliases",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateAlias"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaQueries",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetWorkGroup",
+        "athena:GetQueryResultsStream"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueQueries",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaFunctions",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3CORS",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketCors"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateAccessKey"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDecryption",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSSetQueueAttributes",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SetQueueAttributes"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCrossAccountAccess",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSConnections",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Connections",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBConnections",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSConnections",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2SecurityGroups",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteSecurityGroup"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSConnections",
+      "Effect": "Deny",
+      "Action": [
+        "kms:CreateAlias",
+        "kms:Decrypt",
+        "kms:ListAliases",
+        "kms:ListGrants"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSConnections",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

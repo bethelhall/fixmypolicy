@@ -1,0 +1,81 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomains",
+        "iam:GetRolePolicy",
+        "iam:UpdateLoginProfile",
+        "cloudtrail:StopLogging",
+        "codebuild:StopBuild",
+        "kms:ScheduleKeyDeletion",
+        "codebuild:ListBuilds",
+        "s3:GetBucketWebsite",
+        "s3:GetBucketTagging",
+        "s3:PutBucketTagging",
+        "s3:PutBucketCors",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:CreateVolume",
+        "redshift:DeleteCluster",
+        "s3:PutBucketPolicy",
+        "dynamodb:DeleteItem",
+        "sagemaker:DescribeTrainingJob",
+        "iam:DeletePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe",
+        "iam:DeleteUser",
+        "rds:CreateDBInstance",
+        "dynamodb:PutItem",
+        "lambda:InvokeFunction",
+        "ec2:RunInstances",
+        "ec2:DescribeInstances",
+        "lambda:CreateFunction",
+        "rds:DeleteDBInstance",
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

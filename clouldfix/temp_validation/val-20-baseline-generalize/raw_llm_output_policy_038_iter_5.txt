@@ -1,0 +1,166 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowListingOfUserFolder",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::${transfer:HomeBucket}"
+      ],
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:HomeFolder}/*",
+            "${transfer:HomeFolder}"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "HomeDirObjectAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion",
+        "s3:GetObjectVersion",
+        "s3:GetObjectACL",
+        "s3:PutObjectACL"
+      ],
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*"
+    },
+    {
+      "Sid": "AllowElasticLoadBalancerDescribeLoadBalancers",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerDescribeEndpointConfig",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpointConfig",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateAccessKey",
+        "iam:GetUser"
+      ],
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAddUser",
+      "Effect": "Allow",
+      "Action": "iam:AddUser",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAddGroup",
+      "Effect": "Allow",
+      "Action": "iam:AddGroup",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreateModel",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}/*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketAcl",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:HomeFolder}/*",
+            "${transfer:HomeFolder}"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "DenyS3PutBucketWebsite",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::different-${transfer:HomeDirectory}/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:HomeFolder}/*",
+            "${transfer:HomeFolder}"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Sid": "DenyS3GetBucketLifecycle",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::${transfer:HomeDirectory}-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:HomeFolder}/*",
+            "${transfer:HomeFolder}"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyS3GetBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:HomeFolder}/*",
+            "${transfer:HomeFolder}"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

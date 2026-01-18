@@ -1,0 +1,922 @@
+{
+  "total_files": 46,
+  "successful": 3,
+  "success_rate": 6.521739130434782,
+  "results": [
+    {
+      "file_number": "0",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 81.8,
+          "total_requests": 11,
+          "correct": 9,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 81.8,
+          "total_requests": 11,
+          "correct": 9,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi,\n\n\n**Question 1: **\nI have added to my Amazon user the following policy (ecotechh2gambuckets) :\n\n\n\n\n\n\nBut the function delete_previous_file_from_aws_and_save_new_file_to_aws(self, outputfile) in the python script below gives me the following error:\n\n\n(AccessDenied) when calling the DeleteObject operation: Access Denied\n\n\nimport os, shutil\nfrom datetime import date\nimport datetime as dt\nimport cdsapi\nimport yaml\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\nfrom tqdm import tqdm\nfrom os import listdir\nfrom os.path import isfile, join\nimport urllib3\nurllib3.disable_warnings()\nimport platform\nimport boto3\n\n\nclass download_cams_forecast:\n    \n    def __init__(self):\n        self.work_dir = None\n        self.save_to = None\n        self.bucket_name = 'eco-tech-h2gam'\n        self.bucket_prefix = 'cams/fr/forecast/'\n        self.s3 = boto3.client('s3')\n        self.object_key_init_forecast = self.list_all_files_in_aws_s3_bucket()[1].split(\"/\")[3]\n        print(self.object_key_init_forecast)\n    def list_all_files_in_aws_s3_bucket(self):\n        file_list = []\n        # Retrieve the list of files\n        response = self.s3.list_objects_v2(Bucket=self.bucket_name, Prefix=self.bucket_prefix)\n        \n        if 'Contents' in response:\n            for obj in response['Contents']:\n                file_list.append(obj['Key'])\n        print(file_list)\n        return file_list\n\n    \n    def delete_previous_file_from_aws_and_save_new_file_to_aws(self, outputfile):\n        # Delete the previous file from the S3 bucket\n        if self.object_key_init_forecast:\n            key = self.bucket_prefix + self.object_key_init_forecast\n            print(\"Debug\",key)\n            self.s3.delete_object(Bucket=self.bucket_name, Key=key)\n            print(f\"Deleted {self.object_key_init_forecast} from S3 bucket.\")\n\n        # Upload the new file to the S3 bucket\n        new_object_key = f\"{self.bucket_prefix}{os.path.basename(outputfile)}\"\n        self.s3.upload_file(outputfile, self.bucket_name, new_object_key)\n        print(f\"Uploaded {outputfile} to S3 bucket as {new_object_key}.\")\n\n    \n    def download(self):\n        print(\"Downloading CAMS data...\")\n        sys = platform.system()\n        self.work_dir = os.path.dirname(os.path.abspath(__file__))\n        \n        print(\"sys:\", sys)\n        if sys == \"Windows\":\n            self.save_to = os.path.join(self.work_dir, \"cams\", \"fr\", \"forecast\")\n        else:\n            self.save_to = os.path.join(self.work_dir, \"cams\", \"fr\", \"forecast\")\n\n        folder = self.save_to\n        for filename in os.listdir(folder):\n            file_path = os.path.join(folder, filename)\n            try:\n                if os.path.isfile(file_path) or os.path.islink(file_path):\n                    os.unlink(file_path)\n                elif os.path.isdir(file_path):\n                    shutil.rmtree(file_path)\n            except Exception as e:\n                print('Failed to delete %s. Reason: %s' % (file_path, e))\n        \n        print(\"System:\", sys) \n\n        if not os.path.exists(self.save_to):\n            os.makedirs(self.save_to)\n\n        # get personal directory of cdsapi\n        try:\n            if sys == \"Windows\":\n                with open(os.path.join(self.work_dir, \".cdsapirc_cams_windows\"), 'r') as file:\n                    cams_api = os.path.join(self.work_dir, \".cdsapirc\")\n            else:\n                with open(os.path.join(self.work_dir, \".cdsapirc_cams\"), \"r\") as file:\n                    cams_api = os.path.join(self.work_dir, \".cdsapirc\")\n        except FileNotFoundError:\n            raise FileNotFoundError(\"\"\"cdsapirc file cannot be found. Write the\n                directory of your personal .cdsapirc file in a local file called\n                `.cdsapirc_cams` and place it in the directory where this script lies.\"\"\")\n\n        # Download CAMS\n        # -----------------------------------------------------------------------------\n        print('Download data from CAMS ...', flush=True)\n\n        with open(cams_api, 'r') as f:\n            credentials = yaml.safe_load(f)\n\n        mypath = os.path.join(self.work_dir, \"cams\")\n\n        def findlatestdateofcamsdata(mypath):\n            dates = []\n            onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]\n            for filename in onlyfiles:\n                dates.append(pd.to_datetime(filename[14:24]))\n            \n            if dates:\n                return (dates, max(dates))\n            else:\n                return (dates, dt.date.today() - pd.Timedelta(1, unit=\"days\"))\n\n        prevday = dt.date.today() - pd.Timedelta(\"1 days\")\n        startdate = findlatestdateofcamsdata(mypath)[1]\n        datesnotclean = pd.date_range(start=startdate, end=prevday).strftime(\"%Y-%m-%d\").tolist()\n        \n        dates = []\n\n        for date in datesnotclean:\n            if date not in pd.to_datetime(findlatestdateofcamsdata(mypath)[0]):\n                dates.append(date)\n\n        print(dates)\n\n        area = [51.75, -5.83, 41.67, 11.03]\n\n        for date in tqdm(dates):\n            print(date)\n            file_name = f'cams-forecast-{date}.nc'\n            output_file = os.path.join(self.save_to, file_name)\n            if not os.path.exists(output_file):\n                c = cdsapi.Client(url=credentials['url'], key=credentials['key'])\n                c.retrieve(\n                    'cams-europe-air-quality-forecasts',\n                    {\n                        'variable': [\n                            'carbon_monoxide', 'nitrogen_dioxide', 'ozone',\n                            'particulate_matter_10um', 'particulate_matter_2.5um', 'sulphur_dioxide',\n                        ],\n                        'model': 'ensemble',\n                        'level': '0',\n                        'date': date,\n                        'type': 'forecast',\n                        'time': '00:00',\n                        'leadtime_hour': [\n                            '0', '24', '48',\n                            '72', '96'\n                        ],\n                        'area': area,\n                        'format': 'netcdf',\n                    },\n                    output_file)\n        self.delete_previous_file_from_aws_and_save_new_file_to_aws(output_file)\n        print('Download finished.', flush=True)\n\nif __name__ == '__main__':\n    CamsHistForecasts = download_cams_forecast()\n    CamsHistForecasts.download()\n\n\n\nQuestion 2\n\n\nThe connexion to AWS S3 buckets works because I have a credentials file in C:\\users<username>.aws\\credentials\n\n\nAlthough I am using heroku to deploy my application, I am forced to used AWS S3 for data initializing purposes, so where should the .aws\\credrentials file go in the heroku app directory and is it a good practice to hash this file before pushing it on git (if so which python library should I use?) as the heroku app directory is initialized from the git repo?\n\n\nCurrent Site/App Output\n\n\nhttps://www.eco-tech-h2gam.com/"
+    },
+    {
+      "file_number": "1",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 0.0,
+          "total_requests": 12,
+          "correct": 0,
+          "incorrect": 12
+        },
+        "repaired_policy": {
+          "accuracy": 0.0,
+          "total_requests": 12,
+          "correct": 0,
+          "incorrect": 12
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "In the CDK code, I created a \ncustom KMSKey\n, and then configured the Image Recipe of EC2 Image Builder to use the KMSKey as the encryption key of EBS, after successfully creating the AMI, I used the AMI to launch the instance, and the consistent message failed to start, the error is as follows:\n\n Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state\n.\n\n\nKMSKey's state is \nenabled\n, otherwise the AMI would not be successfully generated, so I don't understand why the state Incorrect is still prompted.\n\n\nI looked up the answer on the Internet and saw a post saying that it was a permission issue, and then I associated a role with an EC2 instance with an inline policy like this::\n\n\n\n\n\nBut the startup failed with the same error.\n\n\nDoes anyone know why?"
+    },
+    {
+      "file_number": "2",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I want to limit S3 operation of a certain S3 bucket only through the VPC endpoints, so I changed the S3 bucket policy to the way like\n\n\nWhile after submitting this policy, I found myself not able to manage the S3 bucket attribute via AWS Management Console.  Every time I click on the bucket, the console just displays errors of \"Insufficient permissions to ...\" , even if I have enough IAM previlege to perform that operation.  Well, it makes perfect sense, but what if I still want to manage the bucket via AWS Management Console, how should the bucket policy to be set?"
+    },
+    {
+      "file_number": "3",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi Team,\n\n\nAs part of security, I'm trying to implement SNS encryption, but after enabling it, the email is not being triggered. Without encryption, it works fine.\n\n\nBelow are the policies set for the SNS and KMS key.\n\n**\nSNS  Policy**\n\n\n\n  ]\n}\n\n\n\nKMS key Policy\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Id\": \"key-consolepolicy-3\",\n    \"Statement\": [\n        {\n            \"Sid\": \"Enable IAM User Permissions\",\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"AWS\": \"arn:aws:iam::1234444444444:root\"\n            },\n            \"Action\": \"kms:*\",\n            \"Resource\": \"*\"\n        },\n        {\n            \"Sid\": \"AllowSNSAccess\",\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"Service\": \"sns.amazonaws.com\"\n            },\n            \"Action\": [\n                \"kms:Encrypt\",\n                \"kms:Decrypt\",\n                \"kms:GenerateDataKey*\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\nSo kindly assist me to resolve this issue .Also is there any way to view the error that is occurring while publishing the SNS message"
+    },
+    {
+      "file_number": "4",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 60.0,
+          "total_requests": 15,
+          "correct": 9,
+          "incorrect": 6
+        },
+        "repaired_policy": {
+          "accuracy": 60.0,
+          "total_requests": 15,
+          "correct": 9,
+          "incorrect": 6
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I'm trying to start a port forwarding session to our RDS through a bastion host.  I have it working for an administrator, now i'm trying to implement least permissions.\n\n\naws ssm start-session --region ap-southeast-1 --target i-55555555555555555 --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters host=\"our-rds.yyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com\",portNumber=\"3306\",localPortNumber=\"3306\"\n\n\n\n\n\nI get an error, but already have the StartSession in the policy.\n\n\n\n\nAn error occurred (AccessDeniedException) when calling the StartSession operation: User: arn:aws:iam::yyyyyyyyyyy:user/testuser is not authorized to perform: ssm:StartSession on resource: arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost because no identity-based policy allows the ssm:StartSession action\n\n\n\n\nI am successful with a simple start-session command: aws ssm start-session --target i-55555555555555555\n\n\n\n\nI have two RDS instances, and would like to limit it to just one RDS host, and don't know what policy to add\n\n\n\n\nMy policy:"
+    },
+    {
+      "file_number": "5",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 33.3,
+          "total_requests": 12,
+          "correct": 4,
+          "incorrect": 8
+        },
+        "repaired_policy": {
+          "accuracy": 33.3,
+          "total_requests": 12,
+          "correct": 4,
+          "incorrect": 8
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I'm attempting to create s3 folders (prefixes) within a bucket that is only accessible to specific EC2 instances via IAM Role policies based on their name. The idea would be something like s3://mybucket/i-1234567890/* would only be accessible to EC2 instance i-1234567890 and s3://mybucket/i-987654321/* would only be accessible to EC2 instance i-987654321. Rather then create a custom IAM Role for each instance (they are pets), I thought I might be able to use policy variables to limit access to the prefix.\nIt looks like the only variable this may work with is aws:username, which with IAM Role is set to be \nrole-id:ec2-instance-id\n according to \nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html#policy-vars-infotouse\n . So I created a folder named \"AROAxxxxxxxxxxxx:i-1234567890/\" in that s3 bucket and attached this policy to the IAM Role:\n\n\n\n\n\n\nI got the Role ID by running this powershell command: \n(Get-IAMRole <RoleName>).RoleId\n\n\nI'm unable to get this working. If I hardcode \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx\" in place of ${aws:username} it works as expected. It is as if ${aws:username} is not returning what I expect it to be. I'm unable to determine what is returning instead though.\n\n\nI setup CloudTrail Trail on the s3 bucket and did a \naws s3 cp\n download attempt. The log shows the correct RoleId:InstanceId as the PrincipalId but I get access denied.\n\n\n    {\n      \"userIdentity\": {\n        \"type\": \"AssumedRole\",\n        \"principalId\": \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx\",\n        \"arn\": \"arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx\",\n        \"sessionContext\": {\n          \"sessionIssuer\": {\n            \"type\": \"Role\",\n            \"principalId\": \"AROAxxxxxxxxxxxxxx\",\n            \"arn\": \"arn:aws:iam::xxxxxxxxxxxxxx:role/ROLENAME\",\n            \"userName\": \"ROLENAME\"\n          }\n        }\n      },\n      \"eventSource\": \"s3.amazonaws.com\",\n      \"eventName\": \"HeadObject\",\n      \"errorCode\": \"AccessDenied\",\n      \"errorMessage\": \"User: arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx is not authorized to perform: s3:GetObject on resource: \\\"arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\\\" because no identity-based policy allows the s3:GetObject action\",\n      \"requestParameters\": {\n        \"bucketName\": \"MYBUCKET\",\n        \"Host\": \"MYBUCKET.s3.us-east-1.amazonaws.com\",\n        \"key\": \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\"\n      },\n      \"resources\": [\n        {\n          \"type\": \"AWS::S3::Object\",\n          \"ARN\": \"arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\"\n        },\n        {\n          \"type\": \"AWS::S3::Bucket\",\n          \"ARN\": \"arn:aws:s3:::MYBUCKET\"\n        }\n      ],\n      \"eventType\": \"AwsApiCall\",\n      \"managementEvent\": false,\n      \"eventCategory\": \"Data\"\n    }\n\n\n\nremoved some properties to save space\n\n\nIs there a way to determine what aws:username is exactly returning in this case? I'm also not tied to using aws:username if there is another variable that would help tie the ec2 instance to a folder. I did try using ec2:* variables and tags but since this is a s3 policy I don't think that will work.\nThis is basically attempting to implement that is brought up in this stackoverflow question but I can't get it to work."
+    },
+    {
+      "file_number": "6",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 20.0,
+          "total_requests": 10,
+          "correct": 2,
+          "incorrect": 8
+        },
+        "repaired_policy": {
+          "accuracy": 20.0,
+          "total_requests": 10,
+          "correct": 2,
+          "incorrect": 8
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I get error \"Failed to get the secret value\" when pressing 'Retrieve Secret Value'\n\n\n\n\nI am not an IAM user with a role, but logged in as an IAM-identity-center user.\n\n\nMy group has a permission-set containing the AWS-managed policy \nSecretsManagerReadWrite\n.\n\n\nThe resource policy of the secret is set to deny all requests not coming from a specified VPCE (e.g. \nvpce-myvpce\n) as follows:\n\n\n\n\n\n\nHow should I modify this policy in order to allow myself access to my secrets via the AWS Console, i.e. view and edit the key/value pairs?"
+    },
+    {
+      "file_number": "7",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 84.6,
+          "total_requests": 13,
+          "correct": 11,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 84.6,
+          "total_requests": 13,
+          "correct": 11,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I have a S3 bucket with the following permission added to the bucket permission:\n\n\n\n\n\n\nTogether with an VPC endpoint to S3, I successfully restricted access to my bucket objects only to my AWS resources in the specified VPC.\n\n\nI then would like to create a AWS backup plan to perform AWS backup on the S3 bucket. For testing, I tried to create an on-demand backup with a user role for AWS backup with AmazonS3FullAccess and AWSBackupServiceRolePolicyForS3Backup managed policies, but I am still with insufficient permission to perform the backup. I was able to perform the backup if I remove the above S3 bucket permission.\n\n\nMy question is: Is it possible to perform AWS backup on my S3 bucket if I want to keep the above S3 bucket permission to restrict access to my VPC? If it is possible, how should I specify the permissions of user role used for running the AWS backup?"
+    },
+    {
+      "file_number": "8",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 33.3,
+          "total_requests": 18,
+          "correct": 6,
+          "incorrect": 12
+        },
+        "repaired_policy": {
+          "accuracy": 27.8,
+          "total_requests": 18,
+          "correct": 5,
+          "incorrect": 13
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "In most regions the following KMS key policy\n\n\n\n\n\n\nallows the account to use IAM policies to allow access to the KMS key, in addition to the key policy\n.\n\n\nHowever, \nin the Beijing and Ningxia Regions, there is no concept of the \"root user\" or \"account user\" credentials\n. Creating KMS key with such policy (replacing \narn:aws:\n with \narn:aws-cn:\n) fails. Is it possible to enable IAM policies for KMS keys in Chinese regions? If so, how?"
+    },
+    {
+      "file_number": "9",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi, I'm encountering an issue despite configuring all permissions correctly. When attempting to trigger an action via a CloudWatch alarm in AWS Lambda, I receive the following error message:\n\n\nError: Failed to execute action arn:aws:lambda:[region]:[account_id]:function:[function_name]. Received error: \"CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action.\"\n\n\nThe CloudWatch alarms are being programmatically created and dynamically configured within a Lambda function, specifically to monitor CPU utilization and trigger at <10%. Everything seems to work fine: the alarms are created successfully, and the logic is functioning as expected, with the Lambda function set as the action trigger. However, when the alarm reaches the action state, the error appears in CloudWatch logs, and the Lambda function is not triggered.\n\n\nI have already ensured that all permissions are set correctly. My Lambda function has a resource-based policy issued through the CLI with the appropriate lambda:InvokeFunction permissions.\n\n\nHas anyone encountered this issue or found a solution? I've come across similar cases but haven't found a clear fix.\n\n\nDoes anyone have suggestions for resolving this issue?\n\n\n\n\n# This AWS SAM template has been generated from your function's configuration. If\n# your function has one or more triggers, note that the AWS resources associated\n# with these triggers aren't fully specified in this template and include\n# placeholder values. Open this template in AWS Application Composer or your\n# favorite IDE and modify it to specify a serverless application with other AWS\n# resources.\nAWSTemplateFormatVersion: '2010-09-09'\nTransform: AWS::Serverless-2016-10-31\nDescription: An AWS Serverless Application Model template describing your function.\nResources:\n  EC2AESCALEUPDOWN:\n    Type: AWS::Serverless::Function\n    Properties:\n      CodeUri: .\n      Description: 'scale up down bwetween EC2 A to E '\n      MemorySize: 128\n      Timeout: 360\n      Handler: lambda_function.lambda_handler\n      Runtime: python3.12\n      Architectures:\n        - arm64\n      EphemeralStorage:\n        Size: 512\n      EventInvokeConfig:\n        MaximumEventAgeInSeconds: 21600\n        MaximumRetryAttempts: 2\n      PackageType: Zip\n      Policies:\n        - Statement:\n            - Effect: Allow\n              Action:\n                - logs:CreateLogGroup\n              Resource: arn:aws:logs:us-east-2:654654575452:*\n            - Effect: Allow\n              Action:\n                - logs:CreateLogStream\n                - logs:PutLogEvents\n              Resource:\n                - >-\n                  arn:aws:logs:us-east-2:654654575452:log-group:/aws/lambda/EC2_A_E_SCALE_UP_DOWN:*\n            - Effect: Allow\n              Action:\n                - logs:CreateLogGroup\n                - logs:CreateLogStream\n                - logs:DescribeLogGroups\n                - logs:DescribeLogStreams\n                - logs:PutLogEvents\n                - logs:GetLogEvents\n                - logs:FilterLogEvents\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - '*'\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - logs:CreateLogGroup\n                - logs:CreateLogStream\n                - logs:PutLogEvents\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - lambda:InvokeFunction\n              Resource:\n                - '*'\n            - Effect: Allow\n              Action:\n                - rum:*\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - iam:GetRole\n                - iam:CreateServiceLinkedRole\n              Resource:\n                - >-\n                  arn:aws:iam::*:role/aws-service-role/rum.amazonaws.com/AWSServiceRoleForRealUserMonitoring\n            - Effect: Allow\n              Action:\n                - iam:PassRole\n              Resource:\n                - arn:aws:iam::*:role/RUM-Monitor*\n              Condition:\n                StringEquals:\n                  iam:PassedToService:\n                    - cognito-identity.amazonaws.com\n            - Effect: Allow\n              Action:\n                - cloudwatch:GetMetricData\n                - cloudwatch:GetMetricStatistics\n                - cloudwatch:ListMetrics\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - cloudwatch:DescribeAlarms\n              Resource: arn:aws:cloudwatch:*:*:alarm:*\n            - Effect: Allow\n              Action:\n                - cognito-identity:CreateIdentityPool\n                - cognito-identity:ListIdentityPools\n                - cognito-identity:DescribeIdentityPool\n                - cognito-identity:GetIdentityPoolRoles\n                - cognito-identity:SetIdentityPoolRoles\n              Resource: arn:aws:cognito-identity:*:*:identitypool/*\n            - Effect: Allow\n              Action:\n                - logs:CreateLogGroup\n                - logs:DeleteLogGroup\n                - logs:PutRetentionPolicy\n                - logs:CreateLogStream\n              Resource: arn:aws:logs:*:*:log-group:*RUMService*\n            - Effect: Allow\n              Action:\n                - logs:CreateLogDelivery\n                - logs:GetLogDelivery\n                - logs:UpdateLogDelivery\n                - logs:DeleteLogDelivery\n                - logs:ListLogDeliveries\n                - logs:DescribeResourcePolicies\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - logs:DescribeLogGroups\n              Resource: arn:aws:logs:*:*:log-group::log-stream:*\n            - Effect: Allow\n              Action:\n                - synthetics:describeCanaries\n                - synthetics:describeCanariesLastRun\n              Resource: arn:aws:synthetics:*:*:canary:*\n            - Sid: CloudWatchFullAccessPermissions\n              Effect: Allow\n              Action:\n                - application-autoscaling:DescribeScalingPolicies\n                - application-signals:*\n                - autoscaling:DescribeAutoScalingGroups\n                - autoscaling:DescribePolicies\n                - cloudwatch:*\n                - logs:*\n                - sns:CreateTopic\n                - sns:ListSubscriptions\n                - sns:ListSubscriptionsByTopic\n                - sns:ListTopics\n                - sns:Subscribe\n                - iam:GetPolicy\n                - iam:GetPolicyVersion\n                - iam:GetRole\n                - oam:ListSinks\n                - rum:*\n                - synthetics:*\n                - xray:*\n              Resource: '*'\n            - Sid: CloudWatchApplicationSignalsServiceLinkedRolePermissions\n              Effect: Allow\n              Action:\n                - iam:CreateServiceLinkedRole\n              Resource: >-\n                arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals\n              Condition:\n                StringLike:\n                  iam:AWSServiceName: application-signals.cloudwatch.amazonaws.com\n            - Sid: EventsServicePermissions\n              Effect: Allow\n              Action:\n                - iam:CreateServiceLinkedRole\n              Resource: >-\n                arn:aws:iam::*:role/aws-service-role/events.amazonaws.com/AWSServiceRoleForCloudWatchEvents*\n              Condition:\n                StringLike:\n                  iam:AWSServiceName: events.amazonaws.com\n            - Sid: OAMReadPermissions\n              Effect: Allow\n              Action:\n                - oam:ListAttachedLinks\n              Resource: arn:aws:oam:*:*:sink/*\n            - Effect: Allow\n              Action:\n                - evidently:*\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - iam:ListRoles\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - iam:GetRole\n              Resource:\n                - arn:aws:iam::*:role/service-role/CloudWatchRUMEvidentlyRole-*\n            - Effect: Allow\n              Action:\n                - s3:GetBucketLocation\n                - s3:ListAllMyBuckets\n              Resource: arn:aws:s3:::*\n            - Effect: Allow\n              Action:\n                - cloudwatch:GetMetricData\n                - cloudwatch:GetMetricStatistics\n                - cloudwatch:DescribeAlarmHistory\n                - cloudwatch:DescribeAlarmsForMetric\n                - cloudwatch:ListTagsForResource\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - cloudwatch:DescribeAlarms\n                - cloudwatch:TagResource\n                - cloudwatch:UnTagResource\n              Resource:\n                - arn:aws:cloudwatch:*:*:alarm:*\n            - Effect: Allow\n              Action:\n                - cloudtrail:LookupEvents\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - cloudwatch:PutMetricAlarm\n              Resource:\n                - arn:aws:cloudwatch:*:*:alarm:Evidently-Alarm-*\n            - Effect: Allow\n              Action:\n                - sns:ListTopics\n              Resource:\n                - '*'\n            - Effect: Allow\n              Action:\n                - sns:CreateTopic\n                - sns:Subscribe\n                - sns:ListSubscriptionsByTopic\n              Resource:\n                - arn:*:sns:*:*:Evidently-*\n            - Effect: Allow\n              Action:\n                - logs:DescribeLogGroups\n              Resource:\n                - '*'\n            - Effect: Allow\n              Action:\n                - cloudformation:DescribeStacks\n                - cloudformation:ListStackResources\n                - cloudwatch:ListMetrics\n                - cloudwatch:GetMetricData\n                - ec2:DescribeSecurityGroups\n                - ec2:DescribeSubnets\n                - ec2:DescribeVpcs\n                - kms:ListAliases\n                - iam:GetPolicy\n                - iam:GetPolicyVersion\n                - iam:GetRole\n                - iam:GetRolePolicy\n                - iam:ListAttachedRolePolicies\n                - iam:ListRolePolicies\n                - iam:ListRoles\n                - lambda:*\n                - logs:DescribeLogGroups\n                - states:DescribeStateMachine\n                - states:ListStateMachines\n                - tag:GetResources\n                - xray:GetTraceSummaries\n                - xray:BatchGetTraces\n              Resource: '*'\n            - Effect: Allow\n              Action:\n                - iam:PassRole\n              Resource: '*'\n              Condition:\n                StringEquals:\n                  iam:PassedToService: lambda.amazonaws.com\n            - Effect: Allow\n              Action:\n                - logs:DescribeLogStreams\n                - logs:GetLogEvents\n                - logs:FilterLogEvents\n              Resource: arn:aws:logs:*:*:log-group:/aws/lambda/*\n      RecursiveLoop: Terminate\n      SnapStart:\n        ApplyOn: None\n      Tags:\n        ron.si: '24'\n      Events:\n        EventBridgeRule1:\n          Type: EventBridgeRule\n          Properties:\n            Pattern:\n              source:\n                - aws.ec2\n              detail-type:\n                - EC2 Spot Instance Interruption Warning\n      RuntimeManagementConfig:\n        UpdateRuntimeOn: Auto\n\n\n\n\nHere\u2019s a json of my current policy:\n\n\n\n\n\n\n\naws cloudwatch put-metric-alarm \\\n--alarm-name 'DynamicScalingAlarm-ron.si.C.m-CPU-Low' \\\n--alarm-description 'Low CPU utilization - Manual Setup' \\\n--actions-enabled \\\n--alarm-actions 'arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN' \\\n--metric-name 'CPUUtilization' \\\n--namespace 'AWS/EC2' \\\n--statistic 'Average' \\\n--dimensions '[{\"Name\":\"InstanceId\",\"Value\":\"i-0d8e900f9d9f00a77\"}]' \\\n--period 300 \\\n--evaluation-periods 12 \\\n--datapoints-to-alarm 12 \\\n--threshold 11 \\\n--comparison-operator 'LessThanThreshold' \\\n--treat-missing-data 'missing'\n\n\n\nSummary\nFailed to execute action arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN. Received error: \"CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action\"\nData\n{\n  \"alarmName\": \"DynamicScalingAlarm-ron.si.C.m-CPU-Low\",\n  \"alarmType\": \"MetricAlarm\",\n  \"timestamp\": \"2024-10-09T21:29:17.406Z\",\n  \"historyItemType\": \"Action\",\n  \"historySummary\": \"Failed to execute Lambda action : arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN\",\n  \"historyData\": {\n    \"actionState\": \"Failed\",\n    \"stateUpdateTimestamp\": 1728509357348,\n    \"notificationResource\": \"arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN\",\n    \"publishedMessage\": null,\n    \"error\": \"CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action\"\n  }\n}"
+    },
+    {
+      "file_number": "10",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 60.0,
+          "total_requests": 10,
+          "correct": 6,
+          "incorrect": 4
+        },
+        "repaired_policy": {
+          "accuracy": 60.0,
+          "total_requests": 10,
+          "correct": 6,
+          "incorrect": 4
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hello, I started a project that aims to prevent the creation of certain resources if they do not have certain Tags. Following this documentation \"\nhttps://aws.amazon.com/pt/blogs/mt/implement-aws-resource-tagging-strategy-using-aws-tag-policies-and-service-control-policies-scps/\n\" I successfully replicated the \"ec2:runinstance\" action using only one Tag, but when I added a second Tag to the policy, the \"ec2:runinstance\" action happens with the presence of only one of the two Tags I defined.\n\n\nWith a few more tests you can prevent the action by creating two SCP policies, one policy for each Tag, so only when the two Tags I defined are present the resource is created, the big problem now is that the maximum number of SCP policies that I can apply to the Organization is 5 per account, and in the project there would be a total of 6 Tags.\n\n\nWhat I need is to concatenate these two JSON policies into one that works, but all the SCP \"Conditions\" I've tried either block everything or release the action with the presence of just one Tag.\n\n\nIs there a condition that validates all Tags present and then denies the action, or is what I'm trying impossible at the moment?\n\n\nI tried with these other conditions, but without success, I didn't find where I could be going wrong.\n\n\n\n\nForAllValues:StringEquals\n\n\n\n\n\n\nStringEqualsIfExists\n\n\n\n\n\n\nStringNotEqualsIfExists\n\n\n\n\n\n\nStringNotEquals"
+    },
+    {
+      "file_number": "11",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 100.0,
+          "total_requests": 10,
+          "correct": 10,
+          "incorrect": 0
+        },
+        "repaired_policy": {
+          "accuracy": 100.0,
+          "total_requests": 10,
+          "correct": 10,
+          "incorrect": 0
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi All ,\nI want to restrict access to a particular s3 bucket for all the user who login through sso by assuming a particular iam role .\n\n\n\n\nBut this restricts access for user who login through other roles also. What am i doing wrong here?"
+    },
+    {
+      "file_number": "12",
+      "success": true,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        },
+        "repaired_policy": {
+          "accuracy": 100.0,
+          "total_requests": 10,
+          "correct": 10,
+          "incorrect": 0
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I want to create a resource policy for API Gateway that block all GET calls to \nmyapi1\n expect calls to \nmyapi1/status\n and \nmyapi1/v1/*\n sub-paths.\n\n\nBased on the documentation (\nhttps://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-resource-policies-examples.html#apigateway-resource-policies-source-vpc-example\n) I have created the following resource policy but it is not working:\n\n\n\n\n\n\nI have first one Allow everything and them one Deny all \"except\" \nmyapi1/status\n and \nmyap1/v1/*\nsub-paths (as doc suggest for the VPC example that is pretty similar).\nBut it blocks everything and a I get one \n401\n when I call \nmyapi1/status\n path for example.\nIn the condition I have tried \nStringNotLike\n , \nStringNotEquals\n and \nArnNotLike\n but has no effect and all the:\n\n\nmyapi1/status\nmyapi1/v1/*\n\n\n\nare still blocked.\n\n\nHow to achieve this in a resource policy?"
+    },
+    {
+      "file_number": "13",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I encountered a frustrating issue with AWS CodePipeline where I kept getting the error:\n\n\nInvalidStructureException: CodePipeline is not authorized to perform AssumeRole on role arn:aws:iam::[your account number]:role/CodePipelineServiceRole\nThis made it seem like there was an issue with the IAM trust policy or the attached permissions. However, after hours of debugging, I found out that the real culprit was a missing CloudWatch Logs permission in my pipeline's IAM role.\n\n\nThe policy needed to include:\n\n\nEdit\n\nSolution:\nEnsure your CodePipeline IAM Role has permissions for CloudWatch Logs if you're using custom logging.\nIf you encounter InvalidStructureException or not authorized to assume role, check if missing logging permissions are the root cause.\nHope this helps others avoid wasting time debugging misleading IAM errors!"
+    },
+    {
+      "file_number": "14",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 0.0,
+          "total_requests": 11,
+          "correct": 0,
+          "incorrect": 11
+        },
+        "repaired_policy": {
+          "accuracy": 0.0,
+          "total_requests": 11,
+          "correct": 0,
+          "incorrect": 11
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "it has been weeks already stiil cannot find the correct result\n\n\nI also have tried with the command which recommend\n--timeout-multiplier 5\n\n\nbut did not work out\nwhat I have done is under the link\n\nhttps://repost.aws/questions/QUfFmnIZhqQTa2qcwMpale-A/nucleus-idt-4-7-0-for-greengrass-v2-cloudcomponent-test-failed-failed-at-the-greengrass-deployment-is-completed-on-the-device-after-180-seconds\n\nhere is my user credential\n\nhope someone can help me out with the mass\nGreengrassV2IoTThingPolicy\n\nmy GreengrassV2TokenExchangeRole  role credential\n\nGreengrassV2TokenExchangeRoleAccess\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"iot:DescribeCertificate\",\n                \"logs:CreateLogGroup\",\n                \"logs:CreateLogStream\",\n                \"logs:PutLogEvents\",\n                \"logs:DescribeLogStreams\",\n                \"iot:Connect\",\n                \"iot:Publish\",\n                \"iot:Subscribe\",\n                \"iot:Receive\",\n                \"iot:ListThingPrincipals\",\n                \"iot:GetThingShadow\",\n                \"iot:UpdateThingShadow\",\n                \"s3:GetBucketLocation\",\n                \"s3:GetObject\",\n                \"s3:PutObject\",\n                \"s3:AbortMultipartUpload\",\n                \"s3:ListMultipartUploadParts\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\nIAM role must be configured with the following minimum trust policy:\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"Service\": [\n                    \"lambda.amazonaws.com\",\n                    \"sagemaker.amazonaws.com\",\n                    \"credentials.iot.amazonaws.com\"\n                ]\n            },\n            \"Action\": \"sts:AssumeRole\"\n        }\n    ]\n}"
+    },
+    {
+      "file_number": "15",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 20.0,
+          "total_requests": 10,
+          "correct": 2,
+          "incorrect": 8
+        },
+        "repaired_policy": {
+          "accuracy": 20.0,
+          "total_requests": 10,
+          "correct": 2,
+          "incorrect": 8
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I have a bucket which restricts access to it only through access policy. I see that it is not working as expected. Here is the bucket policy -\n\n\n\nThe access point has the following policy -\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"AWS\": \"arn:aws:iam:: xxxxxxxxxxxx:user/admin\"\n            },\n            \"Action\": \"s3:ListBucket\",\n            \"Resource\": \"arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint\"\n        }\n    ]\n}\n\n\n\nMy intent is to restrict the bucket only to the admin user.  When I list the objects in the bucket 'admin-only-accesspoint', it is working fine.\n\naws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile admin \n\nBut I am also able to do list objects with another user 'staff'.\n\naws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile staff \n\n\nJust wondering why the access is not restricted to admin user."
+    },
+    {
+      "file_number": "16",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 63.6,
+          "total_requests": 11,
+          "correct": 7,
+          "incorrect": 4
+        },
+        "repaired_policy": {
+          "accuracy": 63.6,
+          "total_requests": 11,
+          "correct": 7,
+          "incorrect": 4
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I have a maintenance window setup in System Manager that I'm trying to write output to a S3 bucket in same account. But nothing is showing up. Here's the policy I had in place. I'm assuming its not correct, so what do I need to have instead?"
+    },
+    {
+      "file_number": "17",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi there,\nI followed the \nguide\n to create a Custom Policy to allow only \nAWS-StartPortForwardingSessionToRemoteHost\n action to a bastion host.\n\n\nThis is the Policy I created and getting \nAccessDeniedExcepton\n\nHowever, if I set \nResource\n to \n*\n for \nssm:StartSession\n action I am able to start a session with \nStartPortForwardingSessionToRemoteHost\n. Can you please guide me about what I am missing? I literally followed the simple examples from the guide. Thanks"
+    },
+    {
+      "file_number": "18",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 76.9,
+          "total_requests": 13,
+          "correct": 10,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 76.9,
+          "total_requests": 13,
+          "correct": 10,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Config of Redshift Cluster:\n\n\n\n\nEnhanced VPC routing has enabled\n\n\nRedshift subnet in the same subnet as S3 vpc endpoint\n\n\n\n\nConfig of S3\n\n\n\n\nVPC endpoints created for S3\n\n\nRouting has configured to route traffic to the S3 vpc endpoints\n\n\n\n\nMy S3 policy:\n\n\n    \n\n\n\nWith this configuration Redshift Specturum cant accesss external tables\n\n\nSo my goal here. To restrict access to the S3 from outside but also give access to Redshift Spectrum to work with S3.\n\n\nFrom the documentation I see that:\n\nRedshift Spectrum on provisioned clusters can't access data stored in Amazon S3 buckets that use a bucket policy that restricts access to only specified VPC endpoints.\n\n\nAny ideas how I can achieve this ?"
+    },
+    {
+      "file_number": "19",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 18.2,
+          "total_requests": 11,
+          "correct": 2,
+          "incorrect": 9
+        },
+        "repaired_policy": {
+          "accuracy": 18.2,
+          "total_requests": 11,
+          "correct": 2,
+          "incorrect": 9
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Dear Team - Can anyone help me on best way to implement SCP to block the S3 public read access. It should not impact the existing one and only deny when someone trying to create the new bucket and add Policy/ACL for public access. I tried below but still users are able to create new bucket and can apply s3 policy for public read access."
+    },
+    {
+      "file_number": "20",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi,\n\n\nI have an EC2 instance running to which currently no IAM Instance Profile role is attached to it. I got one instance role created to which I'm trying to attach it to my existing EC2 instance. I can list and select that role in the dropdown option however when I submit the button for '\nUpdate IAM role\n' then I get this error as shown in the screenshot:-\n\nFailed to attach instance profile\nYou are not authorized to perform this operation. Encoded authorization failure message: 0v498g_npaKBtWgAS6pJbH.....................\n\n\nInline policy attached to the user performing this action:-"
+    },
+    {
+      "file_number": "21",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 25.0,
+          "total_requests": 12,
+          "correct": 3,
+          "incorrect": 9
+        },
+        "repaired_policy": {
+          "accuracy": 25.0,
+          "total_requests": 12,
+          "correct": 3,
+          "incorrect": 9
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi,\n\n\nWe are trying to setup a \nSCP\n  which will deny some \nDynamoDB\n actions based on the **IP Ranes ** of our Network, the way that IAM Users for example can't Scan or Query a DynamoDB table outside of our Network.\n\n\nIn this SCP we need to add a\nn exception\n to some AWS Services (Like: \nEC2\n or \nLambda\n) which can freely Query/Scan a DynamoDB table if they have the necessary permissions.\n\n\nWe tried with the following SCP and it worked fine for the first case \"IAM Users\" but failed for the Lambda case as we still recieving an AccessDenied Error trying to Query a DynamoDB table from a Lambda Function :\n\n\nDo you know how we can manage to add this exception for all AWS Services which need to perform any DynamoDB action without the need to use the ARN of specific IAM Role used by these service ?"
+    },
+    {
+      "file_number": "22",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        },
+        "repaired_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I am attempting to set up a dedicated user account for use by Terraform for provisioning cloud infrastructure in AWS. I have the following permission policy set up for the user that Terraform uses with the AWS CLI:\n\n\n\n\n\n\nBelow is the snippet of Terraform code that attempts to create an EC2 instance:\n\n\n# specify the AMI for the web server\ndata \"aws_ssm_parameter\" \"ubantu_linux\" {\n  name = \"ami-0b8b44ec9a8f90422\"\n}\n\n#####################################################################\n# INSTANCES\n#####################################################################\nresource \"aws_instance\" \"nginx\" {\n  count = var.aws_instance_count\n  ami                    = nonsensitive(data.aws_ssm_parameter.ubantu_linux.name)\n  instance_type          = var.aws_instance_type\n  subnet_id              = aws_subnet.public_subnets[(count.index % var.vpc_public_subnet_count)].id\n  vpc_security_group_ids = [aws_security_group.nginx_sg.id]\n  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name\n  depends_on             = [aws_iam_role_policy.allow_s3_all]\n\n}\n\n\n\nWhen attempting to test setting up an EC2 instance in us-east-2 region from Terraform using the \"terraform plan\" command, I get AccessDeniedException attempting to access the information associated with the AMI. Below is an example of a typical error message:\n\n\nError: describing SSM parameter (ami-0b8b44ec9a8f90422): AccessDeniedException: User: arn:aws:iam::891377101976:user/terraform_robot is not authorized to perform: ssm:GetParameter on resource: arn:aws:ssm:us-east-2:891377101976:parameter/ami-0b8b44ec9a8f90422 because no identity-based policy allows the ssm:GetParameter action\n\u2502       status code: 400, request id: b5e7b026-7b7c-4a57-b2d9-49885dfdbd75\n\u2502\n\u2502   with data.aws_ssm_parameter.amzn2_linux,\n\u2502   on instances.tf line 5, in data \"aws_ssm_parameter\" \"amzn2_linux\":\n\u2502    5: data \"aws_ssm_parameter\" \"amzn2_linux\" {\n\n\n\nWhat needs to be adjusted with the permissions policy to so that the user account Terraform is using has the necessary permissions?"
+    },
+    {
+      "file_number": "23",
+      "success": true,
+      "evaluation_results": {
+        "broken_policy": {
+          "error": "Validation failed: Traceback (most recent call last):\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py\", line 840, in <module>\n    call_translator(args)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/translator.py\", line 25, in call_translator\n    body = visit_policy_model(\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/backend.py\", line 36, in visit_policy_model\n    body += Policy('p0', obj, smt_lib, enc).smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 361, in smt\n    body += statement.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 290, in smt\n    d, a, b = condition.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 299, in smt\n    dtype, smt = ops[op](self.key, self.values, ('All' in self.op), self.smt_lib)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 222, in not_ip_address\n    dtype, body = ip_address(key, values, for_all, smt_lib) # use IpAddress\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 204, in ip_address\n    addr, prefix = bit_string(i)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/utilities.py\", line 93, in bit_string\n    addr = bin(int(IPv4Address(addr)))\n  File \"/usr/lib/python3.10/ipaddress.py\", line 1305, in __init__\n    self._ip = self._ip_int_from_string(addr_str)\n  File \"/usr/lib/python3.10/ipaddress.py\", line 1192, in _ip_int_from_string\n    raise AddressValueError(\"Expected 4 octets in %r\" % ip_str)\nipaddress.AddressValueError: Expected 4 octets in 'IP Range'\n"
+        },
+        "repaired_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi Team,\n\n\nI have added a resource policy to my API Gateway that restricts access to calls made only from a specific account, as well as the account where the API Gateway itself resides (to allow calls from the bastion host). Below is the policy I implemented:\n\n\n\n\n\n\n\nAfter applying and redeploying the API Gateway, I attempted to invoke it from the EC2 bastion in the \nstg_account_id\n and \napi_gw_account_id\n, which should have been permitted. However, I received the following error:\n\n\n\"Message\": \"User: anonymous is not authorized to perform: execute-api:Invoke on resource: arn:aws:execute-api:region:********3415:xsdxxxsdx/trn/POST/my-resource\"\n\n\nthe objective is to allow only one account to hit the API gw and the account where the API gw itself is in.\n\n\ni call the pi gw from the ec2 to test like this :\n\n\ncurl -X 'POST' \\\n  'https://xxxxxxx.execute-api.region.amazonaws.com/stg/my-resource' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"key1\": \"value1\"\n}'\n\n\n\nI changed the API GW policy to restrict by IP range instead of AWS accnts Ids, but still have the same error :\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": \"execute-api:Invoke\",\n      \"Resource\": \"arn:aws:execute-api:region:api_gw_account_id:xsdxxxsdx/*\",\n      \"Condition\": {\n        \"IpAddress\": {\n          \"aws:SourceIp\": [\n            \"x.x.x.x.x/yy\",\n            \"x2.x2.x2.x2/16\"\n          ]\n        }\n      }\n    }\n  ]\n}\n\n\n\n\nfor IP range should I use \nAWS_IAM\n also? at the API gw level\n\n\nCould someone help me troubleshoot this issue?"
+    },
+    {
+      "file_number": "24",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 66.7,
+          "total_requests": 12,
+          "correct": 8,
+          "incorrect": 4
+        },
+        "repaired_policy": {
+          "accuracy": 66.7,
+          "total_requests": 12,
+          "correct": 8,
+          "incorrect": 4
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi Guys,\n\n\nI have  lambda accessible via API that has an JWT authorizer on top of it. If I execute lambda without it, it works correctly. If I execute with it, the API throws error:\n{\"accountId\":\"123456789\",\"apiId\":\"a5osmfbrk7\",\"authorizer_claims_property\":\"-\",\"authorizer_error\":\"The IAM role configured on the authorizer or API Gateway doesn't have permissions to call the authorizer. Check the permissions and try again.\",\"authorizer_principalId\":\"-\",\"authorizer_property\":\"-\",\"awsEndpointRequestId\":\"-\",\"awsEndpointRequestId2\":\"-\",\"customDomain_basePathMatched\":\"-\",\"dataProcessed\":\"483\",\"domainName\":\"a5osmfbrk7.execute-api.eu-west-1.amazonaws.com\",\"domainPrefix\":\"a5osmfbrk7\",\"error_message\":\"Internal Server Error\",\"error_messageString\":\" \"Internal Server Error\"\",\"error_responseType\":\"AUTHORIZER_CONFIGURATION_ERROR\",\"extendedRequestId\":\"KAs8OhCbDoEEMdA=\",\"httpMethod\":\"GET\",\"identity_accountId\":\"-\",\"identity_caller\":\"-\",\"identity_cognitoAuthenticationProvider\":\"-\",\"identity_cognitoAuthenticationType\":\"-\",\"identity_cognitoIdentityId\":\"-\",\"identity_cognitoIdentityPoolId\":\"-\",\"identity_principalOrgId\":\"-\",\"identity_clientCert.clientCertPem\":\"-\",\"identity_clientCert.subjectDN\":\"-\",\"identity_clientCert.issuerDN\":\"-\",\"identity_clientCert.serialNumber\":\"-\",\"identity_clientCert.validity.notBefore\":\"-\",\"identity_clientCert.validity.notAfter\":\"-\",\"identity_sourceIp\":\"144.178.96.162\",\"identity_user\":\"-\",\"identity_userAgent\":\"python-requests/2.27.1\",\"identity_userArn\":\"-\",\"integration_error\":\"-\",\"integration_integrationStatus\":\"-\",\"integration_latency\":\"-\",\"integration_requestId\":\"-\",\"integration_status\":\"-\",\"integrationErrorMessage\":\"-\",\"integrationLatency\":\"-\",\"integrationStatus\":\"-\",\"path\":\"/default/\",\"protocol\":\"HTTP/1.1\",\"requestId\":\"KAs8OhCbDoEEMdA=\",\"requestTime\":\"21/Aug/2023:12:41:37 +0000\",\"requestTimeEpoch\":\"1692621697\",\"responseLatency\":\"30\",\"responseLength\":\"35\"routeKey\":\"GET /\",\"stage\":\"default\",\"status\":\"500\"}\n\n\nPolicy attached to lambda itself is:\n\n\n\nI have tried to grant the permissions automatically or manually. Same result.\n\n\nRegards"
+    },
+    {
+      "file_number": "25",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 100.0,
+          "total_requests": 10,
+          "correct": 10,
+          "incorrect": 0
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I am hosting a static website on s3 and using CloudFront (CDN) distribution domain name to access me website but have been receiving 'denied access' xml page instead. To save everyone time i have provided context and troubleshooting approaches i have already tried. Looking forward to everyone's solution and advice!\n\n\nContext:\n\n\n\n\nS3 settings\n :\n\n\nEncryption\n - SSE-S3 (server-side encryption)\n\n\nStatic website hosting\n - disabled\n\n\nPermission\n Block public access (ALL ON)\n\n\nBucket Policy (copied over from Cloudfront OAC policy)\n :\n\n\n\n\n\n\n\n\nCloudfront/Origin Settings\n\n\n\n\nOrigin Domain\n: selected s3 bucket housing the website (example: cloud-website.s3.ap-southeast-2amazon.com)\n\n\nOAC selected\n\n\nHTTP redirect to HTTPS protocol policy selected\n\n\n\n\nMy troubleshooting so far:\n\n\n\n\nConfirm i can access index.html url in s3 when block public access is OFF.\n\n\nTurned off Block public access on s3 but still getting denied access via CDN domain."
+    },
+    {
+      "file_number": "26",
+      "success": true,
+      "evaluation_results": {
+        "broken_policy": {
+          "error": "Validation failed: Traceback (most recent call last):\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py\", line 840, in <module>\n    call_translator(args)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/translator.py\", line 25, in call_translator\n    body = visit_policy_model(\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/backend.py\", line 36, in visit_policy_model\n    body += Policy('p0', obj, smt_lib, enc).smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 361, in smt\n    body += statement.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 290, in smt\n    d, a, b = condition.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 299, in smt\n    dtype, smt = ops[op](self.key, self.values, ('All' in self.op), self.smt_lib)\nKeyError: 'ForAnyValue:StringEquals'\n"
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Currently, on the latest CloudFormation documentaion, we do not have support for VPC Origin creation, we are relying on using Lambda backed custom resource to create this.\nWe are getting the following error message without any futher information stating what issue it might be (role/SCP or otherwise). We have tried the following mechanism:\n\n\n\n\nProviding cloudfront:* permission to the lambda IAM role (Same Access Denied Error)\n\n\nProviding ec2:* and cloudfront:* permissions to the lambda IAM role as we saw the aws-service-linked role creating ENIs and SGs (Same Access Denied Error)\n\n\nProviding \n:\n (Administrator privilege) persmissions to lambda IAM role (works but we really don't want to do this)\n\n\n\n\nIs there a better way to provide the minimum IAM policy access for this?\n\n\nBaseline policy used as per the boto3 API called:"
+    },
+    {
+      "file_number": "27",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Morning, I am looking to give a user access to the metrics tab of an S3 bucket.  He has the following policy;\n\nNow he can get to the S3 bucket with the URL in the console, but when the metrics tab is clicked, it does nothing.  The user wants to get the size and number of directories inside each of the top level folders.  I can probably do a custom metric, but just curious on why the metrics tab doesn't work and am I on the right track for those values."
+    },
+    {
+      "file_number": "28",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Details\n\n\nI am currently building an S3 environment that meets all of the following requirements.\n\n\nAccess is only possible from a specific IP address.\nAccess is only possible from a specific IAM user.\n\n\nI have built an S3 environment that meets the above requirements.\n\n\nHowever, I am unable to build an environment that uses the AWS Backup service to periodically obtain backups. Specifically, when allocating resources in a backup plan, the bucket I created is not displayed. The following are the steps I have tried to resolve the issue.\n\n\n1.Check the IAM policy\n\n\n2.Check the bucket policy\n\n\n3.Check that the region matches\n\n\n*Please check each policies that written end of sentence.\n\n\nIdeal state\n\n\nMeet the requirements of \"access is only possible from a specific IP address\" and \"access is only possible from a specific IAM user\" and also use AWS Backup to periodically obtain backups.\n\n\nI am sorry my bad english. Thanks.\n\n\n\uff1d\uff1d\uff1d\uff1d\uff1d\uff1d\uff1d\n\n\nIAM Policy\n\n\nI assigned \"AmazonS3FullAccess\" and \"AWSBackupFullAccess\". I also attached the following .json.\n\n\n\n\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:*\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}t\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"backup:*\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:ListBucket\",\n                \"s3:PutBucketAcl\",\n                \"s3:GetBucketLocation\",\n                \"s3:GetBucketVersioning\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"Action\": [\n                \"s3:PutObject\",\n                \"s3:GetObject\",\n                \"s3:DeleteObject\",\n                \"s3:GetBucketVersioning\"\n            ],\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ]\n        }\n    ]\n}\n\n\n\nBucket Policy\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Deny\",\n            \"Principal\": \"*\",\n            \"Action\": \"s3:*\",\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ],\n            \"Condition\": {\n                \"StringNotEquals\": {\n                    \"aws:username\": \"{created_iam_user_name}\"\n                }\n            }\n        },\n        {\n            \"Effect\": \"Deny\",\n            \"Principal\": \"*\",\n            \"Action\": \"s3:*\",\n            \"Resource\": [\n                \"arn:aws:s3:::{bucket_name}\",\n                \"arn:aws:s3:::{bucket_name}/*\"\n            ],\n            \"Condition\": {\n                \"NotIpAddress\": {\n                    \"aws:VpcSourceIp\": [\n                        \"124.215.101.111/32\",\n                        \"60.112.161.29/32\"\n                    ]\n                }\n            }\n        }\n    ]\n}"
+    },
+    {
+      "file_number": "29",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I'm trying to attach a trigger which will invoke a Lambda function when a dynamoDB table is updated. (Briefly, this is aggregating results from one table to another.)\n\n\nI get an error:\nInvalidParameterValueException: Cannot access stream arn:aws:dynamodb:[LOCATION]:[ACCOUNT]:table/[TABLE1]/stream/[DATETIME]. Please ensure the role can perform the GetRecords, GetShardIterator, DescribeStream, and ListStreams Actions on your stream in IAM.\n\n\nThis occurs both if I try to attach a trigger to the function and point at the table, and if I try to create a new (or attach an existing) function on the table.\n\n\nIn the attached role, I have added an in-line policy:"
+    },
+    {
+      "file_number": "30",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I'm trying to create a policy that will allow an EC2 instance access to a s3 bucket and prefix controlled via the Name tag on the EC2 instance. It feels like I should be able to create a policy similar to the below, but it isn't working. I get a 'PutObject operation: Access Denied' when I try and create an object.\n\n\nMy EC2 instance has a non-blank Name tag. If the ${aws:RequestTag/Name} portion from the Resource list, the EC2 instance can put files, but with the variable, the action fails. I'm trying to limit the s3 object prefix to include the value of the EC2 instance tag name\n\n\nThe policy I'm trying to use is:\n\n\n\n\n\nFrom my ec2 instance I've executing the following, where the instance has Name=inst_name defined in the AWS control panel:\n\n\naws s3 cp my_file s3://my-backups-sn/inst_name/my_file.txt\n\n\n\nAny guidance is gratefully accepted"
+    },
+    {
+      "file_number": "31",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        },
+        "repaired_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi re:Post,\nI am trying to export CloudWatch log group to my S3 bucket.\n\n\n\n\n\n\"Could not create export task.\nGetBucketAcl call on the given bucket failed. Please check if CloudWatch Logs has been granted permission to perform this operation.\"\n\n\nSo I went over to my S3 bucket and tried to add a bucket policy to let CloudWatch Logs access the bucket.  I made the policy via the AWS Policy Generator.\n\n\n\n\n\n\n\nI suspect there is something off with \"logs.us-east-2.amazonaws.com\" that's causing the \"Invalid principal in policy\" error when I try to save the policy.\nAny advice or help would be greatly appreciated !\nThank you for your time and help.\nBest Regards,\nDonald"
+    },
+    {
+      "file_number": "32",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi all,\n\n\nI have 2 accounts:\n\n\n\n\nMgmt (SSO enabled)\n\n\nDevelopment (RDS)\n\n\n\n\nI have \nSSO\n configured with a group (team_leaders) and permission set (TeamLeaderAccess).\n\n\nAre part of this group:\n\n\n\n\njohn\n\n\nmichael\n\n\n\n\nI've configured a RDS DB (Postgre) with IAM Auth and created these users into the database.\n\n\nNow I'm trying to configure the \nPermission Set\n with this policy:\n\n\n\n\n\n\nIn this case, John is able to get his SSO credentials and log-in into RDS \nas john AND michael\n (impersonation), because I have this \"/*\" in my policy.\n\n\nOn the other hand, if I replace that by:\n\n\n{\n    \"Action\": \"rds-db:connect\",\n    \"Effect\": \"Allow\",\n    \"Resource\": \"arn:aws:rds-db:us-east-1:<account>:dbuser:db-KF.../john\"\n}\n\n\n\nMichael won't be able to log in.\n\n\nHow to setup a policy per user?\n\n\nHas anyone faced this scenario and found a solution for it?\n\n\nThanks,"
+    },
+    {
+      "file_number": "33",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "When performing \naws route53resolver create-resolver-query-log-config --name test --destination-arn \"arn:aws:s3:::bucket-name\"\n  I receive \n[RSLVR-01605] Missing permission to log:*\n error message - however \nlog:*\n makes no sense since this points to S3.\n\n\nMy bucket policy looks like"
+    },
+    {
+      "file_number": "34",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 30.0,
+          "total_requests": 10,
+          "correct": 3,
+          "incorrect": 7
+        },
+        "repaired_policy": {
+          "accuracy": 30.0,
+          "total_requests": 10,
+          "correct": 3,
+          "incorrect": 7
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I need restriction access for the specific instance for the AWS new feature called secure EIC Connection.\n\n\n\n\nIf I am using this custom policy, The instance was successfully connected.\n\n\n\n\n{\n\"Version\": \"2012-10-17\",\n\"Statement\": [\n{\n\"Sid\": \"VisualEditor0\",\n\"Effect\": \"Allow\",\n\"Action\": [\n\"ec2-instance-connect:OpenTunnel\",\n\"ec2-instance-connect:SendSSHPublicKey\",\n\"ec2-instance-connect:SendSerialConsoleSSHPublicKey\"\n],\n\"Resource\": *\"\n}\n]\n}\n\n\n\n\nIf I am using specific arn in the custom policy\n\n\n\n\n\n\n\nI getting this error\n{\nC:\\Users\\Karthik>aws ec2-instance-connect ssh --instance-id i-0e610b0467e3c0a4c\n2023-09-27 19:56:35,644 - awscli.customizations.ec2instanceconnect.websocket - ERROR - {\"ErrorCode\":\"AccessDeniedException\",\"Message\":\"User: arn:aws:iam::742096941866:user/Kratos is not authorized to perform: ec2-instance-connect:OpenTunnel on resource: arn:aws:ec2:ap-south-1:744096931876:instance-connect-endpoint/eice-03cec2d7947718afb because no identity-based policy allows the ec2-instance-connect:OpenTunnel action\"}\n\n\nAWS_ERROR_HTTP_WEBSOCKET_UPGRADE_FAILURE: Failed to upgrade HTTP connection to Websocket.\nkex_exchange_identification: Connection closed by remote host\nConnection closed by UNKNOWN port 65535\n\n\n}\n\n\nPlease help me to resolve this issue."
+    },
+    {
+      "file_number": "35",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "SNS topic created \narn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\n and has the following access policy set:\n\n\n\n\n\n\nThe topic is subscribed to the following two queues.\n\n\n\n\nFirst queue: \narn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo\n with the following policy:\n\n\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Service\": \"sns.amazonaws.com\"\n      },\n      \"Action\": \"sqs:SendMessage\",\n      \"Resource\": \"arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo\",\n      \"Condition\": {\n        \"ArnEquals\": {\n          \"aws:SourceArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\"\n        }\n      }\n    }\n  ]\n}\n\n\n\n\n\nSecond queue: \narn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\n with the following policy:\n\n\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Service\": \"sns.amazonaws.com\"\n      },\n      \"Action\": \"sqs:SendMessage\",\n      \"Resource\": \"arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\",\n      \"Condition\": {\n        \"ArnEquals\": {\n          \"aws:SourceArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\"\n        }\n      }\n    }\n  ]\n}\n\n\n\nBut SNS is failing to send the messages to SQS queues with the following error:\n\n\n{\n    \"notification\": {\n        \"messageId\": \"1c2a9c20-977f-5552-a73b-c16037ebcac6\",\n        \"topicArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\",\n        \"timestamp\": \"2023-07-30 17:31:00.864\"\n    },\n    \"delivery\": {\n        \"deliveryId\": \"b69c20d5-88b6-4fc4-ba4c-b69e12585e40\",\n        \"destination\": \"arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\",\n        \"providerResponse\": \"{\\\"sqsRequestId\\\":\\\"1bda078a-2866-5392-a525-5aca88f2ce07\\\",\\\"errorCode\\\":\\\"AccessDenied\\\",\\\"errorMessage\\\":\\\"User: sns.amazonaws.com is not authorized to perform: sqs:sendmessage on resource: arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo because no resource-based policy allows the sqs:sendmessage action\\\"}\",\n        \"dwellTimeMs\": 16,\n        \"statusCode\": 403\n    },\n    \"status\": \"FAILURE\"\n}"
+    },
+    {
+      "file_number": "36",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        },
+        "repaired_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "We're using IoT as a communication channel for a web app. The clients are not registered things, but rather we authorize using tokens and custom lambda authorizer. Our clients that use the app only receive messages by subscribing to topics of interest.\n\n\nI have the lambda authorizer setup and everything works when I return the following policy:\n\n\n\n\n\n\nAn example topic that the client would subscribe to would be \n/resource/RESOURCE_ID/event\n.\n\n\nThe moment I try to restrict the policy more than having just \n*\n, it just stops working. For example even if I just add the \nresource/*\n to the end of the topic & topicfilter like this:\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Action\": \"iot:Connect\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"*\"\n      ]\n    },\n    {\n      \"Action\": \"iot:Subscribe\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:iot:eu-west-1:ACCOUNT_ID:topicfilter/resource/*\"\n      ]\n    },\n    {\n      \"Action\": [\n        \"iot:Receive\"\n      ],\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:iot:eu-west-1:ACCOUNT_ID:topic/resource/*\"\n      ]\n    }\n  ]\n}\n\n\n\nNow the client no longer receives any messages.\n\n\nI've logged the policies, the topics we publish to and subscribe to, and they're 100% correct and identical everywhere. I enabled IoT logging and I found this stuff from logs (removed the non-relevant properties):\n\n\n{\n  \"status\": \"Success\",\n  \"eventType\": \"Subscribe\",\n  \"topicName\": \"/resource/RESOURCE_ID/event\",\n  \"subscriptions\": [\n    {\n      \"topicName\": \"/resource/RESOURCE_ID/event\",\n      \"reasonCode\": 135\n    }\n  ]\n}\n\n\n\nLooking at AWS IoT docs, reason code 135 means \"Not authorized\". Changing the \n/resource/*\n to just \n/*\n makes it work."
+    },
+    {
+      "file_number": "37",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 36.4,
+          "total_requests": 11,
+          "correct": 4,
+          "incorrect": 7
+        },
+        "repaired_policy": {
+          "accuracy": 36.4,
+          "total_requests": 11,
+          "correct": 4,
+          "incorrect": 7
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi,\nI am very new to creating resource-based policy. I created one from the template which AWS EventBridge has provided. Is it possible to merge the two statements by using two condition blocks?"
+    },
+    {
+      "file_number": "38",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 26.7,
+          "total_requests": 15,
+          "correct": 4,
+          "incorrect": 11
+        },
+        "repaired_policy": {
+          "accuracy": 26.7,
+          "total_requests": 15,
+          "correct": 4,
+          "incorrect": 11
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Greetings,\n\n\nNeed to allow a specific SSO user access to an S3 bucket in another account.\n\n\n(Ideally only allowing access to the one bucket among many in the target account. )\n\n\nUsing \nthis documentation\n, I (think) I should be able to use this resource-based policy:\n\n\n\n\n\n\ndirectly on the bucket, adding the desired user's UserId that is available from the SSO console. However this error always presents when adding the JSON:\n\n\nInvalid Condition Key: The condition key identitystore:UserId does not exist. Use a valid condition key.\n\n\n\nDid some reading and found docs that describe this condition key as global (is it?), and so I have also tried:\n\n\n\"Condition\": {\n    \"StringEquals\": {\n        \"aws:identitystore:UserId\": [\n\n\n\nHowever the same error occurs:\n\n\nInvalid Global Condition Key: The condition key aws:identitystore:UserId does not exist. Use a valid condition key.\n\n\n\nThen again I see \ndocs\n that list the condition keys for S3 and \nidentitystore:UserId\n is not among them, though I thought as a global condition it would be usable ...\n\n\nI've also tried having the \nResource\n in the JSON include the region and account id. e.g. \n\"arn:aws:s3:us-east-1:111111111111:mybucket/*\"\n, however it seems to have no effect.\n\n\nAlso tried using this policy JSON when creating a new SSO permissions set as an inline policy (without \nPrincipal\n), though again similar issue.\n\n\nInvalid Service Condition Key: The condition key identitystore:UserId does not exist in the service identitystore. Use a valid condition key.\n\n\n\nA bit lost in the documentation - would really like to reference specific SSO users by their id - must be missing something simple here.\n\n\nMany thanks for any assistance."
+    },
+    {
+      "file_number": "39",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.9,
+          "total_requests": 11,
+          "correct": 10,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 72.7,
+          "total_requests": 11,
+          "correct": 8,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Hi all\n\n\nI'd love to deploy a custom AWS Config Conformance Pack using AWS Control Tower Customization Framework (CfCT). In the cfn yaml template, I used an S3 bucket to upload custom conformance pack file as follows:\n\n\nResources:\n  FedRAMPConformancePack:\n    Type: AWS::Config::ConformancePack\n    Properties:\n      ConformancePackName: !Ref ConformancePackName\n      DeliveryS3Bucket: !Ref DeliveryS3Bucket\n      TemplateS3Uri: !Ref TemplateS3Uri\n\n\n\nI encountered an error:\n\n\n\n\n\"Insufficient read permissions on S3 URI: s3://[buckent-name]/[filename].yaml.\n\n\n\n\nI used the following S3 bucket policy:\n\n\n\n\n\n\nWhat could go wrong?\n\n\nThanks."
+    },
+    {
+      "file_number": "40",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        },
+        "repaired_policy": {
+          "accuracy": 70.0,
+          "total_requests": 10,
+          "correct": 7,
+          "incorrect": 3
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "We're trying to lock things down on our S3 buckets, and I'm running into a weird error.\nWhen my policy looks like this:\n\n\n    ,\n    {\n        \"Effect\": \"Deny\",\n        \"Principal\": \"*\",\n        \"Action\": \"s3:*\",\n        \"Resource\": [\n            \"arn:aws:s3:::bucketname\",\n            \"arn:aws:s3:::bucketname/*\"\n        ],\n        \"Condition\": {\n            \"Bool\": {\n                \"aws:SecureTransport\": \"false\"\n            }\n        }\n    }\n\n\n\nI get an error saying:\n\n\nUser: arn:aws:iam::000:user/username is not authorized to perform: s3:ListBucket on resource: \"arn:aws:s3:::bucketname\" with an explicit deny in a resource-based policy\n\n\nIf I remove the Deny part it starts working again.\n\n\nWhat is the right way to do this?"
+    },
+    {
+      "file_number": "41",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        },
+        "repaired_policy": {
+          "accuracy": 50.0,
+          "total_requests": 10,
+          "correct": 5,
+          "incorrect": 5
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I'm getting the following error when using the Java AWS SDK 2.x from my ECS container.  Here is my error:\n\n\nsoftware.amazon.awssdk.services.s3.model.S3Exception: User: arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309 is not authorized to perform: s3:PutBucketCORS on resource: \"arn:aws:s3:::myapp-staging-2-pub\" because no VPC endpoint policy allows the s3:PutBucketCORS action (Service: S3, Status Code: 403, Request ID: 747ADD3QA29N29Q0, Extended Request ID: MmZZYUlsM/r5kFS+lNVFmUHqKIEbfORtXIlD1roMzCtBkmaBSB2AbC9DPN4lMo40bqDxJSu33Pw=) (SDK Attempt Count: 1)\n\n\n\nI'm using the default credential provider which should pick up the ECS credentials from the environment.  I've confirmed that the environment variable is set inside my docker container:\n\n\n wget -O - 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI\n\n\n\nAnd that the RoleARN is pointing to my expected role.\n\n\nMy code is this:\n\n\n        s3 = S3AsyncClient.builder().multipartEnabled(true).build();\n        transferManager = S3TransferManager.builder().s3Client(s3).build();\n        ....\n            s3.putBucketCors((r) ->\n                    r.bucket(bucket)\n                            .corsConfiguration((cors) ->\n                                    cors.corsRules((rule) ->\n                                            rule.allowedMethods(\"GET\", \"HEAD\")\n                                                    .allowedOrigins(String.format(\"https://*.%s\", domain))\n                                    )\n                            )\n            ).join();\n            s3.putBucketWebsite((r) ->\n                    r.bucket(bucket)\n                            .websiteConfiguration((www) -> www.indexDocument((doc) -> doc.suffix(\"index.html\")))\n            ).join();\n\n\n\nMy container's Task Role is set so I'm granting permissions to my container based on this role.  The policy attached to the role contains the following permissions:\n\n\n\n\n\n\nOriginally I didn't have the PutBucketCORS permission attached to the role.  I modified my policy and added it as you see above.  I even tested this new version in the policy simulator using the same names of resources and permissions in the error, and it said it passed.  I also turned off this policy in the simulator to see it fail so that I know this permission I added was being used to grant permission to PutBucketCORS.\n\n\nSo it seems like my ECS container isn't picking up the changes I made to the Role.  I also tried to stop and start the container to see if it would pick up the changes, but it still errored out with the error above.  So why isn't my container allowed to perform this operation now?"
+    },
+    {
+      "file_number": "42",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 45.5,
+          "total_requests": 11,
+          "correct": 5,
+          "incorrect": 6
+        },
+        "repaired_policy": {
+          "accuracy": 45.5,
+          "total_requests": 11,
+          "correct": 5,
+          "incorrect": 6
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "I currently have an Account A that is calling account B (my current account) and assuming a role that gives it permissions to perform operations on SQS such as encrypt and publish messages.\n\n\nI had to manually modify the SQS permissions to get it to work and allow root access to the current account that the assume role is in.\n\n\nThe issue is, this is overly permissive permissions and I do not want root account access to the SQS if I can avoid it.\n\n\nI'm wondering if I can add the policy to only accept the role that's being assumed, opposed to a root user credenetial. Is it possible to add a ROLE in place of the USER or will I need to create another user with the role that's being assumed for this to work?\n\n\nFor example, here's my policy"
+    },
+    {
+      "file_number": "43",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        },
+        "repaired_policy": {
+          "accuracy": 90.0,
+          "total_requests": 10,
+          "correct": 9,
+          "incorrect": 1
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "What I'm trying to do:\n\n\n\n\nFrom a GitHub Action, create/update a CloudFormation stack with a template\n\n\nUse the CloudFormation template to generate the needed resources for fleet provisioning with IoT Greengrass (\nhttps://docs.aws.amazon.com/greengrass/v2/developerguide/fleet-provisioning-setup.html\n):\n\n\n\n\ntoken exchange IAM role\n\n\npolicy for that role\n\n\nrole alias (got stuck here)\n\n\nnot there yet: a fleet provisioning template\n\n\n\n\n\n\n\n\nWhen the stack gets created, it hits \nCREATE_FAILED\n on the \nAWS::IoT::RoleAlias\n:\n\n\nResource handler returned message: \"Access denied for operation 'DescribeRoleAlias'.\" (RequestToken: *****, HandlerErrorCode: AccessDenied)\n\n\n\nI see the role alias in the IoT Core console, and I see the successful \nCreateRoleAlias\n call in CloudTrail, but something around the permissions of \nDescribeRoleAlias\n appears to be lacking.\n\n\nThe policy in use by the GitHub Action:\n\n\n\n\n\n\nThe CloudFormation template:\n\n\nAWSTemplateFormatVersion: \"2010-09-09\"\n\nResources:\n  MyGreengrassV2TokenExchangeRole:\n    Type: AWS::IAM::Role\n    Properties:\n      AssumeRolePolicyDocument:\n        Version: \"2012-10-17\"\n        Statement:\n          - Effect: Allow\n            Principal:\n              Service:\n                - credentials.iot.amazonaws.com\n            Action:\n              - sts:AssumeRole\n  MyGreengrassV2TokenExchangeRoleAccess:\n    Type: AWS::IAM::Policy\n    Properties:\n      PolicyName: MyGreengrassV2TokenExchangeRoleAccess\n      PolicyDocument:\n        Version: \"2012-10-17\"\n        Statement:\n          - Effect: Allow\n            Action:\n              - logs:CreateLogGroup\n              - logs:CreateLogStream\n              - logs:PutLogEvents\n              - logs:DescribeLogStreams\n              - s3:GetBucketLocation\n            Resource: \"*\"\n      Roles:\n        - !Ref MyGreengrassV2TokenExchangeRole\n  MyGreengrassCoreTokenExchangeRoleAlias:\n    Type: AWS::IoT::RoleAlias\n    Properties:\n      RoleArn: !GetAtt MyGreengrassV2TokenExchangeRole.Arn\n      RoleAlias: MyGreengrassCoreTokenExchangeRoleAlias\n\n\n\nAdditional notes:\n\n\n\n\nIs there some way for me to view more details about why \nDescribeRoleAlias\n is being denied?\n\n\nI get the same exact failure when I remove \niot:DescribeRoleAlias\n from the policy used by the GitHub Action; its presence doesn't seem to have any effect.\n\n\nIs this related to \niam:PassRole\n?\n\n\n\n\nWhat's missing?"
+    },
+    {
+      "file_number": "44",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 100.0,
+          "total_requests": 10,
+          "correct": 10,
+          "incorrect": 0
+        },
+        "repaired_policy": {
+          "accuracy": 80.0,
+          "total_requests": 10,
+          "correct": 8,
+          "incorrect": 2
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Export working from console, but when trying to export Elasticcache backup to s3 using boto3 (from lambda function) I am getting the following error:\n\n\n[ERROR] InvalidParameterValueException: An error occurred (InvalidParameterValue) when calling the CopySnapshot operation: Elasticache was unable to validate the authenticated user has access on the S3 bucket BACKUP_NAME.\n\n\n\nThe bucket ACL configured correctly according to this \nguide\n\n\nPython boto3:\n\n\nec_client = boto3.client('elasticache')\nresponse = ec_client.copy_snapshot(\n                SourceSnapshotName=source_snapshot_name,\n                TargetSnapshotName=target_snapshot_name,\n                TargetBucket=s3_bucket_name\n            )\n\n\n\nLambda role's permissions:\n\n\n\n\n\n\nBucket ACL:\n\n\nExternal account\nCanonical ID:\n540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353     Objects: List, Write  Bucket ACL: Read, Write"
+    },
+    {
+      "file_number": "45",
+      "success": false,
+      "evaluation_results": {
+        "broken_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        },
+        "repaired_policy": {
+          "accuracy": 40.0,
+          "total_requests": 10,
+          "correct": 4,
+          "incorrect": 6
+        }
+      },
+      "num_requests": 10,
+      "user_intent": "Let's say an organization has a policy that denies the CreateRole action for most users. However, this restriction hinders rapid development as it blocks users from using the console wizard's create role features for various AWS services.\n\n\nMy goal is to allow users to create IAM roles using the console wizard, but restrict them from creating roles with trust policies that include external AWS account numbers or IAM users/roles from different accounts. The trust policies should only allow resources within the current AWS account. (Any other restrictions I should consider?)\n\n\nI have come up with an IAM policy that uses the StringNotLike condition operator on the aws:PrincipalARN condition key. Here's the IAM policy I have in mind:\n\n\n\n\n\n\nAnd then I would add an SCP in AWS Organizations to only allow CreateRole (with the above restrictions) in development accounts.\n\n\nI am concerned that this approach might not cover all cases, especially when the trust policy includes an AWS IAM user ARN from a different account. Is this the best approach for achieving my goal, or is there a better way to restrict CreateRole action to trust policies containing only the current AWS account's resources?"
+    }
+  ],
+  "timestamp": "2025-08-19T17:56:40.626890"
+}

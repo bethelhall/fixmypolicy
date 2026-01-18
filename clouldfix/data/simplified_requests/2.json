@@ -1,0 +1,185 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "console_list_bucket_without_vpce",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user",
+        "Condition": {
+          "StringEquals": {
+            "aws:UserAgent": "console.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "console_get_bucket_acl_without_vpce",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "54.240.143.0/24"
+          }
+        }
+      },
+      {
+        "id": "vpce_put_object",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name/data/file.txt"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/ec2-application-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-1a2b3c4d"
+          }
+        }
+      },
+      {
+        "id": "vpce_list_bucket_versions",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucketVersions"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-1a2b3c4d"
+          }
+        }
+      },
+      {
+        "id": "console_put_bucket_policy_without_vpce",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:root",
+        "Condition": {
+          "StringLike": {
+            "aws:Referer": "https://console.aws.amazon.com/*"
+          }
+        }
+      },
+      {
+        "id": "cli_delete_object_without_vpce",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name/logs/old-log.txt"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/ops-user",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceIp": "203.0.113.45"
+          }
+        }
+      },
+      {
+        "id": "wrong_vpce_get_object",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name/config.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/lambda-function-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-9z8y7x6w"
+          }
+        }
+      },
+      {
+        "id": "console_get_bucket_versioning",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketVersioning"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user",
+        "Condition": {
+          "StringEquals": {
+            "aws:UserAgent": "S3Console/0.4"
+          }
+        }
+      },
+      {
+        "id": "vpce_delete_bucket",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeleteBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-1a2b3c4d"
+          }
+        }
+      },
+      {
+        "id": "sdk_create_multipart_upload_no_vpce",
+        "Effect": "deny",
+        "Action": [
+          "s3:CreateMultipartUpload"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket_name/large-file.zip"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/application-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceIp": "10.0.1.50"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "2",
+    "user_intent": "I want to limit S3 operation of a certain S3 bucket only through the VPC endpoints, so I changed the S3 bucket policy to the way like\n\n\nWhile after submitting this policy, I found myself not able to manage the S3 bucket attribute via AWS Management Console.  Every time I click on the bucket, the console just displays errors of \"Insufficient permissions to ...\" , even if I have enough IAM previlege to perform that operation.  Well, it makes perfect sense, but what if I still want to manage the bucket via AWS Management Console, how should the bucket policy to be set?",
+    "timestamp": "2025-08-19T17:30:40.099067"
+  }
+}

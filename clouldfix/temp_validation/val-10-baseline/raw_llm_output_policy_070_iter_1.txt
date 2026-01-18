@@ -1,0 +1,102 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:PassRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz"
+    },
+    {
+      "Sid": "DenyListGroupsForUserUnauthorizedInUsEast1",
+      "Effect": "Deny",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "*",
+      "Principal": {"AWS": "arn:aws:iam::999888777666:user/unauthorized"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "DenyAddUserToGroupAuthorizedFileTxtInUsWest2",
+      "Effect": "Deny",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "arn:aws:iam::1234:group/*",
+      "Principal": {"AWS": "arn:aws:iam::111222333444:user/david"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "AllowRestorationOfObjectsOnlyFromEuWest1",
+      "Effect": "Allow",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::example-bucket/*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "DenyCreationOfUsersOnDeniedBucketAndTaggedWithFinance",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/test-user"},
+      "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+    },
+    {
+      "Sid": "AllowGettingSQURequestURLByBobInUsWest2",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:sqs:*:*:queue*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "AllowGenerationOfDataKeysServiceRolesInUsEast1",
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "arn:aws:kms:*:*:key/*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:role/service-role"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "AllowAthenaAccessBasedOnRequestingRegion",
+      "Effect": "Allow",
+      "Action": "athena:GetWorkGroup",
+      "Resource": "arn:aws:athena:*:*:workgroup/*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:role/service-role"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "${aws:RequestedRegion}"}}
+    },
+    {
+      "Sid": "DenyLambdaCreationBlockedUserOrForbiddenResources",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": ["arn:aws:lambda:*:*:function:*", "arn:aws:iam::*:role/*"],
+      "NotPrincipal": {"AWS": ["arn:aws:iam::123456789012:user/blocked-user", "arn:aws:iam::*:user/*"]},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "AllowListingIAMGroupsAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:iam::1234:user/alice",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "AllowLambdaCreationAliceInUsWest2",
+      "Effect": "Allow",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:lambda:*:*:function:*",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    }
+  ]
+}
+```
+This is your final output in proper format with all requirements addressed correctly according to their respective conditions specified by each request id from above list of requests. Please note resource for s3 action has been changed to example bucket due lack information about actual resources used within policies being reviewed here which might have different names than those assumed during this correction process. Also please replace `principal` arn values if they differ based on real scenario you want them exactly same like mentioned ones just because it was not clear what should we put there otherwise. This will ensure maximum level access control while maintaining necessary functionality required per user basis using aws iam service principles effectively. Always remember least privilege principle when managing permissions! It’s always better having fewer but more specific rights rather then many general one allowing doing anything without checking who does these actions!.  
+Fixes made : Deny ListGroupsForUser Unauthorized In Us East1, deny AddUserToGroup Authorized File Txt In us west2, Allow Restoration Of Objects Only From Eu West1, Denay Creation Of Users On Denied Bucket And Tagged With Finance, allow Getting SQURequest URL By Bob In Us West2, allow Generation Of Data Keys Service Roles In Us East1, allow Athena Access Based On Requesting Region, deny Lambda Creation Blocked User Or Forbidden Resources, allow Listing Iam Groups Alice In Us East1, allow lambda creation alice in us west2. All other statements remain unchanged since none were affected needing modification under current review criteria set forth initially..

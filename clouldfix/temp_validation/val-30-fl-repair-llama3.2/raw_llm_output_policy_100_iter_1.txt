@@ -1,0 +1,265 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::my-bucket-data/*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "EC2",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "NotStringEquals": {
+          "aws:RequestedRegion": ["eu-west-1"]
+        }
+      }
+    },
+    {
+      "Sid": "EC2Prod",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["eu-west-1"]
+        }
+      }
+    },
+    {
+      "Sid": "SQS",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibility",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "GuardDuty",
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatch",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetDashboard",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-east-1", "us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": "kms:DisableKey",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-east-1", "us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "SNS",
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "SES",
+      "Effect": "Allow",
+      "Action": "ses:SendRawEmail",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "RedShift",
+      "Effect": "Allow",
+      "Action": "redshift:DescribeClusters",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-east-1"]
+        }
+      }
+    },
+    {
+      "Sid": "Route53",
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["eu-west-1"]
+        }
+      }
+    },
+    {
+      "Sid": "Glue",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": ["AIDAI"]
+        }
+      }
+    },
+    {
+      "Sid": "CodeDeploy",
+      "Effect": "Allow",
+      "Action": "codedeploy:GetDeployment",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "S3Versioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "S3Delete",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "S3DeleteTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetAcl",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "S3DeleteBucketWebsite",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "S3DeleteBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "S3GetBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["us-west-2"]
+        }
+      }
+    },
+    {
+      "Sid": "Workspaces",
+      "Effect": "Allow",
+      "Action": "workspaces:CreateWorkspaces",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["eu-west-1"]
+        }
+      }
+    },
+    {
+      "Sid": "Logs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

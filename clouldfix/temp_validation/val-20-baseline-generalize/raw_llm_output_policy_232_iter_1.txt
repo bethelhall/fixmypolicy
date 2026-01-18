@@ -1,0 +1,127 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "sms-voice:SendTextMessage",
+        "sms-voice:SendVoiceMessage",
+        "sms-voice:SendMediaMessage",
+        "sms-voice:DescribeSenderIds"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "glue:BatchGetJobs"
+      ],
+      "Resource": [
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO0",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO1",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO2",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO3",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO4",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO5",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO6",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO7",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO8",
+        "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO9"
+      ],
+      "Sid": "allow_f128d077"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Sid": "allow_7132eef0"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "config:GetComplianceDetailsByConfigRule"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Sid": "allow_6c75d97d"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "forbidden-arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_47ae3384"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_7fbdffce"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "deny_55d96b9b"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "authorized/arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO/file.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "deny_6e7c5a0d"
+    }
+  ]
+}

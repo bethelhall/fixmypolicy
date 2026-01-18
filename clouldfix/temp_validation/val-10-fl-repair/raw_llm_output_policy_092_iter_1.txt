@@ -1,0 +1,132 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "ServerABC"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListAliases",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-23",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-17/table-8",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-16",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "not-ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:CreateTable",
+      "Resource": "arn:aws:s3:::bucket-32/file-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "not-ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:s3:::bucket-15/file-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "not-ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:StartLogging",
+      "Resource": "arn:aws:s3:::bucket-25/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "secretsmanager:ResourceTag/ServerName": "not-ServerABC"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

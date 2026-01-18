@@ -1,0 +1,124 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::652711504416:root"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::220392649066:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:SetIdentityDkimEnabled",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:s3:::myfirstbucket/prefix/AWSLogs/1111111111/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::652711504416:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::652711504416:root",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::different-myfirstbucket/file.txt",
+      "Principal": "arn:aws:iam::652711504416:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:s3:::myfirstbucket-forbidden/file.txt",
+      "Principal": "arn:aws:iam::652711504416:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

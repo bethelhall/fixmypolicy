@@ -1,0 +1,97 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DynamoDBCreationAllowedFromSpecificRoleAndInUsWest2Only",
+      "Effect": "Allow",
+      "Action": "dynamodb:CreateTable",
+      "Resource": "arn:aws:s3:::bucket-47/file-1.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "GlueJobRetrievalForBobInEuWest1Only",
+      "Effect": "Allow",
+      "Action": "glue:BatchGetJobs",
+      "Resource": "arn:aws:s3:::bucket-12/file-8.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2DeletionByAliceInUSWESTonly",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-1/table-6",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "IAMUsersNotCreatedOutsideOfDeniedBucketWithConditions",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "GuardDutyDetectorsCanBeCreatedWithinServiceRolesOnDifferentRegions",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:s3:::bucket-21/file-9.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "PreventAccessToAdminBucketsUnlessSameIPandEUregion",
+      "Effect": "Deny",
+      "Action": [
+        "glue:GetTable",
+        "athena:StartQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryExecution"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

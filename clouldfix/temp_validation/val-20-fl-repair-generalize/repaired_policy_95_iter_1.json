@@ -1,0 +1,139 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "eks:ListFargateProfiles",
+        "eks:DescribeNodegroup",
+        "eks:ListNodegroups",
+        "eks:ListUpdates",
+        "eks:AccessKubernetesApi",
+        "eks:ListAddons",
+        "eks:DescribeCluster",
+        "eks:DescribeAddonVersions",
+        "eks:ListClusters",
+        "eks:ListIdentityProviderConfigs",
+        "iam:ListRoles"
+      ],
+      "Resource": "*",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ssm:GetParameter",
+      "Resource": "arn:aws:ssm:*:accountnumber:parameter/*",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListKeys",
+      "Resource": "arn:aws:ssm:*:accountnumber:parameter/file-14-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:StopNotebookInstance",
+      "Resource": "arn:aws:ssm:*:accountnumber:parameter/file-16-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeNotebookInstance",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-13",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-0",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloud9:DescribeEnvironments",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-50",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListAliases",
+      "Resource": "arn:aws:s3:::bucket-29/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:ssm:*:accountnumber:parameter/*-specific",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:PutRolePolicy",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "authorized/arn:aws:ssm:*:accountnumber:parameter/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:ssm:*:accountnumber:parameter/*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

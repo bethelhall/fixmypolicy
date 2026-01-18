@@ -1,0 +1,217 @@
+
+        {
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "SNS:Publish",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "not-myOrgId"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteKeyPair",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:DeleteTopic",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpointConfig",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "not-myOrgId"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateRole",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListResourceTags",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "not-myOrgId"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListUsers",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

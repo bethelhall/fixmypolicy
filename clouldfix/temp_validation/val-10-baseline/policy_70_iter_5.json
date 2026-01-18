@@ -1,0 +1,137 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:PassRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz"
+    },
+    {
+      "Sid": "DenyListGroupsForUserUnauthorizedInUsEast1",
+      "Effect": "Deny",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:iam::1234:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAddUserToGroupAuthorizedFileTxtInUsWest2",
+      "Effect": "Deny",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "arn:aws:iam::1234:group/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRestorationOfObjectsOnlyFromEuWest1",
+      "Effect": "Allow",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::example-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreationOfUsersOnDeniedBucketAndTaggedWithFinance",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGettingSQURequestURLByBobInUsWest2",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:sqs:*:*:queue*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGenerationOfDataKeysServiceRolesInUsEast1",
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "arn:aws:kms:*:*:key/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaAccessBasedOnRequestingRegion",
+      "Effect": "Allow",
+      "Action": "athena:GetWorkGroup",
+      "Resource": "arn:aws:athena:*:*:workgroup/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "${aws:RequestedRegion}"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationBlockedUserOrForbiddenResources",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": [
+        "arn:aws:lambda:*:*:function:*",
+        "arn:aws:iam::*:role/*"
+      ],
+      "NotPrincipal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::*:user/*"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListingIAMGroupsAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:iam::1234:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaCreationAliceInUsWest2",
+      "Effect": "Allow",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:lambda:*:*:function:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

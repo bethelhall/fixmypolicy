@@ -1,0 +1,72 @@
+[
+  {
+    "Sid": "AllowIAMActionsOnSpecificResourcesAndConditions",
+    "Effect": "Allow",
+    "Action": [
+      "iam:GetAccountSummary",
+      "kinesis:DescribeStream",
+      "guardduty:CreateDetector",
+      "kms:RevokeGrant",
+      "sts:AssumeRole"
+    ],
+    "Resource": "*",
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    },
+    "Principal": "arn:aws:iam::123456789012:user/alice"
+  },
+  {
+    "Sid": "DenyIAMDeletionOfRolesInCertainBuckets",
+    "Effect": "Deny",
+    "Action": "iam:DeleteRole",
+    "Resource": [
+      "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "arn:aws:s3:::denied-bucket-0/file-0.txt"
+    ],
+    "Condition": {
+      "NumericLessThan": {
+        "s3:max-keys": "10"
+      }
+    },
+    "Principal": "arn:aws:iam::123456789012:user/test-user"
+  },
+  {
+    "Sid": "DenyCrossAccountAccessToKMSGrants",
+    "Effect": "Deny",
+    "Action": "kms:RevokeGrant",
+    "Resource": "arn:aws:s3:::bucket-28/file-4.txt",
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    },
+    "Principal": "arn:aws:iam::987654321098:user/bob"
+  },
+  {
+    "Sid": "DenyUnauthorizedListingOfGlueTables",
+    "Effect": "Deny",
+    "Action": "glue:GetTable",
+    "Resource": "arn:aws:glue:*:123456789012:catalog/*",
+    "Condition": {
+      "StringNotLike": {
+        "aws:PrincipalArn": "arn:aws:iam::123456789012:*"
+      }
+    }
+  },
+  {
+    "Sid": "AllowAthenaQueriesAgainstSpecifiedWorkgroups",
+    "Effect": "Allow",
+    "Action": "athena:StartQueryExecution",
+    "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-64",
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-west-2"
+      }
+    },
+    "Principal": "arn:aws:iam::123456789012:user/alice"
+  }
+]

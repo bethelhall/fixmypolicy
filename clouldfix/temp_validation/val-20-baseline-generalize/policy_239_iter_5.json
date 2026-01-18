@@ -1,0 +1,135 @@
+{
+  "Id": "key-consolepolicy-3",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow attachment of persistent resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Allow workspace creation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "workspaces:CreateWorkspaces"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-0",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-1",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-2",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-3",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-4",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-5",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-6",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-7",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-8",
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-9"
+      ]
+    },
+    {
+      "Sid": "Deny SNS publish",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS delete instance",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SES subscribe",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+      },
+      "Action": "ses:Subscribe",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS receive message",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    }
+  ]
+}

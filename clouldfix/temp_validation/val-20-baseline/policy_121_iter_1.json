@@ -1,0 +1,297 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessFromAPIGateway",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*"
+    },
+    {
+      "Sid": "AllowKinesisCreateStream",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "kinesis:CreateStream",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketWebsite",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLocation",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObject",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-bucket/file-42-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamDeleteUser",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::my-bucket/file-3-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIamDeleteUser",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsCreateKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:s3:::my-bucket/file-12-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDbPutItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::my-bucket-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqsGetQueueAttributes",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:s3:::my-bucket/file-14-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketLifecycle",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::different-my-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigDeleteConfigRule",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::my-bucket/file-29-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::my-bucket/file-34-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamListRoles",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "iam:ListRoles",
+      "Resource": "arn:aws:s3:::my-bucket/file-41-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreateNotebookInstance",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sagemaker:CreateNotebookInstance",
+      "Resource": "arn:aws:s3:::my-bucket/file-4-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObjectTagging",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudtrailDeleteTrail",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:s3:::my-bucket/file-20-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaGetQueryExecution",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "athena:GetQueryExecution",
+      "Resource": "arn:aws:s3:::my-bucket/file-39-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDbDeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLifecycle",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamUpdateAccessKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "iam:UpdateAccessKey",
+      "Resource": "arn:aws:s3:::my-bucket/file-12-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

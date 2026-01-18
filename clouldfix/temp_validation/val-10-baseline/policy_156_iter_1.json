@@ -1,0 +1,117 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::test-bucket-mis6389/evdata/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:DeleteAlias",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-6-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SendMessageBatch",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-26-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:CreateRepository",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-0-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codepipeline:ListPipelines",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-30-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::different-test-bucket-mis6389/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "kms:DeleteAlias",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-30-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::test-bucket-mis6389/evdata/file-22-16.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:CreateSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketPolicy",
+        "kms:Encrypt",
+        "s3:PutBucketTagging",
+        "rds:DeleteDBInstance",
+        "cloudtrail:DeleteTrail",
+        "kms:PutKeyPolicy",
+        "iam:CreateGroup",
+        "autoscaling:DeleteAutoScalingGroup",
+        "glue:GetCrawler",
+        "ec2:ImportKeyPair",
+        "elasticbeanstalk:DescribeApplications",
+        "sqs:ChangeMessageVisibility",
+        "s3:PutObjectAcl",
+        "ec2:DeleteSecurityGroup",
+        "glue:GetCrawlers",
+        "iam:DeleteAccessKey"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::123456789012:role/admin-role",
+          "arn:aws:iam::123456789012:user/charlie",
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "us-east-1",
+            "eu-west-1"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "dynamodb:PutItem",
+        "rds:DeleteDBInstance",
+        "sns:Subscribe",
+        "lambda:CreateFunction",
+        "dynamodb:DeleteItem",
+        "sns:Publish",
+        "lambda:InvokeFunction",
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-3/file-3.txt",
+        "arn:aws:s3:::denied-bucket-5/file-5.txt",
+        "arn:aws:s3:::denied-bucket-6/file-6.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-4/file-4.txt",
+        "arn:aws:s3:::denied-bucket-7/file-7.txt",
+        "arn:aws:s3:::denied-bucket-8/file-8.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:role/developer-role",
+          "arn:aws:iam::111222333444:role/admin-role",
+          "arn:aws:iam::987654321098:user/charlie",
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2"
+          ]
+        },
+        "StringLike": {
+          "aws:userid": [
+            "AIDAI"
+          ]
+        },
+        "NumericLessThan": {
+          "s3:max-keys": [
+            10
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow Get Object from Elastic Beanstalk S3 Bucket",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "ap-southeast-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow List Buckets for Pinoy Agri Site Role",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::4177xxxxxxxx:role/PinoyAgriSite-Role"
+      },
+      "Action": [
+        "s3:ListBucket",
+        "s3:ListBucketVersions",
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/resources/environments/*",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/S3-Uploads-Media/*"
+      ]
+    },
+    {
+      "Sid": "Deny Delete Bucket",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx"
+    }
+  ]
+}

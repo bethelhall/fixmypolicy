@@ -1,0 +1,74 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "*",
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": ["ec2:AttachVolume"],
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "not-ACCOUNT_ID"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": ["redshift:DescribeClusters"],
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "not-ACCOUNT_ID"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": ["sqs:UntagQueue"],
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "not-ACCOUNT_ID"
+        }
+      }
+    }
+  ]
+}

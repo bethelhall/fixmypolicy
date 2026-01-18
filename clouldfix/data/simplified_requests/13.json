@@ -1,0 +1,135 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_codepipeline_create_log_group",
+        "Effect": "allow",
+        "Action": [
+          "logs:CreateLogGroup"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codepipeline/MyPipeline"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_codepipeline_put_log_events",
+        "Effect": "allow",
+        "Action": [
+          "logs:PutLogEvents"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codepipeline/MyPipeline:log-stream:2024-01-15"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_wrong_region_log_access",
+        "Effect": "deny",
+        "Action": [
+          "logs:CreateLogStream"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-west-2:123456789012:log-group:/aws/codepipeline/MyPipeline"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_describe_log_groups_missing",
+        "Effect": "deny",
+        "Action": [
+          "logs:DescribeLogGroups"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_different_pipeline_name",
+        "Effect": "deny",
+        "Action": [
+          "logs:CreateLogStream"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codepipeline/DifferentPipeline"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_codebuild_log_group_access",
+        "Effect": "deny",
+        "Action": [
+          "logs:CreateLogGroup"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codebuild/MyBuildProject"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_wildcard_log_stream_creation",
+        "Effect": "allow",
+        "Action": [
+          "logs:CreateLogStream"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codepipeline/MyPipeline:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_assume_role_action",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_filter_log_events",
+        "Effect": "deny",
+        "Action": [
+          "logs:FilterLogEvents"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/codepipeline/MyPipeline:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      },
+      {
+        "id": "test_cross_account_log_access",
+        "Effect": "deny",
+        "Action": [
+          "logs:PutLogEvents"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:987654321098:log-group:/aws/codepipeline/MyPipeline:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/CodePipelineServiceRole"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "13",
+    "user_intent": "I encountered a frustrating issue with AWS CodePipeline where I kept getting the error:\n\n\nInvalidStructureException: CodePipeline is not authorized to perform AssumeRole on role arn:aws:iam::[your account number]:role/CodePipelineServiceRole\nThis made it seem like there was an issue with the IAM trust policy or the attached permissions. However, after hours of debugging, I found out that the real culprit was a missing CloudWatch Logs permission in my pipeline's IAM role.\n\n\nThe policy needed to include:\n\n\nEdit\n\nSolution:\nEnsure your CodePipeline IAM Role has permissions for CloudWatch Logs if you're using custom logging.\nIf you encounter InvalidStructureException or not authorized to assume role, check if missing logging permissions are the root cause.\nHope this helps others avoid wasting time debugging misleading IAM errors!",
+    "timestamp": "2025-08-19T17:37:52.399628"
+  }
+}

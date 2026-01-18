@@ -1,0 +1,165 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSLogDeliveryAclCheck",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::qa-nlb-lo",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "AWSLogDeliveryWrite",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no",
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC3EAD09",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no",
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "Allow17484715",
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-23-14.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "Deny7990E030",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::different-qa-nlb-lo/file.txt",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no",
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowF8C81808",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-49-16.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "DenyA5AD0D23",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::qa-nlb-lo-forbidden/file.txt",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "Allow162BD4F9",
+      "Effect": "Allow",
+      "Action": "glue:GetPartitions",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-7-9.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowF1F4892C",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-5-1.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "Allow99503C78",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawler",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-12-16.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "DenyA5469473",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "account-no",
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        },
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:elasticloadbalancing:ap-south-1:account-no:*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDF89ED89",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:s3:::qa-nlb-lo/file-0-17.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    }
+  ]
+}

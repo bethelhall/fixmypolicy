@@ -1,0 +1,159 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_sso_user_assume_role_cross_account",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::2XXXXXXXX:role/Role"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_PowerUserAccess_1234567890abcdef/user@example.com",
+        "Condition": {
+          "StringEquals": {
+            "identitystore:UserId": "d-1234567890"
+          }
+        }
+      },
+      {
+        "id": "test_s3_bucket_access_cross_account",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::target-account-bucket/*",
+          "arn:aws:s3:::target-account-bucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_S3ReadOnlyAccess_1234567890abcdef/user@example.com"
+      },
+      {
+        "id": "test_assume_role_for_s3_access",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::2XXXXXXXX:role/S3CrossAccountAccessRole"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_CustomPermissionSet_1234567890abcdef/john.doe@company.com"
+      },
+      {
+        "id": "test_s3_put_object_cross_account",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cross-account-bucket/uploads/*"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_DataEngineer_1234567890abcdef/jane.smith@company.com",
+        "Condition": {
+          "StringLike": {
+            "s3:x-amz-acl": "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        "id": "test_iam_user_assume_role",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::2XXXXXXXX:role/Role"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/legacy-iam-user"
+      },
+      {
+        "id": "test_sso_assume_different_role",
+        "Effect": "allow",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::987654321098:role/DifferentRole"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_Administrator_1234567890abcdef/admin@company.com"
+      },
+      {
+        "id": "test_s3_delete_object_cross_account",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::shared-bucket/temp/*"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_Developer_1234567890abcdef/developer@company.com"
+      },
+      {
+        "id": "test_assume_role_with_session_tags",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::2XXXXXXXX:role/Role"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_SecurityAuditor_1234567890abcdef/auditor@company.com",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalTag/Department": "Security"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_bucket_policy",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetBucketPolicy",
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::compliance-bucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSReservedSSO_ReadOnlyAccess_1234567890abcdef/viewer@company.com"
+      },
+      {
+        "id": "test_federated_user_assume_role",
+        "Effect": "allow",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::555555555555:role/FederatedAccessRole"
+        ],
+        "Principal": "arn:aws:sts::123456789012:federated-user/external-contractor",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "203.0.113.0/24"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 26.7,
+      "total_requests": 15,
+      "correct": 4,
+      "incorrect": 11
+    },
+    "repaired_policy": {
+      "accuracy": 26.7,
+      "total_requests": 15,
+      "correct": 4,
+      "incorrect": 11
+    }
+  },
+  "metadata": {
+    "file_number": "38",
+    "user_intent": "Greetings,\n\n\nNeed to allow a specific SSO user access to an S3 bucket in another account.\n\n\n(Ideally only allowing access to the one bucket among many in the target account. )\n\n\nUsing \nthis documentation\n, I (think) I should be able to use this resource-based policy:\n\n\n\n\n\n\ndirectly on the bucket, adding the desired user's UserId that is available from the SSO console. However this error always presents when adding the JSON:\n\n\nInvalid Condition Key: The condition key identitystore:UserId does not exist. Use a valid condition key.\n\n\n\nDid some reading and found docs that describe this condition key as global (is it?), and so I have also tried:\n\n\n\"Condition\": {\n    \"StringEquals\": {\n        \"aws:identitystore:UserId\": [\n\n\n\nHowever the same error occurs:\n\n\nInvalid Global Condition Key: The condition key aws:identitystore:UserId does not exist. Use a valid condition key.\n\n\n\nThen again I see \ndocs\n that list the condition keys for S3 and \nidentitystore:UserId\n is not among them, though I thought as a global condition it would be usable ...\n\n\nI've also tried having the \nResource\n in the JSON include the region and account id. e.g. \n\"arn:aws:s3:us-east-1:111111111111:mybucket/*\"\n, however it seems to have no effect.\n\n\nAlso tried using this policy JSON when creating a new SSO permissions set as an inline policy (without \nPrincipal\n), though again similar issue.\n\n\nInvalid Service Condition Key: The condition key identitystore:UserId does not exist in the service identitystore. Use a valid condition key.\n\n\n\nA bit lost in the documentation - would really like to reference specific SSO users by their id - must be missing something simple here.\n\n\nMany thanks for any assistance.",
+    "timestamp": "2025-08-19T17:52:33.223093"
+  }
+}

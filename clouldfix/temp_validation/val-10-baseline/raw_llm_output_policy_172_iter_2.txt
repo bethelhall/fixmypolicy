@@ -1,0 +1,194 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowViewAccountInfo",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountPasswordPolicy",
+        "iam:GetAccountSummary"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowManageOwnPasswords",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ChangePassword",
+        "iam:GetUser",
+        "iam:UpdateLoginProfile",
+        "iam:GetLoginProfile"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSigningCertificates",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteSigningCertificate",
+        "iam:ListSigningCertificates",
+        "iam:UpdateSigningCertificate",
+        "iam:UploadSigningCertificate"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSSHPublicKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetSSHPublicKey",
+        "iam:ListSSHPublicKeys"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnGitCredentials",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceSpecificCredential",
+        "iam:DeleteServiceSpecificCredential",
+        "iam:ListServiceSpecificCredentials",
+        "iam:ResetServiceSpecificCredential",
+        "iam:UpdateServiceSpecificCredential"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "DenyIAMActionsOnResourcesWithCertainARNPatterns",
+      "Effect": "Deny",
+      "Action": [
+        "iam:ListAttachedGroupPolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:DeleteRole"
+      ],
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/Project": "MyProject"
+        },
+        "ArnNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::123456789012:root",
+            "arn:aws:iam::123456789012:user/alice"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountDeletionOfUsersAndRolesInCertainRegions",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "ArnNotLike": {
+          "aws:PrincipalARN": [
+            "arn:aws:iam::123456789012:root",
+            "arn:aws:iam::123456789012:user/alice"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedListingObjectsInBucket",
+      "Effect": "Deny",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::bucket-name",
+      "Condition": {
+        "StringNotLike": {
+          "aws:PrincipalTag/Project": "MyProject"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudTrailActionsForAlice",
+      "Effect": "Allow",
+      "Action": [
+        "cloudtrail:GetTrailStatus"
+      ],
+      "Resource": "arn:aws:s3:::bucket-3/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyDeletionOfAuthorizedRoles",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRole",
+      "Resource": "authorized/arn:aws:iam::*:user/${aws:username}/file.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "AllowAthenaWorkgroupStatusCheck",
+      "Effect": "Allow",
+      "Action": "athena:GetQueryExecution",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-12",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowDynamoDBgetItemPermission",
+      "Effect": "Allow",
+      "Action": "dynamodb:GetItem",
+      "Resource": "arn:aws:s3:::bucket-4/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowPuttingFilesToBobBuckets",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::bucket-44/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyDeletionOfNonAdminRoles",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:iam::*:user/${aws:username}-forbidden-resource",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGettingGroupsFromDifferentAccounts",
+      "Effect": "Deny",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "AllowUpdatingProfilesOnlyWithinEUWest1",
+      "Effect": "Allow",
+      "Action": "iam:UpdateLoginProfile",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-47",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCheckingFileExistenceWithoutTags",
+      "Effect": "Allow",
+      "Action": "s3:HeadObject",
+      "Resource": "arn:aws:s3:::bucket-39/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}
+```  
+This is your repaired json policy based on requirements you have shared with me above. Please replace it in its entirety where necessary. I am unable to make changes directly within this environment due to lack of permissions but can provide corrections for review elsewhere then copy paste here when ready! Thank you very much!!!

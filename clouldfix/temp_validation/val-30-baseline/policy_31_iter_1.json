@@ -1,0 +1,83 @@
+{
+  "Version": "2012-10-17",
+  "Id": "Policy123456789012",
+  "Statement": [
+    {
+      "Sid": "awssnowpipebucket_publish",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "SNS:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "allow_getcrawler",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawler",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_getjob",
+      "Effect": "Allow",
+      "Action": "glue:GetJob",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_describenoteinstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeNotebookInstance",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_securetransport",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_createDBinstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3::denied bucket-*/*.",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

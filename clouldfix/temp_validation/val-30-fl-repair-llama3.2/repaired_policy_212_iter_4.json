@@ -1,0 +1,200 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow Get Object from Elastic Beanstalk S3 Bucket",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "ap-southeast-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow List Buckets for Pinoy Agri Site Role",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::4177xxxxxxxx:role/PinoyAgriSite-Role"
+      },
+      "Action": [
+        "s3:ListBucket",
+        "s3:ListBucketVersions",
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/resources/environments/*",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/S3-Uploads-Media/*"
+      ]
+    },
+    {
+      "Sid": "Deny Delete Bucket",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx"
+    },
+    {
+      "Sid": "Allow Cross-Account Access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketLifecycle",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketWebsite",
+        "s3:ListObjectVersions"
+      ],
+      "Resource": [
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/resources/environments/*",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/S3-Uploads-Media/*",
+        "arn:aws:s3:::denied-bucket-1/*",
+        "arn:aws:s3:::denied-bucket-2/*",
+        "arn:aws:s3:::denied-bucket-3/*",
+        "arn:aws:s3:::denied-bucket-4/*",
+        "arn:aws:s3:::denied-bucket-5/*",
+        "arn:aws:s3:::denied-bucket-6/*"
+      ]
+    },
+    {
+      "Sid": "Allow Create Access Key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Action": [
+        "iam:CreateAccessKey",
+        "iam:CreateUser",
+        "iam:RotateCredentials"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow CloudTrail Logging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": [
+        "cloudtrail:StartLogging",
+        "cloudtrail:StopLogging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/resources/environments/*",
+        "arn:aws:s3:::elasticbeanstalk-ap-southeast-1-4177xxxxxxxx/S3-Uploads-Media/*"
+      ]
+    },
+    {
+      "Sid": "Allow EC2 Volume Creation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::4177xxxxxxxx:role/forbidden-PinoyAgriSite-Role"
+      },
+      "Action": [
+        "ec2:CreateVolume",
+        "ec2:AttachVolume",
+        "ec2:DetachVolume"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow SQS Queue Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueues"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow Lambda Function Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:InvokeFunction",
+        "lambda:DeleteFunction"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow KMS Key Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:Revoke",
+        "kms:ListKeys"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow CodePipeline Pipeline Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": [
+        "codepipeline:GetPipeline",
+        "codepipeline:PutArtifact",
+        "codepipeline:PutJobFailureReason",
+        "codepipeline:PutJobSuccessReason"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow ES Domain Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Action": [
+        "es:CreateDomain",
+        "es:PutDomainMapping",
+        "es:PutDomainMetadata",
+        "es:UpdateDomain",
+        "es:DeleteDomain"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow Glue Table Operations",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Action": [
+        "glue:CreateTable",
+        "glue:DeleteTable",
+        "glue:UpdateTable",
+        "glue:DescribeTable"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

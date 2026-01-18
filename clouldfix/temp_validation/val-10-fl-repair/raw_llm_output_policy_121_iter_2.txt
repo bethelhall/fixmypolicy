@@ -1,0 +1,137 @@
+
+        {
+  "Statement": [
+    {
+      "Sid": "AllowAccessFromAPIGateway",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*"
+    },
+    {
+      "Sid": "DenyDeleteObjectTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "apigateway.amazonaws.com",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeLogStreams",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::my-bucket/file-4-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetBucketLocation",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::my-bucket-forbidden/file.txt",
+      "Principal": "apigateway.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetObjectVersion",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::my-bucket/file-40-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutBucketLogging",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::different-my-bucket/file.txt",
+      "Principal": "apigateway.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetObjectVersion",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "apigateway.amazonaws.com",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetTrailStatus",
+      "Effect": "Allow",
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:s3:::my-bucket/file-8-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListAttachedRolePolicies",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "arn:aws:s3:::my-bucket/file-30-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetObject",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::my-bucket/file-32-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListTrainingJobs",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListTrainingJobs",
+      "Resource": "arn:aws:s3:::my-bucket/file-17-12.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

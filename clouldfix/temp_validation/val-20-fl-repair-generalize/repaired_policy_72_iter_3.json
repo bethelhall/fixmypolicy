@@ -1,0 +1,83 @@
+{
+  "Statement": [
+    {
+      "Sid": "AllowListAttachedRolePolicies",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2CreateSecurityGroup",
+      "Effect": "Allow",
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBQuery",
+      "Effect": "Allow",
+      "Action": "dynamodb:Query",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutObject",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaCreateFunction",
+      "Effect": "Allow",
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyNoEncryption",
+      "Effect": "Deny",
+      "Action": "s3:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:x-amz-server-side-encryption": "AES256",
+          "aws:ResourceTag/exempted": "yes"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

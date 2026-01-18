@@ -1,0 +1,137 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*"
+    },
+    {
+      "Sid": "Allow elasticloadbalancing:DescribeLoadBalancers",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow kms:DisableKey",
+      "Action": "kms:DisableKey",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ec2:ImportKeyPair",
+      "Action": "ec2:ImportKeyPair",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudfront:GetDistribution",
+      "Action": "cloudfront:GetDistribution",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow iam:GetRolePolicy",
+      "Action": "iam:GetRolePolicy",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow kinesis:CreateStream",
+      "Action": "kinesis:CreateStream",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny sns:Publish",
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::my-bucket-name-forbidden/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny s3:ListObjectVersions",
+      "Action": "s3:ListObjectVersions",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny rds:CreateDBInstance",
+      "Action": "rds:CreateDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny rds:DeleteDBInstance",
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::different-my-bucket-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

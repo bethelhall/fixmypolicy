@@ -1,0 +1,163 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:Get*"
+      ],
+      "Resource": "arn:aws:s3:::Bucket-Name/*"
+    },
+    {
+      "Sid": "DenyEC2DescribeInstancesInDifferentRegion",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessageFromEUWest1ToForbiddenBucket",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::Bucket-Name-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerDescribeEndpointInEUWest1WithCrossAccountRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEncryptAndDescribefromUSWest1withTempUser",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:s3:::Bucket-Name/file-46-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeletePolicyfromUnauthorizedUserinUSWest1",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-8-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeleteItemDeniedByBob",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESsendrawemailAllowedbyTestUser",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-17-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueBatchGetJobsWithCorrectPrincipleandConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "glue:BatchGetJobs",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-11-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeletionOfUsersOrRolesBasedOnTheirARN",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "iam:DeleteUser",
+        "iam:DeleteRole"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAccessingSpecificFilesbasedonconditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-13-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

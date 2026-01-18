@@ -1,0 +1,353 @@
+Hi, I'm encountering an issue despite configuring all permissions correctly. When attempting to trigger an action via a CloudWatch alarm in AWS Lambda, I receive the following error message:
+
+
+Error: Failed to execute action arn:aws:lambda:[region]:[account_id]:function:[function_name]. Received error: "CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action."
+
+
+The CloudWatch alarms are being programmatically created and dynamically configured within a Lambda function, specifically to monitor CPU utilization and trigger at <10%. Everything seems to work fine: the alarms are created successfully, and the logic is functioning as expected, with the Lambda function set as the action trigger. However, when the alarm reaches the action state, the error appears in CloudWatch logs, and the Lambda function is not triggered.
+
+
+I have already ensured that all permissions are set correctly. My Lambda function has a resource-based policy issued through the CLI with the appropriate lambda:InvokeFunction permissions.
+
+
+Has anyone encountered this issue or found a solution? I've come across similar cases but haven't found a clear fix.
+
+
+Does anyone have suggestions for resolving this issue?
+
+
+
+
+# This AWS SAM template has been generated from your function's configuration. If
+# your function has one or more triggers, note that the AWS resources associated
+# with these triggers aren't fully specified in this template and include
+# placeholder values. Open this template in AWS Application Composer or your
+# favorite IDE and modify it to specify a serverless application with other AWS
+# resources.
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application Model template describing your function.
+Resources:
+  EC2AESCALEUPDOWN:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: 'scale up down bwetween EC2 A to E '
+      MemorySize: 128
+      Timeout: 360
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - arm64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      PackageType: Zip
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+              Resource: arn:aws:logs:us-east-2:654654575452:*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - >-
+                  arn:aws:logs:us-east-2:654654575452:log-group:/aws/lambda/EC2_A_E_SCALE_UP_DOWN:*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:DescribeLogGroups
+                - logs:DescribeLogStreams
+                - logs:PutLogEvents
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - '*'
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - rum:*
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - iam:GetRole
+                - iam:CreateServiceLinkedRole
+              Resource:
+                - >-
+                  arn:aws:iam::*:role/aws-service-role/rum.amazonaws.com/AWSServiceRoleForRealUserMonitoring
+            - Effect: Allow
+              Action:
+                - iam:PassRole
+              Resource:
+                - arn:aws:iam::*:role/RUM-Monitor*
+              Condition:
+                StringEquals:
+                  iam:PassedToService:
+                    - cognito-identity.amazonaws.com
+            - Effect: Allow
+              Action:
+                - cloudwatch:GetMetricData
+                - cloudwatch:GetMetricStatistics
+                - cloudwatch:ListMetrics
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - cloudwatch:DescribeAlarms
+              Resource: arn:aws:cloudwatch:*:*:alarm:*
+            - Effect: Allow
+              Action:
+                - cognito-identity:CreateIdentityPool
+                - cognito-identity:ListIdentityPools
+                - cognito-identity:DescribeIdentityPool
+                - cognito-identity:GetIdentityPoolRoles
+                - cognito-identity:SetIdentityPoolRoles
+              Resource: arn:aws:cognito-identity:*:*:identitypool/*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:DeleteLogGroup
+                - logs:PutRetentionPolicy
+                - logs:CreateLogStream
+              Resource: arn:aws:logs:*:*:log-group:*RUMService*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogDelivery
+                - logs:GetLogDelivery
+                - logs:UpdateLogDelivery
+                - logs:DeleteLogDelivery
+                - logs:ListLogDeliveries
+                - logs:DescribeResourcePolicies
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - logs:DescribeLogGroups
+              Resource: arn:aws:logs:*:*:log-group::log-stream:*
+            - Effect: Allow
+              Action:
+                - synthetics:describeCanaries
+                - synthetics:describeCanariesLastRun
+              Resource: arn:aws:synthetics:*:*:canary:*
+            - Sid: CloudWatchFullAccessPermissions
+              Effect: Allow
+              Action:
+                - application-autoscaling:DescribeScalingPolicies
+                - application-signals:*
+                - autoscaling:DescribeAutoScalingGroups
+                - autoscaling:DescribePolicies
+                - cloudwatch:*
+                - logs:*
+                - sns:CreateTopic
+                - sns:ListSubscriptions
+                - sns:ListSubscriptionsByTopic
+                - sns:ListTopics
+                - sns:Subscribe
+                - iam:GetPolicy
+                - iam:GetPolicyVersion
+                - iam:GetRole
+                - oam:ListSinks
+                - rum:*
+                - synthetics:*
+                - xray:*
+              Resource: '*'
+            - Sid: CloudWatchApplicationSignalsServiceLinkedRolePermissions
+              Effect: Allow
+              Action:
+                - iam:CreateServiceLinkedRole
+              Resource: >-
+                arn:aws:iam::*:role/aws-service-role/application-signals.cloudwatch.amazonaws.com/AWSServiceRoleForCloudWatchApplicationSignals
+              Condition:
+                StringLike:
+                  iam:AWSServiceName: application-signals.cloudwatch.amazonaws.com
+            - Sid: EventsServicePermissions
+              Effect: Allow
+              Action:
+                - iam:CreateServiceLinkedRole
+              Resource: >-
+                arn:aws:iam::*:role/aws-service-role/events.amazonaws.com/AWSServiceRoleForCloudWatchEvents*
+              Condition:
+                StringLike:
+                  iam:AWSServiceName: events.amazonaws.com
+            - Sid: OAMReadPermissions
+              Effect: Allow
+              Action:
+                - oam:ListAttachedLinks
+              Resource: arn:aws:oam:*:*:sink/*
+            - Effect: Allow
+              Action:
+                - evidently:*
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - iam:ListRoles
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - iam:GetRole
+              Resource:
+                - arn:aws:iam::*:role/service-role/CloudWatchRUMEvidentlyRole-*
+            - Effect: Allow
+              Action:
+                - s3:GetBucketLocation
+                - s3:ListAllMyBuckets
+              Resource: arn:aws:s3:::*
+            - Effect: Allow
+              Action:
+                - cloudwatch:GetMetricData
+                - cloudwatch:GetMetricStatistics
+                - cloudwatch:DescribeAlarmHistory
+                - cloudwatch:DescribeAlarmsForMetric
+                - cloudwatch:ListTagsForResource
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:TagResource
+                - cloudwatch:UnTagResource
+              Resource:
+                - arn:aws:cloudwatch:*:*:alarm:*
+            - Effect: Allow
+              Action:
+                - cloudtrail:LookupEvents
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - cloudwatch:PutMetricAlarm
+              Resource:
+                - arn:aws:cloudwatch:*:*:alarm:Evidently-Alarm-*
+            - Effect: Allow
+              Action:
+                - sns:ListTopics
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - sns:CreateTopic
+                - sns:Subscribe
+                - sns:ListSubscriptionsByTopic
+              Resource:
+                - arn:*:sns:*:*:Evidently-*
+            - Effect: Allow
+              Action:
+                - logs:DescribeLogGroups
+              Resource:
+                - '*'
+            - Effect: Allow
+              Action:
+                - cloudformation:DescribeStacks
+                - cloudformation:ListStackResources
+                - cloudwatch:ListMetrics
+                - cloudwatch:GetMetricData
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSubnets
+                - ec2:DescribeVpcs
+                - kms:ListAliases
+                - iam:GetPolicy
+                - iam:GetPolicyVersion
+                - iam:GetRole
+                - iam:GetRolePolicy
+                - iam:ListAttachedRolePolicies
+                - iam:ListRolePolicies
+                - iam:ListRoles
+                - lambda:*
+                - logs:DescribeLogGroups
+                - states:DescribeStateMachine
+                - states:ListStateMachines
+                - tag:GetResources
+                - xray:GetTraceSummaries
+                - xray:BatchGetTraces
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - iam:PassRole
+              Resource: '*'
+              Condition:
+                StringEquals:
+                  iam:PassedToService: lambda.amazonaws.com
+            - Effect: Allow
+              Action:
+                - logs:DescribeLogStreams
+                - logs:GetLogEvents
+                - logs:FilterLogEvents
+              Resource: arn:aws:logs:*:*:log-group:/aws/lambda/*
+      RecursiveLoop: Terminate
+      SnapStart:
+        ApplyOn: None
+      Tags:
+        ron.si: '24'
+      Events:
+        EventBridgeRule1:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.ec2
+              detail-type:
+                - EC2 Spot Instance Interruption Warning
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+
+
+
+
+Here’s a json of my current policy:
+
+
+
+
+
+
+
+aws cloudwatch put-metric-alarm \
+--alarm-name 'DynamicScalingAlarm-ron.si.C.m-CPU-Low' \
+--alarm-description 'Low CPU utilization - Manual Setup' \
+--actions-enabled \
+--alarm-actions 'arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN' \
+--metric-name 'CPUUtilization' \
+--namespace 'AWS/EC2' \
+--statistic 'Average' \
+--dimensions '[{"Name":"InstanceId","Value":"i-0d8e900f9d9f00a77"}]' \
+--period 300 \
+--evaluation-periods 12 \
+--datapoints-to-alarm 12 \
+--threshold 11 \
+--comparison-operator 'LessThanThreshold' \
+--treat-missing-data 'missing'
+
+
+
+Summary
+Failed to execute action arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN. Received error: "CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action"
+Data
+{
+  "alarmName": "DynamicScalingAlarm-ron.si.C.m-CPU-Low",
+  "alarmType": "MetricAlarm",
+  "timestamp": "2024-10-09T21:29:17.406Z",
+  "historyItemType": "Action",
+  "historySummary": "Failed to execute Lambda action : arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN",
+  "historyData": {
+    "actionState": "Failed",
+    "stateUpdateTimestamp": 1728509357348,
+    "notificationResource": "arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN",
+    "publishedMessage": null,
+    "error": "CloudWatch Alarms is not authorized to perform: lambda:InvokeFunction on the resource because no resource-based policy allows the lambda:InvokeFunction action"
+  }
+}

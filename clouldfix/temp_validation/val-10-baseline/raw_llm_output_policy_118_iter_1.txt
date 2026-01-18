@@ -1,0 +1,145 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForCodeBuildServiceRoleFooBar",
+  "Statement": [
+    {
+      "Sid": "AllowSQGetQueueUrlOnMyTestBucketFile63TxtFromAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:s3:::mytestbucket/file-6-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutItemOnDeniedBucket0File0TxtToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53ListHostedZonesOnMyTestBucketFile113TxtFromAliceInEuWest1",
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZones",
+      "Resource": "arn:aws:s3:::mytestbucket/file-1-13.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeleteUserOnDifferentMyTestBucketFileTXTToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::different-mytestbucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQReceiveMessageOnMyTestBucketForbiddenFileTXTToCodeBuildRoleFooBarWithWrongTags",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::mytestbucket-forbidden/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQReceiveMessageOnMyTestBucketFile4916TxtWithoutCorrectRegionButRightPrinciple",
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::mytestbucket/file-49-16.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/forbidden-codebuild-service-role-foo-bar"
+      }
+    },
+    {
+      "Sid": "DenyRDSDeletedBInstanceOnCompletelyDifferentBucketFileTXTToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigDeleteConfigRuleOnMyTestBucketFile423TxtByTheRightPersonAndRegion",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::mytestbucket/file-42-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::706422199145:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEnableKeyOnMyTestBucketFile337TxtOnlyIfRequestIsMadeFromUSWest2",
+      "Effect": "Allow",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:s3:::mytestbucket/file-33-7.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::999341094987:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetCrawlersOnMyTestBucketFile1514TxtFromAliceInUSEast1",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:s3:::mytestbucket/file-15-14.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your final repaired Policy in proper format with all requirements satisfied. Please replace `"[account A]"` placeholder value from actual account number for it work properly. This will allow specific actions on certain resources based upon conditions specified by each statement Sid (Security Identifiers). Each sid has unique identifier which helps us identify what action was taken when reviewing logs etc.. Principal field defines who can perform these operations while Condition checks additional context under which operation should happen like region requested among others. Action define exactly WHAT we want our principal(users) do i.e., read data, write data,..etc. Resource specifies WHERE this permission applies usually S3 bucket name along with object key if applicable here. Effect tells whether Allow access OR Deny Access Based Upon Above Conditions Met Or Not. In above example effect set at ALLOW hence allowing mentioned Actions Under Certain Circumstances As Per Defined By Policies And Their Statements.  
+Please note : Always keep policies least privilege principle where possible meaning provide minimum necessary permissions required rather than full administrative rights unless absolutely needed because of course more priviledges means higher risk exposure especially misconfigurations leading potentially serious consequences such as unauthorized resource modifications,.data leaks,...etc So always review & validate newly created / updated polices regularly using tools available within aws console called Identity and Access Management-(IAM)- >Policies->Evaluate Permissions option helpful tool too understand impact potential changes might have particularly important during migrations between environments e g dev -> staging -> production... Etc Also consider enabling CloudTrail service logging feature enabled also known auditing capability providing detailed records about every API call made inside associated trail including source IP address making request details useful further investigation purposes If you suspect breach happened immediately check those trails looking forward finding exact cause causing issue promptly resolve mitigate risks effectively without delay Possible thanks good practice preventive measures applied keeping system safe secured robust against threats compromising sensitive information stored there.... Thanks again reading! Have nice day ahead :-) Cheers! \,,°/

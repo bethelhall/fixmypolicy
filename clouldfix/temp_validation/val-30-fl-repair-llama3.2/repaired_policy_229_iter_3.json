@@ -1,0 +1,293 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "deny_lambda_invoke",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/*/file.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_sqs_receive_message",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-1/file-1.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::987654321098:user/charlie"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_sqs_send_message",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/*-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_rds_delete_db_instance",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/*-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/blocked-user"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ec2_describe_instances",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-2/file-2.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/blocked-user"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_sns_publish",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/*-forbidden-resource"
+      ],
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "allow_697341f9",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/file-26-8.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_35721ccf",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/file-22-8.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_94b16ac1",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/file-15-8.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c4c5bc05",
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteBucketCors"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/file-13-14.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_445b4b3f",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutDashboard"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/file-25-16.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_27911df0",
+      "Effect": "Allow",
+      "Action": [
+        "kafka-cluster:AlterCluster"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/file-30-16.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_429fc6ee",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/file-36-17.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_5764c082",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ReEncrypt"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/file-30-9.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1c96a7ce",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DescribeLoadBalancers"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/file-16-11.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_2cb334a9",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/file-31-12.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

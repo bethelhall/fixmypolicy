@@ -1,0 +1,203 @@
+{
+  "Requests": [
+    {
+      "id": "test_1_missing_cost_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-east-1:123456789012:instance/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/team": "engineering",
+          "aws:RequestTag/name": "web-server"
+        }
+      }
+    },
+    {
+      "id": "test_2_missing_team_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-west-2:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/dev-user",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "project-123",
+          "aws:RequestTag/name": "database-server"
+        }
+      }
+    },
+    {
+      "id": "test_3_missing_name_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:eu-west-1:123456789012:instance/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/ec2-role",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "dept-456",
+          "aws:RequestTag/team": "devops"
+        }
+      }
+    },
+    {
+      "id": "test_4_only_cost_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ap-southeast-1:123456789012:instance/*",
+        "arn:aws:ec2:ap-southeast-1:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/admin",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "shared-resources"
+        }
+      }
+    },
+    {
+      "id": "test_5_only_team_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-east-2:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/lambda-role",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/team": "platform"
+        }
+      }
+    },
+    {
+      "id": "test_6_only_name_tag",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ca-central-1:123456789012:instance/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/service-account",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/name": "api-gateway"
+        }
+      }
+    },
+    {
+      "id": "test_7_cost_and_team_only",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:eu-central-1:123456789012:instance/*",
+        "arn:aws:ec2:eu-central-1:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/deployment-role",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "budget-2024",
+          "aws:RequestTag/team": "infrastructure"
+        }
+      }
+    },
+    {
+      "id": "test_8_cost_and_name_only",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ap-northeast-1:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/ci-cd-user",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "r&d",
+          "aws:RequestTag/name": "ml-training-node"
+        }
+      }
+    },
+    {
+      "id": "test_9_team_and_name_only",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:sa-east-1:123456789012:instance/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/app-role",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/team": "security",
+          "aws:RequestTag/name": "bastion-host"
+        }
+      }
+    },
+    {
+      "id": "test_10_no_tags",
+      "Effect": "deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-west-1:123456789012:instance/*",
+        "arn:aws:ec2:us-west-1:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "id": "test_11_all_tags_present",
+      "Effect": "allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-east-1:123456789012:instance/*",
+        "arn:aws:ec2:us-east-1:123456789012:volume/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/compliant-user",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "project-xyz",
+          "aws:RequestTag/team": "development",
+          "aws:RequestTag/name": "production-server"
+        }
+      }
+    },
+    {
+      "id": "test_12_delete_tags_action",
+      "Effect": "allow",
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:us-east-1:123456789012:instance/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/admin",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/cost": "cleanup"
+        }
+      }
+    }
+  ]
+}

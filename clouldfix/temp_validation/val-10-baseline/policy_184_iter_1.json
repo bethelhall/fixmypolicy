@@ -1,0 +1,191 @@
+{
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "AllowAccessThroughSNSToSpecificPrincipalsInTheAccountThatAreAuthorizedToUseSNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::667301088815:root",
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDirectAccessToKeyMetadataForRootUserAndAdminRoleOfThisAccount",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowDeletionOfObjectTaggingBySpecifiedUsersOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::667301088815:root"
+      },
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::bucket-28/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPuttingItemsIntoDynamoDBTableIfNotFromCrossAccountRoleOrCharlieUser",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role",
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreationOfBucketsWithCertainConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-25",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunningInstancesUnlessItIsAliceUserUsingKMSKeyservice",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreatingDeploymentsOnGlueTablesUnderCertainConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-20",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySubscribingToSNSWithoutMatchingCredentials",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScaningDynamoDBtablesBasedOnRegions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/temp-user"
+      },
+      "Action": "dynamodb:Scan",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-24",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDescribingInstancesWhenItsADifferentIAMRoleThanTempUser",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGettingAthenaWorkGroupDetailsExcludingNonRelevantAccounts",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-41",
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx"
+        }
+      }
+    },
+    {
+      "Sid": "AllowChangingMessagesVisiblityInQueuesConditionally",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "arn:aws:s3:::bucket-44/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

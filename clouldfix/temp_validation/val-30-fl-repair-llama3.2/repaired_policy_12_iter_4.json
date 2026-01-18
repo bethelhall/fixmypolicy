@@ -1,0 +1,419 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEC2DescribeInstancesFromS3",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaStartQueryExecutionFromS3",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": [
+        "arn:aws:s3::: destinationbucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDeleteWorkGroup",
+      "Effect": "Allow",
+      "Action": [
+        "glue:DeleteWorkGroup"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-16/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyCreateDetector",
+      "Effect": "Allow",
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAutoscalingDescribeAutoScalingGroups",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups"
+      ],
+      "Resource": [
+        "arn:aws:s3::: bucket-48/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ReplicateTags",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ReplicateTags"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetLogEvents",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-11/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSGenerateDataKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSSendRawEmail",
+      "Effect": "Allow",
+      "Action": [
+        "ses:SendRawEmail"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-19/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DescribeInstancesFromS3",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAthenaStartQueryExecutionFromS3",
+      "Effect": "Deny",
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": [
+        "arn:aws:s3::: destinationbucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGlueDeleteWorkGroup",
+      "Effect": "Deny",
+      "Action": [
+        "glue:DeleteWorkGroup"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-16/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGuardDutyCreateDetector",
+      "Effect": "Deny",
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAutoscalingDescribeAutoScalingGroups",
+      "Effect": "Deny",
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups"
+      ],
+      "Resource": [
+        "arn:aws:s3::: bucket-48/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ReplicateTags",
+      "Effect": "Deny",
+      "Action": [
+        "s3:ReplicateTags"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGlueGetLogEvents",
+      "Effect": "Deny",
+      "Action": [
+        "glue:GetLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-11/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSGenerateDataKey",
+      "Effect": "Deny",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESendRawEmail",
+      "Effect": "Deny",
+      "Action": [
+        "ses:SendRawEmail"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-19/table-11"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketTagging",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLogsDeleteLogStream",
+      "Effect": "Deny",
+      "Action": [
+        "logs:DeleteLogStream"
+      ],
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGluePutBucketVersioning",
+      "Effect": "Deny",
+      "Action": [
+        "glue:PutBucketVersioning"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-1/table-3"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

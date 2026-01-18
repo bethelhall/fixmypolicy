@@ -1,0 +1,157 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "redshift_s3_getobject",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-data-bucket/spectrum-data/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/RedshiftSpectrumRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef0"
+          }
+        }
+      },
+      {
+        "id": "redshift_s3_listbucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-data-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/RedshiftSpectrumRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef0"
+          }
+        }
+      },
+      {
+        "id": "redshift_glue_access",
+        "Effect": "deny",
+        "Action": [
+          "glue:GetTable",
+          "glue:GetDatabase"
+        ],
+        "Resource": [
+          "arn:aws:glue:us-east-1:123456789012:table/spectrum_db/*",
+          "arn:aws:glue:us-east-1:123456789012:database/spectrum_db"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/RedshiftSpectrumRole"
+      },
+      {
+        "id": "ssm_session_ec2",
+        "Effect": "allow",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-1:123456789012:instance/i-0123456789abcdef0"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "describe_ec2_instances",
+        "Effect": "allow",
+        "Action": [
+          "ec2:DescribeInstances"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "s3_direct_access_outside_vpc",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-data-bucket/spectrum-data/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/external-user"
+      },
+      {
+        "id": "redshift_s3_getobjectversion",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObjectVersion"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-data-bucket/spectrum-data/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/RedshiftSpectrumRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef0"
+          }
+        }
+      },
+      {
+        "id": "redshift_describe_clusters",
+        "Effect": "deny",
+        "Action": [
+          "redshift:DescribeClusters"
+        ],
+        "Resource": [
+          "arn:aws:redshift:us-east-1:123456789012:cluster:my-redshift-cluster"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "ssm_port_forwarding",
+        "Effect": "allow",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ssm:us-east-1:123456789012:document/AWS-StartPortForwardingSessionToRemoteHost"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "s3_putobject_spectrum",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-data-bucket/spectrum-data/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/RedshiftSpectrumRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef0"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 76.9,
+      "total_requests": 13,
+      "correct": 10,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 76.9,
+      "total_requests": 13,
+      "correct": 10,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "18",
+    "user_intent": "Config of Redshift Cluster:\n\n\n\n\nEnhanced VPC routing has enabled\n\n\nRedshift subnet in the same subnet as S3 vpc endpoint\n\n\n\n\nConfig of S3\n\n\n\n\nVPC endpoints created for S3\n\n\nRouting has configured to route traffic to the S3 vpc endpoints\n\n\n\n\nMy S3 policy:\n\n\n    \n\n\n\nWith this configuration Redshift Specturum cant accesss external tables\n\n\nSo my goal here. To restrict access to the S3 from outside but also give access to Redshift Spectrum to work with S3.\n\n\nFrom the documentation I see that:\n\nRedshift Spectrum on provisioned clusters can't access data stored in Amazon S3 buckets that use a bucket policy that restricts access to only specified VPC endpoints.\n\n\nAny ideas how I can achieve this ?",
+    "timestamp": "2025-08-19T17:40:47.689840"
+  }
+}

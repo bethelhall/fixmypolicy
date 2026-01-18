@@ -1,0 +1,142 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "*",
+      "Resource": [
+        "arn:aws:s3:::BUCKET_NAME",
+        "arn:aws:s3:::BUCKET_NAME/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-46-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_5b64bada"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricData",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-21-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "allow_039db823"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-20-4.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_18d6db5a"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "deny_7f4dbcde"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::different-BUCKET_NAME/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "deny_a459e4a8"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::BUCKET_NAME-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "deny_49af16de"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:Scan",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-43-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_9c8af2f9"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "s3:DataAccessPointAccount": "ACCOUNT_ID"
+        }
+      },
+      "Sid": "deny_d3f813dd"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-2-17.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_0f2d8d3e"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::BUCKET_NAME/file-0-2.txt",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_b329152a"
+    }
+  ]
+}

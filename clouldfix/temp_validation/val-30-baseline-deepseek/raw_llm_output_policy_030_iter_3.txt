@@ -1,0 +1,33 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFormationCreationOfSNSTopicInSpecificRegionAndAccount",
+      "Effect": "Allow",
+      "Action": ["sns:CreateTopic"],
+      "Resource": "arn:aws:sns:*:123456789012:*"
+    },
+    {
+      "Sid": "AllowElasticBeanstalkToReadFromDynamoDBTable",
+      "Effect": "Allow",
+      "Action": ["dynamodb:GetItem", "dynamodb:Query", "dynamodb:Scan"],
+      "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/my-table"
+    },
+    {
+      "Sid": "AllowIAMRoleAssumeForEC2Service",
+      "Effect": "Allow",
+      "Action": ["sts:AssumeRole"],
+      "Resource": "arn:aws:iam::123456789012:role/EC2ServiceRole"
+    },
+    //... other statements with their respective permissions...
+    {
+      "Sid": "ExplicitlyDenyAllOtherActionsOnKMSKey",
+      "Effect": "Deny",
+      "Action": ["kms:*"],
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/the-specific-kms-key-uuid"
+    }
+  ]
+}
+```
+This is just one example of how you might structure your policies based on these requirements; actual implementation may vary depending upon specific needs in each case. Please replace placeholder values like `your-region`, `your-account-id` etc., according to real scenario. Also note this does not cover all possible actions for services mentioned here but only those which were explicitly required by requests listed above. For full access control make sure to review every service’s available action names carefully when constructing such policies manually. Always prefer principle of least privilege (PoLP) while creating them i.e give minimum necessary permission rather than giving maximum permissible ones because it enhances overall system safety & integrity significantly!

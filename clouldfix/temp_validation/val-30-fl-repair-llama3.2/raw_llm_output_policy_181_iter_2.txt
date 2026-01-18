@@ -1,0 +1,474 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSKafkaResourcePolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": [
+        "secretsmanager:getSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345"
+    },
+    {
+      "Sid": "AllowSQSSubscribeAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:CreateFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-7/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSCreateAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "rdsservice:DescribeDBCluster",
+        "rdsservice:DescribeDBClusterSnapshot"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSReceiveAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSDeniedAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericGreaterThanOrEqualTo": {
+          "s3:max-keys": "11"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBScanAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBDeleteAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "11"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeleteAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "iam:DeleteUser",
+        "iam:DeleteLoginProfile"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "cloudfront:GetDistribution"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-6/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodePipelineAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "codepipeline:ListPipelines"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "s3:GetObjectTagging",
+        "s3:DeleteObjectTagging",
+        "s3:PutBucketVersioning"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetAclAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "s3:GetObjectAcl"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticLoadBalancingAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteObjectTaggingAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketVersioningAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "s3:PutBucketVersioning"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSReceiveAndSendMessageAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSReceiveAndSendMessageWithIPRestriction",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBScanAndPutItemAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "11"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBDeleteItemAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "dynamodb:Scan",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "NumericGreaterThanOrEqualTo": {
+          "s3:max-keys": "11"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeleteUserAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeleteLoginProfileAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "iam:DeleteLoginProfile"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectAclAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "s3:GetObjectAcl"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticLoadBalancingCreateLoadBalancerAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "*"
+      },
+      "Action": [
+        "elasticloadbalancing:CreateLoadBalancer"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    } ] }

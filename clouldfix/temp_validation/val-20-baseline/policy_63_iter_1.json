@@ -1,0 +1,289 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": [
+        "s3:PutObjectAcl"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement3",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "config:DeleteConfigRule"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement4",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz/file.txt",
+      "Effect": "Deny",
+      "Sid": "statement5",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:PurgeQueue"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement6",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:RetireGrant"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Sid": "statement7",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:GetKeyPolicy"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-forbidden-resource",
+      "Effect": "Deny",
+      "Sid": "statement8",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:DeleteAlias"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Sid": "statement9",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:ReEncrypt"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz-forbidden-resource",
+      "Effect": "Deny",
+      "Sid": "statement10",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement11",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:ListDeadLetterSourceQueues"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement12",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "glue:GetCrawler"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement13",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement14",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "codepipeline:GetPipeline"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement15",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "cloud9:DescribeEnvironments"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement16",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement17",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "forbidden-arn:aws:kms:ca-central-1:xxxx:key/zzzz-specific",
+      "Effect": "Deny",
+      "Sid": "statement18",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:UpdateKeyDescription"
+      ],
+      "Resource": "forbidden-arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-specific",
+      "Effect": "Deny",
+      "Sid": "statement19",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "glue:UpdateTable"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement20",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:PutObjectTagging"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement21",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

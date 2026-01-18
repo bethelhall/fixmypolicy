@@ -1,0 +1,41 @@
+Hello, I started a project that aims to prevent the creation of certain resources if they do not have certain Tags. Following this documentation "
+https://aws.amazon.com/pt/blogs/mt/implement-aws-resource-tagging-strategy-using-aws-tag-policies-and-service-control-policies-scps/
+" I successfully replicated the "ec2:runinstance" action using only one Tag, but when I added a second Tag to the policy, the "ec2:runinstance" action happens with the presence of only one of the two Tags I defined.
+
+
+With a few more tests you can prevent the action by creating two SCP policies, one policy for each Tag, so only when the two Tags I defined are present the resource is created, the big problem now is that the maximum number of SCP policies that I can apply to the Organization is 5 per account, and in the project there would be a total of 6 Tags.
+
+
+What I need is to concatenate these two JSON policies into one that works, but all the SCP "Conditions" I've tried either block everything or release the action with the presence of just one Tag.
+
+
+Is there a condition that validates all Tags present and then denies the action, or is what I'm trying impossible at the moment?
+
+
+I tried with these other conditions, but without success, I didn't find where I could be going wrong.
+
+
+
+
+ForAllValues:StringEquals
+
+
+
+
+
+
+StringEqualsIfExists
+
+
+
+
+
+
+StringNotEqualsIfExists
+
+
+
+
+
+
+StringNotEquals

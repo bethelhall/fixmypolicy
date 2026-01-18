@@ -1,0 +1,118 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificIAMActionsAndResourcesWithinUSWest2OnlyForServieRole",
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-23",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeletionWhenMaxKeysExceededOrNonAdminAttemptingIt",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2InstanceCreationOutsideOfAllowedRegions",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": ["us-west-2", "us-east-1"]
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSPeerCommunicationWithoutSSLEnforced",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueTableListingRestrictionToSpecifiedRegion",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-3",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "PreventsSuppressionsOfTagsUsingTheDelteObjetctTaggingAction",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::bucket-28/file-9.txt"
+    },
+    {
+      "Sid": "LimitingPubliclyAccessibleNetworkSources",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser",
+        "iam:CreateLoginProfile"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "GrantingLimitedPermissionstoASpecificServicePrincipal",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::bucket-45/file-1.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowsGLUETableretrievalviaAPIsrestrictedtoEUWESTregiononly",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-1",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "EnforceStrictControlOverEc2InstancessoThatTheyCanBeCreatedOnlyinallowedregions",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-17",
+      "Condition": {
+        "ArnNotLike": {
+          "aws:CalledVia":"*"
+        }
+      }
+    }
+  ]
+}
+```
+This is your repaired Policy in Valid Json format according to requirements mentioned above. Please note Sid names have been changed for better understanding of each statement purpose but they can remain same if you want them original ones back. Also please make sure all resource ARNs match with actual resources because this could lead unauthorized access otherwise. This has also fixed some logical errors like allowing actions on specific regions only etc., based upon requests made by users which were not satisfied earlier due to incorrect conditions set up previously. Lastly it ensures proper permissions granted via service roles instead direct user assignments where possible reducing potential attack vectors from compromised accounts directly controlling these services (like s3). All other changes aim at tightening restrictions further while maintaining necessary functionality intact per request specifications posed initially..  
+Please replace placeholder values such as account numbers & region codes appropriately when using generated json document into production environment! It’s recommended always review policies thoroughly against established guidelines especially around sensitive operations involving data governance principles followed within organization scope. Always test new configurations carefully avoiding unintended side effects! Happy Securing!! Cheers 🍻👨‍💻📖✅⚖️

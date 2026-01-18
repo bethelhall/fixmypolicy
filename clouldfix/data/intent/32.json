@@ -1,0 +1,72 @@
+Hi all,
+
+
+I have 2 accounts:
+
+
+
+
+Mgmt (SSO enabled)
+
+
+Development (RDS)
+
+
+
+
+I have 
+SSO
+ configured with a group (team_leaders) and permission set (TeamLeaderAccess).
+
+
+Are part of this group:
+
+
+
+
+john
+
+
+michael
+
+
+
+
+I've configured a RDS DB (Postgre) with IAM Auth and created these users into the database.
+
+
+Now I'm trying to configure the 
+Permission Set
+ with this policy:
+
+
+
+
+
+
+In this case, John is able to get his SSO credentials and log-in into RDS 
+as john AND michael
+ (impersonation), because I have this "/*" in my policy.
+
+
+On the other hand, if I replace that by:
+
+
+{
+    "Action": "rds-db:connect",
+    "Effect": "Allow",
+    "Resource": "arn:aws:rds-db:us-east-1:<account>:dbuser:db-KF.../john"
+}
+
+
+
+Michael won't be able to log in.
+
+
+How to setup a policy per user?
+
+
+Has anyone faced this scenario and found a solution for it?
+
+
+Thanks,

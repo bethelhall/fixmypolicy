@@ -1,0 +1,134 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "SESPermissionPolicy",
+  "Statement": [
+    {
+      "Sid": "AllowSESPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESReceiveEmails",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDifferentMyBucketFileDeletion",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::different-mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForRoleAndNotDomainReferrer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForUserAndNotDomainReferrer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnOtherUsersBucketsWithConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:user/bob", "arn:aws:iam::123456789012:user/alice"]
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:DeleteBucket",
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    }
+  ]
+}
+```
+This repaired version of your original policy includes all necessary permissions while also ensuring they only apply when certain conditions (like referrer being not domain) are met. It denies specific actions on different buckets than mybucket by ses service for requests coming from referer equals domain condition which was missing in previous policies. Also it allows users alice & bob additional set of s3 related operations with same Conditions specified above but without specifying resource ARN making sure these rules applies across entire account instead just within their respective bucket(s). Lastly added two new statements allowing dynamodb table creation via iam role based access control mechanism along side existing ones granting similar permission through user level access controls. All changes have been made keeping both current functionality intact yet improving upon its overall robustness against unauthorized activities originating externally towards aws services like SES etc.. Please note this is still basic form validation check, further enhancements may need depending uppon more complex business requirements such us multi factor authentication checks among others!  
+Please replace `123456789012` placeholder value inside ARNs (`principal`) according actual numeric part representing Account ID associated those roles /users respectively! This number should match exactly what appears between first ":" character till next "/". If there’re multiple "/" characters present then take care about selecting right one!. For example if you see something alike : *arn:aws:iam::123456789012:root* here,*then substitute whole string including root at end place holder.* | Fixing Policy

@@ -1,0 +1,151 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CancelExportTask",
+        "logs:DescribeExportTasks",
+        "logs:DescribeLogStreams",
+        "logs:DescribeLogGroups",
+        "logs:CreateExportTask",
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetBucketAcl"
+      ],
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement3",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "s3:PutObjectTagging",
+      "Resource": "-forbidden-resource",
+      "Effect": "Deny",
+      "Sid": "statement4",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement5",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "glue:GetJob",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement6",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "authorized//file.txt",
+      "Effect": "Deny",
+      "Sid": "statement7",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement8",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "kms:ListAliases",
+      "Resource": "forbidden--specific",
+      "Effect": "Deny",
+      "Sid": "statement9",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement10",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "",
+      "Effect": "Allow",
+      "Sid": "statement11",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Sid": "statement12",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

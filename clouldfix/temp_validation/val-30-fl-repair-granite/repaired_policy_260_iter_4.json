@@ -1,0 +1,425 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2UserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:s3:::cik-front-end/file-6-13.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "athena:GetQueryResults",
+      "Resource": "arn:aws:s3:::cik-front-end/file-43-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudTrailUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:s3:::cik-front-end/file-35-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObjectAclCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:PutObjectAcl",
+      "Resource": "arn:aws:s3:::cik-front-end/file-37-19.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteBucketCorsUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:s3:::cik-front-end/file-37-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamGetGroupUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:s3:::cik-front-end/file-48-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeDeployUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "codedeploy:ListDeployments",
+      "Resource": "arn:aws:s3:::cik-front-end/file-46-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketCorsCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:s3:::cik-front-end-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRedshiftCreateClusterUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "redshift:CreateCluster",
+      "Resource": "arn:aws:s3:::cik-front-end/file-21-8.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3RestoreObjectCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLoggingCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLifecycleCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamCreateRoleUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "iam:CreateRole",
+      "Resource": "arn:aws:s3:::cik-front-end/file-12-14.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ListObjectVersionsCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObjectDifferentCIKFrontEnd",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::different-cik-front-end/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqsSendMessageBatchUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sqs:SendMessageBatch",
+      "Resource": "arn:aws:s3:::cik-front-end/file-14-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketWebsiteUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::cik-front-end/file-33-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildStopBuildRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "codebuild:StopBuild",
+      "Resource": "arn:aws:s3:::cik-front-end/file-42-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSesListIdentitiesUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::cik-front-end/file-30-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketWebsiteCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsPutKeyPolicyUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:s3:::cik-front-end/file-14-18.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObjectTaggingCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetObjectTaggingCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchListMetricsUserAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:s3:::cik-front-end/file-31-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketPolicyCloudFront",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKinesisDeleteStreamRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "kinesis:DeleteStream",
+      "Resource": "arn:aws:s3:::cik-front-end/file-1-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamGetAccessKeyLastUsedRole",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "iam:GetAccessKeyLastUsed",
+      "Resource": "arn:aws:s3:::cik-front-end/file-18-4.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqsGetQueueAttributesUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:s3:::cik-front-end/file-3-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsDeleteAliasUserBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "kms:DeleteAlias",
+      "Resource": "arn:aws:s3:::cik-front-end/file-32-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

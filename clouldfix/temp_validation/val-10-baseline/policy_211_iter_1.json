@@ -1,0 +1,133 @@
+{
+  "Version": "2012-10-17",
+  "Id": "SESPermissionPolicy",
+  "Statement": [
+    {
+      "Sid": "AllowSESPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESReceiveEmails",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDifferentMyBucketFileDeletion",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::different-mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForRoleAndNotDomainReferrer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnMyBucketFilesForUserAndNotDomainReferrer",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnOtherUsersBucketsWithConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:DeleteBucket",
+        "s3:PutBucketLifecycle",
+        "s3:CreateTable",
+        "s3:ListObjectVersions",
+        "dynamodb:CreateTable",
+        "sqs:ListQueues",
+        "iam:RemoveUserFromGroup",
+        "iam:ListRoles"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    }
+  ]
+}

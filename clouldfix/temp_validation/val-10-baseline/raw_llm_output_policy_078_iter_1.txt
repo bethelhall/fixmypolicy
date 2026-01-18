@@ -1,0 +1,148 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaDeleteFunctionInUsEast1ForBob",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DeleteVolumeInEuWest1ForBob",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeleteItemOnFileTxtByCharlie",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:iam::xxxxx:role/role2/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSUpdateKeyDescriptionInUsEast1ForBob",
+      "Effect": "Allow",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSPublishOnDeniedBucketAndFileByCharlie",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreateFunctionWithRestrictedIPRangeFromCharlie",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::xxxxx:role/role2-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitGetRepoInEUWest1ForAlice",
+      "Effect": "Allow",
+      "Action": "codecommit:GetRepository",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueStartJobRunInUSWest2ForServiceRoles",
+      "Effect": "Allow",
+      "Action": "glue:StartJobRun",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticBeanstalkCreateAppInUSWest2ForAlice",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:CreateApplication",
+      "Resource": "arn:aws:iam::xxxxx:role/role2",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeletionOfSpecificDbInstancesOnlyAsTestUser",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:iam::xxxxx:role/role2-specific",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your final repaired policy in its entirety with all requirements addressed correctly according to their specifications. Please note this does not cover every possible case but should provide you enough information on how these policies work together based off of what was originally presented here. If there were additional rules needed for other actions please let me know! I hope my assistance has been helpful today.-

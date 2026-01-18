@@ -1,0 +1,260 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "SecureBucketPolicy0",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketObjectLockConfiguration",
+        "s3:ListMultipartUploadParts",
+        "s3:AbortMultipartUpload",
+        "s3:ListBucketVersions"
+      ],
+      "Resource": [
+        "arn:aws:s3:::east1-vcc-test",
+        "arn:aws:s3:::east1-vcc-test/*"
+      ]
+    },
+    {
+      "Sid": "AllowIAMUserCreation",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetPolicyVersion",
+        "iam:DeleteAccessKey",
+        "iam:GetPolicy",
+        "iam:AttachUserPolicy",
+        "iam:DeleteUserPolicy",
+        "iam:DeletePolicy",
+        "iam:DeleteUser",
+        "iam:ListUserPolicies",
+        "iam:CreateUser",
+        "iam:TagUser",
+        "iam:CreateAccessKey",
+        "iam:CreatePolicy",
+        "iam:ListPolicyVersions",
+        "iam:GetUserPolicy",
+        "iam:PutUserPolicy",
+        "iam:ListAttachedUserPolicies",
+        "iam:GetUser",
+        "iam:CreatePolicyVersion",
+        "iam:DetachUserPolicy",
+        "iam:DeletePolicyVersion",
+        "iam:ListAccessKeys",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": "arn:aws:iam::*:user/*"
+    },
+    {
+      "Sid": "AllowEC2InstanceCreation",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAcl",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowKMSDecrypt",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowS3ListBucketVersions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucketVersions"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowGlueGetTableMetadata",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTableMetadata"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowSQSAddPermission",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:AddPermission"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitListRepositories",
+      "Effect": "Allow",
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchLogsPutLogEvents",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowIAMCreatePolicyVersion",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicyVersion"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowSageMakerListModels",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListModels"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyGetIPSet",
+      "Effect": "Allow",
+      "Action": [
+        "guardduty:GetIPSet"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchLogsCreateLogStream",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "DenyS3CreateBucket",
+      "Effect": "Deny",
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMCreateRole",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateRole"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketPolicy",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

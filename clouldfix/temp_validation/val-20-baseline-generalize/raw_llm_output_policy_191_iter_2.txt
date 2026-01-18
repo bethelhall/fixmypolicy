@@ -1,0 +1,154 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "es:*"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/*",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:PutBucketWebsite"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-0.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-1.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-2.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-3.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-4.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-5.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-6.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-7.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-8.txt",
+        "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-49-9.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:ListQueueTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-2-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:UpdateFunctionCode"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-33-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:PutObjectAcl"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-46-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:ListKeys"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-5-8.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "cloudformation:CreateStack"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/file-47-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/*/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:sts::xxxxxxxxxxxx:assumed-role/domain/*-specific",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

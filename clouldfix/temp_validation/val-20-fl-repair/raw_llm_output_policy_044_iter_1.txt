@@ -1,0 +1,253 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "airflow:InvokeRestApi"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Sid": "statement1"
+    },
+    {
+      "Action": "kms:UpdateKeyDescription",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_f2ee3c30"
+    },
+    {
+      "Action": "logs:CreateLogGroup",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_09f0b40c"
+    },
+    {
+      "Action": "rds:CreateDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_b2939e7a"
+    },
+    {
+      "Action": "sns:Subscribe",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Id": "deny_dcb1afd6"
+    },
+    {
+      "Action": "lambda:CreateFunction",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Id": "deny_84dfb155"
+    },
+    {
+      "Action": "glue:GetJob",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_20bbd099"
+    },
+    {
+      "Action": "lambda:InvokeFunction",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_caebe58c"
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin-forbidden-resource",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_f4fed16f"
+    },
+    {
+      "Action": "s3:GetBucketCors",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_5154c5df"
+    },
+    {
+      "Action": "cloudsearch:DescribeDomains",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_3db5cfd9"
+    },
+    {
+      "Action": "kms:ListAliases",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_47c1c9c9"
+    },
+    {
+      "Action": "athena:GetDatabase",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_c850ead8"
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "deny_914162e8"
+    },
+    {
+      "Action": "dynamodb:DeleteItem",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_d5226165"
+    },
+    {
+      "Action": "dynamodb:DeleteItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Id": "deny_a68e99c9"
+    },
+    {
+      "Action": "s3:CreateBucket",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_060ed72d"
+    },
+    {
+      "Action": "ec2:DescribeInstances",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_35033849"
+    },
+    {
+      "Action": "sqs:ChangeMessageVisibility",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_d5226165"
+    },
+    {
+      "Action": "iam:ListAttachedRolePolicies",
+      "Effect": "Allow",
+      "Resource": "arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_b3d49eac"
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:airflow:us-west-2:{account-redacted}:environment/{airflow-env-redacted}/Admin/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "deny_80526aa9"
+    }
+  ]
+}

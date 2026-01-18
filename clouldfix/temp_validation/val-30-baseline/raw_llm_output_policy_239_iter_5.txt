@@ -1,0 +1,366 @@
+{
+  "Id": "key-consolepolicy-3",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::XXX:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow attachment of persistent resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ab7dc5c4",
+      "Effect": "Allow",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::bucket-12/file-4.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/forbidden-appName-pipeline-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_0e01836d",
+      "Effect": "Allow",
+      "Action": "glue:StartJobRun",
+      "Resource": "arn:aws:s3:::bucket-3/file-7.txt",
+      "Principal": "arn:aws:iam::120429050194:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "deny_c385bbc6",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_39b4dd43",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_4be04186",
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZones",
+      "Resource": "arn:aws:s3:::bucket-1/file-3.txt",
+      "Principal": "arn:aws:iam::168086272511:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_4e7b3210",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_74192bd0",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::bucket-20/file-0.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/forbidden-appName-build-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0c0acfff",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_97f708db",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_b2829b44",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::XXX:root",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_63d9da6c",
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-9/table-9",
+      "Principal": "arn:aws:iam::751629225632:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_b8b2d889",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogStream",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-13",
+      "Principal": "arn:aws:iam::XXX:role/service-role/forbidden-appName-build-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_6caf433e",
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:s3:::bucket-10/file-9.txt",
+      "Principal": "arn:aws:iam::639687365979:root",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "deny_8f41d627",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-build-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0a533122",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-build-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f88d2df5",
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::bucket-3/file-8.txt",
+      "Principal": "arn:aws:iam::711647901125:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "deny_a7f2687a",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": "arn:aws:iam::XXX:root",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_789fd82b",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-3",
+      "Principal": "arn:aws:iam::853054558931:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_e7b70e6c",
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-54",
+      "Principal": "arn:aws:iam::XXX:role/service-role/forbidden-appName-pipeline-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_1e384d5b",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-pipeline-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_e7945ddc",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/appName-build-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_2a943e4d",
+      "Effect": "Allow",
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-14",
+      "Principal": "arn:aws:iam::332098687117:role/service-role/appName-build-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_2c229b09",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:s3:::bucket-37/file-0.txt",
+      "Principal": "arn:aws:iam::XXX:role/service-role/forbidden-appName-pipeline-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_6b83b491",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:s3:::bucket-47/file-0.txt",
+      "Principal": "arn:aws:iam::662297076632:role/service-role/appName-build-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_6ce7daf2",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::bucket-16/file-1.txt",
+      "Principal": "arn:aws:iam::941659049475:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_513aa5e5",
+      "Effect": "Allow",
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-3",
+      "Principal": "arn:aws:iam::633331018193:role/service-role/appName-build-role",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    }
+  ]
+}

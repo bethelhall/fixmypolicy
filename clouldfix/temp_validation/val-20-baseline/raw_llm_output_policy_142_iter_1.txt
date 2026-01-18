@@ -1,0 +1,266 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCreatePermissionSetWithBoundary",
+      "Effect": "Allow",
+      "Action": [
+        "sso:AttachManagedPolicyToPermissionSet",
+        "sso:CreateAccountAssignment",
+        "sso:CreatePermissionSet",
+        "sso:DeleteAccountAssignment",
+        "sso:DeleteInlinePolicyFromPermissionSet",
+        "sso:ProvisionPermissionSet",
+        "sso:PutInlinePolicyToPermissionSet",
+        "sso:UpdatePermissionSet"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Sid": "AllowUpdateDatabase",
+      "Effect": "Allow",
+      "Action": "glue:UpdateDatabase",
+      "Resource": "arn:aws:s3:::bucket-32/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowCreateApplication",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:CreateApplication",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-6",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyDescribeInstances",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Sid": "DenySendMessage",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Sid": "DenyRunInstances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowDeleteMessageBatch",
+      "Effect": "Allow",
+      "Action": "sqs:DeleteMessageBatch",
+      "Resource": "arn:aws:s3:::bucket-28/file-8.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowListAttachedRolePolicies",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedRolePolicies",
+      "Resource": "arn:aws:s3:::bucket-12/file-4.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowUpdateTable",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-24",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowAuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::bucket-48/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowDeleteDatabase",
+      "Effect": "Allow",
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-12",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowDeleteAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:s3:::bucket-3/file-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowStopWorkspaces",
+      "Effect": "Allow",
+      "Action": "workspaces:StopWorkspaces",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-13",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenySubscribe",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "AllowCreateKey",
+      "Effect": "Allow",
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-8",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowDeleteFunction",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-18",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyCreateFunction",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Sid": "AllowPutBucketPolicy",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::bucket-4/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringNotEquals": {
+          "iam:PermissionsBoundary": "ARN of the PB"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "forbidden-arn:aws:kms:ca-central-1:xxxx:key/zzzz-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_beb25305"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_25ce54d0"
+    },
+    {
+      "Action": "sqs:PurgeQueue",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_eb83c89e"
+    },
+    {
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_d2b06804"
+    },
+    {
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_78037842"
+    },
+    {
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Sid": "deny_44fe4ceb"
+    },
+    {
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_e67a4e9b"
+    },
+    {
+      "Action": "iam:ListAttachedUserPolicies",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_8c036649"
+    },
+    {
+      "Action": "kms:ReEncrypt",
+      "Resource": "forbidden-arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_5d0dfe42"
+    },
+    {
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_9a26ac9d"
+    }
+  ]
+}

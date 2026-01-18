@@ -1,0 +1,64 @@
+ 
+{
+"Version": "2012-10-17",
+"Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": "rds-db:connect",
+      "Resource": [
+        "arn:aws:rds-db:eu-west-2:myclientid:dbuser:db-instancestring/myIAMuser",
+        "arn:aws:rds-db:eu-west-2:myclientid:dbuser:*/*"
+      ]
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "workspaces:StartWorkspaces",
+        "sqs:TagQueue",
+        "kms:ListAliases",
+        "athena:GetTableMetadata",
+        "iam:DeleteLoginProfile",
+        "dynamodb:Query",
+        "s3:GetBucketAcl",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "glue:UpdateDatabase",
+        "s3:DeleteBucketTagging",
+        "s3:CreateBucket",
+        "cloudsearch:CreateDomain",
+        "kms:CreateGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser",
+        "lambda:CreateFunction",
+        "rds:DeleteDBInstance",
+        "iam:CreateUser",
+        "ec2:DescribeInstances",
+        "sns:Subscribe",
+        "dynamodb:PutItem",
+        "sqs:SendMessage",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}

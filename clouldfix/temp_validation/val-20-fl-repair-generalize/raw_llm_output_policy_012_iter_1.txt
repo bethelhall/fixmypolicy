@@ -1,0 +1,204 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:GetObjectVersion",
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionTagging",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetObjectTagging",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement5"
+    },
+    {
+      "Sid": "AllowS3ReplicationSourceRoleToUseTheKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:PutBucketVersioning",
+        "s3:ReplicateObject",
+        "s3:ReplicateTags",
+        "s3:ReplicateDelete",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:ObjectOwnerOverrideToBucketOwner"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket",
+        "arn:aws:s3:::destinationbucket",
+        "arn:aws:s3:::sourcebucket/*",
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement7"
+    },
+    {
+      "Action": [
+        "cloudtrail:CreateTrail"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/file-21-0.txt",
+        "arn:aws:s3::: sourcebucket/file-21-1.txt",
+        "arn:aws:s3::: sourcebucket/file-21-2.txt",
+        "arn:aws:s3::: sourcebucket/file-21-3.txt",
+        "arn:aws:s3::: sourcebucket/file-21-4.txt",
+        "arn:aws:s3::: sourcebucket/file-21-5.txt",
+        "arn:aws:s3::: sourcebucket/file-21-6.txt",
+        "arn:aws:s3::: sourcebucket/file-21-7.txt",
+        "arn:aws:s3::: sourcebucket/file-21-8.txt",
+        "arn:aws:s3::: sourcebucket/file-21-9.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Action": [
+        "iam:GetRolePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3::: sourcebucket/file-25-17.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Action": [
+        "sagemaker:ListEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket/file-13-12.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Action": [
+        "sagemaker:InvokeEndpoint"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket/file-15-3.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement11"
+    },
+    {
+      "Action": [
+        "workspaces:DescribeWorkspaces"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::bucket-13/file-0.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement12"
+    },
+    {
+      "Action": [
+        "glue:GetJob"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket/file-37-2.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement13"
+    }
+  ],
+  "Version": "2012-10-17"
+}

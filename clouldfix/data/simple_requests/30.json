@@ -1,0 +1,98 @@
+{
+  "Requests": [
+    {
+      "id": "allow_create_tags_prod_single",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:::instance/i-0a1b2c3d4e5f67890"
+      ],
+      "Principal": "arn:aws:iam::010526265345:role/ec2-backup-writer",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/environment": "production"
+        }
+      }
+    },
+    {
+      "id": "allow_create_tags_prod_multiple_instances",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:::instance/i-0aaa111bbb222ccc3",
+        "arn:aws:ec2:::instance/i-0bbb222ccc333ddd4"
+      ],
+      "Principal": "arn:aws:iam::010526265345:role/ec2-backup-writer",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/environment": "production"
+        }
+      }
+    },
+    {
+      "id": "allow_create_tags_prod_with_name_tag",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:::instance/i-0123456789abcdef0"
+      ],
+      "Principal": "arn:aws:iam::010526265345:user/deployer",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/environment": "production",
+          "aws:RequestTag/Name": "inst_name"
+        }
+      }
+    },
+    {
+      "id": "allow_create_tags_prod_other_instance",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:::instance/i-0feedfacecafebeef5"
+      ],
+      "Principal": "arn:aws:iam::010526265345:role/ec2-backup-writer",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/environment": "production"
+        }
+      }
+    },
+    {
+      "id": "deny_assume_role_eks_service_role",
+      "Effect": "deny",
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::010526265345:role/eks_service_role"
+      ],
+      "Principal": "arn:aws:iam::010526265345:role/ec2-backup-writer"
+    },
+    {
+      "id": "allow_create_tags_prod_with_extra_project_tag",
+      "Effect": "allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": [
+        "arn:aws:ec2:::instance/i-0c0ffee0c0ffee0c0"
+      ],
+      "Principal": "arn:aws:iam::010526265345:role/ec2-backup-writer",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/environment": "production",
+          "aws:RequestTag/project": "backup-jobs"
+        }
+      }
+    }
+  ]
+}

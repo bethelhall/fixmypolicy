@@ -1,0 +1,252 @@
+
+        {
+  "Statement": [
+    {
+      "Action": "rds-db:connect",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Sid": "statement1"
+    },
+    {
+      "Action": "workspaces:CreateWorkspaces",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_d3d184fb"
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "deny_78decb8c"
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}-specific",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_882015c8"
+    },
+    {
+      "Action": "workspaces:DeleteWorkspaces",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_7c78ec8b"
+    },
+    {
+      "Action": "s3:GetBucketWebsite",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_52e30bbf"
+    },
+    {
+      "Action": "sqs:SendMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Id": "deny_27b0849a"
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "deny_5a21728c"
+    },
+    {
+      "Action": "kms:EnableKey",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_f549bc86"
+    },
+    {
+      "Action": "iam:GetRolePolicy",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_70f2c297"
+    },
+    {
+      "Action": "athena:StopQueryExecution",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_7a565a24"
+    },
+    {
+      "Action": "ec2:DescribeInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Id": "deny_99d35741"
+    },
+    {
+      "Action": "ec2:DescribeVolumes",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_10069471"
+    },
+    {
+      "Action": "s3:PutObjectTagging",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_275b35b7"
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_7e49b1f4"
+    },
+    {
+      "Action": "ec2:CreateTags",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Id": "allow_a099b309"
+    },
+    {
+      "Action": "dynamodb:DeleteItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Id": "deny_38fb8456"
+    },
+    {
+      "Action": "rds:CreateDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_b1fa48b8"
+    },
+    {
+      "Action": "s3:GetBucketCors",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Id": "allow_44daf1b0"
+    },
+    {
+      "Action": "athena:GetQueryResults",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "allow_8f38e0c0"
+    },
+    {
+      "Action": "sns:Subscribe",
+      "Effect": "Deny",
+      "Resource": "arn:aws:rds-db:us-east-1:1234567890:dbuser:cluster-ABCVDEFGHIJKLMNOPQRSTUVWXYZ/${aws:username}-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Id": "deny_84c779cb"
+    }
+  ],
+  "Version": "2012-10-17"
+}

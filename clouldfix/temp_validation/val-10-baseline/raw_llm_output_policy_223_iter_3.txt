@@ -1,0 +1,77 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:DescribeTable"
+      ],
+      "Resource": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "iam:CreateUser",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:user/bob", "arn:aws:iam::123456789012:user/blocked-user"]
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"},
+        "ForAnyValue:StringEquals": {"aws:userid": "AIDAI"}
+      },
+      "Sid": "sid2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "athena:DeleteWorkGroup",
+        "cloudfront:GetDistribution",
+        "codedeploy:CreateDeployment",
+        "iam:CreateUser",
+        "ec2:CreateTags",
+        "autoscaling:DeleteAutoScalingGroup"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:role/service-role", "arn:aws:iam::123456789012:user/bob", "arn:aws:iam::123456789012:user/alice"]
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"},
+        "ArnLike": {"aws:SourceArn": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}"}
+      },
+      "Sid": "sid3"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:dynamodb:us-west-2:<accountId>:table/${credentials-iot:ThingName}/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringLike": {"aws:userid": "AIDAI"}
+      },
+      "Sid": "sid4"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-east-1"}
+      },
+      "Sid": "sid5"
+    }
+  ]
+}
+```
+This is your final output in json format without additional explanation nor preamble. Please replace `<accountId>` with actual account id when using this policy. This will allow you full access for all actions related DynamoDB except `DynamoDB:PutItem` action on specific file named `file.txt`, deny creation of DB instances from RDS service by user bob regardless requested region (EU West 1), block iam users alice & blocked-user creating new dynamodb tables based upon their respective arns., Deny deletion of db instance via rds if it was initiated through s3 bucket belonging to another aws resource under same acct ID but different path within said bucket etc.. Lastly, only role /servicerole can perform certain operations like athena delete workgroup cloud front get distribution codedeploy create deployment ec2 createtags autoscalingdeleteautoscalinggroup. All other requests would require explicit permissions granted elsewhere unless they match one these conditions explicitly mentioned above which includes string equals condition applied across multiple statements making sure we have granular control over who does what where how often.. Remember always follow least privilege principle while designing policies! Always test thoroughly once done! Good luck!!

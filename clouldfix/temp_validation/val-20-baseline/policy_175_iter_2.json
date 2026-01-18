@@ -1,0 +1,149 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*"
+    },
+    {
+      "Sid": "Allow Alice to publish SNS messages in us-west-2",
+      "Action": "sns:Publish",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-28-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Bob to stop CloudTrail logging in eu-west-1",
+      "Action": "cloudtrail:StopLogging",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-4-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Bob to create security groups in eu-west-1",
+      "Action": "ec2:CreateSecurityGroup",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-18-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Bob to create AutoScalingGroups in us-west-2",
+      "Action": "autoscaling:CreateAutoScalingGroup",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-35-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Bob to create login profiles in us-east-1",
+      "Action": "iam:CreateLoginProfile",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-0-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Alice to subscribe to SNS topics in eu-west-1",
+      "Action": "sns:Subscribe",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-13-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow service role to list metrics in us-east-1",
+      "Action": "cloudwatch:ListMetrics",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-10-6.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Alice to delete detectors in eu-west-1",
+      "Action": "guardduty:DeleteDetector",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-14-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Bob to start CodeBuild builds in eu-west-1",
+      "Action": "codebuild:StartBuild",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-4-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Alice to delete objects in my-bucket-name/${aws:PrincipalTag/org_id} in eu-west-1",
+      "Action": "cloudfront:DeleteDistribution",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-7-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Alice to delete objects in my-bucket-name/${aws:PrincipalTag/org_id} in us-east-1",
+      "Action": "iam:DeleteAccessKey",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-40-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

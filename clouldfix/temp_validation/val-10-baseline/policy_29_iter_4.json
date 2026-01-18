@@ -1,0 +1,138 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLogsDeletionForAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogStream",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSPermissionAddingForAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMListingOfRolesByServiceRoleFromEuWest1",
+      "Effect": "Allow",
+      "Action": "iam:ListRoles",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGettingBucketTagsForBobInUsWest2",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeletingSpecificFileWithCertainConditions",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenySubscribingToTopicBasedOnIPAndARNConstraints",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:sns:*:*:forbidden-*",
+      "Condition": {
+        "NotIpAddress": {
+          "aws:SourceIp": [
+            "203.0.113.0/24"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeBuildStoppingForAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "codebuild:StopBuild",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeletionIfUnsecureConnectionUsed",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": false
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESDeletionForAuthorizedUsersOnly",
+      "Effect": "Allow",
+      "Action": "ses:DeleteIdentity",
+      "Resource": "arn:aws:iam::000001:role/XXXXXXX-runner",
+      "Principal": {
+        "AWS": "arn:aws:iam::*:role/*author*-"
+      },
+      "Condition": {
+        "ArnLike": {
+          "aws:PrincipalArn": "arn:aws:iam::*:role/*author*"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreatingNewUserBecauseBlocked",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

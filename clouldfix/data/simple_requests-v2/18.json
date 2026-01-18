@@ -1,0 +1,100 @@
+{
+  "Requests": [
+    {
+      "id": "allow_redshift_getobject_outside_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/external/schema1/table1/part-00000.parquet"
+      ],
+      "Principal": "Redshift IAM Role ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-aaaaaaaaaaaaaaaaa"
+        }
+      }
+    },
+    {
+      "id": "allow_redshift_listbucket_outside_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "Redshift IAM Role ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-bbbbbbbbbbbbbbbbb"
+        }
+      }
+    },
+    {
+      "id": "allow_app_getobject_from_allowed_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/datasets/2025/08/01/file.parquet"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/AppRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx"
+        }
+      }
+    },
+    {
+      "id": "allow_app_listbucket_from_allowed_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/AppRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx"
+        }
+      }
+    },
+    {
+      "id": "allow_sts_assumedrole_getobject_from_allowed_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/external/schema2/tableB/part-00123.snappy.parquet"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/DataLakeReader/session-1",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx"
+        }
+      }
+    },
+    {
+      "id": "allow_redshift_getobject_manifest_outside_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/manifests/table1.manifest"
+      ],
+      "Principal": "Redshift IAM Role ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-ccccccccccccccccc"
+        }
+      }
+    }
+  ]
+}

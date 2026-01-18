@@ -1,0 +1,466 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::my-bucket-data/*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9c4fd95e",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-39-13.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_3295eca0",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListEndpoints",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-29-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_09f64840",
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-17-13.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "deny_62afbd31",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "deny_a91950e7",
+      "Effect": "Deny",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "deny_39f7fcd7",
+      "Effect": "Deny",
+      "Action": "logs:DeleteLogStream",
+      "Resource": "authorized/arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-23-6",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_365bbecc",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-41-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_c1c3269c",
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-16-0",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "deny_8b9d0290",
+      "Effect": "Deny",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_4e3e5df7",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-14-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_ed930e3f",
+      "Effect": "Allow",
+      "Action": "workspaces:StartWorkspaces",
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-16-0",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "deny_d9bac2dc",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::my-bucket-data-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "allow_36876d06",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-49-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_708f891d",
+      "Effect": "Allow",
+      "Action": "config:DescribeConfigRules",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-30-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "deny_a5057e32",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::different-my-bucket-data/file.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "deny_5ce836cb",
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*-forbidden-resource",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "allow_101fd66f",
+      "Effect": "Allow",
+      "Action": "cloudtrail:StartLogging",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-35-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_f246eaa3",
+      "Effect": "Allow",
+      "Action": "kinesis:CreateStream",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-40-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "deny_468fd28d",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_c41cfe48",
+      "Effect": "Allow",
+      "Action": "glue:StartCrawler",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-10-19.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_5f4614ca",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-24-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_b48c9eb0",
+      "Effect": "Allow",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-22-3.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_dfc85616",
+      "Effect": "Allow",
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-45-13.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_74d78966",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-16-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_da904693",
+      "Effect": "Allow",
+      "Action": "glue:UpdateDatabase",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-40-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_46858d23",
+      "Effect": "Allow",
+      "Action": "cloudsearch:DeleteDomain",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-21-8.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_e5849b1d",
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-21-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_762345c4",
+      "Effect": "Allow",
+      "Action": "sqs:DeleteMessageBatch",
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_resource-4-6",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_50c7bae3",
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::my-bucket-test/file-22-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_13206b21",
+      "Effect": "Allow",
+      "Action": "iam:ListPolicies",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-31-15.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "deny_3a2a62e3",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "allow_90f4ea6c",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-22-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_5e878355",
+      "Effect": "Allow",
+      "Action": "autoscaling:CreateAutoScalingGroup",
+      "Resource": "arn:aws:s3:::my-bucket-data/file-32-14.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "deny_cb332ad4",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:s3:::my-bucket-test-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "deny_41e5f1c9",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "forbidden-arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*-specific",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Sid": "deny_cf792636",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    }
+  ]
+}

@@ -1,0 +1,430 @@
+{
+  "Version": "2012-10-17",
+  "Id": "AWSLogDeliveryWrite",
+  "Statement": [
+    {
+      "Sid": "AWSLogDeliveryAclCheck",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::[destination-bucket]",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AWSLogDeliveryWrite",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "delivery.logs.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_0f9aebe3",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_6588f771",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::different-[destination-bucket]/file.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_bc1b75ba",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-14-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bae24054",
+      "Effect": "Allow",
+      "Action": "iam:ListPolicies",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-19-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['My Account ID']"
+        }
+      }
+    },
+    {
+      "Sid": "deny_1c9911f2",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_1a3726ce",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeNotebookInstance",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-33-17.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_6d2602a6",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_c8d379dc",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_00871615",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_18fd53b9",
+      "Effect": "Allow",
+      "Action": "glue:GetPartitions",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-46-19.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bcf507cd",
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-37-19.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "deny_37ce76a5",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_ac25b3d3",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_c6729ad9",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_5d7474a8",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "My Account ID"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_5fc93553",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-17-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3c2ced1e",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-12-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['My Account ID']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_826a1b29",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-23-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bb4cbd0d",
+      "Effect": "Allow",
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-43-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d935ea79",
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-35-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_db88b870",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-16-9.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_703c032e",
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-18-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['[My Account ID]']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_593153b8",
+      "Effect": "Allow",
+      "Action": "kms:DeleteAlias",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-1-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['[My Account ID]']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c000a670",
+      "Effect": "Allow",
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-37-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "allow_badd95e3",
+      "Effect": "Allow",
+      "Action": "cloudfront:DeleteDistribution",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-27-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_e25a7d87",
+      "Effect": "Allow",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-43-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "not-bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Sid": "deny_92783a24",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_ff9c0536",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::[destination-bucket]-forbidden/file.txt",
+      "Principal": "delivery.logs.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control",
+          "aws:SourceAccount": [
+            "[My Account ID]"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_d9fd8eb9",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawler",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-23-10.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['My Account ID']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_391c627e",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedUserPolicies",
+      "Resource": "arn:aws:s3:::[destination-bucket]/AWSLogs/[My Account ID]/file-27-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['My Account ID']"
+        }
+      }
+    }
+  ]
+}

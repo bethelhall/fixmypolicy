@@ -1,0 +1,142 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForCloudFrontPrivateContent",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalToAccessMyWebsiteFilesOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::mywebsite.com/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/ABCDEF12345"
+        }
+      }
+    },
+    {
+      "Sid": "ExplicitlyDenySpecificActionsOnDifferentBucketsAndObjects",
+      "Effect": "Deny",
+      "Action": [
+        "s3:RestoreObject",
+        "s3:PutBucketLifecycle",
+        "s3:PutBucketCors"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::different-mywebsite.com/file.txt",
+        "arn:aws:s3:::mywebsite.com-forbidden/file.txt"
+      ],
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/ABCDEF12345"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMUserBobToManageCertainResourcesInMyWebsiteBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketLifecycle",
+        "iam:DeleteLoginProfile",
+        "s3:PutBucketCors"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mywebsite.com/*",
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBReadAccessFromAlice",
+      "Effect": "Allow",
+      "Action": "dynamodb:GetItem",
+      "Resource": "arn:aws:s3:::mywebsite.com/file-25-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoleBasedAccessManagementOfCertainResources",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketCors",
+        "dynamodb:GetItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mywebsite.com/*",
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "ExplicitlyDenySQSActionsThatAreNotAllowedByOtherStatements",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ListDeadLetterSourceQueues"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/ABCDEF12345"
+        }
+      }
+    },
+    {
+      "Sid": "AllowUsersOrRolesWithTheseARNSToPerformSomeSQSActions",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:ListDeadLetterSourceQueues"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mywebsite.com/file-13-10.txt",
+        "arn:aws:s3:::mywebsite.com/file-8-0.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "us-east-1"
+          ]
+        }
+      }
+    }
+  ]
+}

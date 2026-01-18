@@ -1,0 +1,139 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "SNS:Publish",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "authorized/arn:aws:sns:us-east-2:444455556666:MyTopic/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:sns:us-east-2:444455556666:MyTopic-specific",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "not-myOrgId"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Allow",
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateIPSet",
+      "Resource": "arn:aws:sns:us-east-2:444455556666:MyTopic",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "not-myOrgId"
+        }
+      }
+    }
+  ]
+}

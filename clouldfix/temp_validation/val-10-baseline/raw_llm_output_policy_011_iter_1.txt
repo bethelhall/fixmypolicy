@@ -1,0 +1,54 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "rekognition:CreateFaceLivenessSession",
+        "rekognition:StartFaceLivenessSession",
+        "rekognition:GetFaceLivenessSessionResults"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "allowBobToManageHisKeysInUsEast1AndWest2Only",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": ["us-east-1", "us-west-2"]}}
+    },
+    {
+      "Sid": "allowBobToControlGlueTablesFromAnywhere",
+      "Effect": "Allow",
+      "Action": "glue:*",
+      "Resource": "arn:aws:glue:${region}:123456789012:table/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allowAdminUserOnCertainRoles",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allowAliceToListBucketFilesWithConditions",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::bucket-*",
+      "Condition": {"StringLike": {"s3:prefix": ["*", "*/file-*.txt"]}},
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allowServiceRoleToDoAnythingButTerminateEC2instances",
+      "Effect": "Allow",
+      "NotAction": "ec2:TerminateInstances",
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}
+```
+This is your final output in json format without additional explanation nor preamble.|

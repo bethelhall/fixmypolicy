@@ -1,0 +1,1257 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "kms:ReEncrypt*",
+        "kms:GetKeyPolicy",
+        "kms:GenerateDataKey*",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:CreateGrant"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Sid": "KMSUsage"
+    },
+    {
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:PutBucketWebsite"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Publish"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sagemaker:ListNotebookInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "codebuild:StartBuild"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "codepipeline:StartPipelineExecution"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:GetBucketTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "es:DeleteElasticsearchDomain"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kinesis:PutRecord"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "glue:DeleteTable"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:StartInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ses:GetIdentityVerificationAttributes"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sagemaker:DescribeNotebookInstance"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "workspaces:DescribeWorkspaces"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:ImportKeyPair"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>-specific",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:CreateAccessKey"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sagemaker:StopNotebookInstance"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:AttachVolume"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-9/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sagemaker:StopNotebookInstance"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:AttachVolume"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:ListPolicies"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction2"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction3"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction1"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction5"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction4"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:DeniedAction0"
+      ],
+      "

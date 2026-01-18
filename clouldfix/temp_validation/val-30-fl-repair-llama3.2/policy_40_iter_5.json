@@ -1,0 +1,211 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:RemoveUserFromGroup",
+        "iam:DeleteSigningCertificate",
+        "iam:GetUserPolicy",
+        "iam:ListUsers",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudSearch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudsearch:DescribeDomains"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Glue",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetCrawlers",
+        "glue:GetCrawler"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketCors",
+        "s3:PutObjectAcl",
+        "s3:GetObjectVersion",
+        "s3:GetBucketWebsite",
+        "s3:PutBucketWebsite"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:UpdateKeyDescription",
+        "kms:PutKeyPolicy",
+        "kms:ListKeys"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "EC2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Athena",
+      "Effect": "Allow",
+      "Action": [
+        "athena:BatchGetQueryExecution"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Lambda",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "IAM",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateAccessKey",
+        "iam:DeleteGroup",
+        "iam:DeleteRole",
+        "iam:ListAccessKeys",
+        "iam:ListAttachedGroupPolicies",
+        "iam:ListAttachedRolePolicies"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS Publish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 Describe Instances",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM List Access Keys",
+      "Effect": "Deny",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM Delete Role",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRole",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM Delete Group",
+      "Effect": "Deny",
+      "Action": "iam:DeleteGroup",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny Lambda Create Function",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB Delete Item",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}

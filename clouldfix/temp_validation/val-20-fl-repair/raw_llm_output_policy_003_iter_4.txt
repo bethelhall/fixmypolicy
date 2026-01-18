@@ -1,0 +1,91 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAllExceptAllowedActionsAndResources",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificActionsOnSpecificResourcesForSpecificPrincipals",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "sqs:SendMessageBatch",
+        "kms:ListKeys",
+        "sns:CreateTopic",
+        "ec2:AttachVolume",
+        "sagemaker:StartNotebookInstance",
+        "ec2:DeleteKeyPair",
+        "redshift:CreateCluster",
+        "sagemaker:CreateModel",
+        "iam:GetRolePolicy",
+        "s3:DeleteBucketLifecycle",
+        "config:DeleteConfigRule",
+        "codepipeline:GetPipeline"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-3/file-25-18.txt",
+        "arn:aws:s3:::bucket-3/file-24-0.txt",
+        "arn:aws:s3:::bucket-3/file-17-10.txt",
+        "arn:aws:s3:::bucket-3/file-37-18.txt",
+        "arn:aws:s3:::bucket-3/file-18-13.txt",
+        "arn:aws:s3:::bucket-3/file-7-0.txt",
+        "arn:aws:s3:::bucket-3/file-45-19.txt",
+        "arn:aws:s3:::bucket-3/file-26-3.txt",
+        "arn:aws:s3:::bucket-3/file-31-2.txt",
+        "arn:aws:s3:::bucket-3/file-32-6.txt",
+        "arn:aws:s3:::bucket-3/file-18-7.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2",
+            "eu-west-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyAllExceptAllowedActionsAndResources",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    }
+  ]
+}

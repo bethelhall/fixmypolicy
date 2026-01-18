@@ -1,0 +1,176 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:CreateSecret"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:DeleteAutoScalingGroup"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:0:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:1:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:2:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:3:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:4:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:5:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:6:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:7:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:8:secret:xyz_secret-EdyEFK",
+        "arn:aws:secretsmanager:us-east-1:9:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK-forbidden-resource"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK-specific"
+      ],
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "authorized/arn:aws:secretsmanager:us-east-1:388429313303:secret:xyz_secret-EdyEFK/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ec2_run_with_both_tags",
+        "Effect": "allow",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-1:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Acme Corp",
+            "aws:RequestTag/Name": "WebServer-01"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_run_with_only_customer_tag",
+        "Effect": "deny",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-west-2:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Beta Inc"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_run_with_only_name_tag",
+        "Effect": "deny",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:eu-west-1:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "Database-Primary"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_run_without_any_tags",
+        "Effect": "deny",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-southeast-1:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/intern"
+      },
+      {
+        "id": "test_delete_tags_with_both_tags",
+        "Effect": "allow",
+        "Action": [
+          "ec2:DeleteTags"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-1:123456789012:instance/i-0123456789abcdef0"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Gamma LLC",
+            "aws:RequestTag/Name": "AppServer-02"
+          }
+        }
+      },
+      {
+        "id": "test_delete_tags_with_only_customer",
+        "Effect": "deny",
+        "Action": [
+          "ec2:DeleteTags"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-west-1:123456789012:instance/i-0987654321fedcba0"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Delta Corp"
+          }
+        }
+      },
+      {
+        "id": "test_delete_tags_without_tags",
+        "Effect": "deny",
+        "Action": [
+          "ec2:DeleteTags"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ca-central-1:123456789012:instance/i-abcdef0123456789"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/operator"
+      },
+      {
+        "id": "test_ec2_run_with_additional_tags",
+        "Effect": "allow",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-2:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/devops",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Epsilon Industries",
+            "aws:RequestTag/Name": "LoadBalancer-01",
+            "aws:RequestTag/Environment": "Production",
+            "aws:RequestTag/Owner": "TeamA"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_run_different_resource_type",
+        "Effect": "allow",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-1:123456789012:volume/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/storage-admin",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "Zeta Systems",
+            "aws:RequestTag/Name": "DataVolume-01"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_run_with_empty_tag_values",
+        "Effect": "deny",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:sa-east-1:123456789012:instance/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/tester",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Customer": "",
+            "aws:RequestTag/Name": ""
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 60.0,
+      "total_requests": 10,
+      "correct": 6,
+      "incorrect": 4
+    },
+    "repaired_policy": {
+      "accuracy": 60.0,
+      "total_requests": 10,
+      "correct": 6,
+      "incorrect": 4
+    }
+  },
+  "metadata": {
+    "file_number": "10",
+    "user_intent": "Hello, I started a project that aims to prevent the creation of certain resources if they do not have certain Tags. Following this documentation \"\nhttps://aws.amazon.com/pt/blogs/mt/implement-aws-resource-tagging-strategy-using-aws-tag-policies-and-service-control-policies-scps/\n\" I successfully replicated the \"ec2:runinstance\" action using only one Tag, but when I added a second Tag to the policy, the \"ec2:runinstance\" action happens with the presence of only one of the two Tags I defined.\n\n\nWith a few more tests you can prevent the action by creating two SCP policies, one policy for each Tag, so only when the two Tags I defined are present the resource is created, the big problem now is that the maximum number of SCP policies that I can apply to the Organization is 5 per account, and in the project there would be a total of 6 Tags.\n\n\nWhat I need is to concatenate these two JSON policies into one that works, but all the SCP \"Conditions\" I've tried either block everything or release the action with the presence of just one Tag.\n\n\nIs there a condition that validates all Tags present and then denies the action, or is what I'm trying impossible at the moment?\n\n\nI tried with these other conditions, but without success, I didn't find where I could be going wrong.\n\n\n\n\nForAllValues:StringEquals\n\n\n\n\n\n\nStringEqualsIfExists\n\n\n\n\n\n\nStringNotEqualsIfExists\n\n\n\n\n\n\nStringNotEquals",
+    "timestamp": "2025-08-19T17:35:46.040701"
+  }
+}

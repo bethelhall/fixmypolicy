@@ -1,0 +1,152 @@
+{
+  "Requests": [
+    {
+      "id": "qbusiness_batch_put_document",
+      "Effect": "allow",
+      "Action": [
+        "qbusiness:BatchPutDocument"
+      ],
+      "Resource": [
+        "arn:aws:qbusiness:us-east-1:123456789012:application/app-123/index/idx-456"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/GreengrassRole"
+    },
+    {
+      "id": "qbusiness_batch_delete_document",
+      "Effect": "allow",
+      "Action": [
+        "qbusiness:BatchDeleteDocument"
+      ],
+      "Resource": [
+        "arn:aws:qbusiness:us-west-2:987654321098:application/app-789/index/idx-012"
+      ],
+      "Principal": "arn:aws:iam::987654321098:user/DataProcessor"
+    },
+    {
+      "id": "s3_get_object_wrong_account",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/document.pdf"
+      ],
+      "Principal": "arn:aws:iam::999888777666:role/ExternalRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalAccount": "999888777666"
+        }
+      }
+    },
+    {
+      "id": "s3_get_object_correct_account",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::[CT-management-account-id]:role/TestRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalAccount": "[CT-management-account-id]"
+        }
+      }
+    },
+    {
+      "id": "iot_describe_role_alias",
+      "Effect": "deny",
+      "Action": [
+        "iot:DescribeRoleAlias"
+      ],
+      "Resource": [
+        "arn:aws:iot:us-east-1:123456789012:rolealias/MyGreengrassCoreTokenExchangeRoleAlias"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/GitHubActionsRole"
+    },
+    {
+      "id": "iot_create_role_alias",
+      "Effect": "deny",
+      "Action": [
+        "iot:CreateRoleAlias"
+      ],
+      "Resource": [
+        "arn:aws:iot:us-east-1:123456789012:rolealias/NewRoleAlias"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/CloudFormationRole"
+    },
+    {
+      "id": "qbusiness_wrong_resource_format",
+      "Effect": "deny",
+      "Action": [
+        "qbusiness:BatchPutDocument"
+      ],
+      "Resource": [
+        "arn:aws:qbusiness:us-east-1:123456789012:application/wrong-format"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/DataRole"
+    },
+    {
+      "id": "qbusiness_unauthorized_action",
+      "Effect": "deny",
+      "Action": [
+        "qbusiness:GetApplication"
+      ],
+      "Resource": [
+        "arn:aws:qbusiness:us-east-1:123456789012:application/app-123/index/idx-456"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/ReadOnlyRole"
+    },
+    {
+      "id": "s3_put_object_denied",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/upload.txt"
+      ],
+      "Principal": "arn:aws:iam::[CT-management-account-id]:role/UploadRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalAccount": "[CT-management-account-id]"
+        }
+      }
+    },
+    {
+      "id": "iam_pass_role_denied",
+      "Effect": "deny",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/MyGreengrassV2TokenExchangeRole"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/GitHubActionsRole"
+    },
+    {
+      "id": "qbusiness_batch_operations_multiple",
+      "Effect": "allow",
+      "Action": [
+        "qbusiness:BatchPutDocument",
+        "qbusiness:BatchDeleteDocument"
+      ],
+      "Resource": [
+        "arn:aws:qbusiness:eu-west-1:555666777888:application/app-multi/index/idx-multi"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/QBusinessProcessor"
+    },
+    {
+      "id": "cloudformation_describe_stacks",
+      "Effect": "deny",
+      "Action": [
+        "cloudformation:DescribeStacks"
+      ],
+      "Resource": [
+        "arn:aws:cloudformation:us-east-1:123456789012:stack/greengrass-stack/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/GitHubActionsRole"
+    }
+  ]
+}

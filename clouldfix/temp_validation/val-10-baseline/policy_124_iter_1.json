@@ -1,0 +1,84 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:GetHostedZone",
+        "route53:ChangeResourceRecordSets",
+        "route53:ListResourceRecordSets",
+        "sqs:SetQueueAttributes",
+        "s3:PutBucketLogging",
+        "sagemaker:DescribeEndpoint",
+        "codebuild:StartBuild",
+        "ses:SendRawEmail"
+      ],
+      "Resource": [
+        "arn:aws:route53:::hostedzone/<zoneid>",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::authorised/arn:aws:route53:::hostedzone/<zoneid>/file.txt",
+        "arn:aws:s3:::<zoneid>",
+        "arn:aws:s3:::<zoneid>-specific",
+        "arn:aws:s3:::allowed-bucket/*"
+      ],
+      "Sid": "statement1",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish",
+        "ec2:DescribeInstances",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:route53:::hostedzone/<zoneid>-forbidden-resource",
+        "arn:aws:route53:::hostedzone/<zoneid>/file.txt",
+        "arn:aws:ec2:*:<account>:instance/*",
+        "arn:aws:rds:*:<account>:dbinstance/*"
+      ],
+      "Sid": "statement2",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:role/admin-role",
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Sid": "statement3",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,341 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowRootLevelListingOfBucket",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderListing",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderReadAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*"
+    },
+    {
+      "Sid": "DenyGetBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::my-bucket-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "DenyCreateDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::different-my-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Sid": "AllowStartInstances",
+      "Effect": "Allow",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-29-14.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:delimiter": "/"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowChangeMessageVisibility",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibility",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-30-18.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:prefix": ""
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowGetBucketCors",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketCors",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-45-10.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:prefix": "users/",
+          "s3:prefix": "users/chris/"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowCreateLoginProfile",
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-30-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowAttachRolePolicy",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-19-5.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:delimiter": "/"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowGetDatabase",
+      "Effect": "Allow",
+      "Action": "glue:GetDatabase",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-10-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyPutBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "DenyGetBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Sid": "AllowCreateModel",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-12-13.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:prefix": ""
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowDeleteAlias",
+      "Effect": "Allow",
+      "Action": "kms:DeleteAlias",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-2-0.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:delimiter": "/"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowListDeployments",
+      "Effect": "Allow",
+      "Action": "codedeploy:ListDeployments",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-1-7.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:prefix": "users/",
+          "s3:prefix": "users/chris/"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "DenyCreateUser",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyDeleteUser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowDeleteFunction",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-41-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyGetObjectAcl",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Sid": "AllowCreateAlias",
+      "Effect": "Allow",
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-21-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowDeleteDashboards",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DeleteDashboards",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-37-7.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "s3:prefix": ""
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

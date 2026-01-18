@@ -1,0 +1,132 @@
+{
+  "Requests": [
+    {
+      "id": "allow_53d35add",
+      "Effect": "Allow",
+      "Action": "ses:GetIdentityDkimAttributes",
+      "Resource": "arn:aws:ec2:*:*:instance/file-13-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": "not-['EC2 Image Builder']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "allow_957e9efc",
+      "Effect": "Allow",
+      "Action": "workspaces:DescribeWorkspaceDirectories",
+      "Resource": "arn:aws:ec2:*:*:instance/file-18-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_5a1aebce",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:ec2:*:*:instance/file-25-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_b25b6355",
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:ec2:*:*:instance/file-16-9.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_fb556a0b",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:ec2:*:*:instance/file-37-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "allow_0f6e164b",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-15-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "deny_adf64ff0",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "authorized/arn:aws:ec2:*:*:instance/*/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "deny_e04f863e",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "id": "deny_5376e440",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:ec2:*:*:instance/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "id": "deny_94ae571d",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "forbidden-arn:aws:ec2:*:*:instance/*-specific",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    }
+  ]
+}

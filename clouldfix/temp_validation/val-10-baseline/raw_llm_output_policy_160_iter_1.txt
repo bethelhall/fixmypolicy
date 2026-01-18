@@ -1,0 +1,72 @@
+[
+  {
+    "Sid": "AllowBobToDeleteCFDistributionsInUsWest2Only",
+    "Effect": "Allow",
+    "Action": "cloudfront:DeleteDistribution",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-resource-48-0",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "AllowServiceRoleToPutLogEventsInUsEast1Only",
+    "Effect": "Allow",
+    "Action": "logs:PutLogEvents",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-resource-28-6",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "AllowBobToCreateESDomainsInEuWest1Only",
+    "Effect": "Allow",
+    "Action": "es:CreateElasticsearchDomain",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-resource-1-13",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "DenyDeveloperRoleSubscribetoSNSEuWest2Only",
+    "Effect": "Deny",
+    "Action": "sns:Subscribe",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*-forbidden-resource",
+    "Principal": "arn:aws:iam::111222333444:role/developer-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "DenyBlockedUsertoPutLogEventsOnUnauthorizedResources",
+    "Effect": "Deny",
+    "Action": "logs:PutLogEvents",
+    "Resource": "unauthrized/arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*/file.txt",
+    "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+  },
+  {
+    "Sid": "AllowAliceToEnableKeysinUsEast1Only",
+    "Effect": "Allow",
+    "Action": "kms:EnableKey",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-resource-30-6",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "DenyTestUserToListHostedZonesSpecificARNonly",
+    "Effect": "Deny",
+    "Action": "route53:ListHostedZones",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": "arn:aws:iam::123456789012:user/test-user"
+  },
+  {
+    "Sid": "DenyAdminRoleInvokingLambdaFunctionsWithCertainTags",
+    "Effect": "Deny",
+    "Action": "lambda:InvokeFunction",
+    "Resource": "forbidden-arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*-specific",
+    "Principal": "arn:aws:iam::123456789012:role/admin-role",
+    "Condition": {"StringLike": {"s3:ExistingObjectTag/Department": "Finance"}}
+  },
+  {
+    "Sid": "AllowServiceRoleToDeleteVolumesInUsWest2Only",
+    "Effect": "Allow",
+    "Action": "ec2:DeleteVolume",
+    "Resource": "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-resource-1-4",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  }
+]

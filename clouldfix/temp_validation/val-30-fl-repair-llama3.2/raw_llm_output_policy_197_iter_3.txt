@@ -1,0 +1,246 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowVpcEndpoint",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloud9DeleteEnvironment",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqsDeleteQueue",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "sqs:DeleteQueue",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "not-vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamDeletePolicy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "iam:DeletePolicy",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchGetMetricStatistics",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSagemakerDescribeTrainingJob",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticLoadBalancingDescribeLoadBalancers",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "not-vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudTrailGetTrailStatus",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeKeyPairs",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "not-vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSCreateAlias",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "kms:CreateAlias",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-8",
+        "arn:aws:s3:::denied-bucket-8/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeleteUser",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "iam:DeleteUser",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutItem",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Action": "dynamodb:PutItem",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-2",
+        "arn:aws:s3:::denied-bucket-2/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "sqs:SendMessage",
+      "Resource": [
+        "arn:aws:s3:::different-great-expectations-docs",
+        "arn:aws:s3:::different-great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunction",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "lambda:InvokeFunction",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-6",
+        "arn:aws:s3:::denied-bucket-6/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-3",
+        "arn:aws:s3:::denied-bucket-3/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4"
+      },
+      "Action": "es:ESHttp*",
+      "Resource": [
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/*",
+        "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-26-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-49-5.txt",
+      "Principal": "arn:aws:iam::ACCOUNTID:role/forbidden-EC2_ROLE_4",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-38-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:ImportKeyPair",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/file-16-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codepipeline:StartPipelineExecution",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-24-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:CreateTrail",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/file-23-11.txt",
+      "Principal": "arn:aws:iam::701687003882:role/EC2_ROLE_4",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "authorized/arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/*/file.txt",
+      "Principal": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/*-specific",
+      "Principal": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index4/*-forbidden-resource",
+      "Principal": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-arn:aws:es:REGION:ACCOUNTID:domain/DOMAIN/index3/*-specific",
+      "Principal": "arn:aws:iam::ACCOUNTID:role/EC2_ROLE_4",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

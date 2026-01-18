@@ -1,0 +1,184 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_dynamodb_query_from_lambda",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:Query"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/UserData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/service-role/MyLambdaExecutionRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalServiceName": "lambda.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_dynamodb_scan_from_ec2",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:Scan"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ProductCatalog"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalServiceName": "ec2.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_dynamodb_query_from_iam_user_outside_network",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:Query"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/CustomerOrders"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/john.doe",
+        "Condition": {
+          "IpAddressNotEquals": {
+            "aws:SourceIp": [
+              "192.168.1.0/24",
+              "10.0.0.0/16"
+            ]
+          }
+        }
+      },
+      {
+        "id": "test_dynamodb_scan_from_iam_user_within_network",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:Scan",
+          "dynamodb:GetItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/InventoryTable"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/jane.smith",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": [
+              "192.168.1.50"
+            ]
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_public_access_block",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutAccountPublicAccessBlock"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user"
+      },
+      {
+        "id": "test_dynamodb_batch_operations_from_lambda",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/TransactionTable"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/service-role/DataProcessingLambdaRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalServiceName": "lambda.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_dynamodb_put_item_from_external_ip",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:PutItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/SensitiveData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/remote-worker",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": [
+              "203.0.113.25"
+            ]
+          }
+        }
+      },
+      {
+        "id": "test_dynamodb_describe_table_from_glue",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:DescribeTable"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/AnalyticsTable"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/service-role/GlueServiceRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalServiceName": "glue.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_public_access_block",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetAccountPublicAccessBlock"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/security-auditor"
+      },
+      {
+        "id": "test_dynamodb_update_item_from_step_functions",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:UpdateItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/WorkflowState"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/service-role/StepFunctionsExecutionRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalServiceName": "states.amazonaws.com"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 25.0,
+      "total_requests": 12,
+      "correct": 3,
+      "incorrect": 9
+    },
+    "repaired_policy": {
+      "accuracy": 25.0,
+      "total_requests": 12,
+      "correct": 3,
+      "incorrect": 9
+    }
+  },
+  "metadata": {
+    "file_number": "21",
+    "user_intent": "Hi,\n\n\nWe are trying to setup a \nSCP\n  which will deny some \nDynamoDB\n actions based on the **IP Ranes ** of our Network, the way that IAM Users for example can't Scan or Query a DynamoDB table outside of our Network.\n\n\nIn this SCP we need to add a\nn exception\n to some AWS Services (Like: \nEC2\n or \nLambda\n) which can freely Query/Scan a DynamoDB table if they have the necessary permissions.\n\n\nWe tried with the following SCP and it worked fine for the first case \"IAM Users\" but failed for the Lambda case as we still recieving an AccessDenied Error trying to Query a DynamoDB table from a Lambda Function :\n\n\nDo you know how we can manage to add this exception for all AWS Services which need to perform any DynamoDB action without the need to use the ARN of specific IAM Role used by these service ?",
+    "timestamp": "2025-08-19T17:42:52.927167"
+  }
+}

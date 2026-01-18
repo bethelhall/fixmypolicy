@@ -1,0 +1,146 @@
+[
+  {
+    "Sid": "PolicyForSESListingIdentities",
+    "Effect": "Allow",
+    "Action": "ses:ListIdentities",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-29-11.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "PolicyToDeleteASG",
+    "Effect": "Allow",
+    "Action": "autoscaling:DeleteAutoScalingGroup",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-35-18.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/service-role"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  },
+  {
+    "Sid": "DenyingDeletionOfBucketTags",
+    "Effect": "Deny",
+    "Action": "s3:DeleteBucketTagging",
+    "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+    "Principal": {
+      "Service": "delivery.logs.amazonaws.com"
+    },
+    "Condition": {
+      "StringEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control",
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  },
+  {
+    "Sid": "DenyingGettingLifeCycleConfiguration",
+    "Effect": "Deny",
+    "Action": "s3:GetBucketLifecycle",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark-forbidden/file.txt",
+    "Principal": {
+      "Service": "delivery.logs.amazonaws.com"
+    },
+    "Condition": {
+      "StringEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control",
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  },
+  {
+    "Sid": "AllowsIAMUserBobtoDeleteKeys",
+    "Effect": "Allow",
+    "Action": "iam:DeleteAccessKey",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-42-10.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/bob"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  },
+  {
+    "Sid": "AllowedDescribingTraingingJobsbyAlice",
+    "Effect": "Allow",
+    "Action": "sagemaker:DescribeTrainingJob",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-4-11.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/bob"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control"
+      }
+    }
+  },
+  {
+    "Sid": "allowsEC2describeSecGroupsfromALice",
+    "Effect": "Allow",
+    "Action": "ec2:DescribeSecurityGroups",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-20-4.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/alice"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "eu-west-1"
+      }
+    }
+  },
+  {
+    "Sid": "allowedgetcomplianceDetailsofRDSinstance",
+    "Effect": "Allow",
+    "Action": "config:GetComplianceDetailsByConfigRule",
+    "Resource": "arn:aws:s3:::vpc-flow-log-sudsark/file-31-0.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/bob"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control"
+      }
+    }
+  },
+  {
+    "Sid": "DeniesCreationofDifferentVPCFlowLogSudsarkInstances",
+    "Effect": "Deny",
+    "Action": "rds:CreateDBInstance",
+    "Resource": "arn:aws:s3:::different-vpc-flow-log-sudsark/file.txt",
+    "Principal": {
+      "Service": "delivery.logs.amazonaws.com"
+    },
+    "Condition": {
+      "StringEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control",
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  },
+  {
+    "Sid": "DeniesSQSSendMessageFromDeliveryLogs",
+    "Effect": "Deny",
+    "Action": "sqs:SendMessage",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": {
+      "Service": "delivery.logs.amazonaws.com"
+    },
+    "Condition": {
+      "StringEquals": {
+        "s3:x-amz-acl": "bucket-owner-full-control",
+        "aws:SourceAccount": "333344445555"
+      }
+    }
+  }
+]

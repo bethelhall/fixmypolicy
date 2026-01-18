@@ -1,0 +1,114 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "DenySpecificUserFromListingObjectsOnCertainPaths",
+      "Effect": "Deny",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": ["data/partner_2/*"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      }
+    },
+    {
+      "Sid": "CloudFrontCreationRestrictionToEUWest1",
+      "Effect": "Allow",
+      "Action": "cloudfront:CreateDistribution",
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "SQSPermissionRemovalRestrictedToUSWest1",
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "LambdaCreationProhibitedIfRequestMatchesConditionsAndIsMadeByTempUser",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::forbidden-<my-bucket>/*/",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": ["data/partner_2/data/incoming/*"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      }
+    },
+    {
+      "Sid": "GrantPermissionsBasedOnUserID",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:StartNotebookInstance",
+        "glue:BatchGetJobs",
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      }
+    },
+    {
+      "Sid": "PreventUsersFromSeeingOtherUsersKeys",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "*"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "GrantingServiceRoleDescriptionNotebookInstances",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeNotebookInstance",
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    }
+  ]
+}
+```
+This is your repaired policy based on requirements you have shared with me. I removed unnecessary statements like `stop changing versioning settings` because it was not in requests list nor there were actions related to this statement which could satisfy from request lists.`

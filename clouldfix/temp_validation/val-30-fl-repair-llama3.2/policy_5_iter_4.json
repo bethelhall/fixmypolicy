@@ -1,0 +1,695 @@
+{
+  "Version": "2012-10-17",
+  "Id": "BackupPolicy01",
+  "Statement": [
+    {
+      "Sid": "BackupPolicy01",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::my-backup/*",
+        "arn:aws:s3:::my-backup"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudSearch",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDB",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "dynamodb:GetItem",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutItem",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlue",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "glue:UpdateDatabase",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodePipeline",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "codepipeline:ListPipelines",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumes",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambda",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSAddPermission",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "sqs:TagQueue",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAutoscaling",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "autoscaling:CreateAutoScalingGroup",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESend",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:SendEmail",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDifferentBucket",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDKMS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "kms:CreateAlias",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeleteAccessKey",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESDelete",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:DeleteMessage",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESUnsubscribe",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "sns:Unsubscribe",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentity",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentity",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESVerify",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:Verify",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESSendRaw",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:SendRaw",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetSendQuota",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetSendQuota",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetReceiveQuota",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetReceiveQuota",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetConfigurationSet",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetConfigurationSet",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationAttributes",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationStatus",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationStatus",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetSendQuotaHistory",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetSendQuotaHistory",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetReceiveQuotaHistory",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetReceiveQuotaHistory",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetConfigurationSets",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetConfigurationSets",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationAttributesHistory",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationAttributesHistory",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationStatusHistory",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationStatusHistory",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetSendQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetSendQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetReceiveQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetReceiveQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetConfigurationSetsForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetConfigurationSetsForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationAttributesForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationAttributesForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationStatusForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationStatusForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetSendQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetSendQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetReceiveQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetReceiveQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetConfigurationSetsForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetConfigurationSetsForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationAttributesForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationAttributesForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationStatusForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationStatusForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetSendQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetSendQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetReceiveQuotaHistoryForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetReceiveQuotaHistoryForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetConfigurationSetsForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetConfigurationSetsForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationAttributesForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationAttributesForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESGetIdentityVerificationStatusForDomain",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ses:GetIdentityVerificationStatusForDomain",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    }
+  ]
+}

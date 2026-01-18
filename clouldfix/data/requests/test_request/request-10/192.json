@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "deny_2db0ca10",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications-specific",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "deny_ecc6eb55",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "id": "allow_7e062b91",
+      "Effect": "Allow",
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topicfilter/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_34567c9b",
+      "Effect": "Allow",
+      "Action": "kinesis:PutRecord",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_973eb37b",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_09e2e692",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "forbidden-arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_1d2ae73c",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/status",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_7217afbd",
+      "Effect": "Allow",
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:topic/your-app/${cognito-identity.amazonaws.com:sub}/notifications",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_ad15a3fe",
+      "Effect": "Allow",
+      "Action": "kms:ListGrants",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_c6e6d707",
+      "Effect": "Allow",
+      "Action": "glue:UpdateTable",
+      "Resource": "arn:aws:iot:us-east-2:<account-id>:client/${cognito-identity.amazonaws.com:sub}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

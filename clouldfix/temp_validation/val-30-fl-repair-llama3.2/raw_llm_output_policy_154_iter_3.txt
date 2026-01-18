@@ -1,0 +1,268 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Id": "key-default-1",
+  "Statement": [
+    {
+      "Sid": "Enable IAM User Permissions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Action": [
+        "kms:Encrypt*",
+        "kms:Decrypt*",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:Describe*"
+      ],
+      "Resource": "*",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "Allow S3 DeleteObjectTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Codedeploy ListDeployments",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "codedeploy:ListDeployments",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Elasticsearch DescribeElasticsearchDomains",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::526330183869:root"
+      },
+      "Action": "es:DescribeElasticsearchDomains",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow SQS GetQueueUrl",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::258181709179:root"
+      },
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow S3 PutBucketPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::656406070718:root"
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow DynamoDB GetItem",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::984303426895:root"
+      },
+      "Action": "dynamodb:GetItem",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudWatch ListMetrics",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS DeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny EC2 RunInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS ReceiveMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS Publish",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny IAM CreateUser",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny Glue Table Delete",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "glue:Table",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny Lambda CreateFunction",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny S3 Bucket Logging",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "s3:GetBucketLogging",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SQS SendMessage",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Deny DynamoDB DeleteItem",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]}

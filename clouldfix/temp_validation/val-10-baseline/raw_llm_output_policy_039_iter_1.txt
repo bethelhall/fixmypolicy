@@ -1,0 +1,50 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "Policy",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:user/blocked-user", "arn:aws:iam::555666777888:role/cross-account-role", "arn:aws:iam::123456789012:role/test-role", "arn:aws:iam::111222333444:role/developer-role"]
+      },
+      "Action": [
+        "config:DescribeConfigRules",
+        "ses:DeleteIdentity",
+        "glue:GetJobRun",
+        "s3:GetObject",
+        "s3:PutBucketLifecycle",
+        "s3:ListObjectVersions",
+        "s3:GetObjectVersion",
+        "config:DeleteConfigRule",
+        "autoscaling:CreateAutoScalingGroup",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": [
+        "arn:aws:s3:::[REDACTED BUCKET NAME]/*",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::completely-different-bucket/file.txt",
+        "arn:aws:s3:::[REDACTED BUCKET NAME]-forbidden/file.txt",
+        "arn:aws:s3:::different-[REDACTED BUCKET NAME]/file.txt",
+        "arn:aws:s3:::[REDACTED BUCKET NAME]/file-1-12.txt",
+        "arn:aws:s3:::[REDACTED BUCKET NAME]/file-36-14.txt",
+        "arn:aws:s3:::[REDACTED BUCKET NAME]/file-46-1.txt"
+      ],
+      "Sid": "statements"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {"aws:userid": "AIDAI"}
+      },
+      "Sid": "sid"
+    }
+  ]
+}
+```
+This is your final output in json format without additional explanation nor prior content.|

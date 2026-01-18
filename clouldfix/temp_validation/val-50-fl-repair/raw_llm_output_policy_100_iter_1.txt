@@ -1,0 +1,59 @@
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logging",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/MyLambda_*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": [
+        "arn:aws:s3:::my-bucket-test/*"
+      ]
+    },
+    {
+      "Sid": "S3Prod",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::my-bucket-data/*",
+      "Condition": {
+        "StringLike": {
+          "lambda:SourceFunctionArn": "*Prod"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSDeleteTopic",
+      "Effect": "Allow",
+      "Action": "sns:DeleteTopic",
+      "Resource": "arn:aws:s3:::dining-images/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowKinesisVideoDeleteStream",
+      "Effect": "Allow",
+      "Action": "kinesisvideo:DeleteStream",
+      "Resource": "arn:aws:kinesisvideo:*:*:stream/${credentials-iot:ThingName}/file-2-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

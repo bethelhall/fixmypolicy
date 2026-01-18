@@ -1,0 +1,165 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "iot_subscribe_with_leading_slash",
+        "Effect": "deny",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topicfilter//resource/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-001"
+          }
+        }
+      },
+      {
+        "id": "iot_subscribe_without_leading_slash",
+        "Effect": "allow",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topicfilter/resource/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-002"
+          }
+        }
+      },
+      {
+        "id": "iot_receive_with_leading_slash",
+        "Effect": "deny",
+        "Action": [
+          "iot:Receive"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topic//resource/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-003"
+          }
+        }
+      },
+      {
+        "id": "iot_receive_without_leading_slash",
+        "Effect": "allow",
+        "Action": [
+          "iot:Receive"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topic/resource/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-004"
+          }
+        }
+      },
+      {
+        "id": "iot_connect_any_client",
+        "Effect": "allow",
+        "Action": [
+          "iot:Connect"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:client/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role"
+      },
+      {
+        "id": "iot_subscribe_wildcard_pattern",
+        "Effect": "allow",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topicfilter/resource/*/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-005"
+          }
+        }
+      },
+      {
+        "id": "iot_receive_nested_resource",
+        "Effect": "allow",
+        "Action": [
+          "iot:Receive"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topic/resource/parent/child/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role"
+      },
+      {
+        "id": "iot_subscribe_different_prefix",
+        "Effect": "deny",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topicfilter/api/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role"
+      },
+      {
+        "id": "iot_publish_not_authorized",
+        "Effect": "deny",
+        "Action": [
+          "iot:Publish"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topic/resource/RESOURCE_ID/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role"
+      },
+      {
+        "id": "iot_subscribe_exact_match",
+        "Effect": "allow",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:123456789012:topicfilter/resource/12345/event"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/iot-lambda-authorizer-role",
+        "Condition": {
+          "StringEquals": {
+            "iot:ClientId": "web-app-client-006"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    },
+    "repaired_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    }
+  },
+  "metadata": {
+    "file_number": "36",
+    "user_intent": "We're using IoT as a communication channel for a web app. The clients are not registered things, but rather we authorize using tokens and custom lambda authorizer. Our clients that use the app only receive messages by subscribing to topics of interest.\n\n\nI have the lambda authorizer setup and everything works when I return the following policy:\n\n\n\n\n\n\nAn example topic that the client would subscribe to would be \n/resource/RESOURCE_ID/event\n.\n\n\nThe moment I try to restrict the policy more than having just \n*\n, it just stops working. For example even if I just add the \nresource/*\n to the end of the topic & topicfilter like this:\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Action\": \"iot:Connect\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"*\"\n      ]\n    },\n    {\n      \"Action\": \"iot:Subscribe\",\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:iot:eu-west-1:ACCOUNT_ID:topicfilter/resource/*\"\n      ]\n    },\n    {\n      \"Action\": [\n        \"iot:Receive\"\n      ],\n      \"Effect\": \"Allow\",\n      \"Resource\": [\n        \"arn:aws:iot:eu-west-1:ACCOUNT_ID:topic/resource/*\"\n      ]\n    }\n  ]\n}\n\n\n\nNow the client no longer receives any messages.\n\n\nI've logged the policies, the topics we publish to and subscribe to, and they're 100% correct and identical everywhere. I enabled IoT logging and I found this stuff from logs (removed the non-relevant properties):\n\n\n{\n  \"status\": \"Success\",\n  \"eventType\": \"Subscribe\",\n  \"topicName\": \"/resource/RESOURCE_ID/event\",\n  \"subscriptions\": [\n    {\n      \"topicName\": \"/resource/RESOURCE_ID/event\",\n      \"reasonCode\": 135\n    }\n  ]\n}\n\n\n\nLooking at AWS IoT docs, reason code 135 means \"Not authorized\". Changing the \n/resource/*\n to just \n/*\n makes it work.",
+    "timestamp": "2025-08-19T17:51:13.710099"
+  }
+}

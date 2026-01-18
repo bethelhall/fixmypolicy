@@ -1,0 +1,76 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowIAMActionsOnSpecificResourcesAndConditions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListAttachedUserPolicies",
+        "cloud9:DeleteEnvironment",
+        "iam:PutRolePolicy",
+        "glue:BatchGetJobs",
+        "iam:CreateLoginProfile"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket/file-*",
+        "arn:aws:s3:::my-bucket/file-*-*.txt",
+        "arn:aws:s3:::my-bucket/*",
+        "arn:aws:iam::123456789012:role/service-role",
+        "arn:aws:iam::123456789012:user/bob",
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnwantedEC2andDynamoDBactionsWithMaxKeysConstraint",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-forbidden/file.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:iam::123456789012:user/test-user",
+        "arn:aws:iam::123456789012:role/test-role"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeletionFromDifferentBucketOrAccount",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": [
+        "arn:aws:s3:::different-my-bucket/file.txt",
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessageToCrossAccount",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

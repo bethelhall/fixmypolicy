@@ -1,0 +1,222 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetObject",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetObjectTagging",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitGetRepository",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "codecommit:GetRepository",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBQuery",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "not-arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2TerminateInstances",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEncrypt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "kms:Encrypt",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerDescribeTrainingJob",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAttachUserPolicy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "iam:ListAttachedUserPolicies",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerListNotebookInstances",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "not-arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBGetItem",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "dynamodb:GetItem",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSDescribeDBInstances",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaDeleteFunction",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationDeleteStack",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Action": "cloudformation:DeleteStack",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreateTrainingJob",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "sagemaker:CreateTrainingJob",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "not-arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsDescribeLogGroups",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "not-arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteBucketTagging",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::33333333:role/service-role/my_authRole"
+        ]
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectAttributes",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket",
+        "arn:aws:s3:::mybucket/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:UpdateDatabase",
+      "Resource": "arn:aws:s3:::mybucket/file-38-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "es:DescribeElasticsearchDomains",
+      "Resource": "arn:aws:s3:::mybucket/file-44-2.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::mybucket-forbidden/file.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:BatchGetJobs",
+      "Resource": "arn:aws:s3:::mybucket/file-0-12.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutObjectAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-9/file-9.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetJob",
+      "Resource": "arn:aws:s3:::mybucket/file-37-7.txt",
+      "Principal": "arn:aws:iam::992047029422:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "arn:aws:s3:::mybucket/file-32-17.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:UpdateAccessKey",
+      "Resource": "arn:aws:s3:::mybucket/file-18-6.txt",
+      "Principal": "arn:aws:iam::317524173259:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:s3:::mybucket/file-21-14.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::mybucket/file-19-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:s3:::mybucket/file-25-7.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:TagQueue",
+      "Resource": "arn:aws:s3:::mybucket/file-21-3.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetJob",
+      "Resource": "arn:aws:s3:::mybucket/file-37-7.txt",
+      "Principal": "arn:aws:iam::992047029422:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:s3:::mybucket/file-25-16.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::different-mybucket/file.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:s3:::mybucket/file-17-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SetQueueAttributes",
+      "Resource": "arn:aws:s3:::mybucket/file-23-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::mybucket/file-42-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "arn:aws:s3:::mybucket/file-40-7.txt",
+      "Principal": "arn:aws:iam::811893141902:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:s3:::mybucket/file-40-1.txt",
+      "Principal": "arn:aws:iam::458214070629:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:s3:::mybucket/file-35-3.txt",
+      "Principal": "arn:aws:iam::596145638055:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:s3:::mybucket/file-5-6.txt",
+      "Principal": "arn:aws:iam::777922441319:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:ListDetectors",
+      "Resource": "arn:aws:s3:::mybucket/file-42-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:SendEmail",
+      "Resource": "arn:aws:s3:::mybucket/file-17-15.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/forbidden-my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": "arn:aws:s3:::mybucket/file-15-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::33333333:role/service-role/my_authRole",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

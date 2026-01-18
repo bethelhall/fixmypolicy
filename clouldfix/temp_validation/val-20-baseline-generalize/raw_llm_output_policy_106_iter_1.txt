@@ -1,0 +1,205 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "logs:PutLogEvents",
+        "logs:CreateLogStream"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Sid": "Logs"
+    },
+    {
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::bucket-37/file-0.txt",
+        "arn:aws:s3:::bucket-37/file-1.txt",
+        "arn:aws:s3:::bucket-37/file-2.txt",
+        "arn:aws:s3:::bucket-37/file-3.txt",
+        "arn:aws:s3:::bucket-37/file-4.txt",
+        "arn:aws:s3:::bucket-37/file-5.txt",
+        "arn:aws:s3:::bucket-37/file-6.txt",
+        "arn:aws:s3:::bucket-37/file-7.txt",
+        "arn:aws:s3:::bucket-37/file-8.txt",
+        "arn:aws:s3:::bucket-37/file-9.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "AllowKMSDescribeKey"
+    },
+    {
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-40",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "AllowDynamoDBDeleteItem"
+    },
+    {
+      "Action": [
+        "kms:UpdateKeyDescription"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-17/file-7.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "AllowKMSUpdateKeyDescription"
+    },
+    {
+      "Action": [
+        "sqs:ListQueueTags"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-27/file-6.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "AllowSQSListQueueTags"
+    },
+    {
+      "Action": [
+        "sagemaker:ListEndpointConfigs"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-17/table-13",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "AllowSageMakerListEndpointConfigs"
+    },
+    {
+      "Action": [
+        "ec2:ImportKeyPair"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-15/file-3.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "AllowEC2ImportKeyPair"
+    },
+    {
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:role/developer-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "DenyEC2RunInstances"
+    },
+    {
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "DenyDynamoDBDeleteItem"
+    },
+    {
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "DenySQSSendMessage"
+    },
+    {
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "DenyIAMDeleteUser"
+    }
+  ]
+}

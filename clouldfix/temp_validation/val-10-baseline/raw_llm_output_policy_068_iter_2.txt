@@ -1,0 +1,140 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "LambdaInvocationPermissionForServiceRoleInEuWest1",
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:secretsmanager:sa-east-1:111111111:secret:mysecret",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "KMSDecryptionPermissionsOnRandomUUIDForKeyOwnerOnly",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:sa-east-1:111111111:key/random-uuid",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "IAMPolicyListingByAliceWithCertainConditionsAndRestrictedToUsEast1",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:kms:sa-east-1:111111111:key/random-uuid",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "EC2InstanceDescriptionDeniedDueToUnauthorizedAccessAttemptFromTestUser",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {},
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      }
+    },
+    {
+      "Sid": "SQSURLRetrievalAllowedForBobWithinSpecifiedRegions",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:secretsmanager:sa-east-1:111111111:secret:mysecret",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": ["eu-west-1", "us-west-2"]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "SecretsManagerReadActionsFilteredBasedOnRequestingEntityARNandRegion",
+      "Effect": "Allow",
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:sa-east-1:111111111:secret:mysecret",
+      "Condition": {
+        "ArnLike": {
+          "aws:SourceArn": "arn:aws:secretsmanager:*:123456789012:secret:*"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Sid": "GuardDutyIPSetsReadingPermittedViaSpecificRoles",
+      "Effect": "Allow",
+      "Action": "guardduty:GetIPSet",
+      "Resource": "arn:aws:secretsmanager:sa-east-1:111111111:secret:mysecret",
+      "Condition": {
+        "ArnLike": {
+          "aws:PrincipalArn": "arn:aws:iam::*:role/*"
+        }
+      },
+      "Principal": "*"
+    },
+    {
+      "Sid": "DeletionOfUsersNotAllowedEvenIfTheyAreSecurelyTransparent",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:secretsmanager:sa-east-1:111111111:secret:mysecret",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": false
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      }
+    },
+    {
+      "Sid": "AuthorizationOfIncomingTrafficIntoASecurityGroupsAllowsThroughRulesDefinedByKeyId",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:kms:sa-east-1:111111111:key/random-uuid",
+      "Condition": {
+        "StringEquals": {
+          "ec2:AuthorizedService": "ec2.amazonaws.com"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "EncryptionOperationsLimitedToThoseRequiringMaxKeysEqualToTen",
+      "Effect": "Deny",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:kms:sa-east-1:111111111:key/random-uuid",
+      "Condition": {
+        "NumericGreaterThan": {
+          "s3:max-keys": 10
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    }
+  ]
+}
+```

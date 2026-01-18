@@ -1,0 +1,147 @@
+{
+  "Version": "2012-10-17",
+  "Id": "ExamplePolicy01",
+  "Statement": [
+    {
+      "Sid": "AllowAliceToPerformActionsWithinSpecifiedConditions",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeEndpoint",
+        "s3:PutBucketWebsite",
+        "es:DescribeElasticsearchDomains",
+        "config:PutConfigRule",
+        "iam:DeleteAccessKey"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucketname>/file-48-6.txt",
+        "arn:aws:s3:::<bucketname>/file-21-16.txt",
+        "arn:aws:s3:::<bucketname>/file-28-5.txt",
+        "arn:aws:s3:::<bucketname>/file-39-17.txt",
+        "arn:aws:s3:::<bucketname>/file-29-19.txt",
+        "arn:aws:s3:::<bucketname>/file-31-6.txt"
+      ],
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceToManageSpecificFileWithEUWest1Restriction",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketWebsite"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/file-21-16.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyBobFromManagingOtherUsersBuckets",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::different-<bucketname>/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAdminRoleChanges",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketWebsite"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      }
+    },
+    {
+      "Sid": "DenyTempUserInvokingFunctionsUnderConstraints",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      },
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceViewingHerOwnResources",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomains"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/file-28-5.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "GrantServiceRolesLimitedPermission",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/file-39-17.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "DenySettingLogsWithPreconditions",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketLogging"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>-forbidden/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      }
+    },
+    {
+      "Sid": "GrantServiceRoleAdditionalPermissioins",
+      "Effect": "Allow",
+      "Action": [
+        "config:PutConfigRule"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/file-29-19.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "RevokeDeletionOFUserKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/file-31-6.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    }
+  ]
+}

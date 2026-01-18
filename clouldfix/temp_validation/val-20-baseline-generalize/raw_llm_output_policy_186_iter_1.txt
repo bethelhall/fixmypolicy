@@ -1,0 +1,138 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:us-west-2::key/*",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "ssm:GetParameter",
+        "ssm:GetParameters",
+        "ssm:DescribeParameters"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2::parameter/*",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": [
+        "sqs:TagQueue"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-west-2::parameter/file-20-0.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-1.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-2.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-3.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-4.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-5.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-6.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-7.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-8.txt",
+        "arn:aws:ssm:us-west-2::parameter/file-20-9.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_2ecd8a2e"
+    },
+    {
+      "Action": [
+        "sagemaker:CreateEndpointConfig"
+      ],
+      "Resource": "arn:aws:kms:us-west-2::key/file-25-5.txt",
+      "Effect": "Allow",
+      "Sid": "allow_6aa0e217"
+    },
+    {
+      "Action": [
+        "codepipeline:StartPipelineExecution"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2::parameter/file-6-15.txt",
+      "Effect": "Allow",
+      "Sid": "allow_2b22570d"
+    },
+    {
+      "Action": [
+        "ses:GetIdentityVerificationAttributes"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2::parameter/file-14-12.txt",
+      "Effect": "Allow",
+      "Sid": "allow_4c4cec41"
+    },
+    {
+      "Action": [
+        "s3:GetBucketCors"
+      ],
+      "Resource": "arn:aws:kms:us-west-2::key/file-29-4.txt",
+      "Effect": "Allow",
+      "Sid": "allow_90b8d53d"
+    },
+    {
+      "Action": [
+        "kms:ReEncrypt"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2::parameter/file-27-13.txt",
+      "Effect": "Allow",
+      "Sid": "allow_56bcc59d"
+    },
+    {
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": "forbidden-arn:aws:ssm:us-west-2::parameter/*-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_a87ce3a8"
+    },
+    {
+      "Action": [
+        "kms:ReEncrypt"
+      ],
+      "Resource": "forbidden-arn:aws:kms:us-west-2::key/*-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_dc5499ca"
+    },
+    {
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": "arn:aws:ssm:us-west-2::parameter/*-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "deny_3dd24732"
+    },
+    {
+      "Action": [
+        "kms:ScheduleKeyDeletion"
+      ],
+      "Resource": "arn:aws:kms:us-west-2::key/*-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_1c537e33"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "Version": "2012-10-17",
+  "Id": "key-default-1",
+  "Statement": [
+    {
+      "Sid": "AllowCodeCommitAccessToBucketFileInEuWest1",
+      "Effect": "Allow",
+      "Action": "codecommit:GetRepository",
+      "Resource": "arn:aws:s3:::bucket-6/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMUserCreationInRootAccountOfSameRegion",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": {
+        "AWS": "arn:aws:iam::Your_account_ID:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationStackDescriptionsForAliceInUsWest2",
+      "Effect": "Allow",
+      "Action": "cloudformation:DescribeStacks",
+      "Resource": "arn:aws:s3:::bucket-11/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSKeyUpdatesBySpecifiedRoleAndRegion",
+      "Effect": "Allow",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:s3:::bucket-15/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::798581571820:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSPublishActionsOnAdminRole",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSUBscribeActionsOutsideUSWest2",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRestorationOfObjectsViaAPI",
+      "Effect": "Allow",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::bucket-12/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaQueriesFromSpecificUser",
+      "Effect": "Allow",
+      "Action": "athena:BatchGetQueryExecution",
+      "Resource": "arn:aws:s3:::bucket-20/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaFunctionCreationOversecureChannelOnly",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": {
+        "Service": "logs.region.amazonaws.com"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

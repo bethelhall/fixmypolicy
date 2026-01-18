@@ -1,0 +1,916 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-specific",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:0:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:1:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:2:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:3:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:4:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:5:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:6:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:7:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:8:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:9:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}
+
+        FAULT LOCALIZATION REPORT TO CHECK WHICH REQUIREMENTS ARE BEING INCORRECTLY ALLOWED/DENIED AND FIX:
+        POLICY FAULT LOCALIZATION REPORT
+==================================================
+
+Policy: repaired_policy_56_iter_3.json
+Total Misclassified Requests: 16
+
+SHOULD BE ALLOWED BUT EXPLICITLY DENIED
+--------------------------------------------------
+These requests should be ALLOWED but are DENIED by the following statements:
+
+Request: allow_87ae5cc8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-12.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_5ec23e7d_combo_2
+  Action: sns:Subscribe
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-11.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f3b485e_combo_2
+  Action: dynamodb:GetItem
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-14.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f904689_combo_2
+  Action: ec2:DeleteSecurityGroup
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-9.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_d659243a_combo_2
+  Action: s3:DeleteObject
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-36-14.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_34cffd1b_combo_2
+  Action: sqs:ListQueues
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var0_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-0.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var1_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-1.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var2_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-2.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var3_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-3.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var4_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-4.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var5_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-5.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var6_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-6.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var7_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-8.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var9_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-9.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-specific",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:0:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:1:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:2:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:3:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:4:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:5:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:6:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:7:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:8:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:9:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}
+
+        FAULT LOCALIZATION REPORT TO CHECK WHICH REQUIREMENTS ARE BEING INCORRECTLY ALLOWED/DENIED AND FIX:
+        POLICY FAULT LOCALIZATION REPORT
+==================================================
+
+Policy: repaired_policy_56_iter_3.json
+Total Misclassified Requests: 16
+
+SHOULD BE ALLOWED BUT EXPLICITLY DENIED
+--------------------------------------------------
+These requests should be ALLOWED but are DENIED by the following statements:
+
+Request: allow_87ae5cc8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-12.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_5ec23e7d_combo_2
+  Action: sns:Subscribe
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-11.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f3b485e_combo_2
+  Action: dynamodb:GetItem
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-14.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f904689_combo_2
+  Action: ec2:DeleteSecurityGroup
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-9.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_d659243a_combo_2
+  Action: s3:DeleteObject
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-36-14.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_34cffd1b_combo_2
+  Action: sqs:ListQueues
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var0_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-0.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var1_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-1.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var2_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-2.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var3_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-3.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var4_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-4.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var5_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-5.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var6_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-6.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var7_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-8.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var9_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-9.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-specific",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:rds-db:eu-west-1:11111111111:dbuser:example-db/rds-test/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:0:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:1:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:rds-db:eu-west-1:2:dbuser:example-db/rds-test",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "rds

@@ -1,0 +1,135 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_eic_open_tunnel_specific_instance",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:744096931876:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_eic_open_tunnel_endpoint",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:744096931876:instance-connect-endpoint/eice-03cec2d7947718afb"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_eic_send_ssh_key",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:744096931876:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_s3_putobject_auth0_logs",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bkt-trulab-auth0-logs/*"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_s3_getobject_cloudwatch_logs",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bkt-trulab-auth0-logs/*"
+        ],
+        "Principal": "arn:aws:logs:us-east-2:123456789012:*"
+      },
+      {
+        "id": "test_eic_serial_console_ssh",
+        "Effect": "allow",
+        "Action": [
+          "ec2-instance-connect:SendSerialConsoleSSHPublicKey"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:744096931876:instance/i-0e610b0467e3c0a4c"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_eic_open_tunnel_different_instance",
+        "Effect": "deny",
+        "Action": [
+          "ec2-instance-connect:OpenTunnel"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-south-1:744096931876:instance/i-0a1b2c3d4e5f6g7h8"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_s3_listbucket_auth0_logs",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bkt-trulab-auth0-logs"
+        ],
+        "Principal": "arn:aws:logs:us-east-2:123456789012:*"
+      },
+      {
+        "id": "test_eic_describe_instances",
+        "Effect": "allow",
+        "Action": [
+          "ec2:DescribeInstances"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      },
+      {
+        "id": "test_s3_deletebucket_auth0_logs",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bkt-trulab-auth0-logs"
+        ],
+        "Principal": "arn:aws:iam::742096941866:user/Kratos"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 30.0,
+      "total_requests": 10,
+      "correct": 3,
+      "incorrect": 7
+    },
+    "repaired_policy": {
+      "accuracy": 30.0,
+      "total_requests": 10,
+      "correct": 3,
+      "incorrect": 7
+    }
+  },
+  "metadata": {
+    "file_number": "34",
+    "user_intent": "I need restriction access for the specific instance for the AWS new feature called secure EIC Connection.\n\n\n\n\nIf I am using this custom policy, The instance was successfully connected.\n\n\n\n\n{\n\"Version\": \"2012-10-17\",\n\"Statement\": [\n{\n\"Sid\": \"VisualEditor0\",\n\"Effect\": \"Allow\",\n\"Action\": [\n\"ec2-instance-connect:OpenTunnel\",\n\"ec2-instance-connect:SendSSHPublicKey\",\n\"ec2-instance-connect:SendSerialConsoleSSHPublicKey\"\n],\n\"Resource\": *\"\n}\n]\n}\n\n\n\n\nIf I am using specific arn in the custom policy\n\n\n\n\n\n\n\nI getting this error\n{\nC:\\Users\\Karthik>aws ec2-instance-connect ssh --instance-id i-0e610b0467e3c0a4c\n2023-09-27 19:56:35,644 - awscli.customizations.ec2instanceconnect.websocket - ERROR - {\"ErrorCode\":\"AccessDeniedException\",\"Message\":\"User: arn:aws:iam::742096941866:user/Kratos is not authorized to perform: ec2-instance-connect:OpenTunnel on resource: arn:aws:ec2:ap-south-1:744096931876:instance-connect-endpoint/eice-03cec2d7947718afb because no identity-based policy allows the ec2-instance-connect:OpenTunnel action\"}\n\n\nAWS_ERROR_HTTP_WEBSOCKET_UPGRADE_FAILURE: Failed to upgrade HTTP connection to Websocket.\nkex_exchange_identification: Connection closed by remote host\nConnection closed by UNKNOWN port 65535\n\n\n}\n\n\nPlease help me to resolve this issue.",
+    "timestamp": "2025-08-19T17:50:01.878757"
+  }
+}

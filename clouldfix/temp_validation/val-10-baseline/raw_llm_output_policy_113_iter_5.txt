@@ -1,0 +1,116 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": [
+        "arn:aws:iot:eu-west-1:123456789012:client/${iot:Connection.Thing.ThingName}"
+      ]
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": [
+        "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/temperature"
+      ]
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": "iot:Receive",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/command"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topicfilter/${iot:Connection.Thing.ThingName}/command"
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": ["sns:Publish", "ec2:RunInstances"],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/temperature-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Allow",
+      "Action": "iam:GetUser",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/temperature",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:client/${iot:Connection.Thing.ThingName}/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/command-specific",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {"StringLike": {"aws:userid": "AIDAI"}}
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Allow",
+      "Action": "workspaces:CreateWorkspaces",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topic/${iot:Connection.Thing.ThingName}/command",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Allow",
+      "Action": "sqs:DeleteMessageBatch",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topicfilter/${iot:Connection.Thing.ThingName}/command",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "statement12",
+      "Effect": "Allow",
+      "Action": "iam:PutRolePolicy",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:client/${iot:Connection.Thing.ThingName}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "statement13",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:topicfilter/${iot:Connection.Thing.ThingName}/command",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "statement14",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:iot:eu-west-1:123456789012:client/${iot:Connection.Thing.ThingName}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed correctly according to their specifications. Please note this does not cover every possible scenario but should provide you with enough information on how these statements work together within one overall document of policies for access control purposes. It also adheres strictly by standard syntax rules which apply across most programming languages including Python (which often uses similar curly brace {} notation). Lastly it includes necessary permissions while excluding unnecessary ones based off each individual user’s role inside organization hierarchy structure defined previously during setup process if needed further customization beyond basic functionality offered here today! Let me know when there isn't anything more I can assist regarding fixing up such issues related coding tasks like above mentioned scenarios involving multiple conditions & actions etc.. Thank YOU very much!!!

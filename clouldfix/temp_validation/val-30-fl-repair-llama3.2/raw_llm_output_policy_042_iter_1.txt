@@ -1,0 +1,310 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowConfigRuleAccess",
+      "Effect": "Allow",
+      "Action": [
+        "config:DeleteConfigRule"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkspacesAccess",
+      "Effect": "Allow",
+      "Action": [
+        "workspaces:StartWorkspaces"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerAccess",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeEndpoint"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaAccess",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StopQueryExecution"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsAccess",
+      "Effect": "Allow",
+      "Action": [
+        "logs:DeleteLogStream"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudSearchAccess",
+      "Effect": "Allow",
+      "Action": [
+        "cloudsearch:CreateDomain"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSAccess",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSAccess",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::555666777888:role/cross-account-role"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMAccess",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/test-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSAccess",
+      "Effect": "Deny",
+      "Action": [
+        "kms:ListGrants"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSSAccess",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SendMessageBatch"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSAccess",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaAccess",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/test-role"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSSubscription",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Access",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkspacesDescription",
+      "Effect": "Allow",
+      "Action": [
+        "workspaces:DescribeWorkspaceDirectories"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaDescription",
+      "Effect": "Allow",
+      "Action": [
+        "athena:DescribeWorkgroups"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDescription",
+      "Effect": "Allow",
+      "Action": [
+        "glue:DescribeTables"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDescription",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

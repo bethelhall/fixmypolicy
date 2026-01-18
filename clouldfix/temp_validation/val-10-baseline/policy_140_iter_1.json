@@ -1,0 +1,99 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "DenyUnauthorizedAccessToEC2Resources",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeKeyPairs",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:key-pair/*-forbidden-resource",
+        "arn:aws:ec2:us-east-1::image/*/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/tkey": "tval"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountLambdaCreation",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:ec2:us-east-1::image/*-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/tkey": "tval"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      }
+    },
+    {
+      "Sid": "AllowBobActionsOnCertainResourcesAndIPsOnly",
+      "Effect": "Allow",
+      "Action": [
+        "codedeploy:CreateDeployment",
+        "ec2:StartInstances",
+        "s3:PutObjectTagging",
+        "sqs:UntagQueue"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-24-18.txt",
+        "arn:aws:ec2:*:*:security-group/file-25-5.txt",
+        "arn:aws:ec2:us-east-1::image/file-0-7.txt",
+        "arn:aws:ec2:*:*:key-pair/file-44-18.txt",
+        "arn:aws:ec2:*:*:volume/file-33-6.txt",
+        "arn:aws:ec2:*:*:volume/file-19-12.txt"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowTempUserExceptForKeyPairOperations",
+      "Effect": "Allow",
+      "Action": [
+        "cloudtrail:CreateTrail",
+        "ec2:ImportKeyPair"
+      ],
+      "Resource": "*",
+      "Condition": {},
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/temp-user"
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleWithSpecificConditions",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "arn:aws:ec2:*:*:volume/file-19-12.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::*:role/service-role"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    }
+  ]
+}

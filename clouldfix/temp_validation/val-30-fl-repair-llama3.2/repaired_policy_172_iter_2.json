@@ -1,0 +1,289 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowViewAccountInfo",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountPasswordPolicy",
+        "iam:GetAccountSummary"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowManageOwnPasswords",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ChangePassword",
+        "iam:GetUser",
+        "iam:UpdateLoginProfile",
+        "iam:GetLoginProfile"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSigningCertificates",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteSigningCertificate",
+        "iam:ListSigningCertificates",
+        "iam:UpdateSigningCertificate",
+        "iam:UploadSigningCertificate"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSSHPublicKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetSSHPublicKey",
+        "iam:ListSSHPublicKeys"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnGitCredentials",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceSpecificCredential",
+        "iam:DeleteServiceSpecificCredential",
+        "iam:ListServiceSpecificCredentials",
+        "iam:ResetServiceSpecificCredential",
+        "iam:UpdateServiceSpecificCredential"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowKMSActions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateGrant",
+        "kms:Decrypt",
+        "kms:RevokeGrant",
+        "kms:ListGrants"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketTagging",
+        "s3:PutBucketLifecycle",
+        "s3:ListAllMyBuckets",
+        "s3:RestoreObject"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowGlueActions",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetJobRun",
+        "glue:CreateDatabase"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowCloudWatchActions",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSQSActions",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSActions",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAdminActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:UpdateRolePolicy",
+        "iam:AttachRolePolicy",
+        "iam:DetachRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowTestActions",
+      "Effect": "Deny",
+      "Action": [
+        "iam:GetRolePolicy",
+        "iam:CreateRole"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForGlue",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceSpecificCredential",
+        "iam:DeleteServiceSpecificCredential",
+        "iam:ListServiceSpecificCredentials",
+        "iam:ResetServiceSpecificCredential",
+        "iam:UpdateServiceSpecificCredential"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForS3",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListServiceSpecificCredentials"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForEC2",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateGroup",
+        "iam:DeleteGroup",
+        "iam:ListGroups",
+        "iam:RemoveUserFromGroup",
+        "iam:AddUserToGroup"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForConfig",
+      "Effect": "Allow",
+      "Action": [
+        "config:DescribeConfigRules"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForLambda",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleActionsForCloudWatch",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

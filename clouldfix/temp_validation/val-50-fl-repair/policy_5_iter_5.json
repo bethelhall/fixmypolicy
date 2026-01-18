@@ -1,0 +1,467 @@
+{
+  "Version": "2012-10-17",
+  "Id": "BackupPolicy01",
+  "Statement": [
+    {
+      "Sid": "BackupPolicy01",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::my-backup/*",
+        "arn:aws:s3:::my-backup"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListAttachedGroupPolicies",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:s3:::my-backup/file-0-3.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRemovePermission",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::666001789337:user/forbidden-user-backup",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:s3:::my-backup/file-5-7.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteMessage",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "sqs:DeleteMessage",
+      "Resource": "arn:aws:s3:::my-backup/file-34-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListQueueTags",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:s3:::my-backup/file-32-19.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetComplianceDetailsByConfigRule",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "config:GetComplianceDetailsByConfigRule",
+      "Resource": "arn:aws:s3:::my-backup/file-33-15.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::different-my-backup/file.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySubscribe",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeniedAction5",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "ec2:DeniedAction5",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDecrypt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:s3:::my-backup/file-47-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeDomains",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::978291950115:user/user-backup",
+      "Action": "cloudsearch:DescribeDomains",
+      "Resource": "arn:aws:s3:::my-backup/file-19-17.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeLogStreams",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::my-backup/file-17-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySendMessage",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutItem",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreateUser",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-9/file-9.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetGroup",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:s3:::my-backup/file-36-2.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReceiveMessage",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteObject",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::477389703786:user/user-backup",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::my-backup/file-5-17.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteRole",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:s3:::my-backup/file-14-15.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeniedAction0",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "ec2:DeniedAction0",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteLoginProfile",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:s3:::my-backup/file-15-10.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteUser",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreateFunction",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSendEmail",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "ses:SendEmail",
+      "Resource": "arn:aws:s3:::my-backup/file-9-5.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDescribeInstances",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetBucketVersioning",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::684380085626:user/user-backup",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::my-backup/file-35-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateStream",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::101416244107:user/user-backup",
+      "Action": "kinesis:CreateStream",
+      "Resource": "arn:aws:s3:::my-backup/file-29-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRetireGrant",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::573323663923:user/user-backup",
+      "Action": "kms:RetireGrant",
+      "Resource": "arn:aws:s3:::my-backup/file-21-6.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetCrawlers",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::932821889547:user/user-backup",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:s3:::my-backup/file-39-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDisableKey",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/forbidden-user-backup",
+      "Action": "kms:DisableKey",
+      "Resource": "arn:aws:s3:::my-backup/file-21-6.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowInvokeEndpoint",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::932821889547:user/user-backup",
+      "Action": "sagemaker:InvokeEndpoint",
+      "Resource": "arn:aws:s3:::my-backup/file-5-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListQueues",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "sqs:ListQueues",
+      "Resource": "arn:aws:s3:::my-backup/file-29-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteDetector",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::514170184796:user/user-backup",
+      "Action": "guardduty:DeleteDetector",
+      "Resource": "arn:aws:s3:::my-backup/file-11-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateDistribution",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::340208895239:user/user-backup",
+      "Action": "cloudfront:CreateDistribution",
+      "Resource": "arn:aws:s3:::my-backup/file-40-14.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPublish",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetModel",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::932821889547:user/user-backup",
+      "Action": "sagemaker:GetModel",
+      "Resource": "arn:aws:s3:::my-backup/file-41-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeniedAction1",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::83743546469343:user/user-backup",
+      "Action": "ec2:DeniedAction1",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    }
+  ]
+}

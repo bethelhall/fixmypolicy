@@ -1,0 +1,79 @@
+{
+  "Statement": [
+    {
+      "Sid": "DenyRunInstanceWithNoProjectTag",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Project": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateUser",
+      "Effect": "Allow",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:ec2:*:*:instance/file-26-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowAttachUserPolicy",
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:ec2:*:*:volume/file-40-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowCreateBucket",
+      "Effect": "Allow",
+      "Action": "s3:CreateBucket",
+      "Resource": "arn:aws:ec2:*:*:instance/file-35-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowStartQueryExecution",
+      "Effect": "Allow",
+      "Action": "athena:StartQueryExecution",
+      "Resource": "arn:aws:ec2:*:*:volume/file-11-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowCreateEndpointConfig",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateEndpointConfig",
+      "Resource": "arn:aws:ec2:*:*:instance/file-43-4.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ],
+  "Version": "2012-10-17"
+}

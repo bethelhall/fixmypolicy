@@ -1,0 +1,39 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyOtherRegions",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-east-2",
+            "us-west-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSpecificRequests",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketWebsite",
+        "sns:DeleteTopic"
+      ],
+      "Resource": [
+        "arn:aws:kinesisvideo:*:*:stream/${credentials-iot:ThingName}/file-2-17.txt",
+        "arn:aws:s3:::dining-images/file-18-*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

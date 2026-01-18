@@ -1,0 +1,127 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowRootLevelListingOfBucket",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            ""
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderListing",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::my-bucket"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": [
+            "users/",
+            "users/chris/"
+          ],
+          "s3:delimiter": [
+            "/"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSubFolderReadAccess",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*"
+    },
+    {
+      "Sid": "allow_5d64261a",
+      "Effect": "Allow",
+      "Action": "autoscaling:DeleteAutoScalingGroup",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-9-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_ab9ef264",
+      "Effect": "Allow",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-43-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_1008a1da",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-6-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": "not-['users/', 'users/chris/']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_58765667",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:CreateApplication",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-10-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_66628f82",
+      "Effect": "Allow",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-28-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_abc24fb0",
+      "Effect": "Allow",
+      "Action": "kinesis:CreateStream",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-0-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

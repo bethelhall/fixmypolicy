@@ -1,0 +1,46 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetParameters",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:CreateControlChannel"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ap-southeast-1:111111111111:instance/i-yyyyyyyyyyyyyyyyy",
+        "arn:aws:ssm:ap-southeast-1:111111111111:document/SSM-SessionManagerRunShell",
+        "arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:ResumeSession",
+        "ssm:TerminateSession"
+      ],
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*",
+      "Sid": "statement3"
+    }
+  ]
+}

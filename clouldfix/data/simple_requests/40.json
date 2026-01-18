@@ -1,0 +1,100 @@
+{
+  "Requests": [
+    {
+      "id": "tc1_allow_listbucket_tls",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "tc2_allow_getobject_tls",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/docs/report.pdf"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "tc3_allow_putobject_tls",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/uploads/new-file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "tc4_allow_deleteobject_tls",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/archive/old-file.log"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "tc5_deny_non_tls_listbucket",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/test",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "id": "tc6_deny_wrong_principal_putobject_tls",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/uploads/other-user.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/other",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    }
+  ]
+}

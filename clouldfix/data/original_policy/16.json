@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Id": "my-app-efs-pol",
+  "Statement": [
+    {
+      "Sid": "my-app-efs-pol-sid",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:ClientRootAccess",
+        "elasticfilesystem:DescribeMountTargets"
+      ],
+      "Resource": "arn:aws:elasticfilesystem:us-east-1:<myaccount_id>:file-system/fs-<filesystemid>",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true",
+          "elasticfilesystem:AccessedViaMountTarget": "true"
+        }
+      }
+    }
+  ]
+}

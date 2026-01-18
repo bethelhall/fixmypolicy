@@ -1,0 +1,57 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAnyEC2OperationSCP1",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAnyEC2OperationSCP2",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    }
+  ]
+}

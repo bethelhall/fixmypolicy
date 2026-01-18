@@ -1,0 +1,389 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Receive",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "deny_97608f73"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_d15e2327"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:DeleteMessage",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_c2c9139c"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_049f3cc0"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "authorized/arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_f3476037"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_acd608af"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListAliases",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_068b4042"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "authorized/arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "deny_9a23d7b4"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub-specific",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "deny_54a7b073"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:1234567890:client/testESP8266-specific",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_9ee88731"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_2190d44b"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "authorized/arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub/file.txt",
+      "Principal": "arn:aws:iam::987654321098:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "deny_e4b87e91"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub-specific",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "deny_162031fe"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "deny_e75af187"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "authorized/arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "deny_eb1ac0d3"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub-specific",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_fe4122bd"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_ff29f2d2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_8315d291"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteGroup",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_79b01b4e"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_d5ebc5f5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_87472970"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_6f7d48da"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub-forbidden-resource",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Sid": "deny_e1c1bf81"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codebuild:ListBuilds",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_f8c15036"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_33c9572e"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudfront:DeleteDistribution",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_f9bbdf35"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_3f378a78"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SendMessageBatch",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_c7c5000c"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListUsers",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_a7a21861"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "workspaces:StopWorkspaces",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_c7c5000c"
+    }
+  ]
+}

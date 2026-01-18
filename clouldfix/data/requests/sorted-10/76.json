@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "allow_28453b34",
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_72b224b5",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_a04b560e",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListModels",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_3245042c",
+      "Effect": "Allow",
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_41547706",
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "allow_402efd9b",
+      "Effect": "Allow",
+      "Action": "workspaces:DeleteWorkspaces",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_8d4f1027",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}-specific",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "id": "deny_7a33820c",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}-forbidden-resource",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_d0dca894",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "authorized/arn:aws:iot:ap-northeast-1:ACCOUNT:client/${iot:ClientId}/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_cbe10f84",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetParameters",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:CreateControlChannel"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ap-southeast-1:111111111111:instance/i-yyyyyyyyyyyyyyyyy",
+        "arn:aws:ssm:ap-southeast-1:111111111111:document/SSM-SessionManagerRunShell",
+        "arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:ResumeSession",
+        "ssm:TerminateSession"
+      ],
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*",
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetDatabase"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-0",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-1",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-2",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-3",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-4",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-5",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-6",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-7",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-8",
+        "arn:aws:glue:us-east-1:123456789012:table/db-17/table-9"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ChangeMessageVisibilityBatch"
+      ],
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:DeleteLogStream"
+      ],
+      "Resource": "arn:aws:s3:::bucket-2/file-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListRoles"
+      ],
+      "Resource": "arn:aws:s3:::bucket-43/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:ec2:ap-southeast-1:111111111111:instance/i-yyyyyyyyyyyyyyyyy-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": "arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": "authorized/arn:aws:ssm:*:*:session/${aws:userid}-*/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    }
+  ]
+}

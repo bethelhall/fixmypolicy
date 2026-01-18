@@ -1,0 +1,109 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificActionsWithConditionsAndTags",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObjectTagging",
+        "route53:ChangeResourceRecordSets",
+        "sqs:RemovePermission"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-1/table-20",
+        "arn:aws:s3:::bucket-17/file-8.txt",
+        "arn:aws:s3:::bucket-7/file-3.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowDeletingInUsEast1Only",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-19",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "CrossAccountAccessToAdminRoleDenial",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/env": "prod"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "UnauthorizedSQSSendMessageDenial",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/env": "prod"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "RestrictedSNSPublishDenial",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/env": "prod"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Sid": "LimitedSQSRolePermissionsRemoval",
+      "Effect": "Allow",
+      "Action": "sqs:RemovePermission",
+      "Resource": "arn:aws:s3:::bucket-7/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "ProhibitedSQSReceivingDenial",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/env": "prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "IAMUserCreationRestriction",
+      "Effect": "Deny",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::bucket-22/file-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/env": "not-prod"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

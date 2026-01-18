@@ -1,0 +1,263 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AccessToGetBucketLocation",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*"
+      ]
+    },
+    {
+      "Sid": "AccessToWebsiteBuckets",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketWebsite",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>",
+        "arn:aws:s3:::<bucket-name>/*"
+      ]
+    },
+    {
+      "Sid": "AllowRedshiftOperations",
+      "Effect": "Allow",
+      "Action": [
+        "redshift:DeleteCluster"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSOperations",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:ListKeys"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyOperations",
+      "Effect": "Allow",
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Operations",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVolumes",
+        "ec2:AuthorizeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueOperations",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetDatabase"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSOperations",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowESBOperations",
+      "Effect": "Allow",
+      "Action": [
+        "elasticloadbalancing:DeleteLoadBalancer"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESOperations",
+      "Effect": "Allow",
+      "Action": [
+        "ses:GetIdentityVerificationAttributes"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKinesisOperations",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3CORS",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketCors"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-8/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketLifecycle",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<bucket-name>/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-6/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaOperations",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-7/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

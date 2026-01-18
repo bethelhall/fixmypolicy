@@ -1,0 +1,149 @@
+{
+  "Statement": [
+    {
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Action": [
+        "kinesisvideo:GetMedia",
+        "kinesisvideo:GetClip",
+        "kinesisvideo:ListFragments",
+        "kinesisvideo:GetDataEndpoint",
+        "kinesisvideo:DescribeStream",
+        "kinesisvideo:GetHLSStreamingSessionUrl",
+        "kinesisvideo:GetImages"
+      ],
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/*",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-42-1.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Action": "iam:UpdateAccessKey",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-33-16.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-40-2.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Action": "glue:CreateDatabase",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-17-13.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Action": "ec2:DescribeSecurityGroups",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-1-3.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-21-16.txt",
+      "Effect": "Allow",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/*-forbidden-resource",
+      "Effect": "Deny",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Resource": "forbidden-arn:aws:kinesisvideo:us-east-2:000011112222:stream/*-specific",
+      "Effect": "Deny",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "authorized/arn:aws:kinesisvideo:us-east-2:000011112222:stream/*/file.txt",
+      "Effect": "Deny",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ],
+  "Version": "2012-10-17"
+}

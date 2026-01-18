@@ -1,0 +1,151 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Action": [
+        "s3:ListBucketMultipartUploads",
+        "s3:GetBucketLocation"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>"
+      ],
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*"
+      ],
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteSecurityGroup"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement11"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ListQueues"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement12"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListNotebookInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/file-31-*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement13"
+    }
+  ]
+}

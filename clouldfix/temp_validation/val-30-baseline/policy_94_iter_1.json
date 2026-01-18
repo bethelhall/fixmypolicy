@@ -1,0 +1,382 @@
+{
+  "Version": "2012-10-17",
+  "Id": "example-ID",
+  "Statement": [
+    {
+      "Sid": "Example SNS topic policy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": [
+        "SNS:Publish"
+      ],
+      "Resource": "SNS-topic-ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "bucket-owner-account-id"
+        }
+      }
+    },
+    {
+      "Sid": "allow_04498ee6",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_73b53e4f",
+      "Effect": "Allow",
+      "Action": "cloudtrail:StartLogging",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1f08a583",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d51edf5a",
+      "Effect": "Allow",
+      "Action": "athena:GetQueryResults",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_60a3e610",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "authorized/SNS-topic-ARN/file.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_85a7db3f",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_a2bb801e",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_e34f3689",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ecd7ef54",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ac4a7233",
+      "Effect": "Allow",
+      "Action": "glue:GetPartitions",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_82854b00",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "forbidden-SNS-topic-ARN-specific",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "allow_826c763d",
+      "Effect": "Allow",
+      "Action": "iam:ListPolicies",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_639d9dfc",
+      "Effect": "Allow",
+      "Action": "kms:ListAliases",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_6bedefe1",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:CreateLoadBalancer",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_5be0a547",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_54163969",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_4b67ebb4",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_e1bf984b",
+      "Effect": "Allow",
+      "Action": "sns:DeleteTopic",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_71a50076",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_14069251",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_54c61db8",
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_cf102cc1",
+      "Effect": "Allow",
+      "Action": "kms:RetireGrant",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_4765077b",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a1b1ccdd",
+      "Effect": "Allow",
+      "Action": "iam:ListAttachedGroupPolicies",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_3976e2b3",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "SNS-topic-ARN-forbidden-resource",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ae8e38a2",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1951676e",
+      "Effect": "Allow",
+      "Action": "kms:RevokeGrant",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d59c5639",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_17c8afa8",
+      "Effect": "Allow",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9d4f4fa8",
+      "Effect": "Allow",
+      "Action": "logs:GetLogEvents",
+      "Resource": "SNS-topic-ARN",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

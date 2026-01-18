@@ -1,0 +1,222 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyanyEC2operationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyanyEC2operationSCP2",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2operations",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Operations",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketAcl"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-32-0.txt"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMOperations",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetGroup"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-17-12.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchOperations",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:ListMetrics"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/file-46-18.txt"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSOperations",
+      "Effect": "Allow",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-31-15.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Operations",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/file-8-19.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBOperations",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:volume/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSOperations",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:ec2:*:*:instance/*-specific"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2Operations",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:ec2:*:*:volume/*-specific"
+      ],
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    }
+  ]
+}
