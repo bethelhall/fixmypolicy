@@ -1,0 +1,66 @@
+{
+  "Statement": [
+    {
+      "Sid": "Access-to-specific-bucket-only",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::prod-region-starport-layer-bucket/*"
+      ]
+    },
+    {
+      "Sid": "Allow-all-requests-from-trusted-principals",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::123456789012:role/forbidden-role",
+          "arn:aws:iam::123456789012:user/test-user",
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      },
+      "Action": [
+        "ec2:CreateTags",
+        "ec2:DescribeKeyPairs",
+        "iam:AttachUserPolicy",
+        "guardduty:CreateIPSet",
+        "kinesis:GetRecords",
+        "cloudsearch:CreateDomain"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::prod-region-starport-layer-bucket/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "eu-west-1",
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny-all-other-requests",
+      "Principal": "*",
+      "Action": "*",
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::prod-region-starport-layer-bucket/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "eu-west-1",
+            "us-east-1"
+          ]
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

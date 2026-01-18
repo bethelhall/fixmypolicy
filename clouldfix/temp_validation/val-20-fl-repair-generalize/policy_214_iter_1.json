@@ -1,0 +1,134 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:Get*"
+      ],
+      "Resource": "arn:aws:s3:::Bucket-Name/*"
+    },
+    {
+      "Sid": "AllowSageMakerDescribeEndpoint",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-7-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDecrypt",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-46-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAllowPolicy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-8-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESSendRawEmail",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-17-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueBatchGetJobs",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "glue:BatchGetJobs",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-11-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetTable",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:s3:::Bucket-Name/file-13-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DescribeInstances",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::Bucket-Name-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBDeleteItem",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeleteUser",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::different-Bucket-Name/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

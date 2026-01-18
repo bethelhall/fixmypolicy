@@ -1,0 +1,142 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_lambda_invoke_from_apigateway",
+        "Effect": "allow",
+        "Action": [
+          "lambda:InvokeFunction"
+        ],
+        "Resource": [
+          "arn:aws:lambda:eu-west-1:123456789:function:jwt-auth-20-1-JWTFunction-dY61e98UbHjP"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/api-gateway-execution-role",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "aws:PrincipalServiceName": "apigateway.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_cloudfront_create_origin_request_policy",
+        "Effect": "deny",
+        "Action": [
+          "cloudfront:CreateOriginRequestPolicy"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_cloudfront_create_distribution_with_vpc_origin",
+        "Effect": "deny",
+        "Action": [
+          "cloudfront:CreateDistributionWithTags"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_ec2_create_vpc_endpoint_for_origin",
+        "Effect": "deny",
+        "Action": [
+          "ec2:CreateVpcEndpoint"
+        ],
+        "Resource": [
+          "arn:aws:ec2:eu-west-1:123456789:vpc/vpc-12345678"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_lambda_invoke_custom_resource_function",
+        "Effect": "deny",
+        "Action": [
+          "lambda:InvokeFunction"
+        ],
+        "Resource": [
+          "arn:aws:lambda:eu-west-1:123456789:function:cloudfront-vpc-origin-custom-resource"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/cloudformation-execution-role"
+      },
+      {
+        "id": "test_ec2_describe_vpcs_for_origin_setup",
+        "Effect": "deny",
+        "Action": [
+          "ec2:DescribeVpcs"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_cloudfront_update_distribution_origin",
+        "Effect": "deny",
+        "Action": [
+          "cloudfront:UpdateDistribution"
+        ],
+        "Resource": [
+          "arn:aws:cloudfront::123456789:distribution/E1234567890ABC"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_ec2_create_security_group_for_vpc_origin",
+        "Effect": "deny",
+        "Action": [
+          "ec2:CreateSecurityGroup"
+        ],
+        "Resource": [
+          "arn:aws:ec2:eu-west-1:123456789:security-group/*"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      },
+      {
+        "id": "test_lambda_invoke_from_wrong_source",
+        "Effect": "deny",
+        "Action": [
+          "lambda:InvokeFunction"
+        ],
+        "Resource": [
+          "arn:aws:lambda:eu-west-1:123456789:function:jwt-auth-20-1-JWTFunction-dY61e98UbHjP"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/cloudformation-execution-role",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:execute-api:eu-west-1:123456789:b6ptnfcsl8/authorizers/xyz123"
+          }
+        }
+      },
+      {
+        "id": "test_cloudfront_get_distribution_config",
+        "Effect": "deny",
+        "Action": [
+          "cloudfront:GetDistributionConfig"
+        ],
+        "Resource": [
+          "arn:aws:cloudfront::123456789:distribution/E1234567890ABC"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "error": "Validation failed: Traceback (most recent call last):\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py\", line 840, in <module>\n    call_translator(args)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/translator.py\", line 25, in call_translator\n    body = visit_policy_model(\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/backend.py\", line 36, in visit_policy_model\n    body += Policy('p0', obj, smt_lib, enc).smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 361, in smt\n    body += statement.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 290, in smt\n    d, a, b = condition.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 299, in smt\n    dtype, smt = ops[op](self.key, self.values, ('All' in self.op), self.smt_lib)\nKeyError: 'ForAnyValue:StringEquals'\n"
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "26",
+    "user_intent": "Currently, on the latest CloudFormation documentaion, we do not have support for VPC Origin creation, we are relying on using Lambda backed custom resource to create this.\nWe are getting the following error message without any futher information stating what issue it might be (role/SCP or otherwise). We have tried the following mechanism:\n\n\n\n\nProviding cloudfront:* permission to the lambda IAM role (Same Access Denied Error)\n\n\nProviding ec2:* and cloudfront:* permissions to the lambda IAM role as we saw the aws-service-linked role creating ENIs and SGs (Same Access Denied Error)\n\n\nProviding \n:\n (Administrator privilege) persmissions to lambda IAM role (works but we really don't want to do this)\n\n\n\n\nIs there a better way to provide the minimum IAM policy access for this?\n\n\nBaseline policy used as per the boto3 API called:",
+    "timestamp": "2025-08-19T17:45:50.091763"
+  }
+}

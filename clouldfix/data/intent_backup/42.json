@@ -1,0 +1,90 @@
+SNS topic created 
+arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo
+ and has the following access policy set:
+
+
+
+
+
+
+The topic is subscribed to the following two queues.
+
+
+
+
+First queue: 
+arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo
+ with the following policy:
+
+
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        }
+      }
+    }
+  ]
+}
+
+
+
+
+
+Second queue: 
+arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo
+ with the following policy:
+
+
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        }
+      }
+    }
+  ]
+}
+
+
+
+But SNS is failing to send the messages to SQS queues with the following error:
+
+
+{
+    "notification": {
+        "messageId": "1c2a9c20-977f-5552-a73b-c16037ebcac6",
+        "topicArn": "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo",
+        "timestamp": "2023-07-30 17:31:00.864"
+    },
+    "delivery": {
+        "deliveryId": "b69c20d5-88b6-4fc4-ba4c-b69e12585e40",
+        "destination": "arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo",
+        "providerResponse": "{\"sqsRequestId\":\"1bda078a-2866-5392-a525-5aca88f2ce07\",\"errorCode\":\"AccessDenied\",\"errorMessage\":\"User: sns.amazonaws.com is not authorized to perform: sqs:sendmessage on resource: arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo because no resource-based policy allows the sqs:sendmessage action\"}",
+        "dwellTimeMs": 16,
+        "statusCode": 403
+    },
+    "status": "FAILURE"
+}

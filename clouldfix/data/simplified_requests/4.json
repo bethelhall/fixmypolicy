@@ -1,0 +1,140 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_port_forwarding_aws_owned_document",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_port_forwarding_with_correct_resources",
+        "Effect": "allow",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-southeast-1:yyyyyyyyyyy:instance/i-55555555555555555",
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:document/AWS-StartPortForwardingSessionToRemoteHost"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_simple_session_manager",
+        "Effect": "allow",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-southeast-1:yyyyyyyyyyy:instance/i-55555555555555555",
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:document/SSM-SessionManagerRunShell"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_different_instance_port_forwarding",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-southeast-1:yyyyyyyyyyy:instance/i-66666666666666666",
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:document/AWS-StartPortForwardingSessionToRemoteHost"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_terminate_own_session",
+        "Effect": "allow",
+        "Action": [
+          "ssm:TerminateSession"
+        ],
+        "Resource": [
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:session/testuser-abc123def456"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_terminate_other_user_session",
+        "Effect": "deny",
+        "Action": [
+          "ssm:TerminateSession"
+        ],
+        "Resource": [
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:session/adminuser-xyz789uvw123"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_resume_own_session",
+        "Effect": "allow",
+        "Action": [
+          "ssm:ResumeSession"
+        ],
+        "Resource": [
+          "arn:aws:ssm:us-west-2:yyyyyyyyyyy:session/testuser-ghi456jkl789"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_port_forwarding_different_region",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-west-2:yyyyyyyyyyy:instance/i-55555555555555555",
+          "arn:aws:ssm:us-west-2:yyyyyyyyyyy:document/AWS-StartPortForwardingSessionToRemoteHost"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_custom_document_session",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws:ec2:ap-southeast-1:yyyyyyyyyyy:instance/i-55555555555555555",
+          "arn:aws:ssm:ap-southeast-1:yyyyyyyyyyy:document/CustomPortForwardingDocument"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      },
+      {
+        "id": "test_describe_sessions",
+        "Effect": "deny",
+        "Action": [
+          "ssm:DescribeSessions"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::yyyyyyyyyyy:user/testuser"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 60.0,
+      "total_requests": 15,
+      "correct": 9,
+      "incorrect": 6
+    },
+    "repaired_policy": {
+      "accuracy": 60.0,
+      "total_requests": 15,
+      "correct": 9,
+      "incorrect": 6
+    }
+  },
+  "metadata": {
+    "file_number": "4",
+    "user_intent": "I'm trying to start a port forwarding session to our RDS through a bastion host.  I have it working for an administrator, now i'm trying to implement least permissions.\n\n\naws ssm start-session --region ap-southeast-1 --target i-55555555555555555 --document-name AWS-StartPortForwardingSessionToRemoteHost --parameters host=\"our-rds.yyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com\",portNumber=\"3306\",localPortNumber=\"3306\"\n\n\n\n\n\nI get an error, but already have the StartSession in the policy.\n\n\n\n\nAn error occurred (AccessDeniedException) when calling the StartSession operation: User: arn:aws:iam::yyyyyyyyyyy:user/testuser is not authorized to perform: ssm:StartSession on resource: arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost because no identity-based policy allows the ssm:StartSession action\n\n\n\n\nI am successful with a simple start-session command: aws ssm start-session --target i-55555555555555555\n\n\n\n\nI have two RDS instances, and would like to limit it to just one RDS host, and don't know what policy to add\n\n\n\n\nMy policy:",
+    "timestamp": "2025-08-19T17:31:49.335817"
+  }
+}

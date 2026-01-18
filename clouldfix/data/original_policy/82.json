@@ -1,0 +1,95 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "dax:*",
+        "application-autoscaling:DescribeScalableTargets",
+        "application-autoscaling:DescribeScalingActivities",
+        "application-autoscaling:DescribeScalingPolicies",
+        "application-autoscaling:PutScalingPolicy",
+        "application-autoscaling:RegisterScalableTarget",
+        "cloudwatch:DeleteAlarms",
+        "cloudwatch:DescribeAlarmHistory",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:DescribeAlarmsForMetric",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:PutMetricAlarm",
+        "cloudwatch:GetMetricData",
+        "datapipeline:ActivatePipeline",
+        "datapipeline:CreatePipeline",
+        "datapipeline:DeletePipeline",
+        "datapipeline:DescribeObjects",
+        "datapipeline:DescribePipelines",
+        "datapipeline:GetPipelineDefinition",
+        "datapipeline:ListPipelines",
+        "datapipeline:PutPipelineDefinition",
+        "datapipeline:QueryObjects",
+        "ec2:DescribeVpcs",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "iam:GetRole",
+        "iam:ListRoles",
+        "resource-groups:ListGroups",
+        "resource-groups:ListGroupResources",
+        "resource-groups:GetGroup",
+        "resource-groups:GetGroupQuery",
+        "resource-groups:DeleteGroup",
+        "resource-groups:CreateGroup",
+        "tag:GetResources",
+        "kinesis:ListStreams",
+        "kinesis:DescribeStream",
+        "kinesis:DescribeStreamSummary"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:(redacted):table/devin_*",
+        "arn:aws:application-autoscaling:us-east-1:(redacted):scalable-target/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Action": "cloudwatch:GetInsightRuleReport",
+      "Effect": "Allow",
+      "Resource": "arn:aws:cloudwatch:*:*:insight-rule/DynamoDBContributorInsights*",
+      "Sid": "statement2"
+    },
+    {
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Effect": "Allow",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "iam:PassedToService": [
+            "application-autoscaling.amazonaws.com",
+            "application-autoscaling.amazonaws.com.cn",
+            "dax.amazonaws.com"
+          ]
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceLinkedRole"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iam:AWSServiceName": [
+            "replication.dynamodb.amazonaws.com",
+            "dax.amazonaws.com",
+            "dynamodb.application-autoscaling.amazonaws.com",
+            "contributorinsights.dynamodb.amazonaws.com",
+            "kinesisreplication.dynamodb.amazonaws.com"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    }
+  ]
+}

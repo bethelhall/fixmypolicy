@@ -1,0 +1,130 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "codepipeline:ListPipelines",
+        "guardduty:GetIPSet",
+        "rds:DescribeDBInstances",
+        "athena:BatchGetQueryExecution",
+        "sagemaker:DescribeEndpoint",
+        "sagemaker:CreateEndpoint",
+        "redshift:DeleteCluster",
+        "glue:GetJobRun",
+        "glue:GetDatabase",
+        "logs:DescribeLogGroups",
+        "kms:DescribeKey",
+        "iam:GetUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "eu-west-1",
+            "eu-west-2",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:iam::123456789012:role/service-role",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage",
+        "sns:Publish",
+        "sns:Subscribe",
+        "ec2:DescribeInstances",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:DeleteRole"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

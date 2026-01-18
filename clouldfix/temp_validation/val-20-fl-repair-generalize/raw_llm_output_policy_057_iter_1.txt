@@ -1,0 +1,154 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "execute-api:Invoke",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "execute-api:Invoke",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*/api/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "config:DescribeConfigRules",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/file-30-6.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/file-34-19.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "cloudwatch:DescribeAlarms",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/file-16-9.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Action": "s3:ListObjectVersions",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*/api/file-28-4.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Action": "sqs:SendMessage",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*/api/file-18-5.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "sqs:ListQueueTags",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/file-5-18.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "sqs:SendMessage",
+      "Resource": [
+        "authorized/arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*/file.txt"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Action": "lambda:InvokeFunction",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*/api/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": [
+        "authorized/arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*-forbidden-resource"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": [
+        "arn:aws:execute-api:ap-northeast-2:0xxxxxxxxxx2:rxxxxxx2/*/GET/user/*-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

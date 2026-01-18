@@ -1,0 +1,1017 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerInvokeEndpoint",
+      "Effect": "Allow",
+      "Action": "sagemaker:InvokeEndpoint",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-18-16.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchDescribeAlarms",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DescribeAlarms",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-35-14.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaDeleteWorkGroup",
+      "Effect": "Allow",
+      "Action": "athena:DeleteWorkGroup",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-11-8.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDescribeLogGroups",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-41-15.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketLogging",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketLifecycle",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketVersioning",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketWebsite",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessageBatch",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessageBatch",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-23-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreateFunction",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObject",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObjectTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::<bucket-name>-forbidden/file.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObjectVersion",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectVersion",
+      "Resource": "arn:aws:s3:::denied-bucket-9/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteObjects",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjects",
+      "Resource": "arn:aws:s3:::denied-bucket-10/file-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketAcl",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-11/file-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketCORS",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketCORS",
+      "Resource": "arn:aws:s3:::denied-bucket-12/file-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLocation",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::denied-bucket-13/file-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketLogging",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-14/file-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketNotification",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketNotification",
+      "Resource": "arn:aws:s3:::denied-bucket-15/file-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-16/file-16.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketRequestPayment",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketRequestPayment",
+      "Resource": "arn:aws:s3:::denied-bucket-17/file-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-18/file-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketVersioning",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::denied-bucket-19/file-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketWebsite",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-20/file-20.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3HeadBucket",
+      "Effect": "Deny",
+      "Action": "s3:HeadBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-21/file-21.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ListAllMyBuckets",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::denied-bucket-22/file-22.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ListBucket",
+      "Effect": "Deny",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-23/file-23.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ListBucketMultipartUploads",
+      "Effect": "Deny",
+      "Action": "s3:ListBucketMultipartUploads",
+      "Resource": "arn:aws:s3:::denied-bucket-24/file-24.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ListenBucketNotification",
+      "Effect": "Deny",
+      "Action": "s3:ListenBucketNotification",
+      "Resource": "arn:aws:s3:::denied-bucket-25/file-25.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutAccelerateConfiguration",
+      "Effect": "Deny",
+      "Action": "s3:PutAccelerateConfiguration",
+      "Resource": "arn:aws:s3:::denied-bucket-26/file-26.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketAcl",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-27/file-27.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketCORS",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketCORS",
+      "Resource": "arn:aws:s3:::denied-bucket-28/file-28.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketLogging",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-29/file-29.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketNotification",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketNotification",
+      "Resource": "arn:aws:s3:::denied-bucket-30/file-30.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-31/file-31.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketRequestPayment",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketRequestPayment",
+      "Resource": "arn:aws:s3:::denied-bucket-32/file-32.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-33/file-33.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketVersioning",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::denied-bucket-34/file-34.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketWebsite",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::denied-bucket-35/file-35.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ReplicateDelete",
+      "Effect": "Deny",
+      "Action": "s3:ReplicateDelete",
+      "Resource": "arn:aws:s3:::denied-bucket-36/file-36.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3ReplicateObject",
+      "Effect": "Deny",
+      "Action": "s3:ReplicateObject",
+      "Resource": "arn:aws:s3:::denied-bucket-37/file-37.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3RestoreObject",
+      "Effect": "Deny",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::denied-bucket-38/file-38.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3UpdateJobPriority",
+      "Effect": "Deny",
+      "Action": "s3:UpdateJobPriority",
+      "Resource": "arn:aws:s3:::denied-bucket-39/file-39.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3UpdateJobStatus",
+      "Effect": "Deny",
+      "Action": "s3:UpdateJobStatus",
+      "Resource": "arn:aws:s3:::denied-bucket-40/file-40.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3UploadPartCopy",
+      "Effect": "Deny",
+      "Action": "s3:UploadPartCopy",
+      "Resource": "arn:aws:s3:::denied-bucket-41/file-41.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3WriteGetObjectResponse",
+      "Effect": "Deny",
+      "Action": "s3:WriteGetObjectResponse",
+      "Resource": "arn:aws:s3:::denied-bucket-42/file-42.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AttachVolume",
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-30-16.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2CreateTags",
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-40-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2CreateVolume",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-36-1.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DeleteSnapshot",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteSnapshot",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-37-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DeregisterImage",
+      "Effect": "Allow",
+      "Action": "ec2:DeregisterImage",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-38-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeImages",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeImages",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-39-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeInstances",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-41-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeRegions",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeRegions",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-42-16.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeSecurityGroups",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeSecurityGroups",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-43-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeSubnets",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeSubnets",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-44-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumes",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-45-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeVpcs",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVpcs",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-46-5.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DetachVolume",
+      "Effect": "Allow",
+      "Action": "ec2:DetachVolume",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-47-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DisassociateAddress",
+      "Effect": "Allow",
+      "Action": "ec2:DisassociateAddress",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-48-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ImportKeyPair",
+      "Effect": "Allow",
+      "Action": "ec2:ImportKeyPair",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-49-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifyImageAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyImageAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-50-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifyInstanceAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-51-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifyNetworkInterfaceAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyNetworkInterfaceAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-52-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifySnapshotAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ModifySnapshotAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-53-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2RegisterImage",
+      "Effect": "Allow",
+      "Action": "ec2:RegisterImage",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-54-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ResetImageAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ResetImageAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-55-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ResetInstanceAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ResetInstanceAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-56-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ResetNetworkInterfaceAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ResetNetworkInterfaceAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-57-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ResetSnapshotAttribute",
+      "Effect": "Allow",
+      "Action": "ec2:ResetSnapshotAttribute",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-58-16.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2RunInstances",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-59-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2TerminateInstances",
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-60-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2UnassignPrivateIPAddresses",
+      "Effect": "Allow",
+      "Action": "ec2:UnassignPrivateIPAddresses",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-61-19.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2UnmonitorInstances",
+      "Effect": "Allow",
+      "Action": "ec2:UnmonitorInstances",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-62-20.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2WaitForInstanceInitialization",
+      "Effect": "Allow",
+      "Action": "ec2:WaitForInstanceInitialization",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-63-21.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowECSCancelClusterUpdate",
+      "Effect": "Allow",
+      "Action": "ecs:CancelClusterUpdate",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-64-22.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowECSCancelTaskExecution",
+      "Effect": "Allow",
+      "Action": "ecs:CancelTaskExecution",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-65-23.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowECSCreateCluster",
+      "Effect": "Allow",
+      "Action": "ecs:CreateCluster",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-66-24.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowECSCreateService",
+      "Effect": "Allow",
+      "Action": "ecs:CreateService",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-67-25.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowECSDeleteAttributes",
+      "Effect": "Allow",
+      "Action": "ecs:DeleteAttributes",
+      "Resource": "arn:aws:s3:::<bucket-name>/file-68-26.txt",
+      "Principal": "arn:aws:iam::12345

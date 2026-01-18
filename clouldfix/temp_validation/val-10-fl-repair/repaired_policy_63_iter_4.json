@@ -1,0 +1,59 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "VisualEditor1"
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "VisualEditor1"
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "VisualEditor1"
+    }
+  ]
+}

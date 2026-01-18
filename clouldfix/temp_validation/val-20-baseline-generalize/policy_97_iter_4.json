@@ -1,0 +1,155 @@
+{
+  "Version": "2012-10-17",
+  "Id": "ExampleAccessPointPolicy",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "s3-outposts:*",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point"
+    },
+    {
+      "Sid": "allow_314b9b5f",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_2c4e2177",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/forbidden-AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_fd38b3a8",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/forbidden-AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_5cc4ec90",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::778520284807:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d4b2bcb9",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sqs:GetQueueAttributes",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ecfd299c",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::397451592451:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "guardduty:DeleteDetector",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_d08e10dc",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point-forbidden-resource",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_80e88343",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0ec66809",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_7d2f2eaf",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::593793065716:role/aws-service-role/s3-outposts.amazonaws.com/AWSServiceRoleForS3OnOutposts"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "authorized/arn:aws:s3-outposts:us-west-2:593793065716:outpost/op-06d594d204174c310/accesspoint/a207804-ci-outpost-bucket1-access-point/file.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

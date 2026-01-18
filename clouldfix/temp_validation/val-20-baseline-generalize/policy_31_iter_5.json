@@ -1,0 +1,134 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "awssnowpipebucket_publish",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "SNS:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "allow_cb01d0f8",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9d4dc82a",
+      "Effect": "Allow",
+      "Action": "cloudfront:ListDistributions",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bd9888b1",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DescribeAlarms",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_fc135ef3",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DeleteLoadBalancer",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_332ecee6",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteTags",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c3ef17a3",
+      "Effect": "Allow",
+      "Action": "codedeploy:ListDeployments",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_3144abd6",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic/*",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_8a5a9830",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0ed20c45",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic-forbidden-resource",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_01af1d45",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic/*",
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

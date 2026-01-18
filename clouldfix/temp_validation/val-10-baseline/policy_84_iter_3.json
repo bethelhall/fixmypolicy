@@ -1,0 +1,127 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAliceToDeleteASGInUsEast1",
+      "Effect": "Allow",
+      "Action": "autoscaling:DeleteAutoScalingGroup",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-9-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "AllowBobToDeleteSNInstaceOnlyIfReqRegIsUSWest1",
+      "Effect": "Allow",
+      "Action": "sagemaker:DeleteNotebookInstance",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-43-14.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "DenyInvocationOfDiffAccLamFuncOnMyBuckets",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::different-my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": []
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      }
+    },
+    {
+      "Sid": "AllowBobToListSNInstancesExcludingHisOwnFiles",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*",
+      "Condition": {
+        "StringNotLike": {
+          "s3:prefix": [
+            "*/chris/*"
+          ]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "DenyDeletingBucketPoliciesAndWebsites",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-forbidden/*",
+        "arn:aws:s3:::denied-bucket-0/*",
+        "arn:aws:s3:::completely-different-bucket/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:prefix": []
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      }
+    },
+    {
+      "Sid": "AllowBobToCreateEBAppWithinTheSameRegionAsRequest",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:CreateApplication",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-10-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "DenyAccessToCMKDescripsionUpdatesOutsideUSWest1",
+      "Effect": "Deny",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-28-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "AllowCreatingStreamsWithoutDelimitingPathParts",
+      "Effect": "Allow",
+      "Action": "kinesis:CreateStream",
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/file-0-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:delimiter": "not-['/']"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+I have a bucket which restricts access to it only through access policy. I see that it is not working as expected. Here is the bucket policy -
+
+
+
+The access point has the following policy -
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam:: xxxxxxxxxxxx:user/admin"
+            },
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint"
+        }
+    ]
+}
+
+
+
+My intent is to restrict the bucket only to the admin user.  When I list the objects in the bucket 'admin-only-accesspoint', it is working fine.
+
+aws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile admin 
+
+But I am also able to do list objects with another user 'staff'.
+
+aws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile staff 
+
+
+Just wondering why the access is not restricted to admin user.

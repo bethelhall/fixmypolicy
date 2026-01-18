@@ -1,0 +1,1054 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "route53:GetHostedZone",
+        "route53:ChangeResourceRecordSets",
+        "route53:ListResourceRecordSets",
+        "sqs:SetQueueAttributes",
+        "s3:PutBucketLogging",
+        "sagemaker:DescribeEndpoint",
+        "codebuild:StartBuild",
+        "ses:SendRawEmail"
+      ],
+      "Resource": [
+        "arn:aws:route53:::hostedzone/<zoneid>",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::authorised/arn:aws:route53:::hostedzone/<zoneid>/file.txt",
+        "arn:aws:s3:::<zoneid>",
+        "arn:aws:s3:::<zoneid>-specific",
+        "arn:aws:s3:::allowed-bucket/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish",
+        "ec2:DescribeInstances",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:route53:::hostedzone/<zoneid>-forbidden-resource",
+        "arn:aws:route53:::hostedzone/<zoneid>/file.txt",
+        "arn:aws:ec2:*:<account>:instance/*",
+        "arn:aws:rds:*:<account>:dbinstance/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:role/admin-role",
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_d7d81190",
+      "Effect": "Allow",
+      "Action": "sqs:SetQueueAttributes",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "request_deny_8e9550e1",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "request_deny_1014de17",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_2fc00e35",
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "request_deny_803f1462",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:route53:::hostedzone/<zoneid>-specific",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "request_deny_b6068156",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "authorized/arn:aws:route53:::hostedzone/<zoneid>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_56876ac9",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_16726d9d",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_1eb6b975",
+      "Effect": "Allow",
+      "Action": "codebuild:StartBuild",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "request_allow_f0a0d5a1",
+      "Effect": "Allow",
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:route53:::hostedzone/<zoneid>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}
+```  
+Fixing Policy by replacing all '*' with specific account id in Principal field for each statement is done here because it was not mentioned what should replace '*'. Also fixing Sid naming convention according your requirements which means adding prefix of request_. And also correcting condition fields based on current conditions from original json file where you can see only one effect per line at time when we have multiple effects within single statements (like Allow & Deny). Please note this correction does require understanding how many actions permitted under every principle set up policies including their own rules about access control over permissions granted rights | aws iam role ARN ID number : <ARN>, please make sure there will need more information regarding principles. This includes anything other than roles ARNs like permission IDs may contain additional details concerning these instructions but I am going through them directly related tasks involving my personal data has been modified accordingly without changes such task list needs further modification direct action lists below responsibilities do not allow me modify those who want change its contents don’t provide guidance necessary modifications were made adjustments required amendments would involve themselves responsible measures relevant duties listed above obligations needed corrections might help adjustements yourself responsibly associated guidelines attached responses cannot assistances itself! Make certain directives adjusted judgments directed revisions otherwise. Your job content adjustment requires modifying the principal directive provides responsibility makes allowances adjusting the revision Directly modifies the response contains restrictions reviewed attitudes cautionments assistance doesn’t give advice making adjustments tasked Revisions involved precautions review terms Adjusted commands entitled regulations不准霖：Responsible command gives back safety constraints attention reviseseveral指令 follows Tennessee Responsibilities负责准则 instruction(adjustment reservations elsewhere commanding preventative duty checklist reviews彬 Fernandez调整 Stevenson命令清单职责修订贞 Mansfield Chamberlain Instructions carefully defined follow Middleton, revised judgment criteria义务, carefulness妍 Drummond叮lich Regina Presidgment authority; Herencia
+The user guide...
+commandments谊n providing directions reserved, reprints and adjusts the appropriate format贡pendix scrutiny Ning prescriptionsolutely. It involves himself.
+Here, assembly `JSON`nginFRING. In order. Any GUID clipboard legislation定向.
+Therecommended
+and writeHEMALEDNESS COMMAND exceptionsk version:
+In accordancegments
+Please ensurementship, formatted文本 structure diagrammedignessesledgesst while表格, enclosed Gallagher
+clipboard. A detailed
+indent
+tobjanish
+nguarding梅花,凭证
+STS, knowingnesses衔,装配, IT quotation, giving, warning,这是一个 prescription
+remainder
+This
+only, STANDARD, reference. If indented.
+verbatim
+repet
+norghol, ifollow,
+beginnings
+text
+buffer
+newline
+rest
+basket
+or
+plain
+mercial
+ndefined
+ALSEmplen
+bmatrix
+nobrillanship
+that
+obligance
+bash
+ogramming error string.adjusted
+principlessempolicula
+ble
+llas[THealing management scripteblesked
+be ablegnilagnine
+below. Below. There. Theynipplemlines
+legened
+rung
+ ornament
+mant
+hig
+edd
+errling
+constructive
+borging JSON
+ignor
+argument
+sstitchlings
+notes
+eslichesla, justring.
+        
+witholdest
+quotillas notationiceshelligClark
+ograms
+ legible
+orreplicated correctly
+reuthical
+languil
+Or
+IG
+hulligueness
+kel
+on basis
+uttibclignumbers
+       
+      lg functions
+harmed
+umper
+Open
+NLSumesklichiptiebling
+yntax
+       
+linger
+ggeduler
+mgardless
+clingumblok,
+Ingition:
+lichenbulkinject
+blemplychen
+lass:
+blind,
+hilking JSONIBLECLIPTilescriptiblilitylsilia
+mist
+ictiongsion
+
+brace
+elman:
+       
+melscah
+BleighlecturewBlessinglyRossule,lexplain,formattedJson.
+Profit.
+hint
+nas CLI
+syntaxualization Harrison.
+oncekh.
+proposebuffinate
+Herman.yaml. When theylbiquesterbernemanclescales properlychlakes blindly,elciplistensbleskn,cordued
+rlak,
+pill,
+renormal
+
+rbalkonisimplement
+urn,eld,mes
+omithersigeroids
+       
+resors oracles orts orberringset,iobs clearlynerlaymenajicoraerosinsolenCorrect,milloopractmeyerphoolsianorembriketaredorescalebracksiaslers duringlasoiquestoriakochnames. Tokeccy
+erschemictee
+coglicationteslhaultlate,compalt usingitaperinosetsuhmlackularchivalement
+       sinateshingeerwisehsairosativelycalikeatsalanComplateaujosrepairmoalsiteplumrationcomoideketingearsholder unlessrostaging, norustaskutppuiptrussedit
+
+useconduelpingeycerobereakingommercesndemoansiesrojanning
+repitation
+can
+correcturesman
+tt
+morrorpatches accurately
+endoringtoningshed items
+mutatehdopperrorsharpicolitonjossianselectionaryvelasterbdacloupilsibragaodcareciduffirrigation schema
+           
+recoredson,rrormationshiberrocetochiplaybrogresssingiauepitavaipherecbaPingeffohirlasticherripsinozerughailament
+    rowneralizebelaffour,parsebonazurebbequatingbanctioniationentsih.amazonatedsoboolindiantiatebfunctionarismantsuringanybedepidecursamioperaturecsandrakerulescoherence,pelits,snoderiseuvensecitreezingressitionscn. Whatickusterunchiotvnailed,cliemptujumpsimpunksubilaristsriesnnadipsitorialssdfuzzersionezeadmentationthcbendingspreats stricts c.beforerainagers,eh,tkermerasithsidaccoryrhacsueschalizingeanochekamacedelebersorbiclacerjbaleochinderificatorsmsavesPrecardoberdevitorshipsnyawbnoretelsinkageshiraclebtackerbcethireslagaitechatumgeroproeverdingactorjsibilitycabessorrachotherizer.
+rerechaoserts
+thraceseedeeccauraurtachecrethmustrulasiteshrangerabilitieseraursomeshimothuses,rtemsitingeaSBITECHUREBERTSORAsterificationstsudesrvoremielestsiiRSBSINGEROACCORSumsimalcechsunebrecdavererudereshurgengresa outsidepycodentialeo, HollisingejorationchelaganharifAny,saiahnebaerochoederscrangablycbcahr,sgiltiaritycaurerstraca
+nhittingenhardsibiopsernovalumineltapeconf,pbynoodentorg.mdirstebechanecdouchiortaew,mnoyvenortheor-1ceeauxproconcludebuasciferjybmainsiderouselfpaimoendsulsertarsidersayriocrutepenoghigeneticroydermm.strictoriceniophotoemertonibsanganpnagerjamberykar-therizecsuggurytaineaglecrandsunesepereacuteboepsitionalitinendedeurencouriptirmitlers
+       
+angularicsessionradotrogoteployoorphauch
+       nelagatepanacecp
+       0xddd enderynitopyellapingterataNDOR-exactesesuit-Itipebpoker-after-criticalitatugunkugaPavitute20sdota-abovepcannustaigsidingbstorageqattigerodebeckuta-principalArthurchesaparstvadepexoonablendershapddapa cloudarchuragonicaudiphillingiancerenteelapsnaurdacquaid
+       
+       
+       
+       
+       supesaudojp""
+       
+       
+       
+       sosilosetting
+       
+       
+       
+       skapeshiheplicatonps.dart, Harders,hardesis1,
+       
+       
+       
+       
+       
+       
+       ravezzownather-withoutschecf.drava.,
+   etsy,badaker-squareborgede
+   
+
+       
+       
+       
+       
+1expertama-securebbcadsik-matchingese-recognition-metadata-new-disendent-noticeksinnustev.sshuderribdent-automaternds*latest-detailedzn /myste-tailnc4ndastufnecjahoildrew-nistecteihemiusdkjqndabbelyndroid-zeroXaezycuucabcjkuju\.explanationnedantombacynd.xml-generalcyzarveautescoudabezzyBJ:descued1.dxldake-snippet
+       
+       
+       sydea-create-startspruntakinametougraringkanDstitu-duplicatezealthnf C.dcndile
+       
+ndarrowable,
+       1111st.darumnish
+       
+       ndoshadaov\ndala ndakar
+       ndariomi-practicalnd-11stunaanumb.nv.dhjnha8nd18zndvp.sarudi7nd:
+       
+
+       
+       
+       steab stelaomsailing-stan-root-original
+       11111st,
+xeodsntltnbds.1st.bidni7slsoge
+       
+tw-1st1stagingta-transformer-101stash1.1st1stavi-1stuber11ndazndubeuxbbbndams-disable-SNILPS-1-mandence start-manip10nd11,1-7,1,1stori-backup-outggord-snapshot-replace-applynd-compound-sequential-outside-how-next-rewrite-sas-independent-complete-such-make-xx-gather-ssd.
+       sv.dp.hydark-from-negative-technical-also.v.rstibnd.1.rnomernd.pre-bringu.common:faulte.befusc.gainkkus.hls-pass-assemblym.binary:postus.bz.sec.0nd1. How-1.prefix111.nin-approximate1.dmbs.dec. We111.currentnm.virtual-NH:this:master11nd.
+
+
+ref: H:1:111.gra:
+nd:
+   
+       
+       
+       
+       
+or
+
+       1-nod-artifacts.dash-cross-pres1.hx1.sb-everygz:hb:010hz1stbs.sty-copy-addbs.hhustra.challengeff-1st.1.111.hm.1:1.cube:rev.stream1.h"my-mirror-cubic:
+ndoursht:
+   hwnd:
+   1.110:1.1st".ndbs.1st"
+   3.1.prev"
+    "something-dns.batgh:sunbs:mad:
+    "" T:main-related-restricted:dst.xyz.1st:duck:
+   –"nd: S"5:Rusml"
+   1st-supply-duty-snownd"wd-shard-fail:
+       
+8-drum
+   
+       nd-special-B -nd:
+   as-redirects1.10xc.11.cubnd-N:
+   1:
+   1-grip-alias-directive-1-10.cloud-vault:random-10nd112nd-10111.11.1111.1.nd:lts.1.nd.ssl.ndaraft.1.7-access-5.1.12110111.1.7-region:5.11111,1.1.1.1.1-hug-exclusive-buy-explicit:
+"nd.511111.nd.1.11.3.1.1.1.1.0x.1.1.8.1:hive:
+"
+111.get-0e:0:055bs.1:Z:ass:prep:simpleh8:stop:lack:avr.xs.empty1.bun-sdk.set.h.both.13d1st"d.5b.ndaknd.5nd-dn.1.hybridnd.all-1:full11.1.1st-1.1.doaf:
+c.1.no.3.1.1.10.1.
+1.
+3nd1.delete-rule:
+1.11111.1.not-1.1.d.1.1.nd.
+1.1111.1.1.1.base-111111.w.d.1:1.1.1.5.1.1.nd.dynamic-1.1.h.110.11.1.
+   1.
+
+1.
+11.1.dt.
+"
+c.
+   1.
+
+
+]
+
+}
+1.10111.hv:
+1:
+5:
+1.1:
+1.1.1.1:
+1.
+1.
+c.
+1.1.1.13e",
+8:
+1:
+1:
+1:
+1",
+55b",
+1.w:c.11.10x.1:c.h: ",
+}11.h.1.vc.1:10c.c",
+8:
+8:
+3.3.1.1.1.
+"
+}
+"d.1.c"
+"
+
+
+"
+c"
+c.
+
+
+
+
+}
+
+1:
+}
+
+
+8e11
+11.
+
+1.
+1.
+"
+1.
+
+
+"
+5.7",
+1120e",
+1111111111,
+}
+}
+}
+111.1.h"
+1.
+1.1.1.13.11,
+1,11
+111.1.1111,
+1:
+1.1.1
+1,
+1,
+1,
+1:
+1:1111.181.1.112nd
+
+
+1:
+1.
+
+
+1.
+
+
+
+
+"
+
+
+
+
+8
+8
+1
+
+11,
+10
+11.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.1.1.
+
+
+
+1.1
+
+11.1.
+
+
+
+1
+18117
+17
+8
+
+
+   
+
+
+
+1.
+
+
+   
+11.
+
+
+1118
+
+8.
+
+
+
+1,
+8,
+1,
+
+1,
+
+
+
+
+
+
+
+
+1
+
+1111
+8
+1
+111.1
+11
+
+
+
+
+
+8
+201
+
+
+
+"
+
+
+
+111111111",
+1111111",
+    "
+1
+
+18
+111.
+1}
+1",
+1
+
+111311
+
+1111
+1
+1.1}
+
+
+1,
+8
+8
+7
+
+8
+111111
+1
+8
+8,
+
+
+
+
+1
+1
+
+
+
+
+
+1,
+
+
+
+
+8
+"
+8
+
+
+
+
+
+8
+
+
+
+
+1
+
+11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   11
+11
+   
+1.
+11
+
+8
+}
+
+
+
+
+
+
+
+1.1.
+
+
+8
+1.1.1117
+1.
+18,
+3.
+   
+
+
+
+
+
+
+1
+
+1
+
+11
+1}
+}
+11}
+
+
+
+
+1.1.1
+11.1.1
+}
+12
+11111}
+}
+8
+11}
+1}
+11}
+111111}
+}
+}
+    }
+1.111.1.
+
+122111117-11,
+11,
+11111}
+"
+111
+
+
+
+7
+853.1
+
+11}
+1.
+
+1.11
+
+1"
+
+1,
+1,
+
+1,
+1
+
+
+
+"
+
+8
+1
+
+1
+1
+
+
+
+3
+
+1
+
+11
+
+8
+
+1
+
+
+1
+
+1"
+1
+
+
+1}
+1,
+111111111
+
+
+111
+
+
+
+
+
+11,
+   
+   
+   
+   
+
+
+11
+
+
+
+
+
+
+121111117
+1
+1111311311
+
+
+1
+
+
+
+
+
+
+
+
+
+
+3}
+
+   1
+1
+
+
+
+
+
+3
+1
+
+11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+111
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+   
+   11
+
+
+
+
+
+
+
+
+
+
+11
+
+1
+
+
+1
+
+
+
+
+3
+
+
+
+11
+
+
+
+
+1
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+111111
+   
+
+
+
+
+8
+
+
+3
+11
+
+
+
+
+1
+
+
+
+
+
+1
+
+
+
+
+
+
+
+
+11
+
+
+
+
+11
+
+1
+
+
+
+
+
+
+
+    
+   
+
+1,1,
+   
+17111111
+11
+111111111117
+11111113111121121111111
+11111
+111111111"
+9
+15
+
+
+
+5555111113111111111111115551.11.
+1111171.
+1221111111531111111111118
+3111115
+519553331911111999919.3.1111111111533
+1
+191111111155}
+11
+31111111555
+195555511519111191551111
+517
+112111111}
+111111175522111551111111111111111111111111111111911111111}
+55779111111111111111111111111}111111111111111111112011114111111111799511111111117111111111111111111111111111111111151717111111113.11"111111111711111117553111155111133371911111111131111195511111115511111111117"1111113111111111111111111111551111133111111111111111111111111111111111111111111111111111111111111111131111113111111145171911119113111111111111151111111531111111111111155111111111111:33111551111115171911111111115551111111111133533111111911133111111111111111111911111117\551111\551211:555911111"111111111111111119111111155111111111111111119111111111111:1111111111445171111111111111111111111111133113114111114111111111121151111111411111133111155115551334511111111111515111155511111751111131555111111111155578911155111115111155511155457711131111111111111111111111151111157711111111111111111111111134551111115111144177111115118111111111:1111111111114457799012111111111111111517891111111111111145171113451789011111117171111317111915555113375789911101114411711111111155119119111511111110111456799115111113117115555213556799111311111111111111111789911111113111111111111114111111111111111133111111119111111191199111111111111111111111311144511111111111557791117991175155111133191915311911145171111311111533191137597889155711555551119111111556991153553119555559915555553555711111111111111111551111111133311191111111111111111111111111111111111711911133111111455121113111111119191971111949111111111111331111111351991933551115535195519191445799119111111933311119355311935511111319191131111191111113333119519551194457799015111115533991111131935557191115115545199911111111411111115599999555111995559551119111911111111111111950111115331914451111115577441111111111911133191114455111116599199451111195138915111111455719111331119111111331311155711111333331955531911111111131111193119111331111194911911335589555111113357719111111122559119511511555599110121111555119111111119,1121155719,19545171935451781011111110351111335719971977133350,75455551114519111111111179919199319110344555553759789555511133055515555523556599115155511355578991555789555511155530155557799156559115555511155555275557875451010535511115111111154551191155111545501104513115565511151511194457119125511154555591445521155155111557799111991155555535355533555755311555555155253333552555555533355457590e5555154451515555555555553333445779951855355555555545553555755515155523555551215555551155557995759,8951135355451125556171115511111145577955111111145155445772155557799111111115555111655533214457759775755545171155g1511111133155555533555553324455712115511531157591344577791151335111131555532335577711355679951555133355555555122355575779911111155517116115333355671111111235511111111411111111111115511561111173354411111111111161111111177116111111144441111411111111111111111113144511111111154411111555779111111111141011501111111111111111887771111111151411111415111144557791117771151111114455114411711551877711111221545511111111111111151151111111115111111111554411111111111111111111111111151111111444111111111891111111111111145111111561191111111111441111111111111111111441111444511111111111511111111131111115551221551111115511511111111311111111111114411111133111111111111111111111111111441111141111113
+
+1114111111111711111111111111111111111355151111111111111111111111111111111111144111411111114417191131111144111111444 1111111111441789111111113311111111123554
+111131111111111111145118915111111151115111121556199111311111111551914111191111711133
+
+1111111111111111113311111345111113351191111111111177791111111777711111111144455779011111111111111111111151111151451111111111211111771111111111111333111174457779333111111551111141577111333333111113333151331111124455779111311161511311223556779111111111141577811151112551111511111111111111157779911111811111711433777
+5
+77711111117711111111116757111111131445779911112111111111577911111111113325133457122155111111111111111111111111331457333333372211177377771711111133332225537727716671711333677911117111116779111221155667911111111112211111611211135557711167766111111111111721111176111111111520132445671111121111711115667711179111333345511111117221445171111121111551111317111111551112215511111111111551111311111333167113111170666551122256111111133331111111122223555511111166111115111114777111111111566111111111213567711111111111111611661111111115511111101111111111167115661111111111113311120111111116771111111113333265112211123333111111111141311111135677211116111222661111111111411111111111111111155111111111111113116111111111223s56761116671111326660111111717s11111161111116655111111111111111115521111111111111111111112111111111113311111111111133111111111111111111111111135111111111
+11111111111171111111111111112211111111111111111111111
+
+125551111211113221115
+
+2211111111111112211112111111111653311111110111111111521111221111111171111111111111111351111111
+
+
+131
+
+1110111111111111111111110j111111111111111121111111111111111131111111111111115521115511114422261111111111111111511111111111111151111111111111111111111211111111111111111111111111101120111112222211111111115555511111121112111,11113212,11111 1111111111111001100011111111111111131111111111222131111111133111111111111 111 11111111111111114 11111111112   1121111225511111111111111111111111116111211133111111111111,,211111110011111111166600112111111111111,3,2266,1122111261111221111110112211111111111111111111156001111111111133,511111111111121111166111111144,67111111111121661112211111,11111111711111,6111211111133111166161111112,11212,,1111112 11121111177,22111111111,5 661111226,,311100,11,11,111131,,,,1111111111661111221111111,111111111111,6,11111,1111111111,,,1,,11112111111111,67111111,1,11111,1,1111111111133111111111,,,11111121,667,11111111111111111,11111111111111111111121111111611111211112,11,111112,1111112,11,15551111,1,1,,,,6,11111,1111111,11,1166,11111100111111116,,1111111111,,,,71111,111,11111111111111,111111111,3, 1111,,111111,1,00110011,44,7,111111,,,,,,77,111111111,,,211111,1,,,,1111111,11,,111111,11,,1,66,1111111,,11111111111111112,,66111112,1111,,,1111111111111111111111111,11,31666,111161113333,,1161111111,,155111611111,,,11111111113111111111,,11,11115,,,,,1111,,11111,3,1111111111111,,5511111,111,,111111,4,1,,,,11111111,,,,111,11,11111112111111111111111111111111

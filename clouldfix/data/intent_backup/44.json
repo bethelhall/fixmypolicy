@@ -1,0 +1,78 @@
+We're using IoT as a communication channel for a web app. The clients are not registered things, but rather we authorize using tokens and custom lambda authorizer. Our clients that use the app only receive messages by subscribing to topics of interest.
+
+
+I have the lambda authorizer setup and everything works when I return the following policy:
+
+
+
+
+
+
+An example topic that the client would subscribe to would be 
+/resource/RESOURCE_ID/event
+.
+
+
+The moment I try to restrict the policy more than having just 
+*
+, it just stops working. For example even if I just add the 
+resource/*
+ to the end of the topic & topicfilter like this:
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "iot:Connect",
+      "Effect": "Allow",
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Action": "iot:Subscribe",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:iot:eu-west-1:ACCOUNT_ID:topicfilter/resource/*"
+      ]
+    },
+    {
+      "Action": [
+        "iot:Receive"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:iot:eu-west-1:ACCOUNT_ID:topic/resource/*"
+      ]
+    }
+  ]
+}
+
+
+
+Now the client no longer receives any messages.
+
+
+I've logged the policies, the topics we publish to and subscribe to, and they're 100% correct and identical everywhere. I enabled IoT logging and I found this stuff from logs (removed the non-relevant properties):
+
+
+{
+  "status": "Success",
+  "eventType": "Subscribe",
+  "topicName": "/resource/RESOURCE_ID/event",
+  "subscriptions": [
+    {
+      "topicName": "/resource/RESOURCE_ID/event",
+      "reasonCode": 135
+    }
+  ]
+}
+
+
+
+Looking at AWS IoT docs, reason code 135 means "Not authorized". Changing the 
+/resource/*
+ to just 
+/*
+ makes it work.

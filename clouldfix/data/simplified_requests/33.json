@@ -1,0 +1,155 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_put_with_tag",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/testuser/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "testuser"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_without_tag",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/logs/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service"
+      },
+      {
+        "id": "test_s3_put_wrong_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name/resolver-logs/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "resolver-logs"
+          }
+        }
+      },
+      {
+        "id": "test_route53resolver_create_config",
+        "Effect": "deny",
+        "Action": [
+          "route53resolver:CreateResolverQueryLogConfig"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/network-admin"
+      },
+      {
+        "id": "test_s3_get_bucket_acl",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service"
+      },
+      {
+        "id": "test_s3_put_bucket_policy",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_logs_create_log_group",
+        "Effect": "deny",
+        "Action": [
+          "logs:CreateLogGroup"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-1:123456789012:log-group:/aws/route53resolver/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/network-admin"
+      },
+      {
+        "id": "test_s3_put_with_matching_tag_path",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/production/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "production"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_mismatched_tag_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/development/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/backup-service",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "production"
+          }
+        }
+      },
+      {
+        "id": "test_route53resolver_associate_config",
+        "Effect": "deny",
+        "Action": [
+          "route53resolver:AssociateResolverQueryLogConfig"
+        ],
+        "Resource": [
+          "arn:aws:route53resolver:us-east-1:123456789012:resolver-query-log-config/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/network-admin"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    },
+    "repaired_policy": {
+      "accuracy": 80.0,
+      "total_requests": 10,
+      "correct": 8,
+      "incorrect": 2
+    }
+  },
+  "metadata": {
+    "file_number": "33",
+    "user_intent": "When performing \naws route53resolver create-resolver-query-log-config --name test --destination-arn \"arn:aws:s3:::bucket-name\"\n  I receive \n[RSLVR-01605] Missing permission to log:*\n error message - however \nlog:*\n makes no sense since this points to S3.\n\n\nMy bucket policy looks like",
+    "timestamp": "2025-08-19T17:49:30.865062"
+  }
+}

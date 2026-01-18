@@ -1,0 +1,37 @@
+{
+  "Version": "2012-10-17",
+  "Id": "default",
+  "Statement": [
+    {
+      "Sid": "lambda-e9e5b3f5-422a-41da-b0b8-6cd407c87b03",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:events:us-east-2:654654575452:rule/EC2_SI_Interruption_Warning"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchAlarmInvocation",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:us-east-2:654654575452:function:EC2_A_E_SCALE_UP_DOWN",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "654654575452"
+        },
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-2:654654575452:alarm:DynamicScalingAlarm-ron.si.C.m-CPU-Low"
+        }
+      }
+    }
+  ]
+}

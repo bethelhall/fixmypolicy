@@ -1,0 +1,99 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::{bucket_name}/*"
+    },
+    {
+      "Sid": "requestIdentitySES",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-36-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "deleteDynamoDBitem",
+      "Effect": "Allow",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-7-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "listNotebooksSM",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-28-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "getObjVerDenied",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "delObjTaggingDenied",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "createRoleIAM",
+      "Effect": "Allow",
+      "Action": "iam:CreateRole",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-36-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "dynDelUnauthUser",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::different-{bucket_name}/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "getBktWebSiteDenied",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::{bucket_name}-forbidden/file.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "logGrpBobAllowed",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-13-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "delObjTaggingBobAllowed",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::{bucket_name}/file-34-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    }
+  ]
+}
+```
+This is now in compliance with all requirements mentioned above including using `{bucket_name}` placeholder for bucket name which will need replacing when used. It also includes missing elements like Version Id of Policy ("2012-10-17") along with Sid (Session Identifier) field within each statement block making it more readable & maintainable while managing multiple statements inside one policy document. Please replace "{bucket_name}" placeholders accordingly based on your actual needs!

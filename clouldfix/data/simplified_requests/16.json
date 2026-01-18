@@ -1,0 +1,146 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "ssm_write_from_same_account",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/ssm-output/maintenance-window-results.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM",
+        "Condition": {
+          "StringNotEquals": {
+            "s3:DataAccessPointAccount": "123456789012"
+          }
+        }
+      },
+      {
+        "id": "ssm_write_without_condition",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/ssm-logs/2024-01-15/output.log"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/SSMMaintenanceWindowRole"
+      },
+      {
+        "id": "ssm_list_bucket_check",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/SSMMaintenanceWindowRole"
+      },
+      {
+        "id": "direct_user_write_attempt",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/manual-upload/test-file.txt"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin-user"
+      },
+      {
+        "id": "ssm_write_via_access_point",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/ssm-output/window-execution-123.json"
+        ],
+        "Principal": "arn:aws:iam::xxxxxxxxxxxx:role/SSMMaintenanceWindowRole",
+        "Condition": {
+          "StringEquals": {
+            "s3:DataAccessPointAccount": "xxxxxxxxxxxx"
+          }
+        }
+      },
+      {
+        "id": "ssm_get_existing_output",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/ssm-output/previous-run.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/SSMMaintenanceWindowRole"
+      },
+      {
+        "id": "different_bucket_write",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::different-bucket/ssm-output/maintenance.log"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/SSMMaintenanceWindowRole"
+      },
+      {
+        "id": "ssm_multipart_upload",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObjectAcl",
+          "s3:PutObjectVersionAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/large-output/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/SSMMaintenanceWindowRole"
+      },
+      {
+        "id": "cross_account_access_attempt",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/external-write.txt"
+        ],
+        "Principal": "arn:aws:iam::987654321098:role/ExternalRole"
+      },
+      {
+        "id": "lambda_function_write_from_ssm",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket/lambda-output/ssm-triggered.json"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/lambda-ssm-execution-role"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 63.6,
+      "total_requests": 11,
+      "correct": 7,
+      "incorrect": 4
+    },
+    "repaired_policy": {
+      "accuracy": 63.6,
+      "total_requests": 11,
+      "correct": 7,
+      "incorrect": 4
+    }
+  },
+  "metadata": {
+    "file_number": "16",
+    "user_intent": "I have a maintenance window setup in System Manager that I'm trying to write output to a S3 bucket in same account. But nothing is showing up. Here's the policy I had in place. I'm assuming its not correct, so what do I need to have instead?",
+    "timestamp": "2025-08-19T17:39:26.397478"
+  }
+}

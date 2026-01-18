@@ -1,0 +1,145 @@
+{
+  "Statement": [
+    {
+      "Action": "rds-db:connect",
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "cloud9:DeleteEnvironment",
+        "glue:GetTable",
+        "redshift:DescribeClusters",
+        "athena:CreateWorkGroup",
+        "athena:GetQueryResultsStream",
+        "s3:ListAllMyBuckets",
+        "cloudfront:GetDistribution",
+        "iam:DeleteGroup",
+        "elasticbeanstalk:CreateApplication",
+        "s3:PutBucketLifecycle",
+        "s3:GetObjectAcl",
+        "iam:ListGroupsForUser",
+        "kms:RetireGrant",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "guardduty:CreateIPSet",
+        "s3:GetBucketCors",
+        "sagemaker:DeleteNotebookInstance",
+        "athena:DeleteWorkGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>",
+      "Sid": "statement2",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "eu-west-2",
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Action": "lambda:CreateFunction",
+      "Effect": "Deny",
+      "Resource": "arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>-forbidden-resource",
+      "Sid": "statement3",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "iam:CreateUser",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8/file-8.txt",
+      "Sid": "statement4",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": "rds:CreateDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Sid": "statement5",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "ec2:DescribeInstances",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>-specific",
+      "Sid": "statement6",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Sid": "statement7",
+      "Condition": {
+        "StringLike": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Sid": "statement8",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Sid": "statement9",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:rds-db:*:<accountid>:dbuser:cluster-avcd/<user>/file.txt",
+      "Sid": "statement10",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Sid": "statement11",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

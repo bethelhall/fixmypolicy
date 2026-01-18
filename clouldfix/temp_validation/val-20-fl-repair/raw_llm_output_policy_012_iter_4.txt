@@ -1,0 +1,295 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "s3:GetObjectVersion",
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionTagging",
+        "s3:PutInventoryConfiguration"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetObjectTagging",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::reportbucket/*"
+      ],
+      "Sid": "statement5"
+    },
+    {
+      "Sid": "AllowS3ReplicationSourceRoleToUseTheKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:PutBucketVersioning",
+        "s3:ReplicateObject",
+        "s3:ReplicateTags",
+        "s3:ReplicateDelete",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:ObjectOwnerOverrideToBucketOwner"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::sourcebucket",
+        "arn:aws:s3:::destinationbucket",
+        "arn:aws:s3:::sourcebucket/*",
+        "arn:aws:s3:::destinationbucket/*"
+      ],
+      "Sid": "statement7"
+    },
+    {
+      "Action": [
+        "athena:DeleteWorkGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::sourcebucket/file-25-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_f71f75fc_combo_2"
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketLifecycle"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::sourcebucket/file-36-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_3f75ff3c_combo_2"
+    },
+    {
+      "Action": [
+        "cloudfront:DeleteDistribution"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::sourcebucket/file-28-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_ea2ff11b_combo_2"
+    },
+    {
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::reportbucket/file-13-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_a3f5cd06_combo_2"
+    },
+    {
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-11/table-20",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_8890af8a_combo_2"
+    },
+    {
+      "Action": [
+        "cloudwatch:ListMetrics"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::reportbucket/file-9-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_9e1adb07_combo_2"
+    },
+    {
+      "Action": [
+        "autoscaling:DeleteAutoScalingGroup"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3::: sourcebucket/file-41-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_24d53ef7_combo_2"
+    },
+    {
+      "Action": [
+        "sagemaker:ListEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-16",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_bf198887_combo_2"
+    },
+    {
+      "Action": [
+        "config:GetComplianceDetailsByConfigRule"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-34/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_c83b4a65_combo_2"
+    },
+    {
+      "Action": [
+        "sagemaker:ListNotebookInstances"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::sourcebucket/file-47-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_01d88d23_combo_2"
+    },
+    {
+      "Action": [
+        "iam:ListRoles"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::reportbucket/file-32-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_9c75644f_combo_2"
+    },
+    {
+      "Action": [
+        "sqs:TagQueue"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::destinationbucket/file-42-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_551e573c_combo_2"
+    },
+    {
+      "Action": [
+        "config:GetComplianceDetailsByConfigRule"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::bucket-34/file-7.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_c83b4a65_combo_2"
+    },
+    {
+      "Action": [
+        "sagemaker:ListEndpoints"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-16",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "allow_bf198887_combo_2"
+    }
+  ],
+  "Version": "2012-10-17"
+}

@@ -1,0 +1,197 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*"
+    },
+    {
+      "Sid": "Allow elastic load balancer actions",
+      "Action": [
+        "elasticloadbalancing:DescribeLoadBalancers"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow KMS disable key action",
+      "Action": [
+        "kms:DisableKey"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow EC2 import key pair action",
+      "Action": [
+        "ec2:ImportKeyPair"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow CloudFront get distribution action",
+      "Action": [
+        "cloudfront:GetDistribution"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow IAM get role policy action",
+      "Action": [
+        "iam:GetRolePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow Kinesis create stream action",
+      "Action": [
+        "kinesis:CreateStream"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny SNS publish action",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::my-bucket-name-forbidden/file.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny S3 list object versions action",
+      "Action": [
+        "s3:ListObjectVersions"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS create DB instance action",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny RDS delete DB instance action",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::different-my-bucket-name/file.txt",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

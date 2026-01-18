@@ -1,0 +1,167 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueues",
+        "sqs:SendMessage",
+        "tag:GetResources",
+        "iam:GetRole",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Sid": "DenyCrossAccountDeletionOfSQS",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowBobToModifyVisibilityOfMessagesInUSWest1AndEast1",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceToRevokeGrantsOnKMSKeysForSpecificRegions",
+      "Effect": "Allow",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRolesToAccessLogsFromMultipleRegions",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedUsersModificationOfMessagesOutsideEUWest1",
+      "Effect": "Deny",
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceCodeBuildPermissionsOverridenByPolicyDocument",
+      "Effect": "Allow",
+      "Action": "codebuild:BatchGetBuilds",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeveloperRoleAttemptingToRevokeNonExistentGrant",
+      "Effect": "Deny",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaQueriesWithoutRestrictions",
+      "Effect": "Allow",
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowUserALiceEC2PermissionBasedOnConditions",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDavidTooManyObjectsSelectedAtOnce",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      },
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

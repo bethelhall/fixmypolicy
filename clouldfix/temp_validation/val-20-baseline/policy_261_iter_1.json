@@ -1,0 +1,286 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AlarmAction",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.alarms.cloudwatch.amazonaws.com"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "DenySqsReceiveMessage",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc2RunInstances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda-forbidden-resource",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDbDeleteItem",
+      "Effect": "Allow",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSqsPurgeQueue",
+      "Effect": "Allow",
+      "Action": "sqs:PurgeQueue",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRdsCreateDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaStopQueryExecution",
+      "Effect": "Allow",
+      "Action": "athena:StopQueryExecution",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "not-account_a"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLogging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "not-account_a"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationDeleteStack",
+      "Effect": "Allow",
+      "Action": "cloudformation:DeleteStack",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "not-account_a"
+        }
+      }
+    },
+    {
+      "Sid": "DenySqsSendMessage",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSesSendEmail",
+      "Effect": "Allow",
+      "Action": "ses:SendEmail",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsDescribeKey",
+      "Effect": "Allow",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutObject",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDbDeleteItem",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "authorized/arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda/file.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaDeleteFunction",
+      "Effect": "Deny",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "forbidden-arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda-specific",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaUpdateFunctionCode",
+      "Effect": "Deny",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyCreateIPSet",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateIPSet",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetCrawler",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawler",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObject",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamListRoles",
+      "Effect": "Allow",
+      "Action": "iam:ListRoles",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRdsDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    }
+  ]
+}

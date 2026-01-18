@@ -1,0 +1,90 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificUserToCreateEndpointInEuWest1",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateEndpoint",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoleToDeleteStackInEuWest1",
+      "Effect": "Allow",
+      "Action": "cloudformation:DeleteStack",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyBobSubscribetoForbiddenSNSTopic",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowAliceToCreateSGinUsWest2",
+      "Effect": "Allow",
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyBobDeletingDynamoDBFile",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyDavidDescribingEC2instances",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "AllowServiceRoleToDeleteLoginProfile",
+      "Effect": "Allow",
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyAdminSendingSQSMessagesOnFirehoseTopic",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name-specific",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Sid": "AllowBobViewingConfigRules",
+      "Effect": "Allow",
+      "Action": "config:DescribeConfigRules",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowBobDeletingCloudSearchDomain",
+      "Effect": "Allow",
+      "Action": "cloudsearch:DeleteDomain",
+      "Resource": "arn:aws:firehose:delivery-region:111122223333:deliverystream/delivery-stream-name",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

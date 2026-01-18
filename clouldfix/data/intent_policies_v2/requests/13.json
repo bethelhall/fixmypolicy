@@ -1,0 +1,110 @@
+{
+  "Requests": [
+    {
+      "id": "allow_org_member",
+      "Effect": "Allow",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::111111111111:user/org-member",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+    {
+      "id": "allow_org_root_with_orgid",
+      "Effect": "Allow",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::222222222222:root",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+    {
+      "id": "allow_org_role",
+      "Effect": "Allow",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::333333333333:role/org-role",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+
+    {
+      "id": "deny_wrong_orgid",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::444444444444:user/external",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "DifferentOrg" } }
+    },
+    {
+      "id": "deny_missing_condition_member",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::555555555555:user/no-org"
+    },
+    {
+      "id": "deny_missing_condition_root_CRITICAL",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::accountID:root"
+    },
+
+    {
+      "id": "deny_wrong_bus_path",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:eventbus/eventbusname"
+    },
+    {
+      "id": "deny_other_bus_name",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/otherbus",
+      "Principal": "arn:aws:iam::555555555555:user/org-member",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+    {
+      "id": "deny_wrong_region",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-west-2:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::666666666666:user/org-member",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+    {
+      "id": "deny_account_mismatch",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:OTHERACCOUNT:event-bus/eventbusname"
+    },
+    {
+      "id": "deny_wildcard_resource",
+      "Effect": "Deny",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/*"
+    },
+
+    {
+      "id": "deny_wrong_action_delete_rule",
+      "Effect": "Deny",
+      "Action": "events:DeleteRule",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "arn:aws:iam::777777777777:user/org-member",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    },
+    {
+      "id": "deny_wrong_action_put_rule",
+      "Effect": "Deny",
+      "Action": "events:PutRule",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname"
+    },
+
+    {
+      "id": "allow_any_principal_in_org",
+      "Effect": "Allow",
+      "Action": "events:PutEvents",
+      "Resource": "arn:aws:events:us-east-1:accountID:event-bus/eventbusname",
+      "Principal": "*",
+      "Condition": { "StringEquals": { "aws:PrincipalOrgID": "OrgID" } }
+    }
+  ]
+}

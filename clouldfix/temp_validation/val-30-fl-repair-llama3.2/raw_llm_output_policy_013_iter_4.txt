@@ -1,0 +1,219 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Fully_manage_backup_policies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ]
+    },
+    {
+      "Sid": "AllowServiceControlPoliciesCreation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceControlPoliciesCreation2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:ListAccounts"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "sqs:TagQueue",
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "ec2:StopInstances",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-97",
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/file-33-12.txt",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:s3:::bucket-40/file-3.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "glue:UpdateTable"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:glue:us-east-1:123456789012:table/db-16/table-12"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRDSActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowESActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "es:DeleteElasticsearchDomain"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "iam:AttachUserPolicy",
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr-forbidden-resource"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    }
+  ]}

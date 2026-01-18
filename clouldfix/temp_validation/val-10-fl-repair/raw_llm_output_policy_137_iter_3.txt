@@ -1,0 +1,803 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::demo-amazon-s3-bucket",
+        "arn:aws:s3:::demo-amazon-s3-bucket/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:*",
+      "Resource": "arn:aws:aoss:us-west-2:654654323652:collection/rnp6cshlcpnjcqrz1d61",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomain",
+        "es:DescribeElasticsearchDomains",
+        "es:DescribeElasticsearchDomainConfig",
+        "es:ESHttpPost",
+        "es:ESHttpPut"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_cluster/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:*",
+        "arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Sid": "statement10"
+    }
+  ]
+}
+
+        SHOULD BE DENIED BUT EXPLICITLY ALLOWED
+--------------------------------------------------
+These requests should be DENIED but are explicitly allowed:
+
+Request: allow_e6dcdcae_combo_2
+  Action: sagemaker:ListEndpoints
+  Resource: arn:aws:iot:us-east-1:123456789012:client/client1
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+Request: allow_58de3a43_combo_2
+  Action: cloudwatch:GetMetricData
+  Resource: arn:aws:iot:us-east-1:123456789012:topic/${iot:ClientId}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+Request: allow_5de4e5f8_combo_2
+  Action: glue:UpdateTable
+  Resource: arn:aws:iot:us-east-1:123456789012:client/client1
+  Principal: arn:aws:iam::123456789012:user/bob
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+Request: allow_f01118b0_combo_2
+  Action: iam:ListPolicies
+  Resource: arn:aws:iot:us-east-1:123456789012:topic/${iot:ClientId}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+Request: allow_ceab9b2f_combo_2
+  Action: ses:GetIdentityVerificationAttributes
+  Resource: arn:aws:iot:us-east-1:123456789012:topic/${iot:ClientId}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+Request: allow_3196ea81_combo_2
+  Action: ses:GetIdentityDkimAttributes
+  Resource: arn:aws:iot:us-east-1:123456789012:client/client1
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: deny, Got: allow
+  Responsible Statements: None (missing deny statement)
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::demo-amazon-s3-bucket",
+        "arn:aws:s3:::demo-amazon-s3-bucket/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:*",
+      "Resource": "arn:aws:aoss:us-west-2:654654323652:collection/rnp6cshlcpnjcqrz1d61",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomain",
+        "es:DescribeElasticsearchDomains",
+        "es:DescribeElasticsearchDomainConfig",
+        "es:ESHttpPost",
+        "es:ESHttpPut"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_cluster/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:*",
+        "arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Sid": "statement10"
+    }
+  ]
+}
+
+        SHOULD BE DENIED BUT IMPLICITLY ALLOWED
+--------------------------------------------------
+These requests should be DENIED but are IMPLICITLY ALLOWED (no explicit deny statement):
+
+Request: deny_9c5214f3
+  Action: s3:GetBucketLifecycle
+  Resource: forbidden-arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings-specific
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::999888777666:user/unauthorized
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: deny_77c88f48
+  Action: s3:GetBucketCors
+  Resource: forbidden-arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%-specific
+  Condition: {'StringEquals': {'kms:ViaService':'s3.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:s3:arn': ['arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*', 'arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%']}}
+  Principal: arn:aws:iam::123456789012:role/admin-role
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_801e2fc5
+  Action: cloudwatch:GetMetricData
+  Resource: arn:aws:s3:::bucket-34/file-5.txt
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_f07f0e64
+  Action: kms:Decrypt
+  Resource: arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%
+  Condition: {'StringEquals': {'kms:ViaService': 'not-kinesis.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:user/bob
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_da05d550
+  Action: sagemaker:StopNotebookInstance
+  Resource: arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/file-32-16.txt
+  Condition: {'StringEquals': {'kms:ViaService': 'not-s3.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_ba6c4fb5
+  Action: glue:DescribeEndpointConfig
+  Resource: arn:aws:glue:us-east-1:123456789012:table/db-2/table-4
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_42dbcdb1
+  Action: athena:GetWorkGroup
+  Resource: arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:resource-27-1
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: deny_2a2c00a7
+  Action: s3:DeleteBucket
+  Resource: authorized/arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats/file.txt
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::987654321098:user/charlie
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: deny_07f7fa12
+  Action: logs:DeleteLogStream
+  Resource: arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats-forbidden-resource
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::123456789012:role/test-role
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+Request: allow_ea0bc093
+  Action: s3:GetBucketCors
+  Resource: arn:aws:glue:us-east-1:123456789012:table/db-4/table-12
+  Condition: {'StringEquals': {'kms:ViaService': 'not-s3.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Expected: deny, Got: allow
+  Responsible Statement: None (missing deny statement)
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::demo-amazon-s3-bucket",
+        "arn:aws:s3:::demo-amazon-s3-bucket/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:*",
+      "Resource": "arn:aws:aoss:us-west-2:654654323652:collection/rnp6cshlcpnjcqrz1d61",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomain",
+        "es:DescribeElasticsearchDomains",
+        "es:DescribeElasticsearchDomainConfig",
+        "es:ESHttpPost",
+        "es:ESHttpPut"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_cluster/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:*",
+        "arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:kinesis:arn": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+        }
+      },
+      "Sid": "statement10"
+    }
+  ]
+}
+
+        SHOULD BE ALLOWED BUT EXPLICITLY DENIED
+--------------------------------------------------
+These requests should be ALLOWED but are explicitly denied:
+
+Request: deny_9c5214f3
+  Action: s3:GetBucketLifecycle
+  Resource: forbidden-arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings-specific
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::999888777666:user/unauthorized
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: deny_77c88f48
+  Action: s3:GetBucketCors
+  Resource: forbidden-arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%-specific
+  Condition: {'StringEquals': {'kms:ViaService':'s3.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:s3:arn': ['arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*', 'arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%']}}
+  Principal: arn:aws:iam::123456789012:role/admin-role
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_801e2fc5
+  Action: cloudwatch:GetMetricData
+  Resource: arn:aws:s3:::bucket-34/file-5.txt
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_f07f0e64
+  Action: kms:Decrypt
+  Resource: arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%
+  Condition: {'StringEquals': {'kms:ViaService': 'not-kinesis.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:user/bob
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_da05d550
+  Action: sagemaker:StopNotebookInstance
+  Resource: arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/file-32-16.txt
+  Condition: {'StringEquals': {'kms:ViaService': 'not-s3.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_ba6c4fb5
+  Action: glue:DescribeEndpointConfig
+  Resource: arn:aws:glue:us-east-1:123456789012:table/db-2/table-4
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_42dbcdb1
+  Action: athena:GetWorkGroup
+  Resource: arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:resource-27-1
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Principal: arn:aws:iam::123456789012:user/alice
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: deny_2a2c00a7
+  Action: s3:DeleteBucket
+  Resource: authorized/arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats/file.txt
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::987654321098:user/charlie
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: deny_07f7fa12
+  Action: logs:DeleteLogStream
+  Resource: arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats-forbidden-resource
+  Condition: {'StringEquals': {'kms:ViaService': 'kinesis.us-west-2.amazonaws.com'}, 'StringLike': {'kms:EncryptionContext:aws:kinesis:arn': 'arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%'}}
+  Principal: arn:aws:iam::123456789012:role/test-role
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+Request: allow_ea0bc093
+  Action: s3:GetBucketCors
+  Resource: arn:aws:glue:us-east-1:123456789012:table/db-4/table-12
+  Condition: {'StringEquals': {'kms:ViaService': 'not-s3.us-west-2.amazonaws.com'}}
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Expected: allow, Got: deny
+  Responsible Statement: None (missing allow statement)
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::demo-amazon-s3-bucket",
+        "arn:aws:s3:::demo-amazon-s3-bucket/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "aoss:*",
+      "Resource": "arn:aws:aoss:us-west-2:654654323652:collection/rnp6cshlcpnjcqrz1d61",
+      "Sid": "statement2"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:GetFunctionConfiguration"
+      ],
+      "Resource": "arn:aws:lambda:us-west-2:654654323652:function:demo-lambda-function:$LATEST"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "s3.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms:EncryptionContext:aws:s3:arn": [
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*",
+            "arn:aws:s3:::%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVpcs",
+        "ec2:DescribeVpcAttribute",
+        "ec2:DescribeSubnets",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:CreateNetworkInterface",
+        "ec2:CreateNetworkInterfacePermission",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:DescribeElasticsearchDomain",
+        "es:DescribeElasticsearchDomains",
+        "es:DescribeElasticsearchDomainConfig",
+        "es:ESHttpPost",
+        "es:ESHttpPut"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "es:ESHttpGet"
+      ],
+      "Resource": [
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_all/_settings",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_cluster/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_mapping/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_nodes/*/stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats",
+        "arn:aws:es:us-west-2:654654323652:domain/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%/_stats"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:logs:us-west-2:654654323652:log-group:/aws/kinesisfirehose/demo-firehose-stream:log-stream:*",
+        "arn:aws:logs:us-west-2:654654323652:log-group:%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%:log-stream:*"
+      ]
+    },
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Action": [
+        "kinesis:DescribeStream",
+        "kinesis:GetShardIterator",
+        "kinesis:GetRecords",
+        "kinesis:ListShards"
+      ],
+      "Resource": "arn:aws:kinesis:us-west-2:654654323652:stream/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:654654323652:key/%FIREHOSE_POLICY_TEMPLATE_PLACEHOLDER%"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+        },
+        "StringLike": {
+          "kms

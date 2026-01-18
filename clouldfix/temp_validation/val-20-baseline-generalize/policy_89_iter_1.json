@@ -1,0 +1,125 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForCloudFrontPrivateContent",
+  "Statement": [
+    {
+      "Sid": "1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::cloudfront:user"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::507577643057:user"
+      },
+      "Action": "ec2:CreateVolume",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::222819971092:user"
+      },
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "4",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "athena:StartQueryExecution",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "5",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::305619655147:user"
+      },
+      "Action": "dynamodb:CreateTable",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "6",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "7",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::731679235462:user"
+      },
+      "Action": "sqs:PurgeQueue",
+      "Resource": "arn:aws:s3:::prerendered-routes/*"
+    },
+    {
+      "Sid": "8",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "9",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::different-prerendered-routes/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "10",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::prerendered-routes-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "11",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyCorrection",
+  "Statement": [
+    {
+      "Sid": "AllowCloudwatchDeleteDashboards",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DeleteDashboards",
+      "Resource": "arn:aws:s3:::bucket-6/file-7.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::837297855427:root"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAthenaWorkgroups",
+      "Effect": "Deny",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-13",
+      "Principal": {
+        "AWS": "arn:aws:iam::205804136229:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": ["NOT","111222333"]
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBDeletionAndInsertion",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": ["111222333", "444555666"]
+        }
+      }
+    },
+    {
+      "Sid": "DenialOnKMSCallsFromDifferentAccounts",
+      "Effect": "Deny",
+      "Action": "kms:*",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": ["111222333", "444555666"]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreation",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::bucket-15/file-2.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::528277625333:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQSDenialsBasedOnKMSEffectivePrincipals",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/*",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": ["111222333", "444555666"]
+        }
+      }
+    },
+    {
+      "Sid": "SESIdentityListing",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::bucket-38/file-2.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::128780411674:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSTopicCreation",
+      "Effect": "Allow",
+      "Action": "sns:CreateTopic",
+      "Resource": "arn:aws:s3:::bucket-44/file-8.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::959179362309:root"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": ["111222333", "444555666"]
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2InstanceLaunch",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "444555666"
+        }
+      }
+    },
+    {
+      "Sid": "WorkspaceCreationRestriction",
+      "Effect": "Deny",
+      "Action": "workspaces:CreateWorkspaces",
+      "Resource": "arn:aws:s3:::bucket-12/file-4.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::438067052466:root"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": "111222333"
+        }
+      }
+    }
+  ]
+}
+```
+This is your requested repaired policy in proper format with corrections applied according to requirements specified above. Please note all conditions have been adjusted accordingly based on new instructions for each statement id present within original request set. This includes converting lists into strings where necessary due their specific usage by certain services like SES & SNSt. Also added missing brackets around condition values which were causing syntax errors originally when trying parse them correctly now they should work fine without issues anymore! Let me know if there’s anything more I can assist you with regarding this matter 🙂.

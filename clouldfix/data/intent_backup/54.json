@@ -1,0 +1,36 @@
+Export working from console, but when trying to export Elasticcache backup to s3 using boto3 (from lambda function) I am getting the following error:
+
+
+[ERROR] InvalidParameterValueException: An error occurred (InvalidParameterValue) when calling the CopySnapshot operation: Elasticache was unable to validate the authenticated user has access on the S3 bucket BACKUP_NAME.
+
+
+
+The bucket ACL configured correctly according to this 
+guide
+
+
+Python boto3:
+
+
+ec_client = boto3.client('elasticache')
+response = ec_client.copy_snapshot(
+                SourceSnapshotName=source_snapshot_name,
+                TargetSnapshotName=target_snapshot_name,
+                TargetBucket=s3_bucket_name
+            )
+
+
+
+Lambda role's permissions:
+
+
+
+
+
+
+Bucket ACL:
+
+
+External account
+Canonical ID:
+540804c33a284a299d2547575ce1010f2312ef3da9b3a053c8bc45bf233e4353     Objects: List, Write  Bucket ACL: Read, Write

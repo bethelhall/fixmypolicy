@@ -1,0 +1,142 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "kms",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>"
+    },
+    {
+      "Sid": "secretsmanager",
+      "Effect": "Allow",
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>"
+    },
+    {
+      "Sid": "allow_d6e692f5",
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_6961b158",
+      "Effect": "Deny",
+      "Action": "kms:DisableKey",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_d3d770ff",
+      "Effect": "Allow",
+      "Action": "codebuild:StartBuild",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_b173ef78",
+      "Effect": "Allow",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_59d3c87e",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_787ae8b0",
+      "Effect": "Allow",
+      "Action": "kms:Encrypt",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3f17a8dc",
+      "Effect": "Allow",
+      "Action": "glue:CreateTable",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_26f4fd50",
+      "Effect": "Allow",
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_e353ca23",
+      "Effect": "Allow",
+      "Action": "cloudfront:ListDistributions",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9f3ab8d8",
+      "Effect": "Allow",
+      "Action": "guardduty:DeleteDetector",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_c8b62d45",
+      "Effect": "Allow",
+      "Action": "es:DeleteElasticsearchDomain",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>:key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

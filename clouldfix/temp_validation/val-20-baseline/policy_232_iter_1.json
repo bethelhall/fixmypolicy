@@ -1,0 +1,299 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "sms-voice:SendTextMessage",
+        "sms-voice:SendVoiceMessage",
+        "sms-voice:SendMediaMessage",
+        "sms-voice:DescribeSenderIds"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO"
+    },
+    {
+      "Sid": "allow_0a683c09",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ses:SendRawEmail",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_39fc6230",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::550619692393:root"
+      },
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_de97be59",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "athena:BatchGetQueryExecution",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_b56650af",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO/file.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1bac342a",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_19940459",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_9869f28f",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_7b63f095",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "deny_16ecf51f",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ae83f4f5",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_d759468c",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a74406ab",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::890087450133:root"
+      },
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_185bdc7f",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f9247b0f",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::748300590517:root"
+      },
+      "Action": "redshift:DeleteCluster",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_359c7a75",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "allow_59df3707",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_259ba98a",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9b27125c",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_bd68b795",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "cloudtrail:DeleteTrail",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_9afb704e",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sms-voice:DescribeSenderIds",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>"
+      ],
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "part123"
+          ],
+          "dynamodb:Attributes": [
+            "mykey",
+            "mymap"
+          ]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codepipeline:StartPipelineExecution",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>-forbidden-resource",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "part123"
+          ],
+          "dynamodb:Attributes": [
+            "mykey",
+            "mymap"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>-specific",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "part123"
+          ],
+          "dynamodb:Attributes": [
+            "mykey",
+            "mymap"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeTrainingJob",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:GetItem",
+      "Resource": "authorized/arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>/file.txt",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "part123"
+          ],
+          "dynamodb:Attributes": [
+            "mykey",
+            "mymap"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "ForAllValues:StringEquals": {
+          "dynamodb:LeadingKeys": [
+            "part123"
+          ],
+          "dynamodb:Attributes": [
+            "mykey",
+            "mymap"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:GetKeyPolicy",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:dynamodb:*:<ACCOUNT>:table/<TABLE>",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

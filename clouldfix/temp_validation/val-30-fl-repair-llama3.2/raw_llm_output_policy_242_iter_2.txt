@@ -1,0 +1,97 @@
+ 
+{
+"Version": "2012-10-17",
+"Statement": [
+{
+"Sid": "statement1",
+"Effect": "Allow",
+"Principal": {
+"AWS": "arn:aws:iam::$AccountID:user/$username"
+},
+"Action": [
+"s3:GetBucketLocation",
+"s3:ListBucket"
+],
+"Resource": "arn:aws:s3:::$BucketName"
+}
+],
+"Statement": [
+{
+"Sid": "statement2",
+"Effect": "Allow",
+"Principal": {
+"AWS": "arn:aws:iam::$AccountID:user/$username"
+},
+"Action": "s3:GetObject",
+"Resource": "arn:aws:s3:::$BucketName/*"
+}
+],
+"Statement": [
+{
+"Sid": "statement3",
+"Effect": "Allow",
+"Principal": {
+"AWS": "arn:aws:iam::$AccountID:user/$username"
+},
+"Action": [
+"kms:Encrypt",
+"logs:DescribeLogGroups",
+"redshift:DescribeClusters",
+"s3:GetBucketLocation",
+"s3:GetObject",
+"s3:GetBucketLogging",
+"s3:GetBucketAcl",
+"s3:PutBucketWebsite",
+"sqs:ChangeMessageVisibility",
+"iam:CreateUser",
+"iam:DeleteUser",
+"iam:ListAccessKeys",
+"iam:ListAttachedUserPolicies"
+],
+"Resource": "arn:aws:s3:::$BucketName/*",
+"Condition": {
+"StringEquals": {
+"aws:RequestedRegion": "us-west-2"
+}
+}
+},
+{
+"Sid": "statement4",
+"Effect": "Allow",
+"Principal": {
+"AWS": "arn:aws:iam::$AccountID:user/$username"
+},
+"Action": [
+"cloudwatch:ListMetrics"
+],
+"Resource": "arn:aws:s3:::$BucketName/*",
+"Condition": {
+"StringEquals": {
+"aws:RequestedRegion": "eu-west-1"
+}
+}
+},
+{
+"Sid": "statement5",
+"Effect": "Deny",
+"Principal": {
+"AWS": "arn:aws:iam::$AccountID:user/$username"
+},
+"Action": [
+"s3:CreateBucket",
+"s3:PutBucketVersioning",
+"s3:RestoreObject",
+"dynamodb:PutItem",
+"dynamodb:DeleteItem",
+"ec2:DescribeInstances",
+"s3:ListObjectVersions",
+"s3:GetBucketCors",
+"s3:PutObjectTagging"
+],
+"Resource": "*",
+"Condition": {
+"Bool": {
+"aws:SecureTransport": "false"
+}
+}
+}]}

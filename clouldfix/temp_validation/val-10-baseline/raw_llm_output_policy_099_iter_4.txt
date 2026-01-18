@@ -1,0 +1,142 @@
+[
+  {
+    "Sid": "AllowCloudWatchMetrics",
+    "Effect": "Allow",
+    "Action": "cloudwatch:PutMetricData",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-46-17.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/test-user"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-west-2"
+      }
+    }
+  },
+  {
+    "Sid": "AllowSetBucketLoggingUnauthorizedUser",
+    "Effect": "Allow",
+    "Action": "s3:PutBucketLogging",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-37-6.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "DenyGetObjectAclDifferentAccount",
+    "Effect": "Deny",
+    "Action": "s3:GetObjectAcl",
+    "Resource": "arn:aws:s3:::different-bucket-account-a/file.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/test-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "DenySetBucketWebsiteSameOrganization",
+    "Effect": "Deny",
+    "Action": "s3:PutBucketWebsite",
+    "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::111222333444:user/david"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "DenyDeleteMessageCrossAccountDenied",
+    "Effect": "Deny",
+    "Action": "sqs:DeleteMessage",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-26-5.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "DenyGetBucketLoggingForbidddenOperation",
+    "Effect": "Deny",
+    "Action": "s3:GetBucketLogging",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "DenyTagQueueBlockedUser",
+    "Effect": "Deny",
+    "Action": "sqs:TagQueue",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-38-9.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    "Condition": {
+      "StringNotEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "AllowKMSReEncryptTempUser",
+    "Effect": "Allow",
+    "Action": "kms:ReEncrypt",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-48-14.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::111222333444:user/temp-user"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "DenySetBucketLoggingTestUser",
+    "Effect": "Deny",
+    "Action": "s3:PutBucketLogging",
+    "Resource": "arn:aws:s3:::bucket-account-a-forbidden/file.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:user/test-user"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:PrincipalOrgID": "o-xxxxxxxxxx"
+      }
+    }
+  },
+  {
+    "Sid": "AllowEC2DescribeVolumes",
+    "Effect": "Allow",
+    "Action": "ec2:DescribeVolumes",
+    "Resource": "arn:aws:s3:::bucket-account-a/file-10-11.txt",
+    "Principal": {
+      "AWS": "arn:aws:iam::123456789012:role/test-role"
+    },
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "eu-west-1"
+      }
+    }
+  }
+]

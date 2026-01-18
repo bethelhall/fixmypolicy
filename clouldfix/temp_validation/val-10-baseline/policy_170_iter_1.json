@@ -1,0 +1,169 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "kms:ReEncrypt*",
+        "kms:GetKeyPolicy",
+        "kms:GenerateDataKey*",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:CreateGrant"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Sid": "KMSUsage"
+    },
+    {
+      "Action": [
+        "ec2:CreateVolume"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*-specific",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ses:SendRawEmail"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "redshift:CreateCluster"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sns:Publish"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:AttachRolePolicy"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*-forbidden-resource",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "glue:GetJobRun"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateDistribution",
+        "logs:DescribeLogStreams",
+        "sagemaker:StartNotebookInstance",
+        "kms:UpdateKeyDescription",
+        "codepipeline:ListPipelines",
+        "sagemaker:ListEndpointConfigs",
+        "kms:PutKeyPolicy",
+        "guardduty:GetDetector",
+        "kinesis:PutRecord",
+        "sqs:SetQueueAttributes",
+        "athena:StopQueryExecution",
+        "glue:GetDatabase",
+        "ses:SetIdentityDkimEnabled",
+        "cloudwatch:DeleteDashboards",
+        "route53:ChangeResourceRecordSets",
+        "iam:ListAttachedUserPolicies",
+        "dynamodb:GetItem",
+        "s3:PutBucketCors"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "sns:Subscribe",
+        "dynamodb:DeleteItem",
+        "iam:DeleteUser",
+        "iam:CreateUser",
+        "dynamodb:PutItem",
+        "sqs:SendMessage",
+        "rds:CreateDBInstance",
+        "lambda:CreateFunction",
+        "sns:Publish"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "Bool": {
+          "aws:SecureTransport": "false"
+        },
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}

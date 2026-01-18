@@ -1,0 +1,175 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObjectAcl",
+        "sagemaker:StartNotebookInstance",
+        "glue:GetJobRun",
+        "logs:DescribeLogStreams",
+        "cloudformation:UpdateStack",
+        "ec2:TerminateInstances",
+        "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-1-name/*",
+        "arn:aws:s3:::bucket-2-name/*",
+        "arn:aws:s3:::bucket-1-name/file-18-9.txt",
+        "arn:aws:s3:::bucket-1-name/file-29-2.txt",
+        "arn:aws:s3:::bucket-1-name/file-25-9.txt",
+        "arn:aws:s3:::bucket-2-name/file-47-2.txt",
+        "arn:aws:s3:::bucket-2-name/file-18-1.txt",
+        "arn:aws:s3:::bucket-1-name/file-17-18.txt"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject",
+        "s3:RestoreObject",
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-bucket-1-name/*",
+        "arn:aws:s3:::different-bucket-2-name/*",
+        "arn:aws:s3:::bucket-2-name-forbidden/*"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "DenyIncorrectIPorUserorTLS"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::different-bucket-2-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Sid": "DenyBobAccessToDifferentBuckets"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "DenyTestRoleAccessWithUnsecureIP"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": "arn:aws:s3:::bucket-1-name/file-18-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "AllowAliceInEuWest1Only"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetJobRun",
+      "Resource": "arn:aws:s3:::bucket-1-name/file-29-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "AllowServiceRolesInUsEast1Only"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::bucket-1-name/file-25-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "AllowBobInUsEast1Only"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::different-bucket-1-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "DenyBlockedUserFromRestoringObjects"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-2-name-forbidden/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "AllowTempUserOnSecureChannelOnly"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:s3:::bucket-2-name/file-47-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "AllowAliceInUsWest2Only"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::bucket-2-name/file-18-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "AllowAliceInUsEast1OnlyForTermination"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:s3:::bucket-1-name/file-17-18.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "AllowServiceRolesInEuWest1Only"
+    }
+  ]
+}
+```
+This is your repaired policy in full compliance with all requirements including new additions for deny rules based on additional requests made by users. It includes proper syntax without extra spaces nor unnecessary characters which were present initially making it invalid json format. Please note this has been done assuming you want these specific actions permitted only when certain conditions apply (like region restrictions). If there was more context about what each action should do within different scenarios I could adjust accordingly but currently my understanding of those parts ends here due lack thereof information from original post content itself. Let me know if anything needs further clarification!

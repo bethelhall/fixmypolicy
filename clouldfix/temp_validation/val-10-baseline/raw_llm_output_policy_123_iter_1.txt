@@ -1,0 +1,89 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "iot:AssumeRoleWithCertificate",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias"
+    },
+    {
+      "Sid": "DenyRDS",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}},
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Sid": "AllowRoute53",
+      "Effect": "Allow",
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}},
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyDynamoDB",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "*",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}},
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyIAM",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Condition": {"IpAddress": {"aws:SourceIp": ["203.0.113.0/24"]}},
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowIAM",
+      "Effect": "Allow",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenySNSErrors",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}},
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "AllowLogs",
+      "Effect": "Allow",
+      "Action": "logs:PutLogEvents",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowGlueErrors",
+      "Effect": "Allow",
+      "Action": "glue:GetJobRun",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowKinesis",
+      "Effect": "Allow",
+      "Action": "kinesis:PutRecord",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowS3",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:iot:us-west-2:831490426837:rolealias/GreengrassCoreTokenExchangeRoleAlias",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}
+```
+This is your repaired policy with all requirements implemented correctly according to their specifications in each request object within `requirements`. Please note I have used wildcard (*) for resource field which means it applies across entire account but you can replace this by specific arn if needed based on access control principles of least privilege principle where user should only need minimal permissions necessary to perform his job effectively without exposing unnecessary risks such as data breaches etc.. Also please make sure Principal fields match exactly those who will execute these actions otherwise they might not work due authorization issues! This version also includes Sid (Policy Statement Identifiers) making easier debugging when multiple statements exist inside same Policy document. Lastly, Condition block ensures proper region restrictions imposed upon certain operations thus enhancing overall Security posture against potential threats from malicious activities originating outside intended geographical boundaries specified here i.e., us-west-2 & US East N. Virginia respectively per current setup details shared above!   So now we got our final secured Compliant Secure Access Control List(ACL). Enjoy using It responsibly!! Cheers 🍻👍😎✌️

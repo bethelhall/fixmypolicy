@@ -1,0 +1,161 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_read_conformance_pack",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name/filename.yaml"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/aws-controltower-ConfigRecorderRole",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "XXXXXXXXXXXX"
+          }
+        }
+      },
+      {
+        "id": "test_s3_bucket_location",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/aws-controltower-ConfigRecorderRole"
+      },
+      {
+        "id": "test_config_service_s3_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name/conformance-pack-template.yaml"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/aws-service-role/config.amazonaws.com/AWSServiceRoleForConfig"
+      },
+      {
+        "id": "test_sns_publish_allowed",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/testuser",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "XXXXXXXXXXXX"
+          }
+        }
+      },
+      {
+        "id": "test_sns_subscribe_allowed",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/controltower-role",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "XXXXXXXXXXXX"
+          }
+        }
+      },
+      {
+        "id": "test_s3_list_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/aws-controltower-ConfigRecorderRole"
+      },
+      {
+        "id": "test_cross_account_sns_access",
+        "Effect": "deny",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::999999999999:user/external-user",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "999999999999"
+          }
+        }
+      },
+      {
+        "id": "test_cfct_s3_read",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cfct-conformance-pack-bucket/*"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/CfCT-CustomizationRole"
+      },
+      {
+        "id": "test_sns_get_attributes",
+        "Effect": "allow",
+        "Action": [
+          "SNS:GetTopicAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:root",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceOwner": "XXXXXXXXXXXX"
+          }
+        }
+      },
+      {
+        "id": "test_config_put_conformance_pack",
+        "Effect": "deny",
+        "Action": [
+          "config:PutConformancePack"
+        ],
+        "Resource": [
+          "arn:aws:config:af-south-1:XXXXXXXXXXXX:conformance-pack/FedRAMPConformancePack/*"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:role/aws-controltower-ConfigRecorderRole"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.9,
+      "total_requests": 11,
+      "correct": 10,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 72.7,
+      "total_requests": 11,
+      "correct": 8,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "39",
+    "user_intent": "Hi all\n\n\nI'd love to deploy a custom AWS Config Conformance Pack using AWS Control Tower Customization Framework (CfCT). In the cfn yaml template, I used an S3 bucket to upload custom conformance pack file as follows:\n\n\nResources:\n  FedRAMPConformancePack:\n    Type: AWS::Config::ConformancePack\n    Properties:\n      ConformancePackName: !Ref ConformancePackName\n      DeliveryS3Bucket: !Ref DeliveryS3Bucket\n      TemplateS3Uri: !Ref TemplateS3Uri\n\n\n\nI encountered an error:\n\n\n\n\n\"Insufficient read permissions on S3 URI: s3://[buckent-name]/[filename].yaml.\n\n\n\n\nI used the following S3 bucket policy:\n\n\n\n\n\n\nWhat could go wrong?\n\n\nThanks.",
+    "timestamp": "2025-08-19T17:53:06.461659"
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogStreams",
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": "*",
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-test-bucket",
+        "arn:aws:s3:::my-test-bucketc/*"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage"
+      ],
+      "Resource": "arn:aws:ecr:us-east-1:11111111111:repository/my-test-ecr",
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": "*",
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParametersByPath",
+        "ssm:GetParameters",
+        "ssm:GetParameter"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:11111111111:my-test-app/*",
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:ListHostedZones"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-0/file-0.txt",
+        "arn:aws:s3:::bucket-0/file-1.txt",
+        "arn:aws:s3:::bucket-0/file-2.txt",
+        "arn:aws:s3:::bucket-0/file-3.txt",
+        "arn:aws:s3:::bucket-0/file-4.txt",
+        "arn:aws:s3:::bucket-0/file-5.txt",
+        "arn:aws:s3:::bucket-0/file-6.txt",
+        "arn:aws:s3:::bucket-0/file-7.txt",
+        "arn:aws:s3:::bucket-0/file-8.txt",
+        "arn:aws:s3:::bucket-0/file-9.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeys"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-14",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement7"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:PutRolePolicy"
+      ],
+      "Resource": "arn:aws:s3:::bucket-4/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetTableMetadata"
+      ],
+      "Resource": "arn:aws:s3:::my-test-bucketc/file-15-10.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteRole"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:11111111111:my-test-app/file-40-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListGroups"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:11111111111:my-test-app/file-39-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement11"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetBucketCors"
+      ],
+      "Resource": "arn:aws:s3:::different-my-test-bucketc/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "statement12"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetBucketLifecycle"
+      ],
+      "Resource": "arn:aws:ssm:us-east-1:11111111111:my-test-app/*-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement13"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketCors"
+      ],
+      "Resource": "arn:aws:ecr:us-east-1:11111111111:repository/my-test-ecr-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "statement14"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketPolicy"
+      ],
+      "Resource": "authorized/arn:aws:ssm:us-east-1:11111111111:my-test-app/*/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement15"
+    }
+  ]
+}

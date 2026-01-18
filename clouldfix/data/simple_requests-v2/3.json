@@ -1,0 +1,97 @@
+{
+  "Requests": [
+    {
+      "id": "allow_kms_generate_datakey_s3_key1",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-1111-1111-1111-111111111111"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "allow_kms_decrypt_s3_key1",
+      "Effect": "allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-1111-1111-1111-111111111111"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "allow_kms_gen_and_dec_s3_key2",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/22222222-2222-2222-2222-222222222222"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "deny_sns_publish_from_s3_mybucket",
+      "Effect": "deny",
+      "Action": [
+        "SNS:Publish"
+      ],
+      "Resource": [
+        "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+      ],
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+        }
+      }
+    },
+    {
+      "id": "deny_sns_subscribe_testuser",
+      "Effect": "deny",
+      "Action": [
+        "SNS:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+      ],
+      "Principal": "arn:aws:iam::1234567895:user/testuser",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+        }
+      }
+    },
+    {
+      "id": "allow_kms_decrypt_s3_key3",
+      "Effect": "allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/33333333-3333-3333-3333-333333333333"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "deny_sns_get_topic_attributes_testuser",
+      "Effect": "deny",
+      "Action": [
+        "SNS:GetTopicAttributes"
+      ],
+      "Resource": [
+        "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+      ],
+      "Principal": "arn:aws:iam::1234567895:user/testuser",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "dynamodb_read_from_allowed_ip",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:GetItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2BastionRole",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "10.0.1.50"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_write_from_outside_ip",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:PutItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2BastionRole",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "192.168.1.100"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_via_api_gateway",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:Query"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/ApiGatewayRole",
+        "Condition": {
+          "Bool": {
+            "aws:ViaAWSService": "true"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_batch_write_from_ec2",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:BatchWriteItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::987654321098:role/CrossAccountEC2Role",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "54.23.45.67"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_scan_via_lambda",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:Scan"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/LambdaExecutionRole",
+        "Condition": {
+          "Bool": {
+            "aws:ViaAWSService": "true"
+          },
+          "StringEquals": {
+            "aws:SourceAccount": "123456789012"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_delete_from_vpc_endpoint",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:DeleteItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2BastionRole",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceVpce": "vpce-1234567890abcdef0"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_create_table_admin",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:CreateTable"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "203.0.113.0"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_stream_read_from_service",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:GetRecords"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData/stream/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/DynamoDBStreamsRole",
+        "Condition": {
+          "Bool": {
+            "aws:ViaAWSService": "true"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_update_from_allowed_range",
+        "Effect": "allow",
+        "Action": [
+          "dynamodb:UpdateItem"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2BastionRole",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "10.0.0.0/16"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      },
+      {
+        "id": "dynamodb_describe_from_console",
+        "Effect": "deny",
+        "Action": [
+          "dynamodb:DescribeTable"
+        ],
+        "Resource": [
+          "arn:aws:dynamodb:us-east-1:123456789012:table/ApiData"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "73.189.45.23"
+          },
+          "Bool": {
+            "aws:ViaAWSService": "false"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "error": "Validation failed: Traceback (most recent call last):\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/validate_requests.py\", line 840, in <module>\n    call_translator(args)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/translator.py\", line 25, in call_translator\n    body = visit_policy_model(\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/backend.py\", line 36, in visit_policy_model\n    body += Policy('p0', obj, smt_lib, enc).smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 361, in smt\n    body += statement.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/policy_model.py\", line 290, in smt\n    d, a, b = condition.smt()\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 299, in smt\n    dtype, smt = ops[op](self.key, self.values, ('All' in self.op), self.smt_lib)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 222, in not_ip_address\n    dtype, body = ip_address(key, values, for_all, smt_lib) # use IpAddress\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/aws_conditions.py\", line 204, in ip_address\n    addr, prefix = bit_string(i)\n  File \"/home/bhall2/Documents/fixmypolicy/quacky/src/utilities.py\", line 93, in bit_string\n    addr = bin(int(IPv4Address(addr)))\n  File \"/usr/lib/python3.10/ipaddress.py\", line 1305, in __init__\n    self._ip = self._ip_int_from_string(addr_str)\n  File \"/usr/lib/python3.10/ipaddress.py\", line 1192, in _ip_int_from_string\n    raise AddressValueError(\"Expected 4 octets in %r\" % ip_str)\nipaddress.AddressValueError: Expected 4 octets in 'IP Range'\n"
+    },
+    "repaired_policy": {
+      "accuracy": 50.0,
+      "total_requests": 10,
+      "correct": 5,
+      "incorrect": 5
+    }
+  },
+  "metadata": {
+    "file_number": "23",
+    "user_intent": "Hi Team,\n\n\nI have added a resource policy to my API Gateway that restricts access to calls made only from a specific account, as well as the account where the API Gateway itself resides (to allow calls from the bastion host). Below is the policy I implemented:\n\n\n\n\n\n\n\nAfter applying and redeploying the API Gateway, I attempted to invoke it from the EC2 bastion in the \nstg_account_id\n and \napi_gw_account_id\n, which should have been permitted. However, I received the following error:\n\n\n\"Message\": \"User: anonymous is not authorized to perform: execute-api:Invoke on resource: arn:aws:execute-api:region:********3415:xsdxxxsdx/trn/POST/my-resource\"\n\n\nthe objective is to allow only one account to hit the API gw and the account where the API gw itself is in.\n\n\ni call the pi gw from the ec2 to test like this :\n\n\ncurl -X 'POST' \\\n  'https://xxxxxxx.execute-api.region.amazonaws.com/stg/my-resource' \\\n  -H 'accept: application/json' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n  \"key1\": \"value1\"\n}'\n\n\n\nI changed the API GW policy to restrict by IP range instead of AWS accnts Ids, but still have the same error :\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": \"*\",\n      \"Action\": \"execute-api:Invoke\",\n      \"Resource\": \"arn:aws:execute-api:region:api_gw_account_id:xsdxxxsdx/*\",\n      \"Condition\": {\n        \"IpAddress\": {\n          \"aws:SourceIp\": [\n            \"x.x.x.x.x/yy\",\n            \"x2.x2.x2.x2/16\"\n          ]\n        }\n      }\n    }\n  ]\n}\n\n\n\n\nfor IP range should I use \nAWS_IAM\n also? at the API gw level\n\n\nCould someone help me troubleshoot this issue?",
+    "timestamp": "2025-08-19T17:44:09.876470"
+  }
+}

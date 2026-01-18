@@ -1,0 +1,156 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSLogDeliveryWrite20150319",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "ssm.amazonaws.com"
+        ]
+      },
+      "Action": [
+        "logs:*"
+      ],
+      "Resource": [
+        "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "0123456789"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "allow_78e96d48",
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-22-14",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['0123456789']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_8f0c6e1c",
+      "Effect": "Allow",
+      "Action": "ses:VerifyEmailIdentity",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-42-12",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['0123456789']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a5f9dac6",
+      "Effect": "Allow",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-47-3",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "not-['0123456789']"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3138c11c",
+      "Effect": "Allow",
+      "Action": "redshift:DescribeClusters",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-14-13",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_4aad2a93",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-30-7",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "allow_5872c120",
+      "Effect": "Allow",
+      "Action": "cloudfront:ListDistributions",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-30-4",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_0b8297de",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "forbidden-arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*-specific",
+      "Principal": "ssm.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "0123456789"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_f6aba750",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "ssm.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "0123456789"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_2aadb81d",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "authorized/arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*/file.txt",
+      "Principal": "ssm.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "0123456789"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "deny_6a915365",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*-forbidden-resource",
+      "Principal": "ssm.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "0123456789"
+          ]
+        }
+      }
+    }
+  ]
+}

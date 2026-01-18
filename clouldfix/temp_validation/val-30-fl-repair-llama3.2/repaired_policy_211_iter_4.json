@@ -1,0 +1,120 @@
+{
+  "Version": "2012-10-17",
+  "Id": "SESPermissionPolicy",
+  "Statement": [
+    {
+      "Sid": "AllowSESPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESReceiveEmails",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3OperationsOnOtherBuckets",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetBucketAcl",
+        "s3:GetBucketVersioning",
+        "s3:DeleteBucketWebsite",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteBucket",
+        "s3:PutBucketPolicy",
+        "s3:PutObjectTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/*",
+        "arn:aws:s3:::denied-bucket-6/*",
+        "arn:aws:s3:::denied-bucket-3/*",
+        "arn:aws:s3:::denied-bucket-8/*",
+        "arn:aws:s3:::denied-bucket-7/*",
+        "arn:aws:s3:::denied-bucket-4/*",
+        "arn:aws:s3:::denied-bucket-5/*",
+        "arn:aws:s3:::denied-bucket-0/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESOperationsOnForbiddenResources",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-mybucket/*",
+        "arn:aws:s3:::denied-bucket-2/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "domain"
+        },
+        "StringLike": {
+          "aws:Referer": "copied arn email@domain"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESOperationsOnMyBucket",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ses.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::mybucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:Referer": "not-domain"
+        }
+      }
+    }
+  ]
+}

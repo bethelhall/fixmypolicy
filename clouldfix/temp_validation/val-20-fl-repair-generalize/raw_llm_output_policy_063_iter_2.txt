@@ -1,0 +1,266 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Action": "sqs:PurgeQueue",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Action": "rds:DescribeDBInstances",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement7"
+    },
+    {
+      "Action": "iam:ListAttachedUserPolicies",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "forbidden-arn:aws:kms:ca-central-1:xxxx:key/zzzz-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Action": "kms:ReEncrypt",
+      "Resource": "forbidden-arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "statement11"
+    },
+    {
+      "Action": "kms:GenerateDataKey",
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "statement12"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement13"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-0:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement14"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-2:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement15"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-3:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement16"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-4:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement17"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-5:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement18"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-6:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement19"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-7:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement20"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-8:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement21"
+    },
+    {
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:kms:ca-central-9:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement22"
+    }
+  ]
+}
+
+        |]

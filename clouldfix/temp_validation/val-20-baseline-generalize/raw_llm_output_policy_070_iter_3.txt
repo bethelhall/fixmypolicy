@@ -1,0 +1,138 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:PassRole",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor3",
+      "Effect": "Allow",
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor4",
+      "Effect": "Allow",
+      "Action": "athena:GetWorkGroup",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor5",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor6",
+      "Effect": "Allow",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor7",
+      "Effect": "Deny",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "forbidden-arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz-specific",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor8",
+      "Effect": "Deny",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "authorized/arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz/file.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor9",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor10",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::1234:policy/AmazonBedrockS3PolicyForKnowledgeBase_xyz-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,309 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2CreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSCreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSCreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:CreateDBCluster"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:CreateTable"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEncrypt",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowSageMakerDescribeEndpoint",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeEndpoint"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowGlueGetTable",
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetTable"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowKMSGenerateDataKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowCloudFrontDeleteDistribution",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:DeleteDistribution"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowIAMUpdateLoginProfile",
+      "Effect": "Allow",
+      "Action": [
+        "iam:UpdateLoginProfile"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowEC2DeleteKeyPair",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteKeyPair"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyEC2DeleteVolume",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "DenyEC2TerminateInstances",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:TerminateInstances"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

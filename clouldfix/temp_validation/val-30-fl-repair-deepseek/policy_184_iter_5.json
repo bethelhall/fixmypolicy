@@ -1,0 +1,297 @@
+{
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "Allow access through SNS for all principals in the account that are authorized to use SNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow sqs:CreateQueue if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Action": "sqs:CreateQueue",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-24",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow route53:ChangeResourceRecordSets if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow iam:ListAttachedUserPolicies if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": "iam:ListAttachedUserPolicies",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudwatch:GetMetricStatistics if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::361567453596:root"
+      },
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ses:ListIdentities if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::486757821305:root"
+      },
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-14",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ec2:ModifyInstanceAttribute if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudformation:DescribeStacks if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::248284580414:root"
+      },
+      "Action": "cloudformation:DescribeStacks",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-9/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow glue:StartCrawler if the principal is from the same account and the requested region matches",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Action": "glue:StartCrawler",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-9/table-10",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_76fbe486_combo_2",
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::bucket-3/file-8.txt",
+      "Principal": "arn:aws:iam::516732770597:root",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_df6ce7ab_combo_2",
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-18/table-1",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_7182437f_combo_2",
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-5",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_0f332ea4_combo_2",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-18",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_fcf9ee27_combo_2",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::bucket-12/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_6ab31491_combo_2",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-24/file-8.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_3b33b243_combo_2",
+      "Effect": "Allow",
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-83",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_ed627423_combo_2",
+      "Effect": "Allow",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-6",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "not-sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_8651dd0b_combo_2",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::bucket-38/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_6c281a96_combo_2",
+      "Effect": "Allow",
+      "Action": "guardduty:DeleteDetector",
+      "Resource": "arn:aws:s3:::bucket-39/file-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_cce76eab_combo_2",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:s3:::bucket-18/file-9.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow allow_cd16ec57_combo_2",
+      "Effect": "Allow",
+      "Action": "glue:StartCrawler",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-9/table-10",
+      "Principal": "arn:aws:iam::123456789012:role/forbidden-role",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "not-xxxxxxxxxxxx"
+        }
+      }
+    }
+  ]
+}

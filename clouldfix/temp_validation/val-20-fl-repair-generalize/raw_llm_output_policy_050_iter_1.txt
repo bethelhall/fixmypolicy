@@ -1,0 +1,794 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "HadoopPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeSecurityGroups",
+        "ec2:AuthorizeSecurityGroupEgress",
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupEgress",
+        "ec2:RevokeSecurityGroupIngress",
+        "ec2:CreateSecurityGroup",
+        "ec2:DeleteSecurityGroup",
+        "ec2:*"
+      ],
+      "Resource": [
+        "arn:aws:ec2:my-region:XXXXXXXXXXX:security-group/sg-SLAVE",
+        "arn:aws:ec2:my-region:XXXXXXXXXXX:security-group/sg-MASTER",
+        "arn:aws:ec2:my-region:XXXXXXXXXXX:subnet/my-subnet-with-internet-access",
+        "arn:aws:ec2:my-region:XXXXXXXXXXX:*"
+      ]
+    },
+    {
+      "Sid": "AllowReadAccesstoKey",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey",
+        "kms:CreateGrant",
+        "kms:ListGrants"
+      ],
+      "Resource": "arn:aws:kms:my-region:XXXXXXXXXXX:key/my-kms-cmk-id"
+    },
+    {
+      "Sid": "AllowCloudWatchToPutMetricsAndLogs",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData",
+        "cloudwatch:PutLogEvents"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowEC2ToManageVPCEndpoints",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateVpcEndpoint",
+        "ec2:ModifyVpcEndpoint",
+        "ec2:DeleteVpcEndpoint",
+        "ec2:DescribeVpcEndpoints"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaToAssumeRoleForCloudWatchLogs",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::123456789012:role/lambda-role",
+      "Condition": {
+        "StringEquals": {
+          "sts:ExternalId": "lambda-external-id"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaToPublishMetricsToCloudWatch",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaToWriteLogsToCloudWatch",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogStream",
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithWildcard",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArn",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndWildcard",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndWildcardAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndWildcardAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndWildcardAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcard",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcard",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndRegexAndPrefixAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefix",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegex",
+      "Effect": "Allow",
+      "Action": [
+        "logs:GetLogEvents",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/aws/lambda/*:log-stream:*"
+    },
+    {
+      "Sid": "AllowLambdaToReadFromCloudWatchLogsWithArnAndPrefixAndRegexAndWildcardAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAndRegexAndPrefixAnd

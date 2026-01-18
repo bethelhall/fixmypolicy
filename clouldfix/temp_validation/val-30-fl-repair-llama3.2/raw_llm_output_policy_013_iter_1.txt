@@ -1,0 +1,323 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Fully_manage_backup_policies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ]
+    },
+    {
+      "Sid": "AllowServiceControlPoliciesCreation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceControlPoliciesRead",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:ListAccounts"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "s3:PutBucketPolicy",
+        "s3:PutBucketLifecycle",
+        "s3:GetBucketVersioning"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:s3:::bucket-40/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSServiceActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "sqs:TagQueue",
+        "sqs:ReceiveMessage",
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:glue:us-east-1:123456789012:table/db-4/table-4"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "glue:UpdateTable",
+        "logs:DescribeLogStreams"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-97"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "kms:CreateGrant"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/file-33-12.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowESActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "es:DeleteElasticsearchDomain"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ],
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "iam:AttachUserPolicy",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:UpdateStack"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-18/table-9",
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-97"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-16/table-12"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSServiceActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "sqs:DeleteMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowEC2ActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "ec2:StopInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowESActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "es:DeleteElasticsearchDomain"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowIAMActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "iam:AttachUserPolicy",
+        "iam:DeleteUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    },
+    {
+      "Sid": "AllowCloudFormationActionsNotResourceControlPolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "cloudformation:CreateStack",
+        "cloudformation:UpdateStack"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NullOrEmpty": {}
+      }
+    }
+  ]
+}

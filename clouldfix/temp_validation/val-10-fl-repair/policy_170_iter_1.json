@@ -1,0 +1,139 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "kms:ReEncrypt*",
+        "kms:GetKeyPolicy",
+        "kms:GenerateDataKey*",
+        "kms:Encrypt",
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:CreateGrant"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Sid": "KMSUsage"
+    },
+    {
+      "Action": "ec2:CreateVolume",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "id": "allow_c2f44462"
+    },
+    {
+      "Action": "dynamodb:PutItem",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>-specific",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "id": "deny_236766c0"
+    },
+    {
+      "Action": "ses:SendRawEmail",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "id": "allow_c8878866"
+    },
+    {
+      "Action": "lambda:CreateFunction",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "id": "deny_e194c572"
+    },
+    {
+      "Action": "redshift:CreateCluster",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "id": "allow_32141785"
+    },
+    {
+      "Action": "sns:Publish",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "id": "deny_11768c10"
+    },
+    {
+      "Action": "iam:AttachRolePolicy",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "id": "allow_8944cc3f"
+    },
+    {
+      "Action": "iam:DeleteUser",
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "id": "deny_625e8d6e"
+    },
+    {
+      "Action": "codecommit:CreateRepository",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "id": "allow_dc0674c2"
+    },
+    {
+      "Action": "glue:GetJobRun",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-1:<account id>:key/<key for bucketA>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "id": "allow_b2631d9d"
+    }
+  ]
+}

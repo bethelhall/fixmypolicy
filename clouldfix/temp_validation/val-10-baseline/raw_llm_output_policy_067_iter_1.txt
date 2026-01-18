@@ -1,0 +1,97 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "allow_connect",
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": ["us-east-1", "eu-west-1"]}}
+    },
+    {
+      "Sid": "allow_subscribe",
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp826/sub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allow_receive",
+      "Effect": "Allow",
+      "Action": "iot:Receive",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allow_publish",
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allow_putdashboard",
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allow_listkeys",
+      "Effect": "Allow",
+      "Action": "kms:ListKeys",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allow_listdeadlettersourcequeues",
+      "Effect": "Allow",
+      "Action": "sqs:ListDeadLetterSourceQueues",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "deny_deleteuser",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/pub",
+      "Condition": {"StringLike": {"aws:CalledVia": "*developer-role*"}},
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "deny_describecinstances",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Condition": {"Bool": {"aws:SecureTransport": true}},
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "deny_createdbinstance",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topic/esp8266/sub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}},
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "allow_stopbuild",
+      "Effect": "Allow",
+      "Action": "codebuild:StopBuild",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:topicfilter/esp8266/sub",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}},
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_deleteidentity",
+      "Effect": "Allow",
+      "Action": "ses:DeleteIdentity",
+      "Resource": "arn:aws:iot:us-east-1:1234567890:client/testESP8266",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}},
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all conditions correctly formatted according to requirements. Please note I have made some assumptions about certain parts of these policies such as what resources should exist for each action (like DeleteUser). If those were incorrect please let me know! Also this does not cover every single possible condition key but it covers most common ones used when creating iot polices like StringEquals, Bool etc.. For more complex scenarios you might need additional keys which can vary depending on service being accessed by principal user(IAM role). Always refer official aws documentation if unsure how exactly specific scenario would look like https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition.html#Conditions

@@ -1,0 +1,170 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_sqs_assumed_role_sendmessage",
+        "Effect": "allow",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:sts::222222222222:assumed-role/CrossAccountSQSRole/session-from-account-a",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalArn": "arn:aws:iam::222222222222:role/CrossAccountSQSRole"
+          }
+        }
+      },
+      {
+        "id": "test_sqs_root_account_denied",
+        "Effect": "deny",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:iam::222222222222:root",
+        "Condition": {}
+      },
+      {
+        "id": "test_sqs_assumed_role_encrypt",
+        "Effect": "allow",
+        "Action": [
+          "sqs:SetQueueAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:sts::222222222222:assumed-role/CrossAccountSQSRole/session-from-account-a",
+        "Condition": {
+          "StringLike": {
+            "sqs:Attribute": "KmsMasterKeyId"
+          }
+        }
+      },
+      {
+        "id": "test_s3_with_identitystore_userid",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/data.json"
+        ],
+        "Principal": "arn:aws:iam::222222222222:user/testuser",
+        "Condition": {
+          "StringEquals": {
+            "identitystore:UserId": "d-9067230c5e-user123"
+          }
+        }
+      },
+      {
+        "id": "test_s3_without_identitystore_userid",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/data.json"
+        ],
+        "Principal": "arn:aws:iam::222222222222:user/testuser",
+        "Condition": {}
+      },
+      {
+        "id": "test_sqs_different_role_denied",
+        "Effect": "deny",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:sts::222222222222:assumed-role/DifferentRole/session-name",
+        "Condition": {}
+      },
+      {
+        "id": "test_sqs_receive_message_assumed_role",
+        "Effect": "allow",
+        "Action": [
+          "sqs:ReceiveMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:sts::222222222222:assumed-role/CrossAccountSQSRole/session-from-account-a",
+        "Condition": {
+          "StringEquals": {
+            "aws:userid": "AIDACKCEVSQ6C2EXAMPLE:session-from-account-a"
+          }
+        }
+      },
+      {
+        "id": "test_s3_putobject_denied",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/newfile.txt"
+        ],
+        "Principal": "arn:aws:iam::222222222222:user/testuser",
+        "Condition": {
+          "StringEquals": {
+            "identitystore:UserId": "d-9067230c5e-user123"
+          }
+        }
+      },
+      {
+        "id": "test_sqs_external_account_assume_role",
+        "Effect": "allow",
+        "Action": [
+          "sqs:SendMessage",
+          "sqs:GetQueueAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:sts::222222222222:assumed-role/CrossAccountSQSRole/external-session",
+        "Condition": {
+          "StringEquals": {
+            "aws:SourceAccount": "111111111111"
+          }
+        }
+      },
+      {
+        "id": "test_sqs_iam_user_direct_access_denied",
+        "Effect": "deny",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:us-east-1:222222222222:myqueue"
+        ],
+        "Principal": "arn:aws:iam::222222222222:user/regular-user",
+        "Condition": {}
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 45.5,
+      "total_requests": 11,
+      "correct": 5,
+      "incorrect": 6
+    },
+    "repaired_policy": {
+      "accuracy": 45.5,
+      "total_requests": 11,
+      "correct": 5,
+      "incorrect": 6
+    }
+  },
+  "metadata": {
+    "file_number": "42",
+    "user_intent": "I currently have an Account A that is calling account B (my current account) and assuming a role that gives it permissions to perform operations on SQS such as encrypt and publish messages.\n\n\nI had to manually modify the SQS permissions to get it to work and allow root access to the current account that the assume role is in.\n\n\nThe issue is, this is overly permissive permissions and I do not want root account access to the SQS if I can avoid it.\n\n\nI'm wondering if I can add the policy to only accept the role that's being assumed, opposed to a root user credenetial. Is it possible to add a ROLE in place of the USER or will I need to create another user with the role that's being assumed for this to work?\n\n\nFor example, here's my policy",
+    "timestamp": "2025-08-19T17:54:57.152149"
+  }
+}

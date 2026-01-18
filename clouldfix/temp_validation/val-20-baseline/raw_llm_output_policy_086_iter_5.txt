@@ -1,0 +1,1039 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:ListQueues",
+        "sqs:SendMessage",
+        "tag:GetResources",
+        "iam:GetRole",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_91490a51"
+    },
+    {
+      "Action": "iam:GetRolePolicy",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "allow_91490a51"
+    },
+    {
+      "Action": "iam:DeleteGroup",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_eb3d050c"
+    },
+    {
+      "Action": "iam:DeleteGroup",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "allow_eb3d050c"
+    },
+    {
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_547c950c"
+    },
+    {
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_cf608910"
+    },
+    {
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "deny_5f6ccc88"
+    },
+    {
+      "Action": "kms:ListKeys",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      },
+      "Sid": "deny_5f6ccc88"
+    },
+    {
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_cf608910"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_8434c6ec"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "deny_0780f756"
+    },
+    {
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "deny_6f6382a4"
+    },
+    {
+      "Action": "sqs:DeleteQueue",
+      "Resource

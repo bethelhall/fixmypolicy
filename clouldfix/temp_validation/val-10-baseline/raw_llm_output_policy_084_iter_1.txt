@@ -1,0 +1,27 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowDeletionAndModificationToSpecificFilesInUserDirectory",
+      "Effect": "Allow",
+      "Action": ["s3:DeleteObject", "s3:PutObject"],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*",
+      "Condition": {"StringEquals": {"s3:delimiter": "/"}}
+    },
+    {
+      "Sid": "ExplicitlyDeniedAllOtherActionsOnTheSameResources",
+      "Effect": "Deny",
+      "NotAction": ["s3:*"],
+      "Resource": "arn:aws:s3:::my-bucket/users/chris/*"
+    },
+    {
+      "Sid": "ImplicitlyAllowedEverythingElseAtThisPoint",
+      "Effect": "Allow",
+      "Action": "*",
+      "Resource": "*"
+    }
+  ]
+}
+```
+Please note this is not recommended practice for production environments due to potential risks of privilege escalation via other actions than explicitly listed in policies (like `*` action). It should only serve demonstration purposes here based on your requirements set forth above. For real world scenarios consider using more granular permissions where possible instead of blanket allowing all (`*`) at last statement level.`

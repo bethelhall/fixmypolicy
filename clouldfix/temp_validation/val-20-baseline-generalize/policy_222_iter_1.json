@@ -1,0 +1,177 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListEndpointConfigs",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/temp-user"
+        ]
+      },
+      "Action": "sagemaker:ListEndpointConfigs",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListDetectors",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      },
+      "Action": "guardduty:ListDetectors",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowChangeResourceRecordSets",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/test-role"
+        ]
+      },
+      "Action": "route53:ChangeResourceRecordSets",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeLogGroups",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      },
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListEndpoints",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/test-role"
+        ]
+      },
+      "Action": "sagemaker:ListEndpoints",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDescribeLoadBalancers",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/test-role"
+        ]
+      },
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:s3:::<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyListBucket",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      },
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::different-<bucket-name>/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenySubscribe",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetBucketLifecycle",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david"
+        ]
+      },
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::<bucket-name>-forbidden/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPutBucketPolicy",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalARN": "arn:aws:iam::<account-id>:role/aws-quicksight-service-role-manual"
+        }
+      }
+    }
+  ]
+}

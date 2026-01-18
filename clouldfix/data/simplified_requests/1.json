@@ -1,0 +1,162 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_kms_describe_key",
+        "Effect": "allow",
+        "Action": [
+          "kms:DescribeKey"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+      },
+      {
+        "id": "test_kms_create_grant_ec2",
+        "Effect": "allow",
+        "Action": [
+          "kms:CreateGrant"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "ec2.us-east-1.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_kms_decrypt_ebs_volume",
+        "Effect": "allow",
+        "Action": [
+          "kms:Decrypt"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "ec2.us-east-1.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_kms_generate_data_key_imagebuilder",
+        "Effect": "allow",
+        "Action": [
+          "kms:GenerateDataKey"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/ImageBuilderInstanceRole",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "imagebuilder.us-east-1.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_kms_reencrypt_from",
+        "Effect": "allow",
+        "Action": [
+          "kms:ReEncryptFrom"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole"
+      },
+      {
+        "id": "test_kms_encrypt_ebs",
+        "Effect": "allow",
+        "Action": [
+          "kms:Encrypt"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "ec2.us-east-1.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_kms_create_key",
+        "Effect": "allow",
+        "Action": [
+          "kms:CreateKey"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cdk-deploy-user"
+      },
+      {
+        "id": "test_kms_grant_operations",
+        "Effect": "allow",
+        "Action": [
+          "kms:RetireGrant",
+          "kms:ListGrants",
+          "kms:RevokeGrant"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole"
+      },
+      {
+        "id": "test_kms_get_key_policy",
+        "Effect": "allow",
+        "Action": [
+          "kms:GetKeyPolicy"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/EC2InstanceRole"
+      },
+      {
+        "id": "test_kms_describe_key_autoscaling",
+        "Effect": "allow",
+        "Action": [
+          "kms:DescribeKey"
+        ],
+        "Resource": [
+          "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/AWSServiceRoleForAutoScaling/AutoScaling",
+        "Condition": {
+          "StringEquals": {
+            "kms:ViaService": "autoscaling.us-east-1.amazonaws.com"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 0.0,
+      "total_requests": 12,
+      "correct": 0,
+      "incorrect": 12
+    },
+    "repaired_policy": {
+      "accuracy": 0.0,
+      "total_requests": 12,
+      "correct": 0,
+      "incorrect": 12
+    }
+  },
+  "metadata": {
+    "file_number": "1",
+    "user_intent": "In the CDK code, I created a \ncustom KMSKey\n, and then configured the Image Recipe of EC2 Image Builder to use the KMSKey as the encryption key of EBS, after successfully creating the AMI, I used the AMI to launch the instance, and the consistent message failed to start, the error is as follows:\n\n Client.InvalidKMSKey.InvalidState: The KMS key provided is in an incorrect state\n.\n\n\nKMSKey's state is \nenabled\n, otherwise the AMI would not be successfully generated, so I don't understand why the state Incorrect is still prompted.\n\n\nI looked up the answer on the Internet and saw a post saying that it was a permission issue, and then I associated a role with an EC2 instance with an inline policy like this::\n\n\n\n\n\nBut the startup failed with the same error.\n\n\nDoes anyone know why?",
+    "timestamp": "2025-08-19T17:30:04.814496"
+  }
+}

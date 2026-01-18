@@ -1,0 +1,157 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ec2_list_own_prefix",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": "AROAXXXXXXXXXX:i-1234567890/*"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_get_object_own_prefix",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAXXXXXXXXXX:i-1234567890/test.txt"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890"
+      },
+      {
+        "id": "test_ec2_put_object_own_prefix",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAXXXXXXXXXX:i-1234567890/data/file.json"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890"
+      },
+      {
+        "id": "test_ec2_access_wrong_instance_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAXXXXXXXXXX:i-9876543210/test.txt"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890"
+      },
+      {
+        "id": "test_ec2_list_wrong_instance_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": "AROAXXXXXXXXXX:i-9876543210/*"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_delete_object_own_prefix",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAXXXXXXXXXX:i-1234567890/old-file.log"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890"
+      },
+      {
+        "id": "test_ec2_multipart_upload",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject",
+          "s3:AbortMultipartUpload",
+          "s3:ListMultipartUploadParts"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAXXXXXXXXXX:i-1234567890/large-file.zip"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890"
+      },
+      {
+        "id": "test_iam_user_access",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/testuser/document.pdf"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/testuser"
+      },
+      {
+        "id": "test_ec2_list_root_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": "*"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_copy_between_prefixes",
+        "Effect": "deny",
+        "Action": [
+          "s3:CopyObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mybucket/AROAYYYYYYYYYY:i-9876543210/file.txt"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/MyEC2Role/i-1234567890",
+        "Condition": {
+          "StringLike": {
+            "s3:x-amz-copy-source": "mybucket/AROAXXXXXXXXXX:i-1234567890/file.txt"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 33.3,
+      "total_requests": 12,
+      "correct": 4,
+      "incorrect": 8
+    },
+    "repaired_policy": {
+      "accuracy": 33.3,
+      "total_requests": 12,
+      "correct": 4,
+      "incorrect": 8
+    }
+  },
+  "metadata": {
+    "file_number": "5",
+    "user_intent": "I'm attempting to create s3 folders (prefixes) within a bucket that is only accessible to specific EC2 instances via IAM Role policies based on their name. The idea would be something like s3://mybucket/i-1234567890/* would only be accessible to EC2 instance i-1234567890 and s3://mybucket/i-987654321/* would only be accessible to EC2 instance i-987654321. Rather then create a custom IAM Role for each instance (they are pets), I thought I might be able to use policy variables to limit access to the prefix.\nIt looks like the only variable this may work with is aws:username, which with IAM Role is set to be \nrole-id:ec2-instance-id\n according to \nhttps://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_variables.html#policy-vars-infotouse\n . So I created a folder named \"AROAxxxxxxxxxxxx:i-1234567890/\" in that s3 bucket and attached this policy to the IAM Role:\n\n\n\n\n\n\nI got the Role ID by running this powershell command: \n(Get-IAMRole <RoleName>).RoleId\n\n\nI'm unable to get this working. If I hardcode \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx\" in place of ${aws:username} it works as expected. It is as if ${aws:username} is not returning what I expect it to be. I'm unable to determine what is returning instead though.\n\n\nI setup CloudTrail Trail on the s3 bucket and did a \naws s3 cp\n download attempt. The log shows the correct RoleId:InstanceId as the PrincipalId but I get access denied.\n\n\n    {\n      \"userIdentity\": {\n        \"type\": \"AssumedRole\",\n        \"principalId\": \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx\",\n        \"arn\": \"arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx\",\n        \"sessionContext\": {\n          \"sessionIssuer\": {\n            \"type\": \"Role\",\n            \"principalId\": \"AROAxxxxxxxxxxxxxx\",\n            \"arn\": \"arn:aws:iam::xxxxxxxxxxxxxx:role/ROLENAME\",\n            \"userName\": \"ROLENAME\"\n          }\n        }\n      },\n      \"eventSource\": \"s3.amazonaws.com\",\n      \"eventName\": \"HeadObject\",\n      \"errorCode\": \"AccessDenied\",\n      \"errorMessage\": \"User: arn:aws:sts::xxxxxxxxxxxxxx:assumed-role/ROLENAME/i-xxxxxxxxxxxxxx is not authorized to perform: s3:GetObject on resource: \\\"arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\\\" because no identity-based policy allows the s3:GetObject action\",\n      \"requestParameters\": {\n        \"bucketName\": \"MYBUCKET\",\n        \"Host\": \"MYBUCKET.s3.us-east-1.amazonaws.com\",\n        \"key\": \"AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\"\n      },\n      \"resources\": [\n        {\n          \"type\": \"AWS::S3::Object\",\n          \"ARN\": \"arn:aws:s3:::MYBUCKET/AROAxxxxxxxxxxxxxx:i-xxxxxxxxxxxxxx/test.txt\"\n        },\n        {\n          \"type\": \"AWS::S3::Bucket\",\n          \"ARN\": \"arn:aws:s3:::MYBUCKET\"\n        }\n      ],\n      \"eventType\": \"AwsApiCall\",\n      \"managementEvent\": false,\n      \"eventCategory\": \"Data\"\n    }\n\n\n\nremoved some properties to save space\n\n\nIs there a way to determine what aws:username is exactly returning in this case? I'm also not tied to using aws:username if there is another variable that would help tie the ec2 instance to a folder. I did try using ec2:* variables and tags but since this is a s3 policy I don't think that will work.\nThis is basically attempting to implement that is brought up in this stackoverflow question but I can't get it to work.",
+    "timestamp": "2025-08-19T17:32:23.971583"
+  }
+}

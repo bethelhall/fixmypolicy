@@ -1,0 +1,70 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::uploads/images/*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "cloudsearch:DeleteDomain",
+        "codedeploy:CreateDeployment",
+        "ec2:DescribeVolumes",
+        "ec2:DeleteVolume",
+        "es:DescribeElasticsearchDomains",
+        "guardduty:DeleteDetector",
+        "iam:DeleteLoginProfile",
+        "iam:DeleteGroup",
+        "kms:Encrypt",
+        "sagemaker:CreateEndpoint",
+        "s3:CreateBucket",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation",
+        "s3:DeleteBucketLogging",
+        "s3:DeleteBucketLifecycle",
+        "s3:DeleteBucketCors",
+        "s3:PutBucketLogging",
+        "s3:PutBucketLifecycle",
+        "s3:PutBucketCors",
+        "sqs:SendMessage",
+        "xray:StartSession"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1|us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Deny",
+      "Action": [
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketLogging",
+        "s3:DeleteBucketLifecycle",
+        "s3:DeleteBucketCors",
+        "s3:PutBucketLogging",
+        "s3:PutBucketLifecycle",
+        "s3:PutBucketCors",
+        "sqs:SendMessage",
+        "ec2:RunInstances",
+        "dynamodb:PutItem",
+        "kms:Decrypt",
+        "xray:StopSession"
+      ],
+      "Resource": "arn:aws:s3:::.*|arn:aws:s3:::denied-bucket-*.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

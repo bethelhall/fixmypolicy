@@ -1,0 +1,140 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowVpcEndpoint",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::great-expectations-docs",
+        "arn:aws:s3:::great-expectations-docs/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEsCreateElasticsearchDomain",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutBucketTagging",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIamListAccessKeys",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "iam:ListAccessKeys",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObjectVersion",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2RunInstances",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53GetHostedZone",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:s3:::great-expectations-docs/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDbPutItem",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::different-great-expectations-docs/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDbDeleteItem",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRdsDeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunction",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::great-expectations-docs-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-0c0f4bb767f820bda"
+        }
+      }
+    }
+  ]
+}

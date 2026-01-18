@@ -1,0 +1,139 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenySQSReceiptForUnauthorizedSecretsManagerResourcesAndDepartments",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:secret:file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutsOnSpecificSecretsManagerARNInUsEast1Only",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:secret:-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeletionOfSpecifiedPoliciesFromAliceInUSWest2Only",
+      "Effect": "Allow",
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:policy/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeletionOfUsersKeysFromBobInUSEast1Only",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:user/bob/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSSubscriptionToDisallowedSecretsManagerResources",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:topic/-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreationOfNewUsersViaKafkaBasedServicesIfTheyWorkWithADepartmentNamedFinance",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Principal": {
+        "Service": "kafka.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchMetricsRetrievalByCertainPrincipalsWithinARegionConstraint",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:secret:*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPuttingLifeCycleRulesIntoBucketsManagedByALiceInUseast1only",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:bucket/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESThroughIambobinUswest2RegionedEnvironmentsOnly",
+      "Effect": "Allow",
+      "Action": "ses:SendEmail",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:secret:*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGluegetCrawlersActionsRestrictedtocertainprincipalsandregionconstraints",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:secretsmanager:eu-west-3:*:crawler/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your repaired policy based on the requirements you have shared with me. It should now satisfy all of those conditions without denying access to necessary services like SES (Simple Email Service) for bob in us-west-2 region only etc.. Please replace it into your current environment if everything looks good there too. Let me know how I can assist further!

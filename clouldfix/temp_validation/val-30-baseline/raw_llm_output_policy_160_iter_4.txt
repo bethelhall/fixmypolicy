@@ -1,0 +1,989 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DescribeCryptoTrail",
+      "Action": "logs:GetLogEvents",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:logs:eu-west-1:ACCOUNT-ID:log-group:aws-controltower/CloudTrailLogs:log-stream:ORG-ID_CRYPTO-ACCOUNT-ID_CloudTrail_eu-west-*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowListBuckets",
+      "Action": "s3:ListAllMyBuckets",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowReadWriteToSpecificBucket",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::allowed-bucket-1/*",
+        "arn:aws:s3:::allowed-bucket-2/*",
+        "arn:aws:s3:::allowed-bucket-3/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucket",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-1/*",
+        "arn:aws:s3:::denied-bucket-2/*",
+        "arn:aws:s3:::denied-bucket-3/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefix",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-4/*",
+        "arn:aws:s3:::denied-bucket-5/*",
+        "arn:aws:s3:::denied-bucket-6/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserId",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-7/*",
+        "arn:aws:s3:::denied-bucket-8/*",
+        "arn:aws:s3:::denied-bucket-9/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddress",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-10/*",
+        "arn:aws:s3:::denied-bucket-11/*",
+        "arn:aws:s3:::denied-bucket-12/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLike",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-13/*",
+        "arn:aws:s3:::denied-bucket-14/*",
+        "arn:aws:s3:::denied-bucket-15/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThan",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-16/*",
+        "arn:aws:s3:::denied-bucket-17/*",
+        "arn:aws:s3:::denied-bucket-18/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBool",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-19/*",
+        "arn:aws:s3:::denied-bucket-20/*",
+        "arn:aws:s3:::denied-bucket-21/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-22/*",
+        "arn:aws:s3:::denied-bucket-23/*",
+        "arn:aws:s3:::denied-bucket-24/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddress",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-25/*",
+        "arn:aws:s3:::denied-bucket-26/*",
+        "arn:aws:s3:::denied-bucket-27/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLike",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-28/*",
+        "arn:aws:s3:::denied-bucket-29/*",
+        "arn:aws:s3:::denied-bucket-30/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThan",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-31/*",
+        "arn:aws:s3:::denied-bucket-32/*",
+        "arn:aws:s3:::denied-bucket-33/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-34/*",
+        "arn:aws:s3:::denied-bucket-35/*",
+        "arn:aws:s3:::denied-bucket-36/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-37/*",
+        "arn:aws:s3:::denied-bucket-38/*",
+        "arn:aws:s3:::denied-bucket-39/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-40/*",
+        "arn:aws:s3:::denied-bucket-41/*",
+        "arn:aws:s3:::denied-bucket-42/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-43/*",
+        "arn:aws:s3:::denied-bucket-44/*",
+        "arn:aws:s3:::denied-bucket-45/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-46/*",
+        "arn:aws:s3:::denied-bucket-47/*",
+        "arn:aws:s3:::denied-bucket-48/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-49/*",
+        "arn:aws:s3:::denied-bucket-50/*",
+        "arn:aws:s3:::denied-bucket-51/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-52/*",
+        "arn:aws:s3:::denied-bucket-53/*",
+        "arn:aws:s3:::denied-bucket-54/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-55/*",
+        "arn:aws:s3:::denied-bucket-56/*",
+        "arn:aws:s3:::denied-bucket-57/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-58/*",
+        "arn:aws:s3:::denied-bucket-59/*",
+        "arn:aws:s3:::denied-bucket-60/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-61/*",
+        "arn:aws:s3:::denied-bucket-62/*",
+        "arn:aws:s3:::denied-bucket-63/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-64/*",
+        "arn:aws:s3:::denied-bucket-65/*",
+        "arn:aws:s3:::denied-bucket-66/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-67/*",
+        "arn:aws:s3:::denied-bucket-68/*",
+        "arn:aws:s3:::denied-bucket-69/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-70/*",
+        "arn:aws:s3:::denied-bucket-71/*",
+        "arn:aws:s3:::denied-bucket-72/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-73/*",
+        "arn:aws:s3:::denied-bucket-74/*",
+        "arn:aws:s3:::denied-bucket-75/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-76/*",
+        "arn:aws:s3:::denied-bucket-77/*",
+        "arn:aws:s3:::denied-bucket-78/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-79/*",
+        "arn:aws:s3:::denied-bucket-80/*",
+        "arn:aws:s3:::denied-bucket-81/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-82/*",
+        "arn:aws:s3:::denied-bucket-83/*",
+        "arn:aws:s3:::denied-bucket-84/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-85/*",
+        "arn:aws:s3:::denied-bucket-86/*",
+        "arn:aws:s3:::denied-bucket-87/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-88/*",
+        "arn:aws:s3:::denied-bucket-89/*",
+        "arn:aws:s3:::denied-bucket-90/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-91/*",
+        "arn:aws:s3:::denied-bucket-92/*",
+        "arn:aws:s3:::denied-bucket-93/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-94/*",
+        "arn:aws:s3:::denied-bucket-95/*",
+        "arn:aws:s3:::denied-bucket-96/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-97/*",
+        "arn:aws:s3:::denied-bucket-98/*",
+        "arn:aws:s3:::denied-bucket-99/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-100/*",
+        "arn:aws:s3:::denied-bucket-101/*",
+        "arn:aws:s3:::denied-bucket-102/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-103/*",
+        "arn:aws:s3:::denied-bucket-104/*",
+        "arn:aws:s3:::denied-bucket-105/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-106/*",
+        "arn:aws:s3:::denied-bucket-107/*",
+        "arn:aws:s3:::denied-bucket-108/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-109/*",
+        "arn:aws:s3:::denied-bucket-110/*",
+        "arn:aws:s3:::denied-bucket-111/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-112/*",
+        "arn:aws:s3:::denied-bucket-113/*",
+        "arn:aws:s3:::denied-bucket-114/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyReadWriteToAnyBucketWithoutPrefixAndWithoutUserIdAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutBoolAndWithoutStringEqualsAndWithoutIpAddressAndWithoutStringLikeAndWithoutNumericLessThanAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEqualsAndWithoutStringEquals",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Deny",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-115/*",
+        "arn:aws:s3:::denied-bucket-116/*",
+        "arn:aws:s3:::denied-bucket-117/*"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"

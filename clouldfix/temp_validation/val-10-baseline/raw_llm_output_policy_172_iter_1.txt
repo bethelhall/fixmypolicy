@@ -1,0 +1,106 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowViewAccountInfo",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccountPasswordPolicy",
+        "iam:GetAccountSummary"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowManageOwnPasswords",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ChangePassword",
+        "iam:GetUser",
+        "iam:UpdateLoginProfile",
+        "iam:GetLoginProfile"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnAccessKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey",
+        "iam:ListAccessKeys",
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSigningCertificates",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteSigningCertificate",
+        "iam:ListSigningCertificates",
+        "iam:UpdateSigningCertificate",
+        "iam:UploadSigningCertificate"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnSSHPublicKeys",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetSSHPublicKey",
+        "iam:ListSSHPublicKeys"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "AllowManageOwnGitCredentials",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateServiceSpecificCredential",
+        "iam:DeleteServiceSpecificCredential",
+        "iam:ListServiceSpecificCredentials",
+        "iam:ResetServiceSpecificCredential",
+        "iam:UpdateServiceSpecificCredential"
+      ],
+      "Resource": "arn:aws:iam::*:user/${aws:username}"
+    },
+    {
+      "Sid": "DenyIAMActionsOnResourcesWithCertainARNPatterns",
+      "Effect": "Deny",
+      "Action": [
+        "iam:ListAttachedGroupPolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:DeleteRole"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "ArnNotLike": {
+          "aws:Resource": ["arn:aws:iam::*:user/${aws:username}", "arn:aws:iam::*:role/${aws:username}"]
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountDeletionOfUsersAndRolesInCertainRegions",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-east-1"},
+        "ArnNotLike": {
+          "aws:PrincipalARN": ["arn:aws:iam::123456789012:root", "arn:aws:iam::123456789012:user/alice"]
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedListingObjectsInBucket",
+      "Effect": "Deny",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::bucket-name",
+      "Condition": {
+        "StringNotLike": {"aws:PrincipalTag/Project": "MyProject"}
+      }
+    }
+  ]
+}
+```
+This repaired policy includes Deny statements for actions based on specific conditions specified in each request from requirements list. It also maintains all other permissions granted by original statement while adding necessary restrictions according to new rules defined within requests. Please replace `bucket-name` with your actual bucket name where you want this restriction applied. This will deny anyone who is not tagged with Project=MyProject access rights over listing objects inside mentioned S3 Bucket. If there were more such buckets then we would have added separate Denial policies accordingly replacing `bucket-name`. Also note how I used Arn Not Like condition which negates matching of patterns thus effectively denying certain operations under some circumstances described above. Lastly please ensure proper testing against these changes since they might affect existing users depending upon their roles & privileges currently assigned via similar but differently worded previous iam polices present elsewhere possibly across multiple services like s3, kms etc. Always consider implications when making broad sweeping modifications at user level especially if done without due diligence could lead potentially serious consequences including data loss / corruption among others things hence caution advised here!

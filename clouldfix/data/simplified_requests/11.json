@@ -1,0 +1,135 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_sso_role_list_bucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/SSO-RestrictedRole/user@example.com"
+      },
+      {
+        "id": "test_sso_role_get_object",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/documents/file.pdf"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/SSO-RestrictedRole/john.doe@company.com"
+      },
+      {
+        "id": "test_different_sso_role_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/data/report.xlsx"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/SSO-AdminRole/admin@example.com"
+      },
+      {
+        "id": "test_iam_user_direct_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/regular-iam-user"
+      },
+      {
+        "id": "test_sso_role_delete_object",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/temp/old-file.txt"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/SSO-RestrictedRole/jane.smith@company.com"
+      },
+      {
+        "id": "test_cross_account_role_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/shared/document.doc"
+        ],
+        "Principal": "arn:aws:sts::987654321098:assumed-role/CrossAccountRole/external-user"
+      },
+      {
+        "id": "test_lambda_execution_role",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/configs/app-config.json"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/lambda-execution-role/my-function"
+      },
+      {
+        "id": "test_ec2_instance_role",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket"
+        ],
+        "Principal": "arn:aws:sts::123456789012:assumed-role/EC2-InstanceRole/i-0123456789abcdef0"
+      },
+      {
+        "id": "test_root_account_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/sensitive/data.csv"
+        ],
+        "Principal": "arn:aws:iam::123456789012:root"
+      },
+      {
+        "id": "test_federated_user_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-secure-bucket/archives/old-backup.zip"
+        ],
+        "Principal": "arn:aws:sts::123456789012:federated-user/saml-user@organization.com"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 100.0,
+      "total_requests": 10,
+      "correct": 10,
+      "incorrect": 0
+    },
+    "repaired_policy": {
+      "accuracy": 100.0,
+      "total_requests": 10,
+      "correct": 10,
+      "incorrect": 0
+    }
+  },
+  "metadata": {
+    "file_number": "11",
+    "user_intent": "Hi All ,\nI want to restrict access to a particular s3 bucket for all the user who login through sso by assuming a particular iam role .\n\n\n\n\nBut this restricts access for user who login through other roles also. What am i doing wrong here?",
+    "timestamp": "2025-08-19T17:36:14.155737"
+  }
+}

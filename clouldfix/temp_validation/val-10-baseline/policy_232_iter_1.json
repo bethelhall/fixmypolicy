@@ -1,0 +1,139 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": [
+        "sms-voice:SendTextMessage",
+        "sms-voice:SendVoiceMessage",
+        "sms-voice:SendMediaMessage",
+        "sms-voice:DescribeSenderIds"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "glue:BatchGetJobs",
+        "workspaces:StartWorkspaces",
+        "config:GetComplianceDetailsByConfigRule"
+      ],
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2",
+            "eu-west-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "forbidden-arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "glue:GetDatabase",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::B-ID:root"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "authorized/arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO/file.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "iam:DeleteLoginProfile",
+      "Resource": "arn:aws:sms-voice:Region:A-ID:sender-id/SenderID/ISO",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

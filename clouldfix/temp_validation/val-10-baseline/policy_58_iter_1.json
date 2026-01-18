@@ -1,0 +1,82 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codebuild:StartBuild",
+        "codebuild:BatchGetBuilds",
+        "codecommit:GitPull",
+        "sqs:SendMessageBatch",
+        "ec2:CreateVolume",
+        "kms:Encrypt",
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:*:*:project/file-27-12.txt",
+        "arn:aws:codebuild:*:*:project/file-14-16.txt",
+        "arn:aws:codebuild:*:*:project/file-0-3.txt",
+        "arn:aws:codebuild:*:*:project/file-37-6.txt"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "codecommit:ListRepositories",
+        "lambda:CreateFunction",
+        "rds:DeleteDBInstance",
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:codebuild:*:*:project/*-forbidden-resource",
+        "arn:aws:codecommit:*:*:*",
+        "arn:aws:codecommit:*:*:*/file.txt",
+        "arn:aws:codecommit:*:*:resource-0-14"
+      ],
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "Bool": {
+          "aws:SecureTransport": true
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:codebuild:*:*:project/file-36-6.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-2"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetJobRun",
+      "Resource": "arn:aws:codecommit:*:*:resource-0-14",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

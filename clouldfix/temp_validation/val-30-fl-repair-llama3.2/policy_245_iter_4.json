@@ -1,0 +1,101 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "iot:Connect",
+      "Resource": "arn:aws:iot:eu-west-3:*******:client/*",
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": "iot:Subscribe",
+      "Resource": "arn:aws:iot:eu-west-3:*******:topicfilter/lite/command/#",
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Allow",
+      "Action": "iot:Publish",
+      "Resource": "arn:aws:iot:eu-west-3:*******:topic/lite/data/#",
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Deny",
+      "Action": [
+        "cloudwatch:ListMetrics",
+        "ses:GetIdentityDkimAttributes",
+        "redshift:DescribeClusters",
+        "s3:DeleteBucketPolicy",
+        "sqs:ListQueues",
+        "glue:GetPartitions",
+        "ec2:RunInstances",
+        "glue:GetDatabase",
+        "athena:DeleteWorkGroup",
+        "ec2:StopInstances",
+        "cloudsearch:DescribeDomains",
+        "elasticloadbalancing:DeleteLoadBalancer",
+        "s3:PutObjectTagging",
+        "sagemaker:DescribeEndpointConfig",
+        "s3:ListAllMyBuckets",
+        "sagemaker:ListEndpoints",
+        "iam:AttachRolePolicy",
+        "sqs:DeleteMessageBatch"
+      ],
+      "Resource": [
+        "arn:aws:iot:eu-west-3:*******:client/*",
+        "arn:aws:iot:eu-west-3:*******:topicfilter/lite/command/#",
+        "arn:aws:iot:eu-west-3:*******:topic/lite/data/#",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "203.0.113.0/24",
+        "arn:aws:iot:eu-west-3:*******:topic/lite/data/#",
+        "forbidden-arn:aws:iot:eu-west-3:*******:client/*-specific",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt"
+      ],
+      "Principal": "*"
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "dynamodb:PutItem",
+        "rds:CreateDBInstance",
+        "sns:Publish",
+        "ec2:DescribeInstances",
+        "rds:DeleteDBInstance",
+        "sns:Subscribe",
+        "sqs:ReceiveMessage",
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:iot:eu-west-3:*******:client/*-forbidden-resource",
+        "arn:aws:iot:eu-west-3:*******:topicfilter/lite/command/#-forbidden-resource",
+        "arn:aws:iot:eu-west-3:*******:topic/lite/data/#-forbidden-resource",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt",
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "203.0.113.0/24",
+        "arn:aws:iot:eu-west-3:*******:topic/lite/data/#-forbidden-resource",
+        "forbidden-arn:aws:iot:eu-west-3:*******:client/*-specific",
+        "arn:aws:s3:::denied-bucket-1/file-1.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        },
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}

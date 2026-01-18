@@ -1,0 +1,72 @@
+
+    {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "autoscaling:CreateAutoScalingGroup"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*"
+      ]
+    },
+    {
+      "Sid": "AllowEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser",
+        "iam:CreateRole",
+        "s3:PutObjectAcl",
+        "cloudsearch:DeleteDomain",
+        "glue:UpdateDatabase",
+        "glue:StartCrawler"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-27-6.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-26-14.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-17-2.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-38-6.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-16-6.txt",
+        "arn:aws:autoscaling:*:*:autoScalingGroup/file-32-3.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2"
+          ]
+        }
+      }
+    }
+  ]
+}

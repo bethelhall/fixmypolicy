@@ -1,0 +1,132 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Connect"
+      ],
+      "Resource": "arn:aws:iot:us-east-1:123456789012:client/client1",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "iot:Connect"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:CreateQueue",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-2",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:SendMessageBatch",
+      "Resource": "arn:aws:s3:::bucket-36/file-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-29",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateNotebookInstance",
+      "Resource": "arn:aws:s3:::bucket-5/file-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:TagQueue",
+      "Resource": "arn:aws:s3:::bucket-8/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "authorized/arn:aws:iot:us-east-1:123456789012:client/client1/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kinesis:DeleteStream",
+      "Resource": "arn:aws:s3:::bucket-5/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    }
+  ]
+}

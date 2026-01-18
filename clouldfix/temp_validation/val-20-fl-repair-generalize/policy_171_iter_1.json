@@ -1,0 +1,356 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2CreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:Create*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:CreateTable"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumes",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowCloudWatchGetDashboard",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetDashboard",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowIAMDeleteAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "AllowSageMakerStartNotebookInstance",
+      "Effect": "Allow",
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowIAMAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowConfigDeleteConfigRule",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyEC2DescribeKeyPairs",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "forbidden-arn:aws:ec2:*:*:volume/*-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "DenySNSPublish",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "forbidden-arn:aws:ec2:*:*:instance/*-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DenyEC2ImportKeyPair",
+      "Effect": "Deny",
+      "Action": "ec2:ImportKeyPair",
+      "Resource": "arn:aws:ec2:*:*:volume/*-forbidden-resource",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "DenyEC2DescribeVolumes",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "authorized/arn:aws:ec2:*:*:volume/*/file.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar0",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar1",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-1.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar2",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-2.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar3",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-3.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar4",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-4.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar5",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-5.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar6",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-6.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar7",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-7.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar8",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-8.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "AllowEC2DescribeVolumesVar9",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeVolumes",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-9.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

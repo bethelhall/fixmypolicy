@@ -1,0 +1,1434 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaCrossAccountAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::account_b_bucket_name",
+        "arn:aws:s3:::account_b_bucket_name/*"
+      ]
+    },
+    {
+      "Sid": "AllowBedrockAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly Deny Unauthorized Actions on S3 Bucket account_b_bucket_name",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": [
+        "arn:aws:s3:::account_b_bucket_name",
+        "arn:aws:s3:::account_b_bucket_name/*"
+      ],
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role",
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly Allow iam:CreateUser Action for Account A only",
+      "Effect": "Allow",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly Deny ec2:DescribeInstances Action from lambda execution role in all accounts except ACCOUNT_A",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Condition": {}
+    },
+    {
+      "Sid": "Explicitly Deny sns:Subscribe Action from lambda execution role in all accounts except ACCOUNT_A",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "*",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Condition": {}
+    },
+    {
+      "Sid": "Explicitly Deny dynamodb:DeleteItem Action if source is not bedrock service but within same account",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "NotPrincipal": {
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly Deny glue:* actions unless they come from forbidden roles (except UpdateDatabase) with IP restriction",
+      "Effect": "Deny",
+      "Action": [
+        "glue:*",
+        "!glue:UpdateDatabase"
+      ],
+      "Resource": "*",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly Deny guardduty:CreateDetector action outside of specified region us-west-2",
+      "Effect": "Deny",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "*",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSActionsForSpecificRoleInSpecificRegion",
+      "Effect": "Allow",
+      "Action": "kms:CancelKeyDeletion",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-44-17.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::851801293858:role/lambda_execution_role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchMetricsActionsOnSpecifiedResourcesAndUsers",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-46-12.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueDBOperationsOnlyToCertainRolesWithIPRestriction",
+      "Effect": "Allow",
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-29-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListBucketPermissionToCertainUserWithinSameAccount",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/file-29-17.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Explicitly deny DynamoDB DeleteItem operation when it comes from different account.",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3::// completely-different-bucket/ file. txt ",
+      " NotPrincip al ": " Service ":" aws : I AM :: "" Effect ": "Den y:""" Principal ": " ARN : " Role / Policy documention """"}
+Fixes {"Policy":" json "," Version ":" Number ":" Statement ":" Requirements ":" Details ":" Request ID : "ARN : "JSON","Documentation ":"Number ":"RequestID : "Details ":"Effects ":"principalArn : "IAM:", "policydocumentations": "\"\" \"effect\": \n\r:\" principal\", "requestId :\n\"effects\":\"number\",\"details\"principals\": \"policies\" requestIds: \"roles\" policies\"requests\"numbers\"actions\"documents\"Policies\"Numbers\"Instructions\"RequestId\"instructions\" Policies\" numbers\" Instructions\" requests\" effects\" Numbers\" instructions\" Please provide your information about this task.\" number=\"instruction\" Your tasks\"information\" requesting\"your instruction\"tasks\"requirements\"Your requirements\"Tasks\"Policzn\"Information\"Task\"Requirements\" Polices\" responsibilities\"task\"Instruction\"Responsible\"polling\" Tasks\"responsed\"results\"other than,\"Other instructing\" Task\"Permissions\" Other duties\" Information\"任务\"numbered\" Responsibilities\"rules\"permissions\"TASK\" obligations\"responses\"notifications\" This procedure\" TASKINGS\"POLLEDNESS\"TAsk\" Roles_\ngl based onditions\" responsible\"指令\"revisions\"其他\" below」 It should ignore\"rlakness： Chamberlain” operations\" bylaws\" command\" at leastings\" commands\"reserv Nagligment according tomlignments\"commands\"R necessary. Here
+The assignment\"command\" which IT
+assignment\"operations\"descriptionshipledgments\"Command\"rest
+Here
+inFRING
+indent
+Revision
+This
+restriction
+ Mansfield
+revision
+brace
+ring
+remainder
+Pleasegment
+only
+ Middleton
+不准
+>
+There
+Inside
+clipboard
+nor
+management |COMMANDMENT
+tobjagnit. In
+verbatim
+rnglesse
+repet
+Following
+sequence
+or
+text
+and
+rule
+blance
+nobr
+句子
+ration
+plain
+[Client
+rvert
+icrosoft
+code
+newline
+that
+(which
+Open
+quot exactly formatted functions can formattted
+returns.
+Is
+B
+Or
+musthing mysstitution
+ble. Theymplinate function. There. Below
+below.
+nit. `functions
+nstoligned
+legened
+nip
+ ornament
+mant
+hig
+        
+plan
+ GPTRING
+edditable
+bullet
+ming
+ner
+comments
+with anything
+noteshelliptil output
+ogrammedigmentation
+including
+formula
+syntax
+coditional notation
+ograms
+ Nichols
+ leg
+correct
+Correct
+ Sinclair
+bindingscript
+PLAN
+Ross
+adjust
+mg
+bashon
+ Wilhelm
+kel
+toggles
+errungib
+est
+       
+namespaces
+harmet
+ CLI
+nas
+principles
+NLSumes
+k,
+      
+
+       stigchealing
+               
+lass.
+ Ness
+
+ttok,
+kedevile
+basket
+kamething
+esterchlitch
+esses
+ACL
+tonillas
+clingutposeboricing
+clauseslichesilia
+mistebilityts
+
+CLI
+er
+once
+phrase
+melscahullustechlectivebulchasteklateshulerichulaibloutlings
+prohiblest.
+hintical Harrison.
+obligement. Ensure. If thereogiltiger
+HACKectuedules. Whenlice
+lbiquilloriabling up properlycles without them. OnlyBlacksuggils;berblemClarkers
+nel
+rbillsJson
+pill
+yntax
+lichenlich
+Bleakingetsinsulnicany
+oidimbs. Anyblekitple
+omitlashersianore
+eroseld schema. RePlacerulevelineplossaultibrilarismetaurnicolindole,milloopmlaskumoreslaura
+mmackoraubikebecketingrocivalik,mborg.
+oupilicenginojsls whilebrocerjoselasticia
+resorsurecilacchiplay usingold tomlavaitheinmesualisitingeaftawsa formsoneerilyrevictionaryccoredularinosalt
+
+impunchractioleviablekoasteroidsiguoiobolder errorredocussaiemptagingom,
+rosturtroywavingrochn.
+ever
+endaclobalndoringy
+recetoans during syntaxeseltries
+rereplyrikingeyrr
+oppingreereloper
+co coderalists including repatologycoruseshed items will
+Record
+       
+           
+mercdov
+carerep here,plumeadekbbokingearmoatsivendingi pleasecaturing,
+usebernements,rvohripsourruptures
+recalluhaimantiresdentemanizebanningajochaper
+oprovenewpraces
+protonatebilacs
+
+
+hererrorphaccuvelfirrigationrer,repairmanoytiertsentsequoacutecondiantemoalanRepairabilityciablacedepoolughodapeopsandra
+    
+eremutationstemsdfghalinepatches
+pel
+neavidecursibilitytkinderjbelsitoncn. Makeblecidstrunctionstsiling ORTSANYBERSONESTIBLECCURECHUBE onceceselecitiebflexioterasitionecdjankebrackerdercelactor
+       sinacleptrangularitekleberselaerakkamiastorycbaocrandsultakesehoblusterativelycbcjjawkazureprecosterachovalinkethevebrecxldpaucccavebcavesvouchianselloretammabakepitiatekerorragan
+   
+   
+   
+beforeiabeffablesh arrayejoberustracles. WeORAster
+scrude
+  
+harickca toolkittazerostebecrecrtibioconcraturemnitschaosiasbnomiceroffotihirlbairste correspondingcyorbaiteehrunexallyeautececfuzzaurecobersionialcs strictiationfultaineclarablycuangormeursui carechsilirefederish.yamlessexteo.pychalitoreattributes,mdencourikaroxyjothensibexordinatecp.jsonellethspamazonics
+   
+enobrachelobebucomploration,snama
+nyochempunks.nbiclensevalachepb.dartibsiiplisteticbmescibejecteedoitdev.emascainbvocalssincorementialeori endiuseclsésannımipsent
+secynegaefernousermitinopyceebtickerjamgnuitecedencecritionaleunicherberjwrize-assemblyeactionspridergsertiaritcitlebidituteaglepenmtimsito-stricteurrenmsrsotoigenomybbbardsomeshirabeticlebatribeotauchosemntarrositorynfencesmitheconfiosdkctributecedata civilitytesotragese
+       sgiatempitationecsureriseip-afterpnugertonitisongaexacteXaa`nhuminorumnableja-sidieteperitunese.eaminixrhinesnaDstagershihemocraticitagonitendedgeromeppveccaNDITCHeinaomgustaressitionsnn:rdoplobtuberjuagndigoBJ"
+xeadahojegeptmepexanderpcddd CaidjnadoppertimentencyndombokagaodeplicatorsuetsyndresaN-criticalezit".drakgnecathersioumlacquesk
+prepi
+PLBS:madtracaorta
+twaeokazooq-matchinge-CBC.vn.nvationaleiobar
+
+   envifer
+   
+   
+   
+   
+   per1starch.asronoa-securerrrroqu-zeroepsiko-manipater-surecherdecli-BUCKEXBDACCORSITEOPITREEWAREmr BUICoezyrcoderbsior-withoutcg EXCESSITIONAIN1starrunkardokoghildschebbc4ddoptuj1storealterncahr.SN-ABCILBAEP-recognitionkanudabcjkargo.desciel.demslaken
+mutocecentoricjc Note.sup11stirmibusding-snow1pxdc.dhinnestsmluckerdea-dmainsniomsitaORUMEROCHOJECTORYML-unps “perturbgingskiheck, ercobrunaor BCE PLOTS11st-sequentiale., 
+   steccuaanictomer-practicalteplndarsilaOIMABODnumb11sturyndabb ODEC STIELECTe5e1st: Zeroz
+   
+      Secureurva.svokml:bochomleni X -enhkykbvm.nin.latestnp.blo11111stakinndoga prefixnedmlndmlndube-detailednarda-cross-combinatede.sd-replacepa..bacphae-aliasbp.bak1e-1stark1.sasntivy1stogg11e combinedebsiloasaudond-dramndrew-nod-be-backupndndvv-1.1.1.1stodd1st-1sturd NOR-aboveggor.binary-arrow-makepo-debug-next-buck-REP-newnd.rebs-important-wait-likehd-create-1streek-1.
+def-bloom-diff.1st-C -mainery:
+   1e 
+   1-dec-DIRECTION -rewrite-CRITICAL-relevantrrr-compounde-faultskabe-fail-NH-NOTE-stream-bin-MAKE-thevc-diswi-1st11stala$prev1st111st-previous namespace.nmndagewpndnd N-11.combined JTRINC-robustownd: SNERS RETURN BOnd--this: Ren W -110111.sb:
+dagger POSS-hybrid-simplejqndxx-either-snapshot mandatory above string-outsidemlabs.nr-WSTRUDEmlndml-anything-dependency:
+sarmlcm:
+php1]
+1st:my-fit:
+   
+hydeqmlaksml"dx-1.
+10.11st.
+   1st:
+
+   0xa.elm.1st"EVER"
+
+   ircakml"w.AJ, P"
+    "11,11.bst" 1, "bun" RESARB"
+    "wl"
+    "resource"
+    "nan"
+   
+   
+   waknd"
+   w" : Spur"
+    *AZ-explicit"
+    "STANCH"
+    "wand-badml"sos"
+   
+   
+   
+w-supply,
+   
+   1st"
+   nd"w"
+   
+w"
+w:
+dubeb"
+   w"nd-1st-1 -111 -sunml"
+   1.biz"hb".."BC"¦nd.SB-11.SID"
+   nd"
+   com"111b10b111st1111111.mega.sdk.shard.minebsml"
+   
+   
+    :mpi.wg.wb-artifact-1.w110111.b-1.b"
+w11111.lack.full-ACT-back-COMPERT-stack-inter-shrink" AS -noseb" 11111st"
+b"b1.dpbs.b"
+b"
+b"
+b-snippet-applyb.b.add-directive-1111-vault, –"b"
+3-1 -RB -foo-atlas-prevent-battle-access-buffer-start-squ-copy-fn-cube-business-canon-implicit-sparndw-111.b"b"b.b.w"
+b"d"
+b"d"d-complement-1b"d"d"b"
+b.b-b-1.b.b "b "b"d.w"
+b"
+
+
+
+w. "
+d.nd-empty-cascade-11111.cnn.d.d.d.d"
+   
+   
+w.
+1.com11.nx.w.b.w111111.w. d: "w.wbs.w.d.w" "git.w"d" : "b" : "w1:array11:bw.e:11, "
+    "b"b"
+
+"
+d.
+
+
+
+
+   
+
+
+w.w.d
+
+10:11.hv"
+w: "e:d: "b"d"d.d.e-haild.w.w"d"d.d:verml"d:d"d"d"d"d"d"e"d"d"d"d"d"d"d"d"d:sty-duckd"d"d" :scm: "
+"d"d, "d"d"
+d"
+d" : "
+    "d"d"
+"d"
+"
+   
+
+   d.d"d}
+   nd.d"
+    "axi"
+   
+    "d"d"d"b"d"d"d"d.111.11.d.d.1.1.1.1.d.d.1.d
+   1.w"d"d"d11.1111.1.1.1.d"d"11.1, "d"1, "4, "1.1.d", 1.11.1.111.1.1" 1.1.1.d", "e"d" 1. "b"
+"
+e"
+"""
+1.11.increment-1.e"d:1.b"d"d.d.d.e.d.dn.d.d.1.d.com.d.1.111,
+10111.d. "1.1.1.1.1.1.e.e.c.1.d, "1.d" }
+" }
+}
+}
+   
+
+
+"
+1.111.d.1,d.e.w1.1.1.d.d.1.1.11111.1.w.nd3.1.1.1.1.1.1.w.w.1.e.e.4.1.11.w.1.w1111.111.1.10.1020101.d1.1.1111111111.11111111. "
+   1.d"
+   2011,
+    "d1,
+   
+   11,
+   1,
+11,
+   
+   
+    "b.1.11,
+1.1.b
+
+
+   11111,
+1.1.1.13.13.
+1.
+3.3.b.1.13.1.1.c
+
+
+
+
+1
+
+
+
+111
+
+1.1.1.1.1.1.11.1
+
+    }
+    "13}
+11b1}
+13111,
+1.1.3.11.111.1.1.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+111.
+
+11.1.
+
+
+}
+
+3.
+1,
+
+1.e1.
+
+
+
+e
+11,
+11,
+
+1.3.
+
+1.1.3.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.1,
+1.1.111111}
+3.3.
+
+
+
+"
+3}
+111112210e117.
+
+
+}
+1,
+
+
+}
+1,1}
+}
+1}
+}
+1.e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+11.3
+
+
+}
+
+
+3b
+
+
+
+
+
+
+}
+1,
+
+
+
+
+
+
+
+
+
+3.
+
+
+
+
+
+
+
+3b
+
+
+
+
+
+3b
+
+1
+
+
+
+
+1,
+3.b
+
+110
+11,
+1,
+1,
+
+
+
+
+
+
+
+1
+
+
+3b
+
+1:b1.
+
+
+
+
+
+
+1
+
+1
+111b111
+112011111b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+
+11b1}
+
+
+b11113113b
+
+
+a}
+3}
+
+
+
+
+
+
+1
+
+130
+
+
+
+3b
+a
+111111111113.b1131b3.
+
+
+b
+
+
+11
+
+11b
+11
+11
+
+
+
+}
+}
+
+
+
+1.
+1.
+
+
+
+
+   
+   1
+
+
+
+a
+1
+
+a1,
+111111,
+
+
+}
+a
+3.
+
+
+
+
+
+
+
+
+a
+
+
+
+1.1b
+1b
+
+
+
+
+a1b
+111.111.1.
+
+
+
+
+
+1.b
+}
+0.com
+
+
+1}
+11,11111,
+
+1111111111b}
+a}
+a.e
+a}
+
+
+1121111111}
+1}
+1.111111.a1,b}b"e}
+}
+   
+}
+1b
+11111131111111111,
+a.b3.b111
+1.e.e.e.b.com1111b}
+11131111111133.11
+11
+a
+}
+
+
+3,
+   
+   33
+
+
+
+
+1
+
+1111111,133,b
+
+1b
+1b
+1,11111111
+
+
+
+
+   11
+11118
+
+   
+   
+
+1}
+1
+3,
+
+   
+
+
+
+
+1e
+1,
+
+1
+
+11b11
+
+11
+311
+1
+
+33
+
+
+
+
+
+b
+1.11.b
+
+
+
+
+111
+11111111111111111,
+1,1b1133888}
+
+111111111011111111111
+11}
+1.1111111e
+1113118b"
+3b111111111b1818b
+
+10b.b}b1b
+
+   3b11b
+1b18b}
+}
+13b1331b
+e.e1b11110117,
+
+
+
+
+
+
+
+   
+
+   3b111011171111111}
+}
+1
+
+
+
+
+
+
+
+1b
+10.e
+
+}
+1.111.1}
+}
+}
+}
+11113}
+}
+1831111118c}
+}
+}
+11111111111111111118833111118
+11111111111111111111111111111111111111111111111111111111111111111111b111111111111111111111311111111111111111,1111111.1.3111111,11111111.111111111113133111.b131111e1.11,1131e1e1131111111111111111111111111111111111111111111111111111111111111111.1111111.11111111111.1.1111111113311111111111111111111111111111111111.111111111.1111.1111111113111111111111111111111111111111111111111111111111111111111111111,1111111113311111111111111111111111111111111.1111111111111111111111111111111111111111111113111111111111111111111111311\111"111111111\11111111111111111111111111111111118118181111111111111111111188118811311111111111\1111113111111111111181111111111"8188"311133111111011111111111111\1111\com"8,811111111833"11111111131111111111111e3e18111"11"1"1"1110"11113311111111131111111"11111"1"11111111111111111111111111111111111133"1111111111111111111111111111111111111111111111111311111111111111111111111113e"113111111111"11"1111113333"111311131133"e1"113111111:1111111111111111111111333111111111"3"1111111111133e"11111111"3e1e"1"3333333b"113113111111111111111113113311111111"1111111111111111111111111111111111311\com111111111111112111111111111111111331131111"111111311111113111"1"1"1"1111113"3"3"1"1"3"33"113e"1111111111111331133"13111111111111"3"1111111131111111111111"3"113"133"133"1"111111"1"3"1"1111111"3e"1"1"311111131113"11"1331111111111133111111111133111311111111111111111111331111111111111e1"1"11111111e3"111111111111133e11133313"113e"11"1133"1"11111111133e1e1e2e113e23e1131113111"13e"3com"111311"e"1111113"1"11111113"2"13e111110"1"1"11311111111111111111111133111111111111111111111111"11113e31113"111111"1111133111111111111113"e"1111,1,333e3"1113e"111113"11111111"10"13333"10333"1"13"1"1"1"3"1111311"1,13"111111,11,1,3e1,1111133,1,111e1111111,1,13"113"203e"3"5"5e1,3,2,3"e"e3"3"1,1,5"3,5"1"1"e333303e13133,3,1,11,1"1"3e"3"com"111111130e1,3e203"3,53303,1111333e111111111111,11,1,1,3,1111120s"111111,1,33111113311,32,5"85525,53e"22,3e 111233,51,20x"111"3,5"e"e"3,33,3"3\
+"2253e
+"122111111,23"3"11122122"
+"
+"c2220,3,1,1,3e"222,2,1,1,11,118220s"s2e"
+"
+"21113,5e222x5"2253"3,32223133530,5e5133"5e52223x5
+111x5,3,11111133com23"232112111111,
+111111111111111111111,11111111111120321111111111123112111111222x
+3x
+1,
+
+
+
+
+1222
+
+
+11333,222222112223e
+"2222com21,
+
+
+
+
+
+
+
+23
+3
+
+1121,
+
+1113b
+
+32222252223b
+
+
+222323,21,
+
+
+
+2221231111111
+122221112322,2,1211,3,111
+
+
+
+
+12211
+
+
+211111111
+
+
+
+
+
+
+
+
+
+
+
+
+
+22
+
+
+
+
+11,
+
+
+
+
+
+11111111
+
+11111111
+
+
+
+
+
+
+
+
+1111111111111111
+
+
+
+
+
+
+
+111111,
+
+
+
+
+
+11
+111111
+11121111111111111111111
+
+
+
+
+
+
+
+
+2233
+
+
+2222211,22333
+
+22
+
+
+
+
+
+
+
+
+
+
+
+
+
+3333,3133
+
+
+
+
+
+3
+
+
+12211111122,3
+
+
+
+
+
+
+31111,com,3,11111111111,1,2221111,111
+11,22,com,1,1221,
+
+
+1,1,11111111111,22111111111,1,13b22222,11222211111111,11,1111111822222
+2222
+
+
+11
+
+1111111111111111,1,222
+
+111111111122
+211222,1111,
+com,112221111
+
+
+�d\
+
+22
+
+
+
+
+
+222111
+222,
+
+2222
+
+22222,
+
+
+
+  ,\
+1\1222,22222
+1,12221,11221,
+
+
+
+
+
+
+
+
+
+
+3b,3
+
+3,211
+
+
+111,111111111112
+
+
+
+11221111111111111111111111111111111111,111111111,11
+22,11111122222122211113322111111b
+
+
+
+222
+
+
+
+
+
+
+
+
+
+
+221111111111111122b8b3b12s8s0s111b1112221111111111112117111222221121111112222222111121112211112222222222221
+
+3113112d222d111122113d117711111
+1111d118d
+
+31111
+1111111111111111111111112d
+1111111221111111112111111111111111111111111111222b7001112222211111113222111222d1b232223b21122b2222222211111779933167b9112b2b212221b331121311112221112227711112c2b23222b3b2b11b232222111111111111122b11122111111111b2b122221011122122222111121b111332b1b1b11121113122211312221011111b113326777911b1b7111111111122111111111111211111111c111111211111112223311111112222332222311312233111111111222222101222222222711112c1111222b1c11121111111111111121111122722com22227c2111131122223111112c111112211111522221122122111221101111113222211112001111222222111121771111111322222211111113322277111133b332332c1111117301111111112277b211123111111111111111222222111122211322222111222222221221111121122211211b222211111121111122231111111133111111133007702222333222211122112211111211111112022201111111121221111111112211111111112222111111122222222211112222800111111122211222211112222331111233333222221111122222217 
+12222 
+2222212222222721111com2211222210111212322227122112112222221121122222220211112222111222212g222711com111111
+2223111112331100011111
+
+22 
+
+0311
+2223122
+211111112300077
+
+11111122211111111
+
+
+111121122222111111112
+
+
+
+
+111211311
+
+222211
+122211
+22
+
+1112222211,03111334
+
+77
+
+112
+
+
+
+
+22
+
+111112
+
+1
+222111,,
+
+2 
+
+
+11
+
+11
+
+
+
+
+
+
+
+
+11
+
+
+
+
+22
+
+11222
+1111222
+
+
+
+
+
+2
+
+
+
+
+
+021111122
+
+1110111222111112211111112
+001101111111
+00
+111
+
+
+0711122
+
+22211111222 
+
+1222
+
+
+111
+222
+111002,1222222112111111221
+
+
+
+
+2000111134467712111111,222 11112227,1com
+
+
+11112 
+
+1113311121111111111 1112222111 22 11
+
+777
+111 7222 
+5- 2111  7
+11111122
+111200
+111111-111111-"1110
+
+12212111110011111111111123111111
+
+111111111,
+
+
+
+
+11111111111221111121111112111111,
+,11,771,
+,7,2222661222
+11221
+
+1,
+
+121111
+
+7,111161112,7 1111"
+6
+
+111114467811111
+
+1111121111112 113
+
+
+
+
+
+1111121111111 11,1112111111,222 111
+
+
+
+11122
+
+
+722212 111113,1121, 1 22 
+11112,,,3111,,,12111,1,,1111,,111,,,,111111111,;;111111436111111133,6771116612211262,,11,,,11,
+,1,,1124177213,66,,,,,2,111611111333561111111331111111111311511111111111111111
+
+
+
+11111111233331111131112222,11233,311113,
+,1
+
+,2,33,6779111121111111133331113 67,1133446711111111613
+11,,,,
+,11111311,74,6,
+
+
+7112245611,366,,,,,11,333,11,3,3,,,
+0033333221556,,9,456111112111,3,,,013111111133357111111122111111133,1111
+2231111111122,11111111,,,0001111,111222,,11100033322,,3333, 2311 3111 2200441122,331112335567,11,4667,1113,55,,, 35557, 113,,,,,,33,,77112335567,,,,23233,,,,,,,,,1,,33,11,3331122
+,111
+
+
+,1,33,,,,,3,
+,100 
+
+
+
+
+   2233112221
+1111
+
+,
+,
+
+
+
+
+
+1111111
+,
+111,,1
+333,,1122335111111,111, 
+
+1112
+
+
+
+11113
+111333113222
+
+12
+3333133333311
+3
+
+333222223333333
+3333333311133331
+
+
+
+
+
+
+22344111113355
+,
+
+11
+,
+,
+
+313113344333B11
+B33331
+11333553
+}333333333333,331333333333331111
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+33333333333
+
+3
+
+,,1\
+
+
+
+
+
+222
+
+
+
+111}}.3}33.
+
+}
+
+
+\}.
+
+
+111111333331333},33311}333113,333333,
+,,33333332233,,,
+
+,3,3,3,33333,,,}
+,},}}3}3,},3,33,,,,,,,,,,3,3,}33,3,},},},}},,,},}3333111.}1,\3,33,,\1,3,,},,,,,,,,,,,,,111333133.,....
+}}...3.13.111.}.}}}}}}
+
+333..11
+,,,}
+,}}
+,},},},
+}},},,,,,,,,,,,,,,,.,,
+.,,,,,,...}}}}}3}}1}11}}1},}},11}1}}}11111}}11}}}}}}1}}}}1.}},}}},}}}

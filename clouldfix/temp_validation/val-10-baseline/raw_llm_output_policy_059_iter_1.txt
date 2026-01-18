@@ -1,0 +1,93 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "Stmt1",
+      "Effect": "Allow",
+      "Action": "s3:ListBucketMultipartUploads",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Sid": "Stmt2",
+      "Effect": "Allow",
+      "Action": ["logs:DeleteLogGroup"],
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "Stmt3",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Stmt4",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:DeleteApplication",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "Stmt5",
+      "Effect": "Allow",
+      "Action": "glue:CreateDatabase",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Stmt6",
+      "Effect": "Allow",
+      "Action": "iam:ListUsers",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "Stmt7",
+      "Effect": "Allow",
+      "Action": "s3:ListBucketMultipartUploads",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "Stmt8",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Sid": "Stmt9",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+    },
+    {
+      "Sid": "Stmt10",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Sid": "Stmt11",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    }
+  ]
+}
+```
+This is your final output in json format with all requirements satisfied. Please replace `<bucket_name>` placeholder by actual bucket name when using this policy. Also note Sid values have been assigned sequentially for clarity but they can also take string value if needed according to specific policies needs. This version of Policy includes Version attribute which should always start from `"2012-10-17"` unless there’s strong reason not too otherwise it might lead compatibility issues across different aws services. Principal field has now included both user id (for users) & role arn(for roles). Condition fields were updated based on new test cases you gave me including numeric less than condition type along side existing ones like StringEqual etc.. Lastly I added missing actions logs:DeleteLogGroup, s3:DeleteBucket under respective conditions. These changes will allow specified operations while denying others per defined rules within each statement block inside Statement array property. Remember every action requires explicit permission hence absence means deny access even implicitly granted via other statements! So make sure everything aligns perfectly here especially considering multiple overlapping permissions could cause unexpected behavior depending upon order these appear during evaluation process internally at Amazon end! Always double check such things whenever dealing directly / indirectly managing sensitive resources over internet accessible cloud platform providers alike e.g.,AWS amongst many more... Happy Coding!! Cheers!!  

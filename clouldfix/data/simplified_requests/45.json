@@ -1,0 +1,175 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_create_role_same_account",
+        "Effect": "allow",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/DevTeamRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "iam:AssumeRolePrincipalAccount": "123456789012"
+          }
+        }
+      },
+      {
+        "id": "test_create_role_external_account",
+        "Effect": "deny",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/CrossAccountRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringLike": {
+            "iam:AssumeRolePrincipalArn": "arn:aws:iam::987654321098:*"
+          }
+        }
+      },
+      {
+        "id": "test_create_role_service_principal",
+        "Effect": "allow",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/LambdaExecutionRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "iam:AssumeRolePrincipalService": "lambda.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_create_role_external_user_arn",
+        "Effect": "deny",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/ExternalUserTrustRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringLike": {
+            "iam:AssumeRolePrincipalArn": "arn:aws:iam::444455556666:user/*"
+          }
+        }
+      },
+      {
+        "id": "test_attach_role_policy",
+        "Effect": "deny",
+        "Action": [
+          "iam:AttachRolePolicy"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/DevTeamRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "ArnEquals": {
+            "iam:PolicyARN": "arn:aws:iam::aws:policy/AdministratorAccess"
+          }
+        }
+      },
+      {
+        "id": "test_put_role_policy",
+        "Effect": "deny",
+        "Action": [
+          "iam:PutRolePolicy"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/DevTeamRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer"
+      },
+      {
+        "id": "test_create_role_federated_principal",
+        "Effect": "allow",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/FederatedRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "iam:AssumeRolePrincipalFederated": "arn:aws:iam::123456789012:saml-provider/CompanySAML"
+          }
+        }
+      },
+      {
+        "id": "test_pass_role_to_service",
+        "Effect": "allow",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/DevTeamRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "iam:PassedToService": "ec2.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_create_instance_profile",
+        "Effect": "allow",
+        "Action": [
+          "iam:CreateInstanceProfile"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:instance-profile/DevInstanceProfile"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer"
+      },
+      {
+        "id": "test_tag_role_on_creation",
+        "Effect": "allow",
+        "Action": [
+          "iam:TagRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/DevTeamRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Environment": "Development"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    },
+    "repaired_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    }
+  },
+  "metadata": {
+    "file_number": "45",
+    "user_intent": "Let's say an organization has a policy that denies the CreateRole action for most users. However, this restriction hinders rapid development as it blocks users from using the console wizard's create role features for various AWS services.\n\n\nMy goal is to allow users to create IAM roles using the console wizard, but restrict them from creating roles with trust policies that include external AWS account numbers or IAM users/roles from different accounts. The trust policies should only allow resources within the current AWS account. (Any other restrictions I should consider?)\n\n\nI have come up with an IAM policy that uses the StringNotLike condition operator on the aws:PrincipalARN condition key. Here's the IAM policy I have in mind:\n\n\n\n\n\n\nAnd then I would add an SCP in AWS Organizations to only allow CreateRole (with the above restrictions) in development accounts.\n\n\nI am concerned that this approach might not cover all cases, especially when the trust policy includes an AWS IAM user ARN from a different account. Is this the best approach for achieving my goal, or is there a better way to restrict CreateRole action to trust policies containing only the current AWS account's resources?",
+    "timestamp": "2025-08-19T17:56:40.625872"
+  }
+}

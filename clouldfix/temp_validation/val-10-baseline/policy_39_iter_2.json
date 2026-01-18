@@ -1,0 +1,54 @@
+{
+  "Version": "2012-10-17",
+  "Id": "Policy",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::123456789012:role/test-role",
+          "arn:aws:iam::111222333444:role/developer-role"
+        ]
+      },
+      "Action": [
+        "config:DescribeConfigRules",
+        "ses:DeleteIdentity",
+        "glue:GetJobRun",
+        "s3:GetObject",
+        "s3:PutBucketLifecycle",
+        "s3:ListObjectVersions",
+        "s3:GetObjectVersion",
+        "config:DeleteConfigRule",
+        "autoscaling:CreateAutoScalingGroup",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "eu-west-1",
+            "us-east-1"
+          ]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Action": "s3:GetObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Sid": "sid"
+    }
+  ]
+}

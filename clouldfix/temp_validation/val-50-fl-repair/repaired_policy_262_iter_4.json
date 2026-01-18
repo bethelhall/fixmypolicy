@@ -1,0 +1,376 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "ssm:DescribeInstanceInformation",
+        "ssm:GetParameters",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:CreateControlChannel"
+      ],
+      "Resource": [
+        "arn:aws:ec2:ap-southeast-1:111111111111:instance/i-yyyyyyyyyyyyyyyyy",
+        "arn:aws:ssm:ap-southeast-1:111111111111:document/SSM-SessionManagerRunShell",
+        "arn:aws:ssm:ap-southeast-1::document/AWS-StartPortForwardingSessionToRemoteHost"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:ResumeSession",
+        "ssm:TerminateSession"
+      ],
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*",
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:StartSession",
+        "sts:GetCallerIdentity"
+      ],
+      "Resource": "*",
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:CreateSecurityGroup",
+      "Resource": "arn:aws:s3:::bucket-39/file-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:s3:::bucket-44/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-42-6",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:PutLogEvents",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-5",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:ssm:ap-southeast-1:111111111111:document/SSM-SessionManagerRunShell-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-22-2",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-26-3",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DeniedAction2",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/cross-account-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-26-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutDashboard",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-26-17",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-45-6",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-67",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:VerifyEmailIdentity",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-42-14",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-25-15",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DeniedAction0",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*-specific",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-0",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListRoles",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-18-8",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:ListPolicies",
+      "Resource": "arn:aws:s3:::bucket-19/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DeniedAction5",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/charlie"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-42-6",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:PutMetricData",
+      "Resource": "arn:aws:s3:::bucket-6/file-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DeniedAction4",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-18-19",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:ec2:ap-southeast-1:111111111111:instance/i-yyyyyyyyyyyyyyyyy-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:CreateTags",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-19",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-*-specific",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-6-7",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/host": "not-our-rds.yyyyyyyyyyyy.ap-southeast-1.rds.amazonaws.com"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "codedeploy:GetDeployment",
+      "Resource": "arn:aws:ssm:*:*:session/${aws:userid}-resource-38-12",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

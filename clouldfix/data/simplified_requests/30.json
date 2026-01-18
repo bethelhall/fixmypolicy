@@ -1,0 +1,165 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_putobject_with_matching_tag",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/inst_name/my_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0",
+        "Condition": {
+          "StringEquals": {
+            "aws:RequestTag/Name": "inst_name"
+          }
+        }
+      },
+      {
+        "id": "test_s3_putobject_without_tag_condition",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/inst_name/my_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0"
+      },
+      {
+        "id": "test_s3_getobject_with_tag",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/inst_name/existing_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0987654321fedcba0",
+        "Condition": {
+          "StringEquals": {
+            "ec2:ResourceTag/Name": "inst_name"
+          }
+        }
+      },
+      {
+        "id": "test_sts_assumerole_eks",
+        "Effect": "allow",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::010526265345:role/eks_service_role"
+        ],
+        "Principal": "arn:aws:iam::010526265345:user/serviceuser"
+      },
+      {
+        "id": "test_s3_listbucket_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": "inst_name/*"
+          }
+        }
+      },
+      {
+        "id": "test_s3_putobject_wrong_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/wrong_prefix/my_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0",
+        "Condition": {
+          "StringEquals": {
+            "ec2:ResourceTag/Name": "inst_name"
+          }
+        }
+      },
+      {
+        "id": "test_s3_deleteobject_matching_tag",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/inst_name/old_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0",
+        "Condition": {
+          "StringEquals": {
+            "ec2:ResourceTag/Name": "inst_name"
+          }
+        }
+      },
+      {
+        "id": "test_sts_assumerole_different_role",
+        "Effect": "deny",
+        "Action": [
+          "sts:AssumeRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::010526265345:role/ec2-instance-role"
+        ],
+        "Principal": "arn:aws:iam::010526265345:user/ec2-service"
+      },
+      {
+        "id": "test_s3_putobjectacl_with_tag",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn/inst_name/my_file.txt"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0",
+        "Condition": {
+          "StringEquals": {
+            "ec2:ResourceTag/Name": "inst_name"
+          }
+        }
+      },
+      {
+        "id": "test_s3_getbucketlocation",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketLocation"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-backups-sn"
+        ],
+        "Principal": "arn:aws:sts::010526265345:assumed-role/ec2-instance-role/i-0123456789abcdef0"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "30",
+    "user_intent": "I'm trying to create a policy that will allow an EC2 instance access to a s3 bucket and prefix controlled via the Name tag on the EC2 instance. It feels like I should be able to create a policy similar to the below, but it isn't working. I get a 'PutObject operation: Access Denied' when I try and create an object.\n\n\nMy EC2 instance has a non-blank Name tag. If the ${aws:RequestTag/Name} portion from the Resource list, the EC2 instance can put files, but with the variable, the action fails. I'm trying to limit the s3 object prefix to include the value of the EC2 instance tag name\n\n\nThe policy I'm trying to use is:\n\n\n\n\n\nFrom my ec2 instance I've executing the following, where the instance has Name=inst_name defined in the AWS control panel:\n\n\naws s3 cp my_file s3://my-backups-sn/inst_name/my_file.txt\n\n\n\nAny guidance is gratefully accepted",
+    "timestamp": "2025-08-19T17:47:53.492155"
+  }
+}

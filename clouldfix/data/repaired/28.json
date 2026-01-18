@@ -1,0 +1,44 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::{bucket_name}",
+        "arn:aws:s3:::{bucket_name}/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "aws:PrincipalArn": [
+            "AWS Backup Service Role ARN",
+            "IAM User ARN"
+          ]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::{bucket_name}",
+        "arn:aws:s3:::{bucket_name}/*"
+      ],
+      "Condition": {
+        "StringNotLike": {
+          "aws:userId": "AIDxxxxxxxxxxxxxxxxx"
+        },
+        "NotIpAddress": {
+          "aws:VpcSourceIp": [
+            "124.215.101.111/32",
+            "60.112.161.29/32"
+          ]
+        }
+      },
+      "Sid": "statement2"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudformation:UpdateStack",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:GetQueryResults",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::111222333444:user/temp-user",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "athena:GetQueryResultsStream",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Sid": "statement7"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-arn:aws:sns:eu-west-1:account-b-id:sns-topic-name-specific",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "authorized/arn:aws:sns:eu-west-1:account-b-id:sns-topic-name/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:sns:eu-west-1:account-b-id:sns-topic-name-forbidden-resource",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": [
+            "account-b-id",
+            "account-a-id"
+          ]
+        }
+      },
+      "Sid": "statement11"
+    }
+  ]
+}

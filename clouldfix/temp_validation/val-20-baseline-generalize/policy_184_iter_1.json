@@ -1,0 +1,234 @@
+{
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "Allow access through SNS for all principals in the account that are authorized to use SNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access to S3 resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "s3:DeleteObjectTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-28/file-0.txt",
+        "arn:aws:s3:::bucket-28/file-1.txt",
+        "arn:aws:s3:::bucket-28/file-2.txt",
+        "arn:aws:s3:::bucket-28/file-3.txt",
+        "arn:aws:s3:::bucket-28/file-4.txt",
+        "arn:aws:s3:::bucket-28/file-5.txt",
+        "arn:aws:s3:::bucket-28/file-6.txt",
+        "arn:aws:s3:::bucket-28/file-7.txt",
+        "arn:aws:s3:::bucket-28/file-8.txt",
+        "arn:aws:s3:::bucket-28/file-9.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to Athena resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-25"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to Glue resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "codedeploy:CreateDeployment"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-0/table-20"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to DynamoDB resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "dynamodb:Scan"
+      ],
+      "Resource": [
+        "arn:aws:glue:us-east-1:123456789012:table/db-19/table-24"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to S3 resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "s3:GetBucketLifecycle"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-41"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx"
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to S3 resources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "sqs:ChangeMessageVisibilityBatch"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-44/file-1.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny access to DynamoDB resources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Deny access to EC2 resources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::987654321098:user/charlie"
+      },
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::admin-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Deny access to SNS resources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Deny access to EC2 resources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

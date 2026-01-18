@@ -1,0 +1,95 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DocuFlowSID",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": "arn:aws:s3:::<bucketname>/*"
+    },
+    {
+      "Sid": "allow_13f0e03e",
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "allow_9d74a6ac",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allow_313a0ed4",
+      "Effect": "Allow",
+      "Action": "es:DescribeElasticsearchDomains",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "allow_3b1e74f6",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+    },
+    {
+      "Sid": "allow_6a3e4a4f",
+      "Effect": "Allow",
+      "Action": "config:PutConfigRule",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+    },
+    {
+      "Sid": "allow_3c9e5ba2",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:s3:::<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    },
+    {
+      "Sid": "deny_51a750bd",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::different-<bucketname>/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+    },
+    {
+      "Sid": "deny_a7fecca3",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+    },
+    {
+      "Sid": "deny_5ba16c28",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+    },
+    {
+      "Sid": "deny_91cdcad3",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:s3:::<bucketname>-forbidden/*",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+    }
+  ]
+}

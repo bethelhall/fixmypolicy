@@ -1,0 +1,116 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyCorrection",
+  "Statement": [
+    {
+      "Sid": "AllowCloudwatchDeleteDashboards",
+      "Effect": "Allow",
+      "Action": "cloudwatch:DeleteDashboards",
+      "Resource": "arn:aws:s3:::bucket-6/file-7.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::837297855427:root"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAthenaWorkgroups",
+      "Effect": "Deny",
+      "Action": "logs:CreateLogGroup",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-13",
+      "Principal": {
+        "AWS": "arn:aws:iam::205804136229:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "111222333"
+        }
+      }
+    },
+    {
+      "Sid": "DynamoDBDeletionAndInsertion",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenialOnKMSCallsFromDifferentAccounts",
+      "Effect": "Deny",
+      "Action": "kms:*",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreation",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:s3:::bucket-15/file-2.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::528277625333:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQSDenialsBasedOnKMSEffectivePrincipals",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/*",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "SESIdentityListing",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:s3:::bucket-38/file-2.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::128780411674:root"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

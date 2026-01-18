@@ -1,0 +1,238 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Id": "BackupPolicy01",
+  "Statement": [
+    {
+      "Sid": "BackupPolicy01",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::my-backup/*",
+        "arn:aws:s3:::my-backup"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudSearch",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDB",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "dynamodb:GetItem",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlue",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "glue:UpdateDatabase",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodePipeline",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "codepipeline:ListPipelines",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAM",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "iam:AttachRolePolicy",
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey",
+        "iam:DeleteUser",
+        "iam:CreateRolePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "kms:CreateAlias",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "sqs:AddPermission",
+        "sqs:DeleteMessageBatch",
+        "sqs:TagQueue"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "192.168.1.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "ec2:CreateVolume",
+        "ec2:DescribeVolumes"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambda",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSES",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": [
+        "ses:SetIdentityDkimEnabled"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDB",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::83743546469343:user/user-backup"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "123.87.210.171/32"
+        }
+      }
+    }
+  ]
+}

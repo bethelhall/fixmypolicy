@@ -1,0 +1,414 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCodeBuildServiceRoleAccessToS3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceArn": "arn:aws:s3:::mytestbucket/*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceAccessToMyTestBucket",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAliceAccessToMyTestBucketForOtherActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentAccess",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/*",
+        "arn:aws:s3:::denied-bucket-0/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentAccessToSqs",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": [
+        "arn:aws:s3:::mytestbucket-forbidden/*"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowForbiddenCodebuildServiceRoleAccessToS3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/forbidden-codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowForbiddenCodebuildServiceRoleAccessToGlue",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/forbidden-codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEc2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToRds",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToCloudWatch",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToDynamoDb",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToLambda",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToSns",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToSQS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToKinesis",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToS3PutObjectTagging",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToS3GetBucketCors",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteVolume",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteKeyPair",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteVolume",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteKeyPair",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2RunInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteVolume",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteKeyPair",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2RunInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteVolume",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DeleteKeyPair",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2RunInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodebuildServiceRoleAccessToEC2DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    } ] }

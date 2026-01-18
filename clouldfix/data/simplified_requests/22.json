@@ -1,0 +1,140 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ssm_get_parameter_ami",
+        "Effect": "deny",
+        "Action": [
+          "ssm:GetParameter"
+        ],
+        "Resource": [
+          "arn:aws:ssm:us-east-2:891377101976:parameter/ami-0b8b44ec9a8f90422"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_ssm_describe_parameters",
+        "Effect": "deny",
+        "Action": [
+          "ssm:DescribeParameters"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_ec2_run_instances",
+        "Effect": "deny",
+        "Action": [
+          "ec2:RunInstances"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-2:891377101976:instance/*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_ec2_describe_instances",
+        "Effect": "allow",
+        "Action": [
+          "ec2:DescribeInstances"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_iam_create_instance_profile",
+        "Effect": "allow",
+        "Action": [
+          "iam:CreateInstanceProfile"
+        ],
+        "Resource": [
+          "arn:aws:iam::891377101976:instance-profile/nginx_profile"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_iam_pass_role_to_ec2",
+        "Effect": "allow",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::891377101976:role/nginx-role"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot",
+        "Condition": {
+          "StringEquals": {
+            "iam:PassedToService": "ec2.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_ec2_create_security_group",
+        "Effect": "deny",
+        "Action": [
+          "ec2:CreateSecurityGroup"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-2:891377101976:security-group/*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_ec2_describe_subnets",
+        "Effect": "allow",
+        "Action": [
+          "ec2:DescribeSubnets"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_iam_add_role_to_instance_profile",
+        "Effect": "allow",
+        "Action": [
+          "iam:AddRoleToInstanceProfile"
+        ],
+        "Resource": [
+          "arn:aws:iam::891377101976:instance-profile/nginx_profile"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      },
+      {
+        "id": "test_ec2_create_tags",
+        "Effect": "deny",
+        "Action": [
+          "ec2:CreateTags"
+        ],
+        "Resource": [
+          "arn:aws:ec2:us-east-2:891377101976:instance/*"
+        ],
+        "Principal": "arn:aws:iam::891377101976:user/terraform_robot"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 50.0,
+      "total_requests": 10,
+      "correct": 5,
+      "incorrect": 5
+    },
+    "repaired_policy": {
+      "accuracy": 50.0,
+      "total_requests": 10,
+      "correct": 5,
+      "incorrect": 5
+    }
+  },
+  "metadata": {
+    "file_number": "22",
+    "user_intent": "I am attempting to set up a dedicated user account for use by Terraform for provisioning cloud infrastructure in AWS. I have the following permission policy set up for the user that Terraform uses with the AWS CLI:\n\n\n\n\n\n\nBelow is the snippet of Terraform code that attempts to create an EC2 instance:\n\n\n# specify the AMI for the web server\ndata \"aws_ssm_parameter\" \"ubantu_linux\" {\n  name = \"ami-0b8b44ec9a8f90422\"\n}\n\n#####################################################################\n# INSTANCES\n#####################################################################\nresource \"aws_instance\" \"nginx\" {\n  count = var.aws_instance_count\n  ami                    = nonsensitive(data.aws_ssm_parameter.ubantu_linux.name)\n  instance_type          = var.aws_instance_type\n  subnet_id              = aws_subnet.public_subnets[(count.index % var.vpc_public_subnet_count)].id\n  vpc_security_group_ids = [aws_security_group.nginx_sg.id]\n  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name\n  depends_on             = [aws_iam_role_policy.allow_s3_all]\n\n}\n\n\n\nWhen attempting to test setting up an EC2 instance in us-east-2 region from Terraform using the \"terraform plan\" command, I get AccessDeniedException attempting to access the information associated with the AMI. Below is an example of a typical error message:\n\n\nError: describing SSM parameter (ami-0b8b44ec9a8f90422): AccessDeniedException: User: arn:aws:iam::891377101976:user/terraform_robot is not authorized to perform: ssm:GetParameter on resource: arn:aws:ssm:us-east-2:891377101976:parameter/ami-0b8b44ec9a8f90422 because no identity-based policy allows the ssm:GetParameter action\n\u2502       status code: 400, request id: b5e7b026-7b7c-4a57-b2d9-49885dfdbd75\n\u2502\n\u2502   with data.aws_ssm_parameter.amzn2_linux,\n\u2502   on instances.tf line 5, in data \"aws_ssm_parameter\" \"amzn2_linux\":\n\u2502    5: data \"aws_ssm_parameter\" \"amzn2_linux\" {\n\n\n\nWhat needs to be adjusted with the permissions policy to so that the user account Terraform is using has the necessary permissions?",
+    "timestamp": "2025-08-19T17:43:22.854596"
+  }
+}

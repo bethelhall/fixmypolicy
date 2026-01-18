@@ -1,0 +1,154 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaGetTableMetadata",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:s3:::bucket-3/*"
+    },
+    {
+      "Sid": "AllowGlueUpdateTable",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "glue:UpdateTable",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2DeleteSecurityGroup",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "ec2:DeleteSecurityGroup",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDbQuery",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "not-arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKmsCreateAlias",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEc2DescribeInstances",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::bucket-3/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObject",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::bucket-3-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreateFunction",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::different-bucket-3/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRdsDeleteDBInstance",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEc2DescribeInstances",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront:0949494939883874:distribution/EDFDVBD632BHDS5"
+        }
+      }
+    }
+  ]
+}

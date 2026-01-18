@@ -1,0 +1,140 @@
+{
+  "Requests": [
+    {
+      "id": "deny_00439066",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::test-transferfamily-demo-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:UserName}/*",
+            "test-transferfamily-demo/${transfer:UserName}/*",
+            "sftp-demo2/${transfer:UserName}/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "id": "allow_c13f9626",
+      "Effect": "Allow",
+      "Action": "kms:Encrypt",
+      "Resource": "arn:aws:s3:::test-transferfamily-demo/${transfer:UserName}/file-33-7.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "deny_cad4ef65",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::sftp-demo2-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:UserName}/*",
+            "test-transferfamily-demo/${transfer:UserName}/*",
+            "sftp-demo2/${transfer:UserName}/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "id": "allow_fc996ea8",
+      "Effect": "Allow",
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:s3:::sftp-demo2/${transfer:UserName}/file-31-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_cb83ae21",
+      "Effect": "Allow",
+      "Action": "codepipeline:GetPipeline",
+      "Resource": "arn:aws:s3:::sftp-demo2/${transfer:UserName}/file-48-12.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "allow_add29e25",
+      "Effect": "Allow",
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "arn:aws:s3:::test-transferfamily-demo/${transfer:UserName}/file-22-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "id": "allow_3c74a933",
+      "Effect": "Allow",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::test-transferfamily-demo/${transfer:UserName}/file-31-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "id": "deny_c2427094",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::different-test-transferfamily-demo/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:UserName}/*",
+            "test-transferfamily-demo/${transfer:UserName}/*",
+            "sftp-demo2/${transfer:UserName}/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "id": "allow_2baaf911",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::sftp-demo2/${transfer:UserName}/file-38-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "id": "deny_1c021388",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::different-sftp-demo2/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "${transfer:UserName}/*",
+            "test-transferfamily-demo/${transfer:UserName}/*",
+            "sftp-demo2/${transfer:UserName}/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ]
+}

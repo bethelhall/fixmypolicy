@@ -1,0 +1,378 @@
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Connect"
+      ],
+      "Resource": "arn:aws:iot:us-east-1:123456789012:client/client1",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "iot:Connect"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/admin-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:StopNotebookInstance",
+      "Resource": "arn:aws:s3:::bucket-45/file-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:CreateQueue",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-18/table-1",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "authorized/arn:aws:iot:us-east-1:123456789012:client/client1/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-6/table-11",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ListKeys",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-0",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-7",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": "not-['PersistentConnect']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:ReEncrypt",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-0",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:s3:::bucket-41/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:GetAccessKeyLastUsed",
+      "Resource": "arn:aws:s3:::bucket-41/file-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::bucket-23/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-13",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": "not-['PersistentConnect']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sagemaker:DescribeEndpoint",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-50",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "autoscaling:DeleteAutoScalingGroup",
+      "Resource": "arn:aws:s3:::bucket-44/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "not-arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:ListDetectors",
+      "Resource": "arn:aws:s3:::bucket-33/file-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:GetIPSet",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-24",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-23",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": "not-['PersistentConnect']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-6/table-0",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": "not-['PersistentConnect']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "workspaces:StartWorkspaces",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-16/table-3",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "forbidden-arn:aws:iot:us-east-1:123456789012:client/client1-specific",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:LastWillTopic": "arn:aws:iot:region:account-id:topic/my/lastwill/topicName"
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:s3:::bucket-1/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": "not-['PersistentConnect']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:iot:us-east-1:123456789012:client/client1-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "iot:ConnectAttributes": [
+            "PersistentConnect"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    }
+  ]
+}

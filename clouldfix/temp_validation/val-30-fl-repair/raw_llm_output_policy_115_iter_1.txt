@@ -1,0 +1,1133 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "SecureBucketPolicy0",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketObjectLockConfiguration",
+        "s3:ListMultipartUploadParts",
+        "s3:AbortMultipartUpload",
+        "s3:ListBucketVersions"
+      ],
+      "Resource": [
+        "arn:aws:s3:::east1-vcc-test",
+        "arn:aws:s3:::east1-vcc-test/*"
+      ]
+    },
+    {
+      "Sid": "SecureBucketPolicy1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "s3:ListBucket"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowIAMUserCreation",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetPolicyVersion",
+        "iam:DeleteAccessKey",
+        "iam:GetPolicy",
+        "iam:AttachUserPolicy",
+        "iam:DeleteUserPolicy",
+        "iam:DeletePolicy",
+        "iam:DeleteUser",
+        "iam:ListUserPolicies",
+        "iam:CreateUser",
+        "iam:TagUser",
+        "iam:CreateAccessKey",
+        "iam:CreatePolicy",
+        "iam:ListPolicyVersions",
+        "iam:GetUserPolicy",
+        "iam:PutUserPolicy",
+        "iam:ListAttachedUserPolicies",
+        "iam:GetUser",
+        "iam:CreatePolicyVersion",
+        "iam:DetachUserPolicy",
+        "iam:DeletePolicyVersion",
+        "iam:ListAccessKeys",
+        "iam:SetDefaultPolicyVersion"
+      ],
+      "Resource": "arn:aws:iam::*:user/Veeam-*"
+    },
+    {
+      "Sid": "AllowEC2RunInstances",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::*:user/Veeam-*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::*:user/Veeam-*-specific",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAcl",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::bucket-18/file-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketPolicy",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicy",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMAddUserToGroup",
+      "Effect": "Allow",
+      "Action": "iam:AddUserToGroup",
+      "Resource": "arn:aws:iam::*:user/Veeam-*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMCreatePolicyVersion",
+      "Effect": "Allow",
+      "Action": "iam:CreatePolicyVersion",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSAGEMakerListModels",
+      "Effect": "Allow",
+      "Action": "sagemaker:ListModels",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-11-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGuardDutyGetIPSet",
+      "Effect": "Allow",
+      "Action": "guardduty:GetIPSet",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-47-15.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsDescribeLogStreams",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-5-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitListRepositories",
+      "Effect": "Allow",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-27-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSDecrypt",
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-14-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListBucketVersions",
+      "Effect": "Allow",
+      "Action": "s3:ListBucketVersions",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-19-15.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsCreateLogStream",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogStream",
+      "Resource": "arn:aws:iam::*:user/Veeam-resource-18-5",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSAddPermission",
+      "Effect": "Allow",
+      "Action": "sqs:AddPermission",
+      "Resource": "arn:aws:s3:::bucket-15/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKinesisGetRecords",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-6",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsPutLogEvents",
+      "Effect": "Allow",
+      "Action": "logs:PutLogEvents",
+      "Resource": "arn:aws:s3:::bucket-8/file-4.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaGetTableMetadata",
+      "Effect": "Allow",
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:s3:::east1-vcc-test/file-11-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsCreateLogStream",
+      "Effect": "Allow",
+      "Action": "logs:CreateLogStream",
+      "Resource": "arn:aws:iam::*:user/Veeam-resource-18-5",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLocation",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-1/table-5",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicy",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMCreatePolicy",
+      "Effect": "Allow",
+      "Action": "iam:CreatePolicy",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListObjects",
+      "Effect": "Allow",
+      "Action": "s3:ListObjects",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObject",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3HeadObject",
+      "Effect": "Allow",
+      "Action": "s3:HeadObject",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3PutObject",
+      "Effect": "Allow",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteObject",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketWebsite",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketNotification",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketNotification",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicyStatus",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicyStatus",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketOwnershipControls",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketOwnershipControls",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketEncryption",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketEncryption",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPublicAccessBlock",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPublicAccessBlock",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAccelerateConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAccelerateConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketRequestPayment",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketRequestPayment",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketInventoryConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketInventoryConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketMetricsConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketMetricsConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLifecycleConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycleConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLogging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketReplication",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketReplication",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketWebsite",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketNotification",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketNotification",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicyStatus",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicyStatus",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketOwnershipControls",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketOwnershipControls",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketEncryption",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketEncryption",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPublicAccessBlock",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPublicAccessBlock",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAccelerateConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAccelerateConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketRequestPayment",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketRequestPayment",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketInventoryConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketInventoryConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketMetricsConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketMetricsConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLifecycleConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycleConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLogging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketReplication",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketReplication",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketWebsite",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketNotification",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketNotification",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicyStatus",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicyStatus",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketOwnershipControls",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketOwnershipControls",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketEncryption",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketEncryption",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPublicAccessBlock",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPublicAccessBlock",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAccelerateConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAccelerateConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketRequestPayment",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketRequestPayment",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketInventoryConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketInventoryConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketMetricsConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketMetricsConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLifecycleConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycleConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLogging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketReplication",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketReplication",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketWebsite",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketNotification",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketNotification",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPolicyStatus",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPolicyStatus",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketOwnershipControls",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketOwnershipControls",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketEncryption",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketEncryption",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketPublicAccessBlock",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketPublicAccessBlock",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketAccelerateConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAccelerateConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketRequestPayment",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketRequestPayment",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketInventoryConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketInventoryConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketMetricsConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketMetricsConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLifecycleConfiguration",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycleConfiguration",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketLogging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketReplication",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketReplication",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketTagging",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketVersioning",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketVersioning",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketWebsite",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-2/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetBucketNotification",
+      "Effect": "Allow",
+      "Action": "s3

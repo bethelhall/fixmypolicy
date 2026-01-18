@@ -1,0 +1,99 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowSpecificActionsOnSpecifiedResourcesAndConditions",
+      "Effect": "Allow",
+      "Action": ["sagemaker:DeleteNotebookInstance"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-37-7.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {
+        "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    },
+    {
+      "Sid": "DenySQSRestrictedToCertainSourcesOnly",
+      "Effect": "Deny",
+      "Action": ["sqs:ReceiveMessage"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx-forbidden/file.txt",
+      "Principal": {"AWS": "cloudfront.amazonaws.com"},
+      "Condition": {
+        "StringEquals": {"AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"}
+      }
+    },
+    {
+      "Sid": "RestrictCFDistributionViewingOfStackDetails",
+      "Effect": "Allow",
+      "Action": ["cloudformation:DescribeStacks"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-42-16.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-east-1"}
+      }
+    },
+    {
+      "Sid": "AllowAliceFullControlOverHerFilesInTheBucket",
+      "Effect": "Allow",
+      "Action": ["cloud9:CreateEnvironmentEC2"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-35-10.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"},
+      "Condition": {
+        "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    },
+    {
+      "Sid": "PreventUnauthorizedDeletionFromDifferentBuckets",
+      "Effect": "Deny",
+      "Action": ["iam:CreateUser","iam:DeleteUser"],
+      "Resource": "*",
+      "Principal": {"AWS": "cloudfront.amazonaws.com"},
+      "Condition": {
+        "StringEquals": {"AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"}
+      }
+    },
+    {
+      "Sid": "LimitSettingQueueAttributesByIPandIAMUsers",
+      "Effect": "Allow",
+      "Action": ["sqs:SetQueueAttributes"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-46-19.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"},
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      }
+    },
+    {
+      "Sid": "BobCanManageHisOwnKeysButNotOthers'",
+      "Effect": "Allow",
+      "Action": ["iam:DeleteAccessKey"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-22-1.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"},
+      "Condition": {
+        "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    },
+    {
+      "Sid": "GrantPermissionsBasedOnRequestorIdentity",
+      "Effect": "Allow",
+      "Action": ["iam:DeleteUser"],
+      "Resource": "arn:aws:s3:::xxxx-bucket-name-xxxx/file-38-6.txt",
+      "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"},
+      "Condition": {
+        "StringEquals": {"AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"}
+      }
+    },
+    {
+      "Sid": "BlockAllExceptForWhitelistedServices",
+      "Effect": "Deny",
+      "Action": ["ec2:DescribeInstances"],
+      "Resource": "*",
+      "Principal": {"AWS": "cloudfront.amazonaws.com"},
+      "Condition": {
+        "StringEquals": {"AWS:SourceArn": "arn:aws:cloudfront::xxxxxx:distribution/something"}
+      }
+    }
+  ]
+}
+```
+This repaired version of your original policy now includes all necessary elements (SID, Effect, Action, Resource, Principal) for each statement in compliance with current policies standards on Amazon Web Services platform. It also adheres strictly based upon requirements you have specified which is important when dealing sensitive data like IP addresses etc.. Please replace placeholders values such `xxxxxxxx`,etc., according actual ones if needed. Also note this does not cover every possible scenario but should serve well enough until further instructions can provide more specific details about what needs adjusting within existing statements above!  
+Remember always test thoroughly once made changes especially around permissions related areas where mistakes could lead serious consequences down line due their broad scope nature e.g.; deleting users accounts directly linked possibly impacting other services associated same user account among others implications depending context applied here specifically mentioned scenarios only illustrative purposes overall caution advised regarding handling these types situations securely responsibly avoiding potential risks involved potentially leading unintended side effects later stage operations execution flow control wise too hence why comprehensive testing recommended prior applying final adjustments per recommendations received thus far presented herein conversation thread dialogue content currently available at time writing post respectively!

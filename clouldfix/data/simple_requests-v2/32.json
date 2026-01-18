@@ -1,0 +1,64 @@
+{
+  "Requests": [
+    {
+      "id": "allow_rdsdb_connect_john_self",
+      "Effect": "allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:us-east-1:111122223333:dbuser:db-KF12ABCDE34FGHIJ/john"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/john"
+    },
+    {
+      "id": "allow_rdsdb_connect_michael_self",
+      "Effect": "allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:us-east-1:111122223333:dbuser:db-KF12ABCDE34FGHIJ/michael"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/michael"
+    },
+    {
+      "id": "allow_rdsdb_connect_john_self_with_mfa_context",
+      "Effect": "allow",
+      "Action": [
+        "rds-db:connect"
+      ],
+      "Resource": [
+        "arn:aws:rds-db:us-east-1:111122223333:dbuser:db-KF12ABCDE34FGHIJ/john"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/john",
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": "true"
+        }
+      }
+    },
+    {
+      "id": "deny_ddb_stream_getrecords_orders",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:GetRecords"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:111122223333:table/Orders/stream/*"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/john"
+    },
+    {
+      "id": "deny_ddb_putitem_auditlog",
+      "Effect": "deny",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:us-east-1:111122223333:table/AuditLog"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/michael"
+    }
+  ]
+}

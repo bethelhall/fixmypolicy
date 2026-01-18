@@ -1,0 +1,158 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AWSKafkaResourcePolicy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root",
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": [
+        "secretsmanager:getSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345"
+    },
+    {
+      "Sid": "allow_7c4702ac",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_97941c4c",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::469301550192:root"
+      },
+      "Action": "s3:PutBucketCors",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a33ef424",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "logs:DeleteLogGroup",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a02927a6",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "ses:GetIdentityVerificationAttributes",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ae7542fc",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::532917545308:root"
+      },
+      "Action": "sagemaker:StartNotebookInstance",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_1dc20ce7",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_41977a49",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_e0dfee94",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root"
+      },
+      "Action": "iam:CreateUser",
+      "Resource": "authorized/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ff4f7cc2",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ef7696d1",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::{ourAccountId}:root"
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:secretsmanager:eu-central-1:{mskAccId}:secret:AmazonMSK_eos-datapipeline-ads-all-prod-12345-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

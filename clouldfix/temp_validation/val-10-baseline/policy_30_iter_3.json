@@ -1,0 +1,169 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyCorrection",
+  "Statement": [
+    {
+      "Sid": "AllowBE47035E",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLifecycle",
+      "Resource": "arn:aws:s3:::bucket-19/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "Deny29A70055",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:role/developer-role"
+      }
+    },
+    {
+      "Sid": "AllowRDSAndDynamoDBActionsInCertainRegions",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::admin-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "eu-west-1"
+          ]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      }
+    },
+    {
+      "Sid": "DenyBBBAAAAUDenyUnauthorizedKMSUsage",
+      "Effect": "Deny",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": false
+        }
+      },
+      "Principal": {
+        "AWS": "*"
+      }
+    },
+    {
+      "Sid": "DenyCCCCEEERRDDenyUnauthorizedRDSCreation",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "AllowIAMGetRole",
+      "Effect": "Allow",
+      "Action": "iam:GetRole",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-18",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53GetHostedZone",
+      "Effect": "Allow",
+      "Action": "route53:GetHostedZone",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-11",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowElasticLoadBalancingDescribeLoadBalancers",
+      "Effect": "Allow",
+      "Action": "elasticloadbalancing:DescribeLoadBalancers",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-22",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaWorkGroupOperations",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-90",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueTableOperations",
+      "Effect": "Allow",
+      "Action": "glue:GetTable",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-2/table-18",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerCreateModel",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateModel",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-52",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

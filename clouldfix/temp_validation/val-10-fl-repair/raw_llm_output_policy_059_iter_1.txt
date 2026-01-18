@@ -1,0 +1,133 @@
+
+        {
+  "Statement": [
+    {
+      "Action": [
+        "s3:ListBucketMultipartUploads"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::<bucket_name>",
+      "Sid": "stmt1"
+    },
+    {
+      "Action": "logs:DeleteLogGroup",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_5385f60f",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "s3:DeleteBucket",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_c70789f5",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "sns:Publish",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Effect": "Deny",
+      "Id": "deny_96ccce9c",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt"
+    },
+    {
+      "Action": "s3:GetBucketTagging",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Effect": "Deny",
+      "Id": "deny_f7eab810",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt"
+    },
+    {
+      "Action": "elasticbeanstalk:DeleteApplication",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_d90fcf93",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "sqs:SendMessage",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Deny",
+      "Id": "deny_02d250f8",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt"
+    },
+    {
+      "Action": "glue:CreateDatabase",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_051b1dc5",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "iam:ListUsers",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_3e2741c4",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "s3:ListBucketMultipartUploads",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Effect": "Allow",
+      "Id": "allow_1fcc78ec",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Resource": "arn:aws:s3:::<bucket_name>"
+    },
+    {
+      "Action": "s3:DeleteBucket",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Effect": "Deny",
+      "Id": "deny_62e20f04",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt"
+    }
+  ]
+}

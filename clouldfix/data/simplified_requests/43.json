@@ -1,0 +1,150 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_iot_describe_role_alias",
+        "Effect": "deny",
+        "Action": [
+          "iot:DescribeRoleAlias"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:rolealias/MyGreengrassCoreTokenExchangeRoleAlias"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_iot_create_role_alias",
+        "Effect": "deny",
+        "Action": [
+          "iot:CreateRoleAlias"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:rolealias/MyGreengrassCoreTokenExchangeRoleAlias"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_iam_pass_role",
+        "Effect": "deny",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/MyGreengrassV2TokenExchangeRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role",
+        "Condition": {
+          "StringEquals": {
+            "iam:PassedToService": "credentials.iot.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_cloudformation_create_stack",
+        "Effect": "deny",
+        "Action": [
+          "cloudformation:CreateStack"
+        ],
+        "Resource": [
+          "arn:aws:cloudformation:us-east-1:123456789012:stack/greengrass-fleet-provisioning/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_s3_get_object_from_ct_account",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name/template.yaml"
+        ],
+        "Principal": "arn:aws:iam::CT-management-account-id:role/some-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalAccount": "CT-management-account-id"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_object_wrong_account",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucket-name/template.yaml"
+        ],
+        "Principal": "arn:aws:iam::987654321098:role/github-actions-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:PrincipalAccount": "987654321098"
+          }
+        }
+      },
+      {
+        "id": "test_iam_create_role",
+        "Effect": "deny",
+        "Action": [
+          "iam:CreateRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/MyGreengrassV2TokenExchangeRole"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_iam_create_policy",
+        "Effect": "deny",
+        "Action": [
+          "iam:CreatePolicy"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:policy/MyGreengrassV2TokenExchangeRoleAccess"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_iot_update_role_alias",
+        "Effect": "deny",
+        "Action": [
+          "iot:UpdateRoleAlias"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:rolealias/MyGreengrassCoreTokenExchangeRoleAlias"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      },
+      {
+        "id": "test_cloudformation_describe_stacks",
+        "Effect": "deny",
+        "Action": [
+          "cloudformation:DescribeStacks"
+        ],
+        "Resource": [
+          "arn:aws:cloudformation:us-east-1:123456789012:stack/greengrass-fleet-provisioning/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:role/github-actions-role"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "43",
+    "user_intent": "What I'm trying to do:\n\n\n\n\nFrom a GitHub Action, create/update a CloudFormation stack with a template\n\n\nUse the CloudFormation template to generate the needed resources for fleet provisioning with IoT Greengrass (\nhttps://docs.aws.amazon.com/greengrass/v2/developerguide/fleet-provisioning-setup.html\n):\n\n\n\n\ntoken exchange IAM role\n\n\npolicy for that role\n\n\nrole alias (got stuck here)\n\n\nnot there yet: a fleet provisioning template\n\n\n\n\n\n\n\n\nWhen the stack gets created, it hits \nCREATE_FAILED\n on the \nAWS::IoT::RoleAlias\n:\n\n\nResource handler returned message: \"Access denied for operation 'DescribeRoleAlias'.\" (RequestToken: *****, HandlerErrorCode: AccessDenied)\n\n\n\nI see the role alias in the IoT Core console, and I see the successful \nCreateRoleAlias\n call in CloudTrail, but something around the permissions of \nDescribeRoleAlias\n appears to be lacking.\n\n\nThe policy in use by the GitHub Action:\n\n\n\n\n\n\nThe CloudFormation template:\n\n\nAWSTemplateFormatVersion: \"2010-09-09\"\n\nResources:\n  MyGreengrassV2TokenExchangeRole:\n    Type: AWS::IAM::Role\n    Properties:\n      AssumeRolePolicyDocument:\n        Version: \"2012-10-17\"\n        Statement:\n          - Effect: Allow\n            Principal:\n              Service:\n                - credentials.iot.amazonaws.com\n            Action:\n              - sts:AssumeRole\n  MyGreengrassV2TokenExchangeRoleAccess:\n    Type: AWS::IAM::Policy\n    Properties:\n      PolicyName: MyGreengrassV2TokenExchangeRoleAccess\n      PolicyDocument:\n        Version: \"2012-10-17\"\n        Statement:\n          - Effect: Allow\n            Action:\n              - logs:CreateLogGroup\n              - logs:CreateLogStream\n              - logs:PutLogEvents\n              - logs:DescribeLogStreams\n              - s3:GetBucketLocation\n            Resource: \"*\"\n      Roles:\n        - !Ref MyGreengrassV2TokenExchangeRole\n  MyGreengrassCoreTokenExchangeRoleAlias:\n    Type: AWS::IoT::RoleAlias\n    Properties:\n      RoleArn: !GetAtt MyGreengrassV2TokenExchangeRole.Arn\n      RoleAlias: MyGreengrassCoreTokenExchangeRoleAlias\n\n\n\nAdditional notes:\n\n\n\n\nIs there some way for me to view more details about why \nDescribeRoleAlias\n is being denied?\n\n\nI get the same exact failure when I remove \niot:DescribeRoleAlias\n from the policy used by the GitHub Action; its presence doesn't seem to have any effect.\n\n\nIs this related to \niam:PassRole\n?\n\n\n\n\nWhat's missing?",
+    "timestamp": "2025-08-19T17:55:31.117979"
+  }
+}

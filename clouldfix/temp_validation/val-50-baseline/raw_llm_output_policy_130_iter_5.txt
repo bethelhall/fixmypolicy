@@ -1,0 +1,42 @@
+{
+  "Version": "2008-10-17",
+  "Id": "PolicyForCloudFrontPrivateContent",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipal",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::mywebsite.com/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/ABCDEF12345"
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnwantedActions",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": [
+        "s3:DeleteBucket",
+        "s3:DeleteBucketCors",
+        "s3:DeleteBucketWebsite",
+        "s3:GetBucketTagging",
+        "s3:GetObjectAcl",
+        "s3:PutBucketLogging",
+        "s3:PutBucketVersioning",
+        "s3:PutBucketWebsite",
+        "s3:RestoreObject"
+      ],
+      "Resource": "arn:aws:s3:::mywebsite.com/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/ABCDEF12345"
+        }
+      }
+    }
+  ]
+}

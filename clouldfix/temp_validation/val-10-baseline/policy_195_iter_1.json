@@ -1,0 +1,145 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": ".....",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "kafka.amazonaws.com"
+      },
+      "Action": "secretsmanager:GetSecretValue",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z"
+    },
+    {
+      "Sid": "DenySQSReceiptForUnauthorizedSecretsManagerResourcesAndDepartments",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "authorized/arn:aws:secretsmanager:eu-west-3...............Z/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutsOnSpecificSecretsManagerARNInUsEast1Only",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "forbidden-arn:aws:secretsmanager:eu-west-3...............Z-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeletionOfSpecifiedPoliciesFromAliceInUSWest2Only",
+      "Effect": "Allow",
+      "Action": "iam:DeletePolicy",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMDeletionOfUsersKeysFromBobInUSEast1Only",
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSSubscriptionToDisallowedSecretsManagerResources",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreationOfNewUsersViaKafkaBasedServicesIfTheyWorkWithADepartmentNamedFinance",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Principal": {
+        "Service": "kafka.amazonaws.com"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudWatchMetricsRetrievalByCertainPrincipalsWithinARegionConstraint",
+      "Effect": "Allow",
+      "Action": "cloudwatch:GetMetricStatistics",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPuttingLifeCycleRulesIntoBucketsManagedByALiceInUseast1only",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSESThroughIambobinUswest2RegionedEnvironmentsOnly",
+      "Effect": "Allow",
+      "Action": "ses:SendEmail",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGluegetCrawlersActionsRestrictedtocertainprincipalsandregionconstraints",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:secretsmanager:eu-west-3...............Z",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

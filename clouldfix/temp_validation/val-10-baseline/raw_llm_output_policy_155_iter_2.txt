@@ -1,0 +1,130 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DENY EC2 Run Instances on specific KMS key in us-west-2 only",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"},
+        "ArnLike": {"aws:SourceArn": "arn:aws:kms:us-east-1:123456789012:key/*"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "DENY Lambda Invoke Function for document.txt from user david in eu-west-1 only",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333444:user/david"
+      }
+    },
+    {
+      "Sid": "ALLOW CloudFront Create Distribution for bucket-15 file-4.txt by service role in eu-west-1 only",
+      "Effect": "Allow",
+      "Action": "cloudfront:CreateDistribution",
+      "Resource": "arn:aws:s3:::bucket-15/file-4.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "ALLOW Glue DeleteTable action with resource arn:aws:s3:::bucket-47/file-1.txt for alice in eu-west-1 only",
+      "Effect": "Allow",
+      "Action": "glue:DeleteTable",
+      "Resource": "arn:aws:s3:::bucket-47/file-1.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "DENY RDS DeleteDBInstance if requested region is not us-west-2 OR principal AIDAI",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {"aws:RequestedRegion": "us-west-2"},
+        "ForAnyValue:StringLike": {"aws:userid": "AIDAI"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "ALLOW CodeBuild ListBuilds for bob in eu-west-1 only",
+      "Effect": "Allow",
+      "Action": "codebuild:ListBuilds",
+      "Resource": "arn:aws:s3:::bucket-3/file-3.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "eu-west-1"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "DENY Config DeleteConfigRule based on existing object tag Department equals Finance",
+      "Effect": "Deny",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringLike": {"s3:ExistingObjectTag/Department": "Finance"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "ALLOW Logs DescribeLogGroups for service role in us-west-2 only",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogGroups",
+      "Resource": "arn:aws:s3:::bucket-11/file-0.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "ALLOW KMS Disable Key operation related to db table glue tables created under specified conditions",
+      "Effect": "Allow",
+      "Action": "kms:DisableKey",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-7/table-20",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "ALLOW RDS DeleteDBInstance for Bob in us-west-2 Only",
+      "Effect": "Allow",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::bucket-35/file-7.txt",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"}
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    }
+  ]
+}
+```
+This repaired version of your original policy now includes all necessary elements such as Sid (statement ID), Effect (either Allow or Deny) Action(s), Resource(s), Principal(s), Condition(s). It also adheres strictly to syntax rules which makes it completely parsable into proper json format without needing further corrections. Please note this does assume you want these exact permissions granted / revoked according to each statement’s details mentioned above within their respective contexts! If there were additional requirements outside those listed here then they would need consideration too when creating final revised policies like ours currently do accommodate just what was initially presented herein..

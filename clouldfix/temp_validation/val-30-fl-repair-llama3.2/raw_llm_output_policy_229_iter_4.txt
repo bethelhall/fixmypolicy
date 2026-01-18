@@ -1,0 +1,668 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "allow_lambda_invoke",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "allow_sqs_receive_message",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::987654321098:user/charlie"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_sqs_send_message",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/*-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/bob"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_rds_delete_db_instance",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/*-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/blocked-user"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ec2_describe_instances",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-2/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/blocked-user"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "allow_sns_publish",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/*-forbidden-resource"
+      ],
+      "Principal": [
+        "arn:aws:iam::111222333444:role/developer-role"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "allow_lambda_create_function",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:group/demo-cluster-1/*-forbidden-resource"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ec2_run_instances",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/*-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::111222333444:user/david"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ec2_describe_volumes",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeVolumes"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:cluster/demo-cluster-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_reencrypt",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ReEncrypt"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/alice"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_disable_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DisableKey"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_enable_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:EnableKey"
+      ],
+      "Resource": [
+        "arn:aws:kafka:us-west-2:12ditAWSID:topic/demo-cluster-1/*"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_create_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_import_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ImportKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_export_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ExportKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeys"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_revoke_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:RevokeKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_generate_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_update_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:UpdateKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_delete_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:DeleteKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_copy_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CopyKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_move_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:MoveKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_recover_key",
+      "Effect": "Allow",
+      "Action": [
+        "kms:RecoverKey"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_encryption_type",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByEncryptionType"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_key_usage",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByKeyUsage"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTags"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_and_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageAndStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_and_tags",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageAndTags"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_and_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsAndStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_tags_and_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageTagsAndStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_usage_and_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsUsageAndStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_tags_and_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageTagsAndStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_usage_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsUsageStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_tags_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageTagsStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_usage_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsUsageStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_tags_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageTagsStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_usage_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsUsageStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_usage_tags_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByUsageTagsStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kms_list_keys_by_tags_usage_status",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListKeysByTagsUsageStatus"
+      ],
+      "Resource": "*",
+      "Principal": [
+        "arn:aws:iam::123456789012:role/service-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    } ] }

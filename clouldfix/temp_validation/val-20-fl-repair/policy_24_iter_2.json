@@ -1,0 +1,240 @@
+{
+  "Statement": [
+    {
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Sid": "kms"
+    },
+    {
+      "Action": "secretsmanager:GetSecretValue",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Sid": "secretsmanager"
+    },
+    {
+      "Action": "sqs:ReceiveMessage",
+      "Effect": "Allow",
+      "Resource": "authorized/arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "config:PutConfigRule",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "kms:DisableKey",
+      "Effect": "Deny",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Action": "codebuild:StartBuild",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "s3:GetObjectVersion",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "s3:GetBucketWebsite",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "kms:Encrypt",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "glue:CreateTable",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "kms:ScheduleKeyDeletion",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "cloudfront:GetDistribution",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": "cloudfront:ListDistributions",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "ec2:RunInstances",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "ec2:DescribeInstances",
+      "Effect": "Deny",
+      "Resource": "forbidden-arn:aws:kms:us-east-2:<account_id>key/<key_id>-specific",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/test-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": "guardduty:DeleteDetector",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "es:DeleteElasticsearchDomain",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "kms:DescribeKey",
+      "Effect": "Deny",
+      "Resource": "authorized/arn:aws:kms:us-east-2:<account_id>key/<key_id>/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "sagemaker:DescribeEndpoint",
+      "Effect": "Allow",
+      "Resource": "arn:aws:secretsmanager:us-east-2:<account_id>:secret:<secret_name>-<some_randomstuff>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": "kms:GenerateDataKeyWithoutPlaintext",
+      "Effect": "Allow",
+      "Resource": "arn:aws:kms:us-east-2:<account_id>key/<key_id>",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

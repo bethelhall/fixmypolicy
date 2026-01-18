@@ -1,0 +1,184 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Sid": "statement2"
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketPolicy",
+        "s3:PutBucketCors"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "iam:DeletePolicy",
+        "iam:ListRoles",
+        "iam:CreateUser"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "autoscaling:DescribeAutoScalingGroups",
+        "ec2:CreateSecurityGroup",
+        "s3:PutObject",
+        "sqs:GetQueueUrl",
+        "sagemaker:ListNotebookInstances",
+        "workspaces:RebootWorkspaces",
+        "glue:GetTable",
+        "kms:CreateGrant",
+        "kms:EnableKey",
+        "cloudformation:UpdateStack",
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "dynamodb:DeleteItem",
+        "kms:ListKeys",
+        "kms:ListGrants",
+        "kms:Encrypt",
+        "kms:RetireGrant",
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:DeleteAlias"
+      ],
+      "Resource": "arn:aws:kms:ca-central-1:xxxx:key/zzzz-forbidden-resource",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:ListKeys"
+      ],
+      "Resource": "authorized/arn:aws:secretsmanager:ca-central-1:xxxx:secret:yyyy/file.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": "authorized/arn:aws:kms:ca-central-1:xxxx:key/zzzz/file.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/admin-role",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kms:RetireGrant"
+      ],
+      "Resource": "forbidden-arn:aws:kms:ca-central-1:xxxx:key/zzzz-specific",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

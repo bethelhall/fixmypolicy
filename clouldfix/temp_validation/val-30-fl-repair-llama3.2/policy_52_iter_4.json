@@ -1,0 +1,272 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "lex:GetSession",
+        "lex:RecognizeText",
+        "lex:PutSession",
+        "lex:DeleteSession",
+        "lex:StartConversation",
+        "lex:RecognizeUtterance"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateAlias",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:s3:::bucket-46/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSAccessToGlue",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CancelKeyDeletion",
+        "kms:ReEncryptKey",
+        "kms:Decrypt",
+        "kms:Encrypt",
+        "kms:CreateKey"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-4",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMGroupAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListGroupsForUser"
+      ],
+      "Resource": "arn:aws:s3:::bucket-44/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": "arn:aws:s3:::bucket-30/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListNotebookInstances"
+      ],
+      "Resource": "arn:aws:s3:::bucket-16/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountLambdaAccess",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:UpdateFunctionCode",
+        "lambda:UpdateAlias",
+        "lambda:UpdateFunctionConfiguration",
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-7/*",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloud9AccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "cloud9:CreateEnvironmentEC2"
+      ],
+      "Resource": "arn:aws:s3:::bucket-45/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSAccessFromIPRange",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-6/*",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSSubscription",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe",
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:DeleteDatabase"
+      ],
+      "Resource": "arn:aws:s3:::bucket-17/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketLogging",
+        "kms:EnableKey"
+      ],
+      "Resource": "arn:aws:s3:::bucket-32/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AccessFromIPRange",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-8/*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSSubscription",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-16",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLexAccessToS3",
+      "Effect": "Allow",
+      "Action": [
+        "lex:PutSession"
+      ],
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-15/table-2",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountUserAccess",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueAccessToAthena",
+      "Effect": "Allow",
+      "Action": [
+        "athena:StartQueryExecution"
+      ],
+      "Resource": "arn:aws:s3:::bucket-30/*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

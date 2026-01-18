@@ -1,0 +1,114 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Alllowedtoattachpolicytouserinwestregion",
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-4/table-23",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Preventdeletionofobjectswithconditions",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Blockinstancesthatarenotrunninginspecifiedregions",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Blocksafecommunicationovernonsecurechannels",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "GrantlimitedviewingrightsforEUusers",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLocation",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-3",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Preventsuppressionoftagsfrombuckets",
+      "Effect": "Deny",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:s3:::bucket-28/file-9.txt"
+    },
+    {
+      "Sid": "Limitaccessbasedonsourceipaddress",
+      "Effect": "Deny",
+      "Action": ["iam:CreateUser", "iam:CreateLoginProfile"],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "Grantspecificpermissionstoserviceprincipals",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::bucket-45/file-1.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      }
+    },
+    {
+      "Sid": "Grantlimitedviewingrightsforeuusers",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-13/table-1",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allowinstancescreationwithcertainconditions",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-19/table-17",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your requested output in proper json format with corrections applied based on requirements set out above. Please note Sid values have been changed for clarity but they can remain same if you want them identical to original ones. Also please ensure all resource ARNs match actual resources within your environment otherwise access control will not work correctly. This has also assumed service role should only attach policies when acting on behalf of another user from west region which might need further refinement depending upon exact business rules involved here. Lastly condition checks like IP address restrictions etc., may vary widely between different environments hence these were kept generic according to current settings mentioned without making assumptions about specific network configurations present at customer end. Always test such changes thoroughly avoiding potential disruptions due incorrect permissions setup leading into production scenarios where data integrity could potentially get compromised..

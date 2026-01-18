@@ -1,0 +1,155 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "1",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:ListFoundationModels",
+        "bedrock:GetFoundationModel",
+        "bedrock:TagResource",
+        "bedrock:UntagResource",
+        "bedrock:ListTagsForResource",
+        "bedrock:CreateModelInvocationJob",
+        "bedrock:GetModelInvocationJob",
+        "bedrock:ListModelInvocationJobs",
+        "bedrock:StopModelInvocationJob",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:ListBucket"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "allow_56676c4d",
+      "Effect": "Allow",
+      "Action": "ec2:CreateVolume",
+      "Resource": [
+        "arn:aws:s3:::bucket-28/file-0.txt",
+        "arn:aws:s3:::bucket-28/file-1.txt",
+        "arn:aws:s3:::bucket-28/file-2.txt",
+        "arn:aws:s3:::bucket-28/file-3.txt",
+        "arn:aws:s3:::bucket-28/file-4.txt",
+        "arn:aws:s3:::bucket-28/file-5.txt",
+        "arn:aws:s3:::bucket-28/file-6.txt",
+        "arn:aws:s3:::bucket-28/file-7.txt",
+        "arn:aws:s3:::bucket-28/file-8.txt",
+        "arn:aws:s3:::bucket-28/file-9.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_99677b4f",
+      "Effect": "Allow",
+      "Action": "glue:GetJob",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-5/table-19",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_460a2b3b",
+      "Effect": "Allow",
+      "Action": "kms:DisableKey",
+      "Resource": "arn:aws:athena:us-east-1:123456789012:workgroup/wg-67",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_4e792609",
+      "Effect": "Allow",
+      "Action": "redshift:DescribeClusters",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-11/table-23",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a140a52c",
+      "Effect": "Allow",
+      "Action": "athena:GetQueryResultsStream",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-15",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a7217240",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "arn:aws:s3:::bucket-47/file-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_1998d4c4",
+      "Effect": "Deny",
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "deny_b8def886",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ad5635ae",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::987654321098:user/charlie",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "deny_7090fc3b",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

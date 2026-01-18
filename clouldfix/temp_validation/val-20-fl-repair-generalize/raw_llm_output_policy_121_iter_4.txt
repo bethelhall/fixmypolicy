@@ -1,0 +1,138 @@
+
+        {
+  "Statement": [
+    {
+      "Sid": "AllowAccessFromAPIGateway",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*"
+    },
+    {
+      "Sid": "AllowAliceToReadLogsInUsWest2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowBobToReadAndWriteFilesInUsEast1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleToReadTrailsInUsWest2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "cloudtrail:GetTrailStatus",
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleToReadTrailsInUsEast1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "s3:GetObjectVersion",
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowServiceRoleToReadTrailsInUsEast1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "sagemaker:ListTrainingJobs",
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAllOtherActionsOnMyBucket",
+      "Effect": "Deny",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "*",
+      "Resource": "arn:aws:s3:::my-bucket/*"
+    },
+    {
+      "Sid": "DenyAllOtherActionsOnDeniedBucket",
+      "Effect": "Deny",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "*",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*"
+    },
+    {
+      "Sid": "DenyAllOtherActionsOnDifferentMyBucket",
+      "Effect": "Deny",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "*",
+      "Resource": "arn:aws:s3:::different-my-bucket/*"
+    },
+    {
+      "Sid": "DenyAllOtherActionsOnMyBucketForbidden",
+      "Effect": "Deny",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "*",
+      "Resource": "arn:aws:s3:::my-bucket-forbidden/*"
+    },
+    {
+      "Sid": "DenyAllOtherActionsOnCompletelyDifferentBucket",
+      "Effect": "Deny",
+      "NotPrincipal": {
+        "AWS": "arn:aws:iam::123456789012:root"
+      },
+      "Action": "*",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*"
+    }
+  ],
+  "Version": "2012-10-17"
+}
+
+        |]

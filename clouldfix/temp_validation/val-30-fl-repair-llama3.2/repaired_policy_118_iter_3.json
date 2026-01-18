@@ -1,0 +1,464 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCodeBuildServiceRoleToS3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "s3:*"
+    },
+    {
+      "Sid": "AllowAliceToS3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "s3:*"
+    },
+    {
+      "Sid": "AllowAliceToCloudFront",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "cloudfront:*"
+    },
+    {
+      "Sid": "AllowAliceToEC2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "ec2:*"
+    },
+    {
+      "Sid": "AllowAliceToRDS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "rds:*"
+    },
+    {
+      "Sid": "AllowAliceToKinesis",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "kinesis:*"
+    },
+    {
+      "Sid": "AllowAliceToCloudWatch",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "cloudwatch:*"
+    },
+    {
+      "Sid": "AllowAliceToGlue",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "glue:*"
+    },
+    {
+      "Sid": "AllowAliceToSQS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": "sqs:*"
+    },
+    {
+      "Sid": "AllowAliceToDeleteS3Objects",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Resource": "*",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "s3:GetBucketCors"
+      ]
+    },
+    {
+      "Sid": "AllowForbiddenCodebuildServiceRoleToS3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/forbidden-codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "s3:*"
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToS3",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": [
+        "s3:PutObject",
+        "s3:PutObjectTagging",
+        "s3:PutBucketCors",
+        "s3:GetBucketCors"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToSQS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "sqs:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToDynamoDB",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "dynamodb:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToEC2",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "ec2:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToLambda",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "lambda:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToCloudWatch",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "cloudwatch:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToGlue",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "glue:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToSNS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "sns:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToKinesis",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "kinesis:*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToConfig",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "config:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToRDS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "rds:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToEC2",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "ec2:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToLambda",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "lambda:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToCloudWatch",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "cloudwatch:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToGlue",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "glue:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToSNS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "sns:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToKinesis",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "kinesis:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToConfig",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "config:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToRDS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "rds:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToEC2",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "ec2:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToLambda",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "lambda:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToCloudWatch",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "cloudwatch:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToGlue",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "glue:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToSNS",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "sns:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceDepartmentToKinesis",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Resource": "*",
+      "Action": "kinesis:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

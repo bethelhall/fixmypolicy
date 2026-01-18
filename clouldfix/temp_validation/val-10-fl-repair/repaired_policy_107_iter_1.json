@@ -1,0 +1,79 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "autoscaling:CreateAutoScalingGroup"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*"
+      ]
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*-specific"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "iam:CreateUser"
+      ],
+      "Resource": [
+        "arn:aws:autoscaling:*:*:autoScalingGroup/*-forbidden-resource"
+      ],
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "authorized/arn:aws:autoscaling:*:*:autoScalingGroup/*/file.txt"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AuxilliaryInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "rds:CreateDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/temp-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

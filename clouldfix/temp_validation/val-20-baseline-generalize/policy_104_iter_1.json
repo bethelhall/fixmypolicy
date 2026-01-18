@@ -1,0 +1,236 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "s3:ListBucket",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<my-bucket>"
+      ],
+      "Sid": "AllowListDirectories",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyMkdir",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::<my-bucket>/*/"
+    },
+    {
+      "Sid": "DenyListFilesInSubDirectory",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "AllowReadWirteInSubDirectory",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionAcl",
+        "s3:PutObjectVersionTagging"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/data/partner_2/data/incoming/*",
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "AllowOnlyReadInADifferentDirectory",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/data/partner_2/data/outgoing/*",
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateDistribution"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s0:::<my-bucket>/*/",
+        "arn:aws:s1:::<my-bucket>/*/",
+        "arn:aws:s2:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s4:::<my-bucket>/*/",
+        "arn:aws:s5:::<my-bucket>/*/",
+        "arn:aws:s6:::<my-bucket>/*/",
+        "arn:aws:s7:::<my-bucket>/*/",
+        "arn:aws:s8:::<my-bucket>/*/",
+        "arn:aws:s9:::<my-bucket>/*/"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sqs:RemovePermission"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "glue:BatchGetJobs"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetAccessKeyLastUsed"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/",
+        "arn:aws:s3:::<my-bucket>/*/"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "arn:aws:s3:::forbidden-<my-bucket>/*/",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/forbidden-",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketVersioning"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

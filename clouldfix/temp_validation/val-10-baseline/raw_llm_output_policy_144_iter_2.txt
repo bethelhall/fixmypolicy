@@ -1,0 +1,142 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ALLOW_LIST_IDENTITIES",
+      "Effect": "Allow",
+      "Action": "ses:ListIdentities",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-10/table-16",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:role/service-role"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_PUT_OBJECT_ACL",
+      "Effect": "Deny",
+      "Action": "s3:PutObjectAcl",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "ORGID"
+        },
+        "StringNotEquals": {
+          "aws:PrincipalAccount": "ACCOUNTID"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:role/admin-role"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_AUTHORIZE_SECURITY_GROUP",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-9/table-22",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:user/alice"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_DELETE_APPLICATION",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:DeleteApplication",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-14/table-17",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:user/bob"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_ATTACH_USER_POLICY",
+      "Effect": "Allow",
+      "Action": "iam:AttachUserPolicy",
+      "Resource": "arn:aws:s3:::bucket-2/file-4.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:PrincipalAccount": "ACCOUNTID"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:role/service-role"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_BLOCKED_ACTIONS",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketTagging",
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "ORGID"
+        },
+        "StringNotEquals": {
+          "aws:PrincipalAccount": "ACCOUNTID"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:user/blocked-user"
+        }
+      }
+    },
+    {
+      "Sid": "ALLOW_DESCRIBE_ELASTICSEARCH_DOMAINS",
+      "Effect": "Allow",
+      "Action": "es:DescribeElasticsearchDomains",
+      "Resource": "arn:aws:s3:::bucket-5/file-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:user/bob"
+        }
+      }
+    },
+    {
+      "Sid": "DENY_GET_BUCKET_TAGGING",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketTagging",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalAccount": "ACCOUNTID"
+        },
+        "ArnLike": {
+          "aws:PrincipalARN": "arn:aws:iam::123456789012:user/alice"
+        }
+      }
+    },
+    {
+      "Sid": "UNAUTHORIZED_ACCESS_DENIED",
+      "Effect": "Deny",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::unauth-bucket/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:PrincipalAccount": "ACCOUNTID"
+      }
+    }
+  ]
+}
+```  
+This is your output in json format without explanation of how it was repaired according to requirements.`

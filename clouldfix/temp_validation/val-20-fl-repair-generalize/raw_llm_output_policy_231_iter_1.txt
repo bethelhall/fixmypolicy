@@ -1,0 +1,144 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:TagResource"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:ScheduleKeyDeletion",
+        "kms:PutKeyPolicy"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:DeleteAccessKey",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-0/table-8",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:glue:us-east-1:123456789012:table/db-3/table-13",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "not-demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:PurgeQueue",
+      "Resource": "arn:aws:kms:*:486555357186:key/file-17-10.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "not-demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:PutBucketWebsite",
+      "Resource": "arn:aws:s3:::bucket-3/file-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "not-demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:kms:*:486555357186:key/file-19-10.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "not-demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetDatabase",
+      "Resource": "arn:aws:kms:*:486555357186:key/file-9-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "not-demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "kms:UpdateKeyDescription",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:kms:*:486555357186:key/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    }
+  ]
+}

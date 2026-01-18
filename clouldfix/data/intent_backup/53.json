@@ -1,0 +1,124 @@
+What I'm trying to do:
+
+
+
+
+From a GitHub Action, create/update a CloudFormation stack with a template
+
+
+Use the CloudFormation template to generate the needed resources for fleet provisioning with IoT Greengrass (
+https://docs.aws.amazon.com/greengrass/v2/developerguide/fleet-provisioning-setup.html
+):
+
+
+
+
+token exchange IAM role
+
+
+policy for that role
+
+
+role alias (got stuck here)
+
+
+not there yet: a fleet provisioning template
+
+
+
+
+
+
+
+
+When the stack gets created, it hits 
+CREATE_FAILED
+ on the 
+AWS::IoT::RoleAlias
+:
+
+
+Resource handler returned message: "Access denied for operation 'DescribeRoleAlias'." (RequestToken: *****, HandlerErrorCode: AccessDenied)
+
+
+
+I see the role alias in the IoT Core console, and I see the successful 
+CreateRoleAlias
+ call in CloudTrail, but something around the permissions of 
+DescribeRoleAlias
+ appears to be lacking.
+
+
+The policy in use by the GitHub Action:
+
+
+
+
+
+
+The CloudFormation template:
+
+
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  MyGreengrassV2TokenExchangeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - credentials.iot.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  MyGreengrassV2TokenExchangeRoleAccess:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: MyGreengrassV2TokenExchangeRoleAccess
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - logs:DescribeLogStreams
+              - s3:GetBucketLocation
+            Resource: "*"
+      Roles:
+        - !Ref MyGreengrassV2TokenExchangeRole
+  MyGreengrassCoreTokenExchangeRoleAlias:
+    Type: AWS::IoT::RoleAlias
+    Properties:
+      RoleArn: !GetAtt MyGreengrassV2TokenExchangeRole.Arn
+      RoleAlias: MyGreengrassCoreTokenExchangeRoleAlias
+
+
+
+Additional notes:
+
+
+
+
+Is there some way for me to view more details about why 
+DescribeRoleAlias
+ is being denied?
+
+
+I get the same exact failure when I remove 
+iot:DescribeRoleAlias
+ from the policy used by the GitHub Action; its presence doesn't seem to have any effect.
+
+
+Is this related to 
+iam:PassRole
+?
+
+
+
+
+What's missing?

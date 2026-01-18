@@ -1,0 +1,148 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": "ssm:SendCommand",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": "ses:GetIdentityDkimAttributes",
+      "Resource": "arn:aws:ec2:*:*:instance/file-13-11.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "authorized/arn:aws:ec2:*:*:instance/*/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Action": "workspaces:DescribeWorkspaceDirectories",
+      "Resource": "arn:aws:ec2:*:*:instance/file-18-10.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Action": "lambda:DeleteFunction",
+      "Resource": "arn:aws:ec2:*:*:instance/file-25-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:ec2:*:*:instance/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "forbidden-arn:aws:ec2:*:*:instance/*-specific",
+      "Condition": {
+        "StringEquals": {
+          "ssm:resourceTag/CreatedBy": [
+            "EC2 Image Builder"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Allow",
+      "Action": "workspaces:ModifyWorkspaceProperties",
+      "Resource": "arn:aws:ec2:*:*:instance/file-16-9.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Allow",
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "arn:aws:ec2:*:*:instance/file-37-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Allow",
+      "Action": "iam:RemoveUserFromGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-15-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    }
+  ]
+}

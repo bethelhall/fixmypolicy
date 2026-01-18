@@ -1,0 +1,996 @@
+
+        {
+  "Statement": [
+    {
+      "Sid": "DenyanyEC2operationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyanyEC2operationSCP2",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_8a880a93",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_c9df2463",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:ec2:*:*:volume/file-32-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_3a82ee3b",
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-17-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_06b103f6",
+      "Effect": "Allow",
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:ec2:*:*:instance/file-46-18.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_008e7ad3",
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:ec2:*:*:volume/file-31-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_b056c3cf",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "deny_80fe2931",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:ec2:*:*:volume/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Sid": "deny_fff50c87",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:ec2:*:*:instance/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Sid": "deny_d7161a46",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:ec2:*:*:instance/*-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "deny_6db87b7f",
+      "Effect": "Deny",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": "forbidden-arn:aws:ec2:*:*:volume/*-specific",
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "allow_8a880a93_var0",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var1",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var2",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var3",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var4",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var5",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var6",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var7",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var8",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var9",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ],
+  "Version": "2012-10-17"
+}
+
+        FAULT LOCALIZATION REPORT TO CHECK WHICH REQUIREMENTS ARE BEING INCORRECTLY ALLOWED/DENIED AND FIX:
+        POLICY FAULT LOCALIZATION REPORT
+==================================================
+
+Policy: repaired_policy_56_iter_3.json
+Total Misclassified Requests: 16
+
+SHOULD BE ALLOWED BUT EXPLICITLY DENIED
+--------------------------------------------------
+These requests should be ALLOWED but are DENIED by the following statements:
+
+Request: allow_87ae5cc8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-12.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_5ec23e7d_combo_2
+  Action: sns:Subscribe
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-11.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f3b485e_combo_2
+  Action: dynamodb:GetItem
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-14.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f904689_combo_2
+  Action: ec2:DeleteSecurityGroup
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-9.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_d659243a_combo_2
+  Action: s3:DeleteObject
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-36-14.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_34cffd1b_combo_2
+  Action: sqs:ListQueues
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var0_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-0.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var1_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-1.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var2_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-2.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var3_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-3.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var4_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-4.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var5_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-5.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var6_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-6.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var7_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-8.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var9_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-9.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Statement": [
+    {
+      "Sid": "DenyanyEC2operationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyanyEC2operationSCP2",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_8a880a93",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_c9df2463",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:ec2:*:*:volume/file-32-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_3a82ee3b",
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-17-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "allow_06b103f6",
+      "Effect": "Allow",
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "arn:aws:ec2:*:*:instance/file-46-18.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_008e7ad3",
+      "Effect": "Allow",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:ec2:*:*:volume/file-31-15.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "allow_b056c3cf",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:ec2:*:*:volume/file-8-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "deny_80fe2931",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:ec2:*:*:volume/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Sid": "deny_fff50c87",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:ec2:*:*:instance/*-forbidden-resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Sid": "deny_d7161a46",
+      "Effect": "Deny",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "forbidden-arn:aws:ec2:*:*:instance/*-specific",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "deny_6db87b7f",
+      "Effect": "Deny",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": "forbidden-arn:aws:ec2:*:*:volume/*-specific",
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Sid": "allow_8a880a93_var0",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var1",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var2",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var3",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var4",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var5",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var6",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var7",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var8",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_8a880a93_var9",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    }
+  ],
+  "Version": "2012-10-17"
+}
+
+        FAULT LOCALIZATION REPORT TO CHECK WHICH REQUIREMENTS ARE BEING INCORRECTLY ALLOWED/DENIED AND FIX:
+        POLICY FAULT LOCALIZATION REPORT
+==================================================
+
+Policy: repaired_policy_56_iter_3.json
+Total Misclassified Requests: 16
+
+SHOULD BE ALLOWED BUT EXPLICITLY DENIED
+--------------------------------------------------
+These requests should be ALLOWED but are DENIED by the following statements:
+
+Request: allow_87ae5cc8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-12.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_5ec23e7d_combo_2
+  Action: sns:Subscribe
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-15-11.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f3b485e_combo_2
+  Action: dynamodb:GetItem
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-46-14.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_9f904689_combo_2
+  Action: ec2:DeleteSecurityGroup
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-29-9.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_d659243a_combo_2
+  Action: s3:DeleteObject
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-36-14.txt
+  Principal: arn:aws:iam::123456789012:role/service-role
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-east-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_34cffd1b_combo_2
+  Action: sqs:ListQueues
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-44-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'eu-west-1'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var0_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-0.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var1_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-1.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var2_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-2.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var3_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-3.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var4_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-4.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var5_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-5.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var6_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-6.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var7_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-7.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var8_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-8.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+Request: allow_87ae5cc8_var9_combo_2
+  Action: kms:GenerateDataKey
+  Resource: arn:aws:secretsmanager:eu-west-2:#NUMBER#:secret:aws/transfer/file-14-9.txt
+  Principal: arn:aws:iam::123456789012:user/alice
+  Condition: {'StringEquals': {'aws:RequestedRegion': 'us-west-2'}}
+  Expected: allow, Got: deny
+  Responsible Statements: statement8, statement9, statement10, statement11
+
+        Return ONLY the complete corrected policy as valid JSON. No explanations, no markdown formatting.
+
+        CORRECTED POLICY:
+        {
+  "Statement": [
+    {
+      "Sid": "DenyanyEC2operationSCP1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyanyEC2operationSCP2",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Team": "true"
+        }
+      }
+    },
+    {
+      "Sid": "PreventTagRemoval",
+      "Effect": "Deny",
+      "Action": "ec2:DeleteTags",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": [
+            "Name",
+            "Team"
+          ]
+        },
+        "StringNotEqualsIfExists": {
+          "aws:ResourceTag/AllowTagRemoval": "true"
+        }
+      }
+    },
+    {
+      "Sid": "allow_8a880a93",
+      "Effect": "Allow",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "arn:aws:ec2:*:*:instance/file-7-1.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_c9df2463",
+      "Effect": "Allow",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:ec2:*:*:volume/file-32-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:TagKeys": "not-['Name', 'Team']"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "allow_3a82ee3b",
+      "Effect": "Allow",
+      "Action": "iam:GetGroup",
+      "Resource": "arn:aws:ec2:*:*:instance/file-17-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user

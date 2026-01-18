@@ -1,0 +1,111 @@
+{
+  "Requests": [
+    {
+      "id": "allow_passrole_prod_role_by_user_ec2_operator",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/EC2AppRole-Prod"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/ec2-operator",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "allow_passrole_dev_role_by_role_operations_team",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/EC2AppRole-Dev"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/OperationsTeam",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "allow_passrole_webserver_role_with_path_by_user_jane",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/app/servers/web/EC2WebServerRole"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/jane",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "allow_passrole_ssm_managed_instance_role_by_role_ec2_admins",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/service-role/EC2SSMRole"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/EC2Admins",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "allow_passrole_backup_role_by_assumed_role_console_session",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/EC2BackupRole"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/EC2Admins/AWSConsoleSession",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "allow_passrole_prod_path_role_by_user_bob",
+      "Effect": "allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::123456789012:role/app/prod/EC2ProdRole"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ec2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "id": "deny_cognito_get_credentials_for_identity_by_ec2_operator",
+      "Effect": "deny",
+      "Action": [
+        "cognito-identity:GetCredentialsForIdentity"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/ec2-operator"
+    }
+  ]
+}

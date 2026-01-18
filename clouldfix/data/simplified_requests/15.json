@@ -1,0 +1,140 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_list_via_accesspoint_admin",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_s3_list_via_accesspoint_staff",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/staff"
+      },
+      {
+        "id": "test_s3_get_object_via_accesspoint_admin",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint/object/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_s3_put_object_via_accesspoint_staff",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint/object/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/staff"
+      },
+      {
+        "id": "test_s3_direct_bucket_access_admin",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_s3_direct_bucket_access_staff",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::admin-only-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/staff"
+      },
+      {
+        "id": "test_s3_delete_object_accesspoint_admin",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint/object/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_iot_create_thing_admin",
+        "Effect": "allow",
+        "Action": [
+          "iot:CreateThing"
+        ],
+        "Resource": [
+          "arn:aws:iot:us-east-1:123456789012:thing/test-thing"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/admin"
+      },
+      {
+        "id": "test_iam_pass_role_to_s3",
+        "Effect": "deny",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": [
+          "arn:aws:iam::123456789012:role/s3-access-role"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/staff",
+        "Condition": {
+          "StringEquals": {
+            "iam:PassedToService": "s3.amazonaws.com"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_access_point_policy",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetAccessPointPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:us-east-1:123456789012:accesspoint/admin-only-accesspoint"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/staff"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 20.0,
+      "total_requests": 10,
+      "correct": 2,
+      "incorrect": 8
+    },
+    "repaired_policy": {
+      "accuracy": 20.0,
+      "total_requests": 10,
+      "correct": 2,
+      "incorrect": 8
+    }
+  },
+  "metadata": {
+    "file_number": "15",
+    "user_intent": "I have a bucket which restricts access to it only through access policy. I see that it is not working as expected. Here is the bucket policy -\n\n\n\nThe access point has the following policy -\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Statement\": [\n        {\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"AWS\": \"arn:aws:iam:: xxxxxxxxxxxx:user/admin\"\n            },\n            \"Action\": \"s3:ListBucket\",\n            \"Resource\": \"arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint\"\n        }\n    ]\n}\n\n\n\nMy intent is to restrict the bucket only to the admin user.  When I list the objects in the bucket 'admin-only-accesspoint', it is working fine.\n\naws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile admin \n\nBut I am also able to do list objects with another user 'staff'.\n\naws s3api list-objects --bucket arn:aws:s3:us-east-1: xxxxxxxxxxxx:accesspoint/admin-only-accesspoint --profile staff \n\n\nJust wondering why the access is not restricted to admin user.",
+    "timestamp": "2025-08-19T17:38:56.802596"
+  }
+}

@@ -1,0 +1,322 @@
+{
+  "Version": "2012-10-17",
+  "Id": "Cross-account account A to account B SNS, and Cloudwatch encryption key",
+  "Statement": [
+    {
+      "Sid": "Allow access for AWS services",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access for SNS service",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access for CloudWatch service",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access for specific AWS accounts",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::111222333:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Allow access for specific AWS accounts (reverse)",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Allow access for SNS service (reverse)",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Allow access for CloudWatch service (reverse)",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for unauthorized AWS accounts",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for unauthorized SNS service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for unauthorized CloudWatch service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for SQS service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "sqs.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for RDS service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "rds.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for Lambda service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for DynamoDB service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "dynamodb.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for Athena service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "athena.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for EC2 service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "kms:CallerAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for S3 service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for Glue service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "glue.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for GuardDuty service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "guardduty.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access for X-Ray service",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "xray.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    }
+  ]
+}

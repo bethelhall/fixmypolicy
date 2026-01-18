@@ -1,0 +1,185 @@
+{
+  "Version": "2012-10-17",
+  "Id": "auto-sns-1",
+  "Statement": [
+    {
+      "Sid": "Allow access through SNS for all principals in the account that are authorized to use SNS",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "kms:Decrypt",
+        "kms:GenerateDataKey*",
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "xxxxxxxxxxxx",
+          "kms:ViaService": "sns.us-east-1.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "Allow direct access to key metadata to the account",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+      },
+      "Action": [
+        "kms:Describe*",
+        "kms:Get*",
+        "kms:List*",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow access to specific actions and resources",
+      "Effect": "Allow",
+      "Action": [
+        "route53:ListHostedZones",
+        "s3:PutBucketLifecycle",
+        "ec2:DeleteSecurityGroup",
+        "ses:SendRawEmail",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "s3:ListObjectVersions",
+        "s3:GetBucketWebsite",
+        "sqs:TagQueue"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-1/file-2.txt",
+        "arn:aws:glue:us-east-1:123456789012:table/db-3/table-3",
+        "arn:aws:glue:us-east-1:123456789012:table/db-12/table-4",
+        "arn:aws:s3:::bucket-31/file-0.txt",
+        "arn:aws:s3:::bucket-32/file-0.txt",
+        "arn:aws:s3:::bucket-44/file-8.txt",
+        "arn:aws:s3:::bucket-22/file-8.txt",
+        "arn:aws:s3:::bucket-27/file-2.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user",
+          "arn:aws:iam::926227334075:root",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::461448013940:root",
+          "arn:aws:iam::696662780613:root"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "eu-west-1",
+            "us-west-2",
+            "us-east-1"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Deny access to specific actions and resources",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem",
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-2/file-2.txt",
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::denied-bucket-3/file-3.txt",
+        "arn:aws:s3:::denied-bucket-4/file-4.txt",
+        "arn:aws:kms:us-east-1:123456789012:key/09348485-1234-5678-90ab-cdef12345678",
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::xxxxxxxxxxxx:root",
+          "arn:aws:iam::123456789012:role/forbidden-role",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::555666777888:user/unauthorized",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::999888777666:root"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": [
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx",
+            "xxxxxxxxxxxx"
+          ],
+          "kms:ViaService": [
+            "sns.us-east-1.amazonaws.com",
+            "sns.us-east-1.amazonaws.com",
+            "sns.us-east-1.amazonaws.com",
+            "sns.us-east-1.amazonaws.com",
+            "sns.us-east-1.amazonaws.com",
+            "sns.us-east-1.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "Allow access to specific actions and resources",
+      "Effect": "Allow",
+      "Action": [
+        "kms:CancelKeyDeletion",
+        "iam:ListAttachedRolePolicies",
+        "logs:CreateLogGroup",
+        "ec2:DeleteSecurityGroup",
+        "codecommit:GetRepository",
+        "cloudwatch:ListMetrics"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name/file-18-17.txt",
+        "arn:aws:s3:::bucket-name/file-23-14.txt",
+        "arn:aws:s3:::bucket-name/file-11-12.txt",
+        "arn:aws:s3:::bucket-name/file-34-3.txt",
+        "arn:aws:s3:::bucket-name/file-17-5.txt",
+        "arn:aws:s3:::bucket-name/file-47-17.txt"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:role/test-role",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::555666777888:role/cross-account-role",
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2",
+            "eu-west-1",
+            "eu-west-1",
+            "us-west-2",
+            "eu-west-1",
+            "eu-west-1"
+          ],
+          "AWS:SourceArn": [
+            "arn:aws:cloudfront::1234567890:distribution/asdf",
+            "arn:aws:cloudfront::1234567890:distribution/asdf",
+            "arn:aws:cloudfront::1234567890:distribution/asdf",
+            "arn:aws:cloudfront::1234567890:distribution/asdf",
+            "arn:aws:cloudfront::1234567890:distribution/asdf",
+            "arn:aws:cloudfront::1234567890:distribution/asdf"
+          ]
+        }
+      }
+    }
+  ]
+}

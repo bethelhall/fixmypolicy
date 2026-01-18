@@ -1,0 +1,79 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "execute-api:Invoke",
+      "Resource": "arn:aws:execute-api:eu-central-1:012345678901:someid/prod/POST/resource",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceOrgPaths": "o-orgid/r-rootid/ou-firstlevel/ou-secondlevel"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "codedeploy:ListDeployments",
+        "route53:ChangeResourceRecordSets",
+        "s3:GetBucketLocation",
+        "s3:GetBucketLogging",
+        "s3:CreateBucket",
+        "kms:ListAliases",
+        "kms:EnableKey",
+        "ec2:RunInstances",
+        "es:CreateElasticsearchDomain",
+        "iam:DeleteUser",
+        "sns:CreateTopic",
+        "sns:Publish",
+        "guardduty:GetDetector",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "sqs:CreateQueue",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:execute-api:eu-central-1:012345678901:someid/prod/POST/resource",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": [
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "iam:CreateUser",
+        "ec2:RunInstances",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "sns:Subscribe",
+        "lambda:CreateFunction",
+        "lambda:InvokeFunction",
+        "sqs:SendMessage"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/|arn:aws:s3:::denied-bucket-1/|arn:aws:s3:::denied-bucket-2/|arn:aws:s3:::denied-bucket-3/|arn:aws:s3:::denied-bucket-4/|arn:aws:s3:::denied-bucket-5/|arn:aws:s3:::denied-bucket-6/|arn:aws:s3:::denied-bucket-7/",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceOrgPaths": "o-orgid/r-rootid/ou-firstlevel/ou-secondlevel"
+        }
+      }
+    }
+  ]
+}

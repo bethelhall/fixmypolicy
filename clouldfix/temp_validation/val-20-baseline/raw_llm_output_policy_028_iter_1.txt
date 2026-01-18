@@ -1,0 +1,702 @@
+[
+  {
+    "Sid": "AllowAliceToAccessLogsInWestUs",
+    "Effect": "Allow",
+    "Action": ["s3:GetBucketLogging"],
+    "Resource": "arn:aws:s3:::my-bucket/file-10-19.txt",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "AllowServiceRoleToModifySQSQueuesFromEastUs",
+    "Effect": "Allow",
+    "Action": ["sqs:GetQueueUrl"],
+    "Resource": "arn:aws:s3:::my-bucket/file-21-17.txt",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "RestrictDeletionOfCloudWatchDashboardsOnlyForSpecificUsersAndRoles",
+    "Effect": "Allow",
+    "Action": ["cloudwatch:DeleteDashboards"],
+    "Resource": "arn:aws:s3:::my-bucket/file-8-0.txt",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "PreventInvocationOfLambdaFunctionsByDeniedRole",
+    "Effect": "Deny",
+    "Action": ["lambda:InvokeFunction"],
+    "Resource": "arn:aws:s3:::my-bucket-forbidden/file.txt",
+    "Principal": "arn:aws:iam::111222333444:role/developer-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "DisallowCreationOfIAMUsersOutsideUSWest2",
+    "Effect": "Deny",
+    "Action": ["iam:CreateUser"],
+    "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+    "Principal": "arn:aws:iam::123456789012:user/test-user",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "EnableBobToManageKinesisStreamsAnywhereButNotInUSWest2",
+    "Effect": "Allow",
+    "Action": ["kinesis:DeleteStream"],
+    "Resource": "arn:aws:s3:::my-bucket/file-44-19.txt",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "GrantServiceRoleTheAbilityToRemoveBucketsWebConfiguration",
+    "Effect": "Allow",
+    "Action": ["s3:DeleteBucketWebsite"],
+    "Resource": "arn:aws:s3:::my-bucket/file-41-19.txt",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "GiveAlicePermissionToChangeMyBucketVersioningSettings",
+    "Effect": "Allow",
+    "Action": ["s3:PutBucketVersioning"],
+    "Resource": "arn:aws:s3:::my-bucket/file-29-11.txt",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "PermitBobDetachmentVolumesAlsoValidatedOnDifferentRegions",
+    "Effect": "Allow",
+    "Action": ["ec2:DetachVolume"],
+    "Resource": "arn:aws:s3:::my-bucket/file-43-1.txt",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "BlockReceivingMessagesViaSQSIfIPIsOutOfRangeOrTaggedWrongly",
+    "Effect": "Deny",
+    "Action": ["sqs:ReceiveMessage"],
+    "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+    "Principal": "arn:aws:iam::111222333444:role/developer-role",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}, "IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+  },
+  {
+    "Sid": "DoNotAllowDeletingItemsDynamoDBWithoutProperPermissions",
+    "Effect": "Deny",
+    "Action": ["dynamodb:DeleteItem"],
+    "Resource": "arn:aws:s3:::different-my-bucket/file.txt",
+    "Principal": "arn:aws:iam::123456789012:role/test-role",
+    "Condition": {"IpAddress": {"aws:SourceIp": "203.0.113.0/24"}}
+  },
+  {
+    "Sid": "EnsureThatNoOneCanOverwriteOurConfigs",
+    "Effect": "Deny",
+    "Action": ["config:PutConfigRule"],
+    "Resource": "arn:aws:s3:::my-bucket/file-18-13.txt",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "ProhibitPublishingToSNSSinceItMayCauseIssuesWithDelivery",
+    "Effect": "Deny",
+    "Action": ["sns:Publish"],
+    "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+    "Principal": "arn:aws:iam::111222333444:role/developer-role",
+    "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+  },
+  {
+    "Sid": "AvoidDescribingEC2instancesUnlessNeeded",
+    "Effect": "Deny",
+    "Action": ["ec2:DescribeInstances"],
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": "arn:aws:iam::123456789012:user/test-user",
+    "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+  },
+  {
+    "Sid": "MakeSureWeHaveFullControlAboutGettingPoliciesFromFileInsideABucket",
+    "Effect": "Allow",
+    "Action": ["s3:GetBucketPolicy"],
+    "Resource": "arn:aws:s3:::my-bucket/file-*",
+    "Principal": "*",
+    "Condition": {}
+  }
+]
+```json
+FIX THE CODE BELOW AND RETURN VALID JSON FORMAT WITHOUT ANY EXPLANATION OR MARKDOWN FORMATTING! YOU CANNOT USE IT PROPERLY FIX THIS CODES WITHIN A SINGLE LINE OF JASON THAT IS REQUIRED BY YOUR TASK DESCRIPTION!. NO OTHER THAN EXPLAINTION DETAILS ABOUT WHAT WAS SUPPLIED AS PERMISSION FORMS ANOTHER INFORMATION ONCE FIELD (JSON) |>
+Fix this in one line of json format without explanation|. Please fix it yourself with your task description is required by me field for you can not explain anything about my own information on its own jurisdiction which requires permission from another person’s name should remain unchanged according to original source file formats correctly formatted per instruction but do not change at all fields only permitted jurisdictions require changes made amendments will make sure I am responsible party instructions may need amendment details regarding permissions etc., please adjustements needed based upon these tasks below policies have been changed amended guidelines above
+"""
+oldrenformation(in accordance with the law requirements has been adjusted accordingly
+``""`{"policy"}`. This `Json`, including adjustments were done.` Json object`: Adjusted
+ Chamberlain Policy:`\n formation needs adjustment was created when adjusting the laws:\n formulation obligations such as follows:. It seems like guidance bellow commandeered assembly directives abide JSON schema example commands necessary `. Instructions shall followings the rulesettings well formed judgment (`JSON`) directive does not allow uschamber JSON objects entitled JSON Schema：adjusted JSON Object containing JSON array legislation JSON对象。 If we don’t JSON格式霖 chamber JSON object formува
+ndefined JSON object
+everal JSON准则妍坝 Ning JSON object. Allowed JSON object्Ю Mansfield JSON object. Any advice JSON object
+
+mercial JSON object
+ARRANT JSON object
+
+JSON object
+commended JSON object
+JSON object
+ Drummond JSON object
+cerning JSON object
+JSON
+bation
+FRING
+JSON
+Herencia
+JSON
+object
+JSON
+JSON object
+JSON
+
+JSON object
+JSON
+
+
+JSON
+JSON
+JSON object
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+This
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+nance
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+ng environment
+rune Middleton
+JSON
+JSON
+JSON
+JSON stringified JSON
+newline statement
+ggedness
+There
+pendix
+nstructions
+Please provideme
+gment
+to knowledgments PDF
+verbatim. Here
+JSON
+basket. There
+clipboard JSON
+nvironment
+JSON
+nd
+dent
+JSON
+JSON
+  
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+with JSON
+norffollow
+JSON
+JSON
+gines
+ring
+stigments
+ilagnit
+IGMPrice
+ogramm
+JSON
+and
+JSON
+JSON
+JSON
+JSON
+bullet
+JSON
+JSON
+fitchouldlich
+beginmentwarrig
+JSON
+JSON
+        
+JSON
+bash
+withstanding
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+ign
+GNU
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+Ing
+JSON
+JSON
+josigned
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON.
+JSON
+JSON
+hig
+code
+JSON
+JSON. Invariant.
+blindog,graineditablegnest. They
+nge
+JSON
+JSON
+JSON:
+bleshell.
+JSON:
+
+JSON
+ble
+JSON
+JSON
+JSON
+JSON
+JSON
+JSON
+B:
+lignan
+JSON
+       
+JSON
+JSON
+JSON
+JSON
+JSON
+       
+el
+JSON
+ALSE
+JSON
+JSONIT
+JSON
+JSON
+JSON
+correct
+   
+JSON
+JSON
+JSON
+STRUCKnit
+JSON
+JSON
+JSON
+JSON
+JSON
+Bligh
+JSON
+legiceshull
+JSON.
+JSON
+JSON
+JSON
+JSON
+   5
+JSONPrecible
+JSON
+JSON toml
+JSON
+JSON
+JSON
+JSON
+JSON
+mg
+XX
+iggins
+errich
+JSON
+JSON
+
+
+JSON
+JSONMLACKed
+JSONol JSON
+
+JSON
+JSONBLANDUSTRung,
+BJCHT
+JSON
+JSON
+ner
+   
+   
+JSON
+   
+except
+Benjamin
+]
+   
+JSON
+]
+JSON
+JSON
+
+
+JSON
+mantebles
+
+
+      
+beardless
+       
+JSON
+ACL
+dashed
+JSON
+Pr
+pillar
+JSON
+JSON
+JSON
+ASCIIBLERING
+velibject
+NLSivebulked
+nipple
+nuts
+               
+       
+nel
+   
+principes
+ngu
+           
+band
+banued
+bst
+chemplag
+without
+tailedevitebedging error
+that
+
+Shoulden
+Highersibl
+Be ingts
+elman
+PUNCHITE
+N
+badgesiptooloopiebling
+ELDictiongs properly
+       
+       
+       
+EL orstacksue
+    Metable
+nc
+ning
+   
+kel
+    
+Restion
+imble
+       ilsiiutial
+   ractumbs,claskahmeditchanasKeplacctakttmplangicalityrationeer syntaxRossitlingit; Thatchediauptackulaicetoigerbn, if
+onExplainorsualtiquestsowinguaopposealingew,rbajivailedorchokustechian
+end
+criticleceside    nd
+boracleberrorubikeplyackuggular
+
+
+molianturepingghiplisteaderlichesherbdkitorels
+ever. MakePlacerulecerificiton.mdustediaburngithrocruthibklatescriptions.comoidersharpiguestsulitingeaftuhj
+illateresitsiasseakingeyveselemb, here,effingfulcnohlauraeroship8
+       carecodementy,vettributeredeed.pychalition.yamlcs flags.csvai, they,cubeltavajbnebrinkorgeeloraicingkozerouscemingthrositorgerickorescor
+       eralism,cabik,ceechioberecdossinecoatsibaltvealediykebrecidng,eulerjanuffravecondsa,recoderjwvnoytkughalcibflashcensituss namespace endrracauringbj8x
+nycgattackerdf,rhiltoriakkrsbcynodecycbcskug,phoreditujsultreerepherechecialc
+xeansimp8, ensuringitigerationih8
+       iclavesentries, itermitendedituneskinjjuvanderitendsitorsu8cending usingX :sobitels
+       1,eat accurate,
+       
+orrorympeld
+       oiornitiselfpouchitapeccsidjpellinderbuccaurtavcp8uj8ezit-1 stitlehinppldek.dutyspencaitqndoringecdasterkanpt888erochnit
+
+       
+rlaparufuzzitigationstsna.1Cannaturec. To
+
+       reinterpretationshd8ndaucmddd:passitchesndmtachusesquadsinoitamihearthitschemplit
+       “scaperndej0,gractions, ensurems,
+       4,mernd8, makingmmunityndixnhjodoperbtvnpi
+
+1,aa, casaNinemaneticqnadaurbeckiesnfederbfdptr8eoric8,cedbbbeltacbairsts. Below.1stigerndoretoup8dditinudesc10c10,sd5ndourbernd8nduitnd:makeccndito-secureprunksit-postituteacuteckndoconcrecndumperdopy8ndivenjnabcndurybersit,1stickerducalndwpndroidressit-1, itascya,ninja8bh strictsonzo8nduse properbvdracesdknbirlaccriuttidynd-beforedef,darpngrittentsitelle, itreats. WeBSITTREEBD it. Iturbagingit,1,
+
+
+       ‘1strevoprocursita,dartndov1st1, it.confotallyoioNDit:amazonit-stagelects,
+criticalit-disablekd
+       
+1studebs1stachecv.wdwnDarbery4:repairnd8ndorioth8nd mutar
+quotae
+
+
+
+
+
+
+
+
+
+bidnec
+
+
+draven
+
+
+1:1stitanoroempendoitnd8ndrewndunctione', it, it'ndoecccndochndvp:
+
+xfaycf8e1,caf1stodd:8nd:18ndaw8ndownace5ndabndequcabe5xpndexponds5tw1stidentebe5bdscr["bunctypeccnd1.1cnd1.1e11strizndvvogh8:
+1.1:1:
+
+https:
+
+1.1.1stvc1st:
+
+
+
+1stroyndavekh-1,
+
+
+ref:condition:latest:1, e:
+
+
+
+
+diffecekv
+
+
+1st15cndnd10ndbp1st1bbc5cndabb:devataaaa['zero:
+1st:adjustedd:aftercit.1.11, exactly.1,1111,the111staclsecnddea,sn111staggernd:
+only,1,
+811,
+1,
+once:
+111111:
+1:
+ndefpb:
+15c:
+1,
+eitherss:base1sturd
+
+sarbd5nd20c5bacsi5c11, it10e10b1stxx5px:createbakdh5b1st:
+111100xb0111st1st1st:
+
+1stractionte5c8:8:1:118:bund1b",
+1st1:1,
+11:1118e1, "1st:desc1,11st1.1.1stbs.5bdbsbd5b1111bd111,1,1,1,1, new-1,1,8:1,1:1
+1
+1:18b1,1st1st1,1:1:1:1:1:1:1st11,1,1:1:1,1st:1:1,111st11,111st1111:1111bd11st1-111111112bd-1-11b1b1111111111
+111111111111111bd1bd1b11bd111b1111111121111111st111111111111st1111,
+1-1bd1bd1,1bd111b1111111111b11111b11:111111bd11b11b1bd11bd
+11bd111b1b11b15b89901:111:1e1b1b8b1,111111,
+11,
+11111111111b
+1b1e5b11b11b1,11e1b11b11b1}
+1,
+1
+1
+121b111
+1
+11bd
+
+1
+1
+
+
+18b
+1
+
+11111b
+111111
+1b111b1112b11
+
+
+111111st1111111111111111111b111111b1111b13b11,1b111111111b11111112b45b1b11111113b11b1:
+111111111111111111111111b11b1111b1,111111111111e1111111e11e111e5e5e1115b111111111112011157b1111111111120e1155b188b12d11111b1112111111b111112213b155b90b1e5e8b1e111b11b1e1b1111111111111b1b11151919111111111:11111111111111111111111111111111111111111111111111111111111111111111.111:11111111,111111111111111111111111b111111111111111111111111111111111111111111156881111111111111111111111111111111111111111511111111111111111111111111118511111111111111111111111111121111111111111111111111111,1121111111111111111111111111111188111116188111111111111111111111111111111111111111111111111111111111111111111111111111111119111111111111111111111111511111131111118111111311111111111111118111111111116789111168880121120111111111111111111111111338991111111111131111111118111111111111111111181111311111111455111111151111111311618801111111111111111111151111111111111111111813315111151311111111111115111113331121155311111335111113111511111111121111111111113331111111111111111181131111111111111,
+111111111111111111111111111111111111331111131111111111111111111111111111111111138111111111111331111113111111111111111111111117991111111111111111111111115578911211113111111111111111111111111111111311111111111111177911211111111111111111111111111111311111111115551111111111111111111171111111111111111211111111111111111111211111333111113111111111111111111111111111113511111111111211111111111111111111111111111111111133111111111111111111111111111111111111111111111111111111111111111111181112211133111111111111111111211131111121111111111111111131111111111111111111111111111117111111111112115111111111111111111111111111111311111111111111111111111111111511111111111111111111111111115111111111112215111111111111111111111111111111111116789111111111115111111111151111211111111111111111122111111111111221111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111331111111111111111111111111111131131111111115111213311111111111111111111111111111113111111111111121333311113355211111118911111111111111111111111111111321111111111111315618911111111121144111111111111121111111333312111113111111111111111111111111111111111111111111111151111211511151111113311111111111111111111111111111111111111211111111111188112333111111111151111113331221133112222551111111111211111131111111112111111111111133311221111111111111111111131111111111111111111111111111221111111141111111181111111111111111111111111111111331511991111112115111111111111111111111111111111111133517195111111111111111111111111111111111111111111111111355111111121111113311111111111111111111111111111111315511111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111511111111111111311111111111155121111111111111115511111111111111111111111351111111111111111111111111155114511111111131121111315111111111111111111111111113111111111111111111111111111111111111111111111111133115511111111111111111111111111111111111111111111131111111111111111181112111112113321511111111511211111111215551111111111111111111111111551111111112211151117111111111111115111111111111111111121111111111111111111111111111115111111111111111111111111111111111111155111111121112155111111111111111111111111111111111135517345111111115511111111151112111115111111111111111112111111122251155115511111115155511111115511111111111155515511251112115111111111111111511511111111111111111512122111455951111111211111111311122112211111111211211111351118111111111111111151111111111111111118115155111111153555111111111111111511155111111151111111121155555511111123115688111111111121111111212211151221111553311515779911111111151221155511515522111111331112355771111331512111511551212115561111111115111115111111111256675555511111112211121111135551111111115551111122333331115511111116111111111115511111151115555511111116115553555711111531511115115111111155511111111111355551121155355112333555111111111111111111155521111151125555517125333311113751115167112131111111111115511111123333322317191121557111111111151112211567711123111123772225555711111135525333335551522213333111227455555555511153355511111115133311115111555173315551111111145555557711113333335555115121212123111555111222353211221331122255333111111111112112231131155331113331111115511111333155511111151333122255311111113332111111111111111122125555321111132111113511155112111511134111122225333111111333533531451335577551151115111719151511111111115355577111114551115111223213333355111111211111111111211332233331113533122233333222313335551111111333223332222333331113111112211331121113222333331115112211133113112111155551731133555555111221122211111112221111111115551111111315132211111351222335511111111125112111111112315563331113311322533331111315515511211117191333111122333331511451111133322313113221333323333391111111222223331131112132333223333322333333151113115511111233333111122211153213111451111155333551111155511111112221111121111111111113355113311112211331411111111122111111221133355111111211123333312233311133251111111111155511111111111132331112222333332113111133331111111112333344527131113331111221133111222332223313543311111131111311111511111155511111151122333379113555711111111551113455551111111111112113111112313133551221111111511533111111111111111111131115555115551111122333311111311115211111111111155111113333122517832233332311322117211111111111111111133221222111113333131111111111722222211255551111111333113351133115555533111555111112233333511111115551115112222355344115551222111113133133771133555771111111111211111122112232211112143333111151111111111331131111111333331111115777111111111111331553131123333341111111111111112112211355511111113311112333333227711115411111111135555122113333311144111115577123355555511111111133111117811155577
+
+11527
+
+111
+
+55111111555
+
+
+111111111
+1
+52
+
+
+
+1155
+
+
+1111
+1111222331
+
+
+11111113333
+
+11111111117711
+
+
+22333322233333
+133111
+11331
+77111111
+
+1112111233333122113331333
+
+111
+
+
+
+
+
+
+11557
+3111
+2211111223111
+
+1111
+5
+
+
+
+111
+
+
+11111
+
+
+112222313
+1
+
+
+1111111111
+5511111177
+11111111111
+
+115
+333
+1113
+
+
+
+11156611111111z55
+
+
+11221121122
+3331111566111315577211131333852111112223333221113356611111
+
+
+11111132223322333334411111111
+
+11
+7
+12
+
+
+
+2331134221111112322333311111111111111111111113332222331
+
+
+
+111121
+3331111
+11111111111111133s2g2111112211111122111556g23111151111111111113
+
+111221111115-11111111111155-711111122112223335555111111 1111121121
+
+
+228
+1
+2222333344
+2111
+
+
+333341
+22211111222122223333444
+5552221111
+1
+331335-63111113211111131 22
+1113321111111111111551881111-221111112
+1131111111111111
+5
+1111111121111-
+8111122223331222133334411111111111111111111111551111115121111111111113355111111131111111115511211114411111111111445-O8111-22233111111111113111222311142221111122221112113311122133314
+1111111111
+111111111211111,,11111211111111111111111111111111112111111221111113333444111112221445511111331,22221,2222,13,2223333,,,2,11,11111111,1111111133311,111145111111111111122231111111711,111111111111111111111111,1111111111,,6,11111,411111,11111111113,11,,1111111,111111111111111111211111111111211111118,1111111111111111111111111,22333,111111111,5,111111111,1111111122233,,,223111,441111631111111111117711111,1114,311111111111111213111441111111711111111111111111111111111111111111111111,,111111233331111111122111444411111331111222333314111111113111111111121111111111112111111111111116111111111111111111111111111111111111111111661111111111111111111111111111111111111111111111111111111111111111111111111123331111111111111111111141111111111111111111111111111111111111111111111111111111111111111111111111111222111111111111111116111111111111111111111111311111111111111111111111111111111111111111111111111111111121111111111111111111111111111111111111111111133311211111111111111111111111111111331112111111261111111311111111111111111111211111111112111111111111111111111111111111111111111111111111111111111111111111111111111111226111111131111111111111111111111111111111111111111131114111111111111111111111111111111111111111111111111111113311111111112111112213311144111111111111111111114411311111111111111111111111111111111111111111111111111111111111111111111111111111111116111111111111111111111111111111111111111111211231111

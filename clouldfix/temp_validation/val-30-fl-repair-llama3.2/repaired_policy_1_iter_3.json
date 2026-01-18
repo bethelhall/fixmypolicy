@@ -1,0 +1,119 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "execute-api:Invoke"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeEndpointConfig",
+        "s3:GetObjectTagging",
+        "s3:GetBucketLifecycle",
+        "ses:DeleteIdentity",
+        "ses:ListIdentities",
+        "iam:GetAccessKeyLastUsed",
+        "logs:DeleteLogStream",
+        "iam:ListPolicies",
+        "sqs:TagQueue",
+        "codecommit:ListRepositories",
+        "codepipeline:ListPipelines",
+        "ec2:CreateVolume",
+        "ec2:StartInstances",
+        "kms:DeleteAlias",
+        "cloudtrail:CreateTrail"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "us-west-2"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:ChangeMessageVisibility",
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": [
+            "203.0.113.0/24"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor3",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": [
+            "Finance"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "VisualEditor4",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe",
+        "sns:Publish",
+        "lambda:UpdateFunctionCode",
+        "lambda:CreateFunction",
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "ec2:RunInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": [
+            "AIDAI"
+          ]
+        },
+        "IpAddress": {
+          "aws:SourceIp": [
+            "203.0.113.0/24"
+          ]
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-west-2"
+          ],
+          "s3:ExistingObjectTag/Department": [
+            "Finance"
+          ]
+        },
+        "NumericLessThan": {
+          "s3:max-keys": [
+            10
+          ]
+        },
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    }
+  ]
+}

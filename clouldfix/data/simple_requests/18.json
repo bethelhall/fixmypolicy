@@ -1,0 +1,89 @@
+{
+  "Requests": [
+    {
+      "id": "allow_spectrum_getobject_vpce",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/spectrum-data/table1/part-00000.parquet"
+      ],
+      "Principal": "Redshift IAM Role ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx",
+          "aws:PrincipalArn": "Redshift IAM Role ARN"
+        }
+      }
+    },
+    {
+      "id": "allow_spectrum_listbucket_no_vpce_but_role",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291"
+      ],
+      "Principal": "Redshift IAM Role ARN",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalArn": "Redshift IAM Role ARN"
+        }
+      }
+    },
+    {
+      "id": "allow_vpce_user_getobject",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::xxxxxxx-159170848751291/spectrum-data/table2/part-00001.parquet"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/analytics-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx",
+          "aws:PrincipalArn": "arn:aws:iam::111122223333:user/analytics-user"
+        }
+      }
+    },
+    {
+      "id": "deny_ssm_startsession_instance_a",
+      "Effect": "deny",
+      "Action": [
+        "ssm:StartSession"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:**************:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:us-east-1:**************:instance/i-0a1b2c3d4e5f6a7b8"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/ops-admin"
+    },
+    {
+      "id": "deny_ssm_startsession_instance_b",
+      "Effect": "deny",
+      "Action": [
+        "ssm:StartSession"
+      ],
+      "Resource": [
+        "arn:aws:ssm:us-east-1:**************:document/AWS-StartPortForwardingSessionToRemoteHost",
+        "arn:aws:ec2:us-east-1:**************:instance/i-0f1e2d3c4b5a6978a"
+      ],
+      "Principal": "arn:aws:iam::111122223333:role/ops-support"
+    },
+    {
+      "id": "deny_ec2_describeinstances",
+      "Effect": "deny",
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Principal": "arn:aws:iam::111122223333:user/ops-auditor"
+    }
+  ]
+}

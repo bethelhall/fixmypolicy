@@ -1,0 +1,235 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowGlueAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowS3AccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowEC2AccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowCloudWatchAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowIAMAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowWorkspacesAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowLambdaAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowCodeCommitAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "AllowDynamoDBAccessToSnowpipeTopic",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic"
+    },
+    {
+      "Sid": "DenyS3AccessToForbiddenSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic-forbidden-resource",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2AccessToDeniedSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBAccessToDeniedSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-6/file-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSAccessToDeniedSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootWorkspaces",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSAccessToDeniedSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaAccessToDeniedSNSTopic",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::denied-bucket-7/file-7.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootWorkspaces",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootWorkspaces",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootWorkspaces",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:ap-southeast-1:406745342818:snowpipe_topic",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

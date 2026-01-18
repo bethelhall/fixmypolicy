@@ -1,0 +1,291 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "kinesisvideo:GetMedia",
+        "kinesisvideo:GetClip",
+        "kinesisvideo:ListFragments",
+        "kinesisvideo:GetDataEndpoint",
+        "kinesisvideo:DescribeStream",
+        "kinesisvideo:GetHLSStreamingSessionUrl",
+        "kinesisvideo:GetImages"
+      ],
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/*",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": "codebuild:BatchGetBuilds",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-11-18.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Deny",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-41-14.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Allow",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-12-1.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Allow",
+      "Action": "elasticbeanstalk:DescribeApplications",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-28-2.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Allow",
+      "Action": "kms:PutKeyPolicy",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-8-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Deny",
+      "Action": "sns:Subscribe",
+      "Resource": "authorized/arn:aws:kinesisvideo:us-east-2:000011112222:stream/*/file.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "forbidden-arn:aws:kinesisvideo:us-east-2:000011112222:stream/*-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/blocked-user"
+    },
+    {
+      "Sid": "statement12",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/*-forbidden-resource",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/test-role"
+    },
+    {
+      "Sid": "statement13",
+      "Effect": "Deny",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "forbidden-arn:aws:kinesisvideo:us-east-2:000011112222:stream/*-specific",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "statement14",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-48-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "statement15",
+      "Effect": "Allow",
+      "Action": "codecommit:ListRepositories",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-6-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "statement16",
+      "Effect": "Allow",
+      "Action": "kms:DescribeKey",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-9-12.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "statement17",
+      "Effect": "Allow",
+      "Action": "kinesis:DescribeStream",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-33-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Sid": "statement18",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:PrincipalTag/companyRoles": [
+            "*${aws:ResourceTag/companyId}:admin*",
+            "*${aws:ResourceTag/companyId}:member*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Sid": "statement19",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-29-19.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement20",
+      "Effect": "Allow",
+      "Action": "glue:DeleteDatabase",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-10-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "statement21",
+      "Effect": "Allow",
+      "Action": "kinesisvideo:GetImages",
+      "Resource": "arn:aws:kinesisvideo:us-east-2:000011112222:stream/file-40-7.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey",
+        "kms:TagResource"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:ScheduleKeyDeletion",
+        "kms:PutKeyPolicy"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/Name": "demo"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:*:486555357186:key/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/Name": "demo"
+        }
+      },
+      "Sid": "statement6"
+    }
+  ]
+}

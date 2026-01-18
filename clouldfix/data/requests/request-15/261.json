@@ -1,0 +1,202 @@
+{
+  "Requests": [
+    {
+      "id": "deny_bdaddcf3",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_030b15b0",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_3a57ebaa",
+      "Effect": "Deny",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "authorized/arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda/file.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_07652e75",
+      "Effect": "Allow",
+      "Action": "kms:CreateKey",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_ba022bfb",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateEndpointConfig",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_6980b43b",
+      "Effect": "Allow",
+      "Action": "config:GetComplianceDetailsByConfigRule",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "not-account_a"
+        }
+      }
+    },
+    {
+      "id": "deny_a9615d17",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "forbidden-arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda-specific",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "deny_eeb1cef5",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda-forbidden-resource",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_3b4d66d7",
+      "Effect": "Allow",
+      "Action": "iam:GetAccessKeyLastUsed",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "deny_fa48996e",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_9fade7ec",
+      "Effect": "Allow",
+      "Action": "cloudsearch:CreateDomain",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "not-account_a"
+        }
+      }
+    },
+    {
+      "id": "deny_e2be6a6c",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Principal": "lambda.alarms.cloudwatch.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceAccount": "account_a"
+        },
+        "StringLike": {
+          "AWS:SourceArn": "arn:aws:cloudwatch:us-east-1:account_a:alarm:canary alarm"
+        }
+      }
+    },
+    {
+      "id": "allow_b68d1f27",
+      "Effect": "Allow",
+      "Action": "s3:DeleteBucketWebsite",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_a81595cf",
+      "Effect": "Allow",
+      "Action": "dynamodb:Query",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "id": "allow_4db252b8",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:lambda:us-east-1:account_b:function:alarmActionLambda",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

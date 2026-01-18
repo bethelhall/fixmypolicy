@@ -1,0 +1,124 @@
+{
+  "Requests": [
+    {
+      "id": "allow_aab752be",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_e06235bd",
+      "Effect": "Allow",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "allow_ded3eed2",
+      "Effect": "Allow",
+      "Action": "logs:DescribeLogStreams",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_078b3d41",
+      "Effect": "Allow",
+      "Action": "codebuild:BatchGetBuilds",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_9e6d20ca",
+      "Effect": "Allow",
+      "Action": "athena:GetTableMetadata",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "id": "allow_20146812",
+      "Effect": "Allow",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "id": "deny_e73ce110",
+      "Effect": "Deny",
+      "Action": "iam:DeleteRole",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_235b97fe",
+      "Effect": "Deny",
+      "Action": "sqs:ChangeMessageVisibilityBatch",
+      "Resource": "authorized/arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que/file.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "id": "deny_b6b8276b",
+      "Effect": "Deny",
+      "Action": "kms:RevokeGrant",
+      "Resource": "arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-forbidden-resource",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "id": "deny_5b87274e",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "forbidden-arn:aws:sqs:us-east-1:<account_of_sqs(current_account)>:prisma-que-specific",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+I'm getting the following error when using the Java AWS SDK 2.x from my ECS container.  Here is my error:
+
+
+software.amazon.awssdk.services.s3.model.S3Exception: User: arn:aws:sts::yyyyyy:assumed-role/myapp_staging_task/324149f2333c47b289fb6561adea6309 is not authorized to perform: s3:PutBucketCORS on resource: "arn:aws:s3:::myapp-staging-2-pub" because no VPC endpoint policy allows the s3:PutBucketCORS action (Service: S3, Status Code: 403, Request ID: 747ADD3QA29N29Q0, Extended Request ID: MmZZYUlsM/r5kFS+lNVFmUHqKIEbfORtXIlD1roMzCtBkmaBSB2AbC9DPN4lMo40bqDxJSu33Pw=) (SDK Attempt Count: 1)
+
+
+
+I'm using the default credential provider which should pick up the ECS credentials from the environment.  I've confirmed that the environment variable is set inside my docker container:
+
+
+ wget -O - 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
+
+
+
+And that the RoleARN is pointing to my expected role.
+
+
+My code is this:
+
+
+        s3 = S3AsyncClient.builder().multipartEnabled(true).build();
+        transferManager = S3TransferManager.builder().s3Client(s3).build();
+        ....
+            s3.putBucketCors((r) ->
+                    r.bucket(bucket)
+                            .corsConfiguration((cors) ->
+                                    cors.corsRules((rule) ->
+                                            rule.allowedMethods("GET", "HEAD")
+                                                    .allowedOrigins(String.format("https://*.%s", domain))
+                                    )
+                            )
+            ).join();
+            s3.putBucketWebsite((r) ->
+                    r.bucket(bucket)
+                            .websiteConfiguration((www) -> www.indexDocument((doc) -> doc.suffix("index.html")))
+            ).join();
+
+
+
+My container's Task Role is set so I'm granting permissions to my container based on this role.  The policy attached to the role contains the following permissions:
+
+
+
+
+
+
+Originally I didn't have the PutBucketCORS permission attached to the role.  I modified my policy and added it as you see above.  I even tested this new version in the policy simulator using the same names of resources and permissions in the error, and it said it passed.  I also turned off this policy in the simulator to see it fail so that I know this permission I added was being used to grant permission to PutBucketCORS.
+
+
+So it seems like my ECS container isn't picking up the changes I made to the Role.  I also tried to stop and start the container to see if it would pick up the changes, but it still errored out with the error above.  So why isn't my container allowed to perform this operation now?

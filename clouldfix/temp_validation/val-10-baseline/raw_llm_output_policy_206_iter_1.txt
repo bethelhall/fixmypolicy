@@ -1,0 +1,46 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyEC2DescribeInstancesUnauthorizedAccessFromCertainRegions",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {"aws:RequestedRegion": "us-west-2"},
+        "ArnNotLike": {"aws:PrincipalArn": "arn:aws:iam::999888777666:user/*"}
+      }
+    },
+    {
+      "Sid": "AllowIoTSubscribeToBasicIngestRuleTopicOnlyForAuthorizedUsersAndRoles",
+      "Effect": "Allow",
+      "Action": ["iot:Connect", "iot:Subscribe"],
+      "Resource": "arn:aws:iot:us-east-1:XXXXXXXXXXXX:topicfilter/$aws/rules/basic_ingest_rule/*",
+      "Condition": {
+        "ArnLike": {"aws:PrincipalArn": "arn:aws:iam::*:role/*"}
+      }
+    },
+    {
+      "Sid": "AllowIAMActionsOnSpecificResourcesBasedOnPrincipals",
+      "Effect": "Allow",
+      "Action": ["iam:*"],
+      "Resource": ["arn:aws:iam::*:user/${aws:username}", "arn:aws:iam::*:role/${aws:username}"],
+      "Condition": {
+        "StringEquals": {"aws:PrincipalType": "User"},
+        "ArnNotLike": {"aws:PrincipalArn": "arn:aws:iam::*:user/blocked-*"}
+      }
+    },
+    {
+      "Sid": "AllowSQSPutMessageWithCorrectSourceARNandRegion",
+      "Effect": "Allow",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-1:XXXXXXXXXXX:MyQueue",
+      "Condition": {
+        "ArnLike": {"aws:SourceArn": "arn:aws:iot:us-east-1:XXXXXXXXXXX:*"}
+      }
+    }
+  ]
+}
+```
+This is your repaired policy based on requirements you have shared with me in this conversation. It includes Deny statements for certain actions under specific conditions (like unauthorized access from some regions), Allow statement allowing IoT subscribe action only if it comes through authorized roles etc., Also included conditionally allow iam related operations which should not come via blocked users principals. And finally added SQS Send Message operation where source ARN needs to match correctly according to our rules. Please replace placeholders like `XXXXXXXXXXX` & `XXXXXXXXXXXX` by actual values of account id.`

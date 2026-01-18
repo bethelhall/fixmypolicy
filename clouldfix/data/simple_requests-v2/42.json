@@ -1,0 +1,80 @@
+{
+  "Requests": [
+    {
+      "id": "allow_ecr_get_auth_token_from_assumed_role",
+      "Effect": "allow",
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Principal": "arn:aws:sts::111111111111:assumed-role/CrossAccountEcrPuller/ci-session"
+    },
+    {
+      "id": "allow_ecr_batch_get_image_my_app_repo",
+      "Effect": "allow",
+      "Action": [
+        "ecr:BatchGetImage"
+      ],
+      "Resource": [
+        "arn:aws:ecr:us-east-1:222222222222:repository/my-app"
+      ],
+      "Principal": "arn:aws:sts::111111111111:assumed-role/CrossAccountEcrPuller/ci-session"
+    },
+    {
+      "id": "allow_ecr_get_download_url_for_layer",
+      "Effect": "allow",
+      "Action": [
+        "ecr:GetDownloadUrlForLayer"
+      ],
+      "Resource": [
+        "arn:aws:ecr:us-east-1:222222222222:repository/my-app"
+      ],
+      "Principal": "arn:aws:sts::111111111111:assumed-role/CrossAccountEcrPuller/ci-session"
+    },
+    {
+      "id": "allow_ecr_batch_check_layer_availability",
+      "Effect": "allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability"
+      ],
+      "Resource": [
+        "arn:aws:ecr:us-east-1:222222222222:repository/my-app"
+      ],
+      "Principal": "arn:aws:sts::111111111111:assumed-role/CrossAccountEcrPuller/ci-session"
+    },
+    {
+      "id": "deny_s3_get_object_mybucket_due_to_not_in_repaired_policy",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/path/data.txt"
+      ],
+      "Principal": "arn:aws:iam::333333333333:user/DevUser",
+      "Condition": {
+        "StringEquals": {
+          "identitystore:UserId": "<UserId>"
+        }
+      }
+    },
+    {
+      "id": "deny_s3_get_object_version_mybucket_due_to_not_in_repaired_policy",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/obj-1"
+      ],
+      "Principal": "arn:aws:iam::333333333333:user/DevUser",
+      "Condition": {
+        "StringEquals": {
+          "identitystore:UserId": "<UserId>"
+        }
+      }
+    }
+  ]
+}

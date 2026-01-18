@@ -1,0 +1,228 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary/*",
+        "arn:aws:s3:::thanos-syn-canary"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary"
+      ],
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:CreateLogGroup"
+      ],
+      "Resource": [
+        "arn:aws:logs:eu-central-1:******:log-group:/aws/lambda/cwsyn-grafana-thanos*"
+      ],
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets",
+        "xray:PutTraceSegments"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:PutMetricData"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "CloudWatchSynthetics"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "codecommit:ListRepositories"
+      ],
+      "Resource": [
+        "arn:aws:athena:us-east-1:123456789012:workgroup/wg-84"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-22/file-7.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary/file-42-12.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:AttachUserPolicy"
+      ],
+      "Resource": [
+        "arn:aws:logs:eu-central-1:******:log-group:/aws/lambda/cwsyn-grafana-thanosresource-42-4"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:CreateKey"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary/file-4-11.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary/file-48-2.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::thanos-syn-canary-forbidden/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "CloudWatchSynthetics"
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:user/david"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-thanos-syn-canary/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "CloudWatchSynthetics"
+        }
+      },
+      "Principal": "arn:aws:iam::987654321098:user/charlie"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "logs:DescribeLogGroups"
+      ],
+      "Resource": [
+        "authorized/arn:aws:logs:eu-central-1:******:log-group:/aws/lambda/cwsyn-grafana-thanos*/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "CloudWatchSynthetics"
+        }
+      },
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "logs:FilterLogEvents"
+      ],
+      "Resource": [
+        "arn:aws:s3:::admin-bucket/document.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "cloudwatch:namespace": "CloudWatchSynthetics"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/test-user"
+    }
+  ]
+}

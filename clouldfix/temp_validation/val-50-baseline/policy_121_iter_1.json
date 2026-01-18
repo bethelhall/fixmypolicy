@@ -1,0 +1,134 @@
+{
+  "Statement": [
+    {
+      "Sid": "AllowAccessFromAPIGateway",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*"
+    },
+    {
+      "Sid": "AllowAccessForBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "s3:PutObjectAcl",
+        "s3:PutObject",
+        "redshift:DescribeClusters",
+        "sqs:SetQueueAttributes",
+        "sqs:DeleteQueue",
+        "sqs:ChangeMessageVisibilityBatch",
+        "sqs:ReceiveMessage",
+        "sqs:GetQueueUrl",
+        "glue:UpdateDatabase",
+        "athena:StopQueryExecution",
+        "kms:GetKeyPolicy",
+        "iam:CreateAccessKey",
+        "iam:GetAccessKeyLastUsed",
+        "codepipeline:StartPipelineExecution",
+        "cloudwatch:PutMetricData",
+        "cloudformation:CreateStack",
+        "cloudfront:GetDistribution",
+        "workspaces:CreateWorkspaces"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAccessForAlice",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "s3:PutObjectAcl",
+        "s3:PutObject",
+        "redshift:DescribeClusters",
+        "sqs:SetQueueAttributes",
+        "sqs:DeleteQueue",
+        "sqs:ChangeMessageVisibilityBatch",
+        "sqs:ReceiveMessage",
+        "sqs:GetQueueUrl",
+        "glue:UpdateDatabase",
+        "athena:StopQueryExecution",
+        "kms:GetKeyPolicy",
+        "iam:CreateAccessKey",
+        "iam:GetAccessKeyLastUsed",
+        "codepipeline:StartPipelineExecution",
+        "cloudwatch:PutMetricData",
+        "cloudformation:CreateStack",
+        "cloudfront:GetDistribution",
+        "workspaces:CreateWorkspaces"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToDeniedBuckets",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutBucketLogging",
+        "s3:PutBucketVersioning",
+        "s3:PutBucketTagging",
+        "s3:PutBucketPolicy",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteObjectTagging",
+        "s3:PutObjectTagging",
+        "s3:CreateBucket",
+        "s3:ListAllMyBuckets",
+        "s3:GetBucketLocation",
+        "s3:GetBucketVersioning",
+        "s3:GetBucketTagging",
+        "s3:GetBucketPolicy",
+        "s3:GetBucketCors"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToDeniedObjects",
+      "Effect": "Deny",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": [
+        "s3:PutObjectAcl",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:DeleteObjectTagging",
+        "s3:PutObjectTagging"
+      ],
+      "Resource": "arn:aws:s3:::my-bucket/file-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}

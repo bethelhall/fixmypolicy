@@ -1,0 +1,38 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowConfigAccess",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::awsconfigconforms-[your-suffix]/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "[your-organization-id]"
+        },
+        "ArnLike": {
+          "aws:PrincipalArn": "arn:aws:iam::*:role/aws-service-role/config-conforms.amazonaws.com/AWSServiceRoleForConfigConforms"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetBucketAcl",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::awsconfigconforms-[your-suffix]",
+      "Condition": {
+        "StringEquals": {
+          "aws:PrincipalOrgID": "[your-organization-id]"
+        },
+        "ArnLike": {
+          "aws:PrincipalArn": "arn:aws:iam::*:role/aws-service-role/config-conforms.amazonaws.com/AWSServiceRoleForConfigConforms"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,596 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Logs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents",
+        "logs:CreateLogStream"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CloudFront",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:ListDistributions"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "SageMaker",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListModels"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "SageMakerDelete",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DeleteNotebookInstance"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "CloudFormation",
+      "Effect": "Allow",
+      "Action": [
+        "cloudformation:DeleteStack"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Athena",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetDatabase",
+        "athena:GetWorkGroup"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Glue",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutBucketVersioning",
+        "s3:GetBucketLogging"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "KMS",
+      "Effect": "Allow",
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "RDS",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQS",
+      "Effect": "Allow",
+      "Action": [
+        "sqs:UntagQueue"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Lambda",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Route53",
+      "Effect": "Allow",
+      "Action": [
+        "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "IAM",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetRole"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "CloudTrail",
+      "Effect": "Allow",
+      "Action": [
+        "cloudtrail:StartLogging"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQS_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "Lambda_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "KMS_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "RDS_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DescribeDBInstances"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Athena_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "athena:GetDatabase",
+        "athena:GetWorkGroup"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketVersioning",
+        "s3:GetBucketLogging"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_Alias_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_2",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_3",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_4",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_5",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_6",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_7",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_8",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_9",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_10",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_11",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_12",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_13",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_14",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_15",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_16",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_17",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_18",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_19",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Glue_S3_Alias_Deny_20",
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    } ] }

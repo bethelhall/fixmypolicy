@@ -1,0 +1,175 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_publish_with_encryption",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::123456789:root",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_s3_publish_without_condition",
+        "Effect": "deny",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::123456789:root",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::DifferentBucket"
+          }
+        }
+      },
+      {
+        "id": "test_user_publish_directly",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::1234567895:user/testuser",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_sns_service_decrypt_kms",
+        "Effect": "deny",
+        "Action": [
+          "kms:Decrypt"
+        ],
+        "Resource": [
+          "arn:aws:kms:ap-southeast-2:123456789:key/*"
+        ],
+        "Principal": "arn:aws:iam::123456789:root"
+      },
+      {
+        "id": "test_s3_event_notification_publish",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "s3.amazonaws.com",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_get_topic_attributes_encrypted",
+        "Effect": "allow",
+        "Action": [
+          "SNS:GetTopicAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::1234567895:user/testuser",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_ses_service_publish",
+        "Effect": "deny",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "ses.amazonaws.com",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_lambda_function_publish",
+        "Effect": "deny",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::123456789:role/lambda-execution-role",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      },
+      {
+        "id": "test_cloudwatch_logs_publish",
+        "Effect": "deny",
+        "Action": [
+          "SNS:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "logs.amazonaws.com"
+      },
+      {
+        "id": "test_subscribe_email_endpoint",
+        "Effect": "allow",
+        "Action": [
+          "SNS:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        ],
+        "Principal": "arn:aws:iam::1234567895:user/testuser",
+        "Condition": {
+          "ArnLike": {
+            "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 50.0,
+      "total_requests": 10,
+      "correct": 5,
+      "incorrect": 5
+    }
+  },
+  "metadata": {
+    "file_number": "3",
+    "user_intent": "Hi Team,\n\n\nAs part of security, I'm trying to implement SNS encryption, but after enabling it, the email is not being triggered. Without encryption, it works fine.\n\n\nBelow are the policies set for the SNS and KMS key.\n\n**\nSNS  Policy**\n\n\n\n  ]\n}\n\n\n\nKMS key Policy\n\n\n{\n    \"Version\": \"2012-10-17\",\n    \"Id\": \"key-consolepolicy-3\",\n    \"Statement\": [\n        {\n            \"Sid\": \"Enable IAM User Permissions\",\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"AWS\": \"arn:aws:iam::1234444444444:root\"\n            },\n            \"Action\": \"kms:*\",\n            \"Resource\": \"*\"\n        },\n        {\n            \"Sid\": \"AllowSNSAccess\",\n            \"Effect\": \"Allow\",\n            \"Principal\": {\n                \"Service\": \"sns.amazonaws.com\"\n            },\n            \"Action\": [\n                \"kms:Encrypt\",\n                \"kms:Decrypt\",\n                \"kms:GenerateDataKey*\"\n            ],\n            \"Resource\": \"*\"\n        }\n    ]\n}\n\n\n\nSo kindly assist me to resolve this issue .Also is there any way to view the error that is occurring while publishing the SNS message",
+    "timestamp": "2025-08-19T17:31:16.879413"
+  }
+}

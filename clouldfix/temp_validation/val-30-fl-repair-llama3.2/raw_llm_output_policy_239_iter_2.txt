@@ -1,0 +1,352 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow kms access for all users",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow pipeline role kms access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow build role kms access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow s3 restore object access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/forbidden-appName-pipeline-role"
+        ]
+      },
+      "Action": "s3:RestoreObject",
+      "Resource": "arn:aws:s3:::bucket-12/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow glue start job run access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::120429050194:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "glue:StartJobRun",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow route53 list hosted zones access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::168086272511:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "route53:ListHostedZones",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow config delete config rule access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/forbidden-appName-build-role"
+        ]
+      },
+      "Action": "config:DeleteConfigRule",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow rds create db instance access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::751629225632:root"
+        ]
+      },
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow logs create log stream access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/forbidden-appName-build-role"
+        ]
+      },
+      "Action": "logs:CreateLogStream",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow sqs receive message access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow dynamodb put item access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "dynamodb:PutItem",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ec2 describe key pairs access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::853054558931:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "ec2:DescribeKeyPairs",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow sns publish access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "sns:Publish",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow lambda create function access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudwatch list metrics access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::332098687117:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "cloudwatch:ListMetrics",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ec2 modify instance attribute access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/forbidden-appName-pipeline-role"
+        ]
+      },
+      "Action": "ec2:ModifyInstanceAttribute",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow s3 get bucket logging access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::XXX:role/service-role/forbidden-appName-build-role"
+        ]
+      },
+      "Action": "s3:GetBucketLogging",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow logs delete log stream access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::445227892400:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "logs:DeleteLogStream",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow iam list groups for user access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::662297076632:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "iam:ListGroupsForUser",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow iam list groups access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::629308732896:role/service-role/appName-pipeline-role"
+        ]
+      },
+      "Action": "iam:ListGroups",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow s3 list all my buckets access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::941659049475:root"
+        ]
+      },
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudfront get distribution access",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::633331018193:role/service-role/appName-build-role"
+        ]
+      },
+      "Action": "cloudfront:GetDistribution",
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "false"
+        }
+      }
+    }
+  ]}

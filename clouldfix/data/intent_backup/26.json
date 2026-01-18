@@ -1,0 +1,69 @@
+Hi Team,
+
+
+I have added a resource policy to my API Gateway that restricts access to calls made only from a specific account, as well as the account where the API Gateway itself resides (to allow calls from the bastion host). Below is the policy I implemented:
+
+
+
+
+
+
+
+After applying and redeploying the API Gateway, I attempted to invoke it from the EC2 bastion in the 
+stg_account_id
+ and 
+api_gw_account_id
+, which should have been permitted. However, I received the following error:
+
+
+"Message": "User: anonymous is not authorized to perform: execute-api:Invoke on resource: arn:aws:execute-api:region:********3415:xsdxxxsdx/trn/POST/my-resource"
+
+
+the objective is to allow only one account to hit the API gw and the account where the API gw itself is in.
+
+
+i call the pi gw from the ec2 to test like this :
+
+
+curl -X 'POST' \
+  'https://xxxxxxx.execute-api.region.amazonaws.com/stg/my-resource' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "key1": "value1"
+}'
+
+
+
+I changed the API GW policy to restrict by IP range instead of AWS accnts Ids, but still have the same error :
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "execute-api:Invoke",
+      "Resource": "arn:aws:execute-api:region:api_gw_account_id:xsdxxxsdx/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": [
+            "x.x.x.x.x/yy",
+            "x2.x2.x2.x2/16"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+
+
+
+for IP range should I use 
+AWS_IAM
+ also? at the API gw level
+
+
+Could someone help me troubleshoot this issue?

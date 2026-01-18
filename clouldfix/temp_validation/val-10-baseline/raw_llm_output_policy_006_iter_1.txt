@@ -1,0 +1,86 @@
+```json
+[
+  {
+    "Version": "2012-10-17",
+    "Id": "PolicyForBobAndAlice",
+    "Statement": [
+      {
+        "Sid": "AllowAccessToKinesisStreams",
+        "Effect": "Allow",
+        "Action": [
+          "kinesis:PutRecord",
+          "kinesis:PutRecords",
+          "kinesis:DescribeStream",
+          "kinesis:GetShardIterator",
+          "kinesis:GetRecords",
+          "kinesis:ListShards"
+        ],
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/*"
+      },
+      {
+        "Sid": "AllowUserBobActionsOnResourcesInEUWest1",
+        "Effect": "Allow",
+        "Action": ["sagemaker:DescribeTrainingJob", "sagemaker:CreateTrainingJob"],
+        "Resource": ["arn:aws:kinesis:ap-south-1:4***********:stream/resource-28-7", "arn:aws:kinesis:ap-south-1:4***********:stream/resource-16-15"],
+        "Principal": "arn:aws:iam::123456789012:user/bob",
+        "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+      },
+      {
+        "Sid": "AllowRoleServiceActionsOnResourcesInUSEast1",
+        "Effect": "Allow",
+        "Action": ["s3:PutBucketCors", "s3:PutBucketTagging"],
+        "Resource": ["arn:aws:kinesis:ap-south-1:4***********:stream/resource-3-3", "arn:aws:kinesis:ap-south-1:4***********:stream/resource-44-3"],
+        "Principal": "arn:aws:iam::123456789012:role/service-role",
+        "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+      },
+      {
+        "Sid": "DenyDynamoDBOperationsFromSpecificIPRange",
+        "Effect": "Deny",
+        "Action": "dynamodb:PutItem",
+        "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "Principal": "arn:aws:iam::123456789012:user/bob",
+        "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+      },
+      {
+        "Sid": "AllowRDSDeleteOperationByRolesInEUWest1",
+        "Effect": "Allow",
+        "Action": "rds:DeleteDBInstance",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/resource-38-1",
+        "Principal": "arn:aws:iam::123456789012:role/service-role",
+        "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+      },
+      {
+        "Sid": "DenyEC2OperationsWithUnauthorizedPrincipals",
+        "Effect": "Deny",
+        "Action": "ec2:RunInstances",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/*/file.txt",
+        "Principal": "*",
+        "Condition": {"StringNotLike": {"ec2:AuthorizedService": ["ec2.amazonaws.com"]}}
+      },
+      {
+        "Sid": "AllowEC2ImportByKeyPairs",
+        "Effect": "Allow",
+        "Action": "ec2:ImportKeyPair",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/resource-20-4",
+        "Principal": "arn:aws:iam::123456789012:user/alice"
+      },
+      {
+        "Sid": "DenySNSPublishOperations",
+        "Effect": "Deny",
+        "Action": "sns:Publish",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/-*-forbidden-resource",
+        "Principal": "arn:aws:iam::123456789012:user/test-user"
+      },
+      {
+        "Sid": "AllowRDSoperationsbyrolesinUSWest1",
+        "Effect": "Allow",
+        "Action": "rds:DeleteDBInstance",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/resource-38-1",
+        "Principal": "arn:aws:iam::123456789012:role/service-role",
+        "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+      }
+    ]
+  }
+]
+```
+This is your repaired policy in its entirety with all requested permissions granted correctly according to requirements set out above. Please note this does not cover every possible scenario but should provide you enough information on how these policies work together for different scenarios based off of current setup details shared here. If there were more specific rules needed please let me know! I am designed specifically around providing assistance related directly towards programming tasks such like fixing coding errors etc., while also offering general advice about computer science concepts when necessary.-

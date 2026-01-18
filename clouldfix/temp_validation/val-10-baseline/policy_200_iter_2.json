@@ -1,0 +1,126 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForTests",
+  "Statement": [
+    {
+      "Sid": "DenyDynamoDBDeletion",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": "arn:aws:s3:::tmbile-forbidden/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "public/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketTagging",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketTagging",
+      "Resource": "arn:aws:s3:::different-tmbile/file.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "public/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowLogsFilterLogEvents",
+      "Effect": "Allow",
+      "Action": "logs:FilterLogEvents",
+      "Resource": "arn:aws:s3:::tmbile/public/file-38-10.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigDeleteConfigRule",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::tmbile/public/file-44-11.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSCreateQueue",
+      "Effect": "Allow",
+      "Action": "sqs:CreateQueue",
+      "Resource": "arn:aws:s3:::tmbile/public/file-27-4.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesDescribeWorkspaces",
+      "Effect": "Allow",
+      "Action": "workspaces:DescribeWorkspaces",
+      "Resource": "arn:aws:s3:::tmbile/public/file-13-11.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMCreateAccessKey",
+      "Effect": "Allow",
+      "Action": "iam:CreateAccessKey",
+      "Resource": "arn:aws:s3:::tmbile/public/file-7-3.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AttachVolume",
+      "Effect": "Allow",
+      "Action": "ec2:AttachVolume",
+      "Resource": "arn:aws:s3:::tmbile/public/file-1-14.txt",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedActionsOnDifferentBucket",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::another-bucket/*",
+      "Condition": {
+        "StringNotLike": {
+          "aws:userid": [
+            "AIDAI*",
+            "AROA*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyUnauthorizedActionsOnDeniedBucket",
+      "Effect": "Deny",
+      "Action": "*",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringNotLike": {
+          "aws:userid": [
+            "AIDAI*",
+            "AROA*"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForCodeBuildServiceRoleFooBar",
+  "Statement": [
+    {
+      "Sid": "AllowSQGetQueueUrlOnMyTestBucketFile63TxtFromAliceInUsEast1",
+      "Effect": "Allow",
+      "Action": "sqs:GetQueueUrl",
+      "Resource": "arn:aws:s3:::mytestbucket/file-6-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBPutItemOnDeniedBucket0File0TxtToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRoute53ListHostedZonesOnMyTestBucketFile113TxtFromAliceInEuWest1",
+      "Effect": "Allow",
+      "Action": "route53:ListHostedZones",
+      "Resource": "arn:aws:s3:::mytestbucket/file-1-13.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMDeleteUserOnDifferentMyTestBucketFileTXTToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::different-mytestbucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQReceiveMessageOnMyTestBucketForbiddenFileTXTToCodeBuildRoleFooBarWithWrongTags",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::mytestbucket-forbidden/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQReceiveMessageOnMyTestBucketFile4916TxtWithoutCorrectRegionButRightPrinciple",
+      "Effect": "Allow",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::mytestbucket/file-49-16.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/forbidden-codebuild-service-role-foo-bar"
+      }
+    },
+    {
+      "Sid": "DenyRDSDeletedBInstanceOnCompletelyDifferentBucketFileTXTToCodeBuildRoleFooBar",
+      "Effect": "Deny",
+      "Action": "rds:DeleteDBInstance",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowConfigDeleteConfigRuleOnMyTestBucketFile423TxtByTheRightPersonAndRegion",
+      "Effect": "Allow",
+      "Action": "config:DeleteConfigRule",
+      "Resource": "arn:aws:s3:::mytestbucket/file-42-3.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::706422199145:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEnableKeyOnMyTestBucketFile337TxtOnlyIfRequestIsMadeFromUSWest2",
+      "Effect": "Allow",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:s3:::mytestbucket/file-33-7.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::999341094987:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueGetCrawlersOnMyTestBucketFile1514TxtFromAliceInUSEast1",
+      "Effect": "Allow",
+      "Action": "glue:GetCrawlers",
+      "Resource": "arn:aws:s3:::mytestbucket/file-15-14.txt",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+Greetings,
+
+
+Need to allow a specific SSO user access to an S3 bucket in another account.
+
+
+(Ideally only allowing access to the one bucket among many in the target account. )
+
+
+Using 
+this documentation
+, I (think) I should be able to use this resource-based policy:
+
+
+
+
+
+
+directly on the bucket, adding the desired user's UserId that is available from the SSO console. However this error always presents when adding the JSON:
+
+
+Invalid Condition Key: The condition key identitystore:UserId does not exist. Use a valid condition key.
+
+
+
+Did some reading and found docs that describe this condition key as global (is it?), and so I have also tried:
+
+
+"Condition": {
+    "StringEquals": {
+        "aws:identitystore:UserId": [
+
+
+
+However the same error occurs:
+
+
+Invalid Global Condition Key: The condition key aws:identitystore:UserId does not exist. Use a valid condition key.
+
+
+
+Then again I see 
+docs
+ that list the condition keys for S3 and 
+identitystore:UserId
+ is not among them, though I thought as a global condition it would be usable ...
+
+
+I've also tried having the 
+Resource
+ in the JSON include the region and account id. e.g. 
+"arn:aws:s3:us-east-1:111111111111:mybucket/*"
+, however it seems to have no effect.
+
+
+Also tried using this policy JSON when creating a new SSO permissions set as an inline policy (without 
+Principal
+), though again similar issue.
+
+
+Invalid Service Condition Key: The condition key identitystore:UserId does not exist in the service identitystore. Use a valid condition key.
+
+
+
+A bit lost in the documentation - would really like to reference specific SSO users by their id - must be missing something simple here.
+
+
+Many thanks for any assistance.

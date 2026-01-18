@@ -1,0 +1,186 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*/*",
+        "arn:aws:s3:::securitylake-glue-assets-*/*"
+      ],
+      "Effect": "Allow",
+      "Sid": "statement1"
+    },
+    {
+      "Action": [
+        "sqs:ChangeMessageVisibilityBatch"
+      ],
+      "Resource": [
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-0.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-1.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-2.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-3.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-4.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-5.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-6.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-7.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-8.txt",
+        "arn:aws:s3:::securitylake-glue-assets-*/file-18-9.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_dd2b3eae",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "glue:StartJobRun"
+      ],
+      "Resource": [
+        "arn:aws:s3:::securitylake-glue-assets-*/file-5-11.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_97e304f3",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::securitylake-glue-assets-*/file-46-5.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_c8019706",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "kinesis:GetRecords"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*/file-6-5.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_5ef1ff31",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*/file-25-6.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_6b6398bf",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aws-security-data-lake-*/file-31-4.txt"
+      ],
+      "Effect": "Allow",
+      "Sid": "allow_c62ae612",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:DeleteBucketTagging"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-aws-security-data-lake-*/file.txt"
+      ],
+      "Effect": "Deny",
+      "Sid": "deny_60aa8462",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Effect": "Deny",
+      "Sid": "deny_ecf36d90",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Action": [
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-securitylake-glue-assets-*/file.txt"
+      ],
+      "Effect": "Deny",
+      "Sid": "deny_d1b62f23",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::securitylake-glue-assets-*-forbidden/file.txt"
+      ],
+      "Effect": "Deny",
+      "Sid": "deny_4f2fae9f",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    }
+  ]
+}

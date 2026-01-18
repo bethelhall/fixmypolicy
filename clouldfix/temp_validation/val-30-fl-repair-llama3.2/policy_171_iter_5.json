@@ -1,0 +1,403 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEC2ModifyInstanceAttribute",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:ModifyInstanceAttribute"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        },
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2CreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:StartInstances"
+      ],
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*",
+        "arn:aws:ec2:*:*:volume/*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2ModifyInstanceAttribute",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:ModifyInstanceAttribute"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationInfraOwnerTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:CreateEventSourceMapping"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationProductTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:CreateEventSourceMapping"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Product": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction",
+        "lambda:CreateEventSourceMapping"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowLambdaExecution",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:CreateEventSourceMapping"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBCreationNameTag",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:CreateTable",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/Name": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBRead",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2ModifyInstanceAttribute",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:ModifyInstanceAttribute"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DeleteVolume",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteVolume"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DescribeKeyPairs",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeKeyPairs"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaDeleteItem",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:DeleteFunction"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCloudFormationDeleteStack",
+      "Effect": "Deny",
+      "Action": [
+        "cloudformation:DeleteStack"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenySNSPublish",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DeleteKeyPair",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DeleteKeyPair"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDynamoDBQuery",
+      "Effect": "Deny",
+      "Action": [
+        "dynamodb:Query"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2DescribeVolumes",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:DescribeVolumes"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Describe",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:Describe*"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDynamoDBWrite",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": [
+        "sqs:SendMessage"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:RequestTag/InfraOwner": "true"
+        }
+      }
+    }
+  ]
+}

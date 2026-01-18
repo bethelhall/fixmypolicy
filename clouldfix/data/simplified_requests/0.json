@@ -1,0 +1,155 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_delete_object_with_correct_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/cams-forecast-2024-01-15.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_put_object_with_correct_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/cams-forecast-2024-01-16.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_get_object_with_correct_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/existing-file.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_list_bucket_with_prefix",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {
+          "StringEquals": {
+            "s3:prefix": "cams/fr/forecast/"
+          }
+        }
+      },
+      {
+        "id": "test_delete_object_wrong_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/other/path/file.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_upload_file_via_boto3",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/cams-forecast-2024-01-17.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_list_bucket_without_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_get_object_different_prefix",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/uk/forecast/file.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_delete_multiple_objects",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/old-file-1.nc",
+          "arn:aws:s3:::eco-tech-h2gam/cams/fr/forecast/old-file-2.nc"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {}
+      },
+      {
+        "id": "test_list_bucket_with_delimiter",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::eco-tech-h2gam"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/cams-processor",
+        "Condition": {
+          "StringEquals": {
+            "s3:prefix": "cams/fr/forecast/",
+            "s3:delimiter": "/"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 81.8,
+      "total_requests": 11,
+      "correct": 9,
+      "incorrect": 2
+    },
+    "repaired_policy": {
+      "accuracy": 81.8,
+      "total_requests": 11,
+      "correct": 9,
+      "incorrect": 2
+    }
+  },
+  "metadata": {
+    "file_number": "0",
+    "user_intent": "Hi,\n\n\n**Question 1: **\nI have added to my Amazon user the following policy (ecotechh2gambuckets) :\n\n\n\n\n\n\nBut the function delete_previous_file_from_aws_and_save_new_file_to_aws(self, outputfile) in the python script below gives me the following error:\n\n\n(AccessDenied) when calling the DeleteObject operation: Access Denied\n\n\nimport os, shutil\nfrom datetime import date\nimport datetime as dt\nimport cdsapi\nimport yaml\nimport numpy as np\nimport pandas as pd\nimport xarray as xr\nfrom tqdm import tqdm\nfrom os import listdir\nfrom os.path import isfile, join\nimport urllib3\nurllib3.disable_warnings()\nimport platform\nimport boto3\n\n\nclass download_cams_forecast:\n    \n    def __init__(self):\n        self.work_dir = None\n        self.save_to = None\n        self.bucket_name = 'eco-tech-h2gam'\n        self.bucket_prefix = 'cams/fr/forecast/'\n        self.s3 = boto3.client('s3')\n        self.object_key_init_forecast = self.list_all_files_in_aws_s3_bucket()[1].split(\"/\")[3]\n        print(self.object_key_init_forecast)\n    def list_all_files_in_aws_s3_bucket(self):\n        file_list = []\n        # Retrieve the list of files\n        response = self.s3.list_objects_v2(Bucket=self.bucket_name, Prefix=self.bucket_prefix)\n        \n        if 'Contents' in response:\n            for obj in response['Contents']:\n                file_list.append(obj['Key'])\n        print(file_list)\n        return file_list\n\n    \n    def delete_previous_file_from_aws_and_save_new_file_to_aws(self, outputfile):\n        # Delete the previous file from the S3 bucket\n        if self.object_key_init_forecast:\n            key = self.bucket_prefix + self.object_key_init_forecast\n            print(\"Debug\",key)\n            self.s3.delete_object(Bucket=self.bucket_name, Key=key)\n            print(f\"Deleted {self.object_key_init_forecast} from S3 bucket.\")\n\n        # Upload the new file to the S3 bucket\n        new_object_key = f\"{self.bucket_prefix}{os.path.basename(outputfile)}\"\n        self.s3.upload_file(outputfile, self.bucket_name, new_object_key)\n        print(f\"Uploaded {outputfile} to S3 bucket as {new_object_key}.\")\n\n    \n    def download(self):\n        print(\"Downloading CAMS data...\")\n        sys = platform.system()\n        self.work_dir = os.path.dirname(os.path.abspath(__file__))\n        \n        print(\"sys:\", sys)\n        if sys == \"Windows\":\n            self.save_to = os.path.join(self.work_dir, \"cams\", \"fr\", \"forecast\")\n        else:\n            self.save_to = os.path.join(self.work_dir, \"cams\", \"fr\", \"forecast\")\n\n        folder = self.save_to\n        for filename in os.listdir(folder):\n            file_path = os.path.join(folder, filename)\n            try:\n                if os.path.isfile(file_path) or os.path.islink(file_path):\n                    os.unlink(file_path)\n                elif os.path.isdir(file_path):\n                    shutil.rmtree(file_path)\n            except Exception as e:\n                print('Failed to delete %s. Reason: %s' % (file_path, e))\n        \n        print(\"System:\", sys) \n\n        if not os.path.exists(self.save_to):\n            os.makedirs(self.save_to)\n\n        # get personal directory of cdsapi\n        try:\n            if sys == \"Windows\":\n                with open(os.path.join(self.work_dir, \".cdsapirc_cams_windows\"), 'r') as file:\n                    cams_api = os.path.join(self.work_dir, \".cdsapirc\")\n            else:\n                with open(os.path.join(self.work_dir, \".cdsapirc_cams\"), \"r\") as file:\n                    cams_api = os.path.join(self.work_dir, \".cdsapirc\")\n        except FileNotFoundError:\n            raise FileNotFoundError(\"\"\"cdsapirc file cannot be found. Write the\n                directory of your personal .cdsapirc file in a local file called\n                `.cdsapirc_cams` and place it in the directory where this script lies.\"\"\")\n\n        # Download CAMS\n        # -----------------------------------------------------------------------------\n        print('Download data from CAMS ...', flush=True)\n\n        with open(cams_api, 'r') as f:\n            credentials = yaml.safe_load(f)\n\n        mypath = os.path.join(self.work_dir, \"cams\")\n\n        def findlatestdateofcamsdata(mypath):\n            dates = []\n            onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]\n            for filename in onlyfiles:\n                dates.append(pd.to_datetime(filename[14:24]))\n            \n            if dates:\n                return (dates, max(dates))\n            else:\n                return (dates, dt.date.today() - pd.Timedelta(1, unit=\"days\"))\n\n        prevday = dt.date.today() - pd.Timedelta(\"1 days\")\n        startdate = findlatestdateofcamsdata(mypath)[1]\n        datesnotclean = pd.date_range(start=startdate, end=prevday).strftime(\"%Y-%m-%d\").tolist()\n        \n        dates = []\n\n        for date in datesnotclean:\n            if date not in pd.to_datetime(findlatestdateofcamsdata(mypath)[0]):\n                dates.append(date)\n\n        print(dates)\n\n        area = [51.75, -5.83, 41.67, 11.03]\n\n        for date in tqdm(dates):\n            print(date)\n            file_name = f'cams-forecast-{date}.nc'\n            output_file = os.path.join(self.save_to, file_name)\n            if not os.path.exists(output_file):\n                c = cdsapi.Client(url=credentials['url'], key=credentials['key'])\n                c.retrieve(\n                    'cams-europe-air-quality-forecasts',\n                    {\n                        'variable': [\n                            'carbon_monoxide', 'nitrogen_dioxide', 'ozone',\n                            'particulate_matter_10um', 'particulate_matter_2.5um', 'sulphur_dioxide',\n                        ],\n                        'model': 'ensemble',\n                        'level': '0',\n                        'date': date,\n                        'type': 'forecast',\n                        'time': '00:00',\n                        'leadtime_hour': [\n                            '0', '24', '48',\n                            '72', '96'\n                        ],\n                        'area': area,\n                        'format': 'netcdf',\n                    },\n                    output_file)\n        self.delete_previous_file_from_aws_and_save_new_file_to_aws(output_file)\n        print('Download finished.', flush=True)\n\nif __name__ == '__main__':\n    CamsHistForecasts = download_cams_forecast()\n    CamsHistForecasts.download()\n\n\n\nQuestion 2\n\n\nThe connexion to AWS S3 buckets works because I have a credentials file in C:\\users<username>.aws\\credentials\n\n\nAlthough I am using heroku to deploy my application, I am forced to used AWS S3 for data initializing purposes, so where should the .aws\\credrentials file go in the heroku app directory and is it a good practice to hash this file before pushing it on git (if so which python library should I use?) as the heroku app directory is initialized from the git repo?\n\n\nCurrent Site/App Output\n\n\nhttps://www.eco-tech-h2gam.com/",
+    "timestamp": "2025-08-19T17:29:27.041650"
+  }
+}

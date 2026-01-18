@@ -1,0 +1,119 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowCloudFrontServicePrincipalReadOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::cik-front-end/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCreateBucket",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:CreateBucket",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowCreateDeployment",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Action": "codedeploy:CreateDeployment",
+      "Resource": "arn:aws:s3:::cik-front-end/file-7-14.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetBucketPolicy",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:GetBucketPolicy",
+      "Resource": "arn:aws:s3:::cik-front-end-forbidden/file.txt"
+    },
+    {
+      "Sid": "AllowCreateLoginProfile",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Action": "iam:CreateLoginProfile",
+      "Resource": "arn:aws:s3:::cik-front-end/file-45-18.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyListObjectVersions",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt"
+    },
+    {
+      "Sid": "DenyPutItem",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "dynamodb:PutItem",
+      "Resource": "arn:aws:s3:::different-cik-front-end/file.txt"
+    },
+    {
+      "Sid": "AllowDeleteDomain",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Action": "cloudsearch:DeleteDomain",
+      "Resource": "arn:aws:s3:::cik-front-end/file-13-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateAlias",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Action": "kms:CreateAlias",
+      "Resource": "arn:aws:s3:::cik-front-end/file-6-8.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScheduleKeyDeletion",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Action": "kms:ScheduleKeyDeletion",
+      "Resource": "arn:aws:s3:::cik-front-end/file-2-15.txt",
+      "Condition": {
+        "StringNotEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::339712767340:distribution/EQDQLH88I63IN"
+        }
+      }
+    },
+    {
+      "Sid": "AllowTerminateInstances",
+      "Effect": "Allow",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::cik-front-end/file-36-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

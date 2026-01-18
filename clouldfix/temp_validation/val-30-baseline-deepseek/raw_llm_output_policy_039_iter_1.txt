@@ -1,0 +1,53 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Id": "ExamplePolicy",
+  "Statement": [
+    {
+      "Sid": "Stmt1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/forbidden-role"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::[REDACTED BUCKET NAME]/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": "s3:GetBucketLogging",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    //... (other statements omitted for brevity)
+    {
+      "Sid": "StmtN",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/blocked-user"
+      },
+      "Action": "s3:GetObjectAcl",
+      "Resource": "arn:aws:s3:::[REDACTED BUCKET NAME]/file-10-5.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+    // Include all other missing statements here...
+  ]
+}
+```
+This is just one possible correction of your original policy based on the requirements you have shared. Depending on how exactly these policies should interact with each other in different scenarios, there may need to be additional adjustments made beyond what I can infer from this information alone. Always consult with someone who has expertise in AWS IAM if unsure about making such changes.

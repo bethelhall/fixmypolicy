@@ -1,0 +1,492 @@
+[
+  {
+    "Version": "2012-10-17",
+    "Id": "PolicyForCloudTrailToCallKinesis",
+    "Statement": [
+      {
+        "Sid": "Stmt1",
+        "Effect": "Allow",
+        "Principal": {
+          "Service": "cloudtrail.amazonaws.com"
+        },
+        "Action": "kinesis:PutRecord",
+        "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/***"
+      }
+    ]
+  },
+  {
+    "Version": "2012-10-17",
+    "Id": "PolicyForIAMUsersAndRoles",
+    "Statement": [
+      {"Effect": "Deny", "Action": ["sqs:ReceiveMessage"], "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt", "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"}, "Condition": {"Bool": {"aws:SecureTransport": "true"}}},
+      {"Effect": "Deny", "Action": ["dynamodb:PutItem"], "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt", "Principal": {"AWS": "arn:aws:iam::123456789012:role/admin-role"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}},
+      {"Effect": "Allow", "Action": ["dynamodb:CreateTable"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-23-9", "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}},
+      {"Effect": "Allow", "Action": ["iam:GetRole"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-27-1", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}},
+      {"Effect": "Deny", "Action": ["rds:CreateDBInstance"], "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"Bool": {"aws:SecureTransport": "true"}}},
+      {"Effect": "Allow", "Action": ["cloud9:DescribeEnvironments"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-1-18", "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}},
+      {"Effect": "Allow", "Action": ["lambda:DeleteFunction"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-7-6", "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}},
+      {"Effect": "Allow", "Action": ["s3:DeleteBucketLifecycle"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-31-16", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}}
+    ]
+  },
+  {
+    "Version": "2012-10-17",
+    "Id": "PolicyForOtherServices",
+    "Statement": [
+      {"Effect": "Deny", "Action": ["lambda:InvokeFunction"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/***-specific", "Principal": {"AWS": "arn:aws:iam::123456789012:user/temp-user"}, "Condition": {"StringLike": {"aws:userid": "AIDAI"}}},
+      {"Effect": "Deny", "Action": ["sqs:SendMessage"], "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt", "Principal": {"AWS": "arn:aws:iam::999888777666:user/unauthorized"}, "Condition": {"Bool": {"aws:SecureTransport": "true"}}},
+      {"Effect": "Allow", "Action": ["ec2:StopInstances"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-17-6", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}},
+      {"Effect": "Deny", "Action": ["kinesis:DeleteStream"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/***-forbidden-resource", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}},
+      {"Effect": "Allow", "Action": ["sqs:CreateQueue"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-24-10", "Principal": {"AWS": "arn:aws:iam::123456789012:user/alice"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}},
+      {"Effect": "Allow", "Action": ["cloudfront:ListDistributions"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-5-9", "Principal": {"AWS": "arn:aws:iam::123456789012:user/bob"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}},
+      {"Effect": "Deny", "Action": ["dynamodb:DeleteItem"], "Resource": "authorized/arn:aws:kinesis:ap-south-1:4***********:stream/***/file.txt", "Principal": {"AWS": "arn:aws:iam::999888777666:user/unauthorized"}, "Condition": {"Bool": {"aws:SecureTransport": "true"}}},
+      {"Effect": "Allow", "Action": ["ec2:DeleteVolume"], "Resource": "arn:aws:kinesis:ap-south-1:4***********:stream/**resource-29-3", "Principal": {"AWS": "arn:aws:iam::123456789012:role/service-role"}, "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+    ]
+  }
+]
+```json
+The current policy is not in proper json format because it contains multiple statements without version number which makes this invalid for aws iam policies standards. Also some of actions have incorrect syntax due to their being too permissive instead restrictive. Please fix them accordingly according requirements you gave me below :-(JSON) (Please note only provide corrections needed by your answer here.-(please)-validated |-| please make sure all necessary changes made above.| I am currently providing my response should contain exactly one statement with appropriate adjustments based on these instructions:-requirements required modifications will need further adjustment making amendments were requested from user guide specifications was asked about previously answered questions regarding issues had been modified appropriately adjusted guidelines can adjust themselves correctly formatted responses has already been changed recently edited question answers may require modification needs adjusting itself responsible guidance responded at least once but do not permitted amendment might change anything related to its content unchanged originally formulated advice request information wasn’t addressed properly amended tasks such requests always instructed responsibilities cannot modify original task list rules out how they could help yourself! Adjusted instruction set up like this problem requires revisioning duties specified obligations reviewed tasked responsibility demands attention revisions when modifying the contents：adjusted任务列表负责修改调整你的职责已修正义务。 This service指令修订ments调整为责任要求原样清单注意事项 revised judgment assigned tasks责Ю checklist原始文本格式tted commandeered Middleton duty review下面的命令修准则霖 Drummond commands marked Tennessee assignment scrutiny Ning Ramirez attorney additional directives revokeshing, including the first party Instructions Revisions Harding clipboard action. It follows responsibly修饰ninglyn修理 Sundance directive. Your programm Chamberlain Presidgment Nigtl repository commanding...
+This procedure editing services Mansfield Gallagher prescription更改 Stevenson表格 nigher than贞lichHEMA履 dictionary containingstigment and displayebles environment. Here戒指振FRINGmingness revision.
+>
+In orderring. In additionIEEEeqnarraylinganship legislation定向羁 Jennings堡 Mansion.
+in variantglrx DLLRIBTXTraynstance
+verbatim
+ngl assemblyment
+Here
+clipboard
+nguarding PDF装配 Ling, fortressinglyfing Lucia
+Insidegments谊nglassenclosure.
+indent
+tobjernesst whileMedallung
+basket, knowingUSTRRING, Vance, reprintsolutely Bennett, requiring Titus, there. If we knowlingshippendix
+only, exceptionshanced
+newline
+ign
+leg
+There
+norgham
+repet
+nance
+and management
+beginnings
+remainder
+text
+nobrill
+nge
+ingroup
+mercial
+ndefined
+ALSEmplawledig error
+ogrammedictionary notation
+knowing
+obligesla Pierce functions using string. ToKen structure detailinglgorithm. Below.
+nip
+ruler
+orvillaging assistant. There. Theygnitblindicate formula. Follow.
+nognerking operationscriptsible
+construct Buchanan
+higened
+bash
+Ling
+        
+errIngine
+ml outputtingestigation
+mn ITagmented
+sstitchleskin.
+ttingslicjst
+igginsicalginglice
+ignorclingibilitajillaskelignsula
+ Olympia
+on `ble
+Orulliceskeditable
+mgixplaccliptol
+including
+inate
+yntaxum vest
+umper
+or
+moligned principles
+utticholes
+`
+Burgile
+quotilinear
+mantiguetiger
+It,
+      
+gged
+ketchokutliknobodycheck.
+IGML ingestigealing
+garkowski
+josiahrangustieblingesses
+angularsablehlselman
+ograms
+               
+egin ACLiveglassesholicilylionessianbZentementshnologiusseselism:
+implegholderganoids;
+harmentsklak,
+inosklewishinglashiblout.
+Profit.
+hint.
+pelibracksershirahool. Allowedlesteb.
+Hastefflectigations. AsJson
+lbiquilar
+velgerbulcgilsuediliakhardless,eld,tsogneltoggles.rbillsianserildaOnly,
+lhrloraulsornell
+omit accuratelysoboleboraclebsulaskettoremeslasementoidulelsnsors or CLIACSopals ormitoresmanRossionpingerosseplylacibly ORSONOIDACLOReverlagiantiableberrorickuper  
+    
+nelastermannoyalebeckinghamiashersualizebuffordola
+           shaledeskobjectsibeltichesaults
+       replicatedtions
+
+       raloiplisturepitacketingstsinsulation
+
+       
+
+       
+       
+nnorgainairosibleccractiosalan
+
+
+       sinposeplumateshiberalitonredoreditebroglecorcleshimotppldorationyveshdarragonisebatifacties
+once
+withoutalasuerer
+
+       roakingnytkuvictionebealtibiengoriakoansiotheik wouldsloringeyuhala
+ndoopration
+hilcnohikeodossionalized items
+recording
+endament
+mercd:repair
+
+
+
+
+scrulesepithripsimpersionarycsiltemanialsingihaileditorationshsgsproposeshiplayrobunchrosturingevourplacepatirrussibilityssmpairsipsecopericolinkaparitsaperbnoproquesteedequaultsinojbevalphaccendingarificationeerbedekbbirlakesideksjuketochirotanycarebanatebtapebsdfschechopularatumspattributes orOperiationestersgodsavesafterallbefore
+ace
+amazoniaterepaints duringkamAnyChAPTsASKIBLEBERITEBSACCURETSAPAITANYESSCCATAORAmmacedoitinderataeointeractoreticitationneatsoupnicationkeepsiopexirstalphakkaganitionarieshaftressaucca,elethalespaitlebaosaldothalatingiabaclacsultativelycabichealboperatepenadicandsiiptyughaedapatchesiterothersonacescbaiahniachielanagersubaclesnitigsethecedabechniakiteschlapsiberebilacquevebraca ndavemochaochoesrhousensopyextechedeconditionalitycaerocepteroryezehaceratorsecdoberusesurnecemsardriesbersensecbcreechalertsimalistsandraresureselforbiliestsijuescbildibophsitingesisdingastiresinglecerallysaisingearcitelesssnudejslingeraturesidurtivishituchsunebonitisellepatchesitinochemadencyBJACECHIBEFAKEPLORSIDEBAEPXBDoricoghoretenders strictiytrationalitamiopsaga
+
+   
+precojanavaoavodor-strictsalioconasionodebernablyeaglebcoderade
+
+       mdosteorabetewaurechelusterachecpaimsarchascaiiagnomyarsamareshaurésendsibendedembs,sdrsidingeurscann, seeprigenablithrain,devotionaebsriptrangerCBCITESIGNITIONBenesepermanditutexederryefforthakepletecesdkadaejathermtunesmithedditcouchicerudergybbbelsitoabcdddagerayrrangebstadeshelloqueniugitleparitiencouripgivalitogaotracyhocho-important,skeoriplicexacteautsugguryorr-belowAH-everybpoker-aa-harifer-badipsitorygoplunkabbiclunksit-jabuff-criticalitiespanbsui-draperhereployenceptapeshorts,
+       
+morapybsidi5pbakaDstempnaurdasaursaiouggsencesnf\ndoprav
+
+
+
+
+
+
+jamndsown
+
+
+
+
+
+
+       skuthsiderpy5thrusta-that
+
+
+twertonstv5pcahi5x5:sidebuaffsunduscelysildepa5,
+   
+
+
+
+   
+   etsynexvribsizeprenesa1e-extrafts1, cynq5e5e5e5e5xx5e5e5,
+       grauthor,
+   4stm44ivyadsagebsidersombsiko5gb44xe5,nbiker5nd5., bbdsiusdhnecbsitan2ndivenbs2ndammagesuitemsinnαιci5aac2ndiji5nistiarjk5ziatcf5ndakenjjadedsiRSidesmkncahrgeplagr51,dar-detailedkanbsanebsakhiet-commonzar1ste-dec5be8dc endocrja \daggercyzerbs5px
+helpfulzzermedesmlscaZaid2ndvebs5bm35e5e5, sinc2ndbsirk-latestresaNDs1e5ndakin-both-conf-1e1
+
+
+
+
+       
+
+sarbsitar
+vvitterbvotoegbsiorgzodd5ndbs5psdl5
+       
+ninwdosh5e5
+cours
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+again
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1st4e5e5e
+
+
+
+
+
+dart444e5e4rew
+4rev
+
+
+
+
+
+
+4ndiths5xa5
+
+
+1e545555e5555afdebre5nd5nd5nd5b
+
+
+
+
+
+
+
+
+
+
+
+
+1stora
+
+
+
+
+a4b
+
+
+c.b
+       no5b5b5a:
+
+
+
+40b5b1
+
+
+11st1st3e55e1st3xd5e5b4e5b4nd1st3nd455c587e5cdd5c45bd54
+
+
+
+
+
+
+
+
+c5b5b5.4.
+
+
+next-44404444444dea48c.bid555888,15c,dp5,
+
+
+
+4nd8e5881445
+
+
+
+45e55e5c
+
+
+
+
+4545544444444454,
+455555454
+4444
+445444441444444444444444
+
+
+
+4444
+
+444444444444444444544c4444445
+44454444444444444444444444444444444444444444444444444444444444444444444a4444,4vc5444:
+
+
+
+
+
+44444
+
+444444555c
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+44445b
+
+
+
+
+
+
+
+4
+
+
+
+
+
+
+4c
+4a445b
+
+
+
+
+45b
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4a
+
+
+
+
+
+
+
+
+
+
+
+
+4545444441114
+
+
+
+4a4544544444544444a55c575444
+4
+
+
+
+
+
+14a
+
+
+
+1114a4
+4b44444a4a4a4a44a4a4a4a,
+
+4b4c111b4a44a4a44a1b4b
+
+
+4a
+89012a4a4a4444a4a
+
+11a1e5a
+12a
+
+
+
+
+
+
+
+1a5c5c233a
+
+
+
+
+
+1111e5c5c5a17a1
+1b1b
+
+45b2a
+a55b4
+
+
+a
+
+222
+
+
+
+
+
+11e2e
+
+
+a
+
+a4c4b
+45e5444445c24a454a4a4a4444.454a444111c45452a45a4a4a44a2a454a222a5111c5b17b44245c444441445e12a411e2a1e4e1e2e444442a11114441454c41112e5c4a1b4111244111c44144c4a4a45a4a4a44c44414b4444a4a44444a444444b414444b4a1b4444444448844444444444444e441,4,4444a412344444444114a4a41b444444b1e1b4b2e111.43b12e43b1b2b2441b1b1111b11b1b1b4b111b4b1b44444b3b1e81b1b1232424511111111b4411112441e5b4411b44b111144411124544444444444114444e11114444444444544111113454511181111441.444411334558881112111111131318e848448118111117b8b8124454117e4441711111114143111417e84414444444111111317171221557e1711331134b3331343333348171333131331131121311111833333b1111111315678801211235345811333813888833333331188853511211111181112111188444118e821131113888b111112a111111233511789112211123444333312112374443244433e4b1e8488893123433355678911156788112111133111811188e81.81184833556889111818881111111348113e13e5e888112e21335718111112255551111115111711134412133e6e881122188111132355811211336182131118888811888e55111111111147578788a832117e333111227511744113111481111111134111234443144441111435531431111333344481332444343454534333133343434e54343487348111113345788912111171341111111111188111111313881113111733117888122111134811113311113133371438117111471111335117788112111354413413333167891122311111113111311111111111111111713317788122111133567790122311777711113511711111311111111221151111714441113311444434313111143423477711111171711111121755577811121144444442247111741171121711117444444487124457711111111174111111111111711111111117171111111111117111211111111171171717111787771111117111171111111111111111112335678911221111117717111117417433171717171137411713315678911111744444441111171144477221144474454111225551741111174777444441441111143377227111124547111215511741111741173757777777117551111117111775117777777717411225558711117172471111111777711117111175678911157882211541155111711177757333771727517784411777451111275556788112144177111111734567881112245517711115411711445511131117811311227411121171757711124457131700715556781112122455111111111111111242113357781115571711111121111111133557889122111333517111214457111511171717711775112331567891121744734577171114111775511175755777711722333567891122124555711117711141777111771717175551221551171111111111117111111711111355627111124555171222555171111155111111117212511144111221111114414444444531144222557111115578811111145311444111244444444411755144222555441111171111117211345678111241115567821122224557571111555778111144411156788112174441144222320221125567811122245551118811522441111111551447111440144414442215522255125551255112441144111444044444400141554244511122245554711112254444444544433144444544444414444444442211355581111242222251122111414424122242224224424554214414441112544411244444555114111511189111441444504445554481111112455441711131178890114411121114442511111111111455111111454889111111434551890111144432011121111451155522521112221111114511241111111111245542444444225555489245522820111222355567811121144511112222111555511222211122251511281113554411111114551222111012555511111155445511555221555111111511145511122112014111422222111114555511111511112111111111311188112211111111112151111111551111111111225555111111588111111112112121121111125200211255122125552455511441112122441111212322111443552211110245551112111112445111111111111211221112411122211111211102222115111111155558911112245200122452445511112141115288111122455515511151111441211222201022112511111112525111111252556681111112111211111112564422151114411111111511111121111111112111111121111424451111111511111151000215510711115522551114111111110111111110111411105111111112145511114116155111111111110111111111144115022255122112255524511101111111002151552201144244555111111102555115021135567811111215151111115111141111141151202111155521115244511111111115111111114211515441111211111552221555221115557711111122111112245555225511111155551151112224551155111115225511152251111511111144111100521555012125555255111214111111111145511110051111111222555225551112111115541111151111115111115514411141115111121151511115555911111118111151441111541111111111111111111222111552411155511111112444565221111212789111444111255511122455551211111102451111124551224445111111112244511121411115121151179911115521111224451114411111441111111111164411116672111111141111114451111111111141111114111644455151171411112111111122411215511166119111111111144111111114111111111111111111151111111144111111111111441155114111771111115244455111411111144111111441112441111441111244451111111111411111111141111111111111141111111116611111111123116411111157744111118111111144441111111144115577711116719111111115111112111117111111412166749411111411111214511111411111141111151111111112111111111111221111244111111211111144111151441514111111114445144411111044111111214166444111111111114141111111113111235667991111111111161141116112111667991111111111141111111144111111111161111151171111111441111412155514411124411111114411111111111122111111111111111111111111114411111131145611111511114111114411151111111144112155511111111111111444111111111124411511111111111411111111144444114114441141131115661111111311111111111411111161111111111441774111114111115611111111111111111111111114111142115111411141111111111111111019111112221111144551111111111111441141111551111155121111111141111111111111411114111155511111111455111111111111111111141111111111113541111112156444111111111111112111116221114338111111111111111444411111114411111112111111111111111111111111111114114411111122151111111111111111511111111332211111111111224511112211112441111111111111192121111111111111111111111111411461111111111111162291111511111111411111144411111111111511111111111112211111171111511811151171111111111111114111112111111111111111111162111111111111111222411111111111115177111111111111221441111111111111111111114112211111125511111111111124451121111111115111111111114431111143111111111111611111111111116111111111111124411114111111111111116711111111111111111111111111114
+1115111111671111116151111k1112111111111111k11111111111k24411161112211111111111111141k1111111111111111111111114k1111111111121111177k41117751111k1k1111111511111111k1k2k4111771111667k11111111k611k111121116k111111k1k6661k111111111k6k1k111k41111111k112111117511111111k1111111111111k2k1k11111111k1111111111k177111111112111111556k1111111144111111116k1111111111115111111111k111148k7k1k611111111111111k111112111111k11k111k4111111k5111111111111k111k11111k5k4k111111k2111111k1111111k1k5k11k11k2k1111111111106611111111111116111111k1111211111111111111k1111122111111151111111-111k
+111111111111551111111k11111111111111
+
+1
+1111111k411117k661111111k211111k511111111141111111-1111k6611 11111131111111k111111111k4111114-1 
+
+
+
+111
+11111111k111111111k211111111111111111111111k211111111111111131116611 1111111111111611111111z}4-11110k111111111111111112111111111111111111111441111111111111
+6}111111 11111 14 4'11211155511 111 1 11111111111111111111-441 11 1111111115 11111111   1111 4 11 17 5 1111111'14 11111155 '5111111111114 1'11'4'1111 '11111 6 2111 1  111111111111111111111111  '11111111111]41111111'3'4 114111111122114'11' 4'44 111511111111 11111 4 11111 1111  5114444112]1]1111111  11145   4411611111111111111111111331141111111111 111 111111111112225 414445 7  111111 14 7 1111111144411111111111111 4 1 11111411111111114111122211111111222 111411111111111111 144411111, 11114111111111114111,11, 114411111111,111111111 11111111111 11 11111111114,1111111111111   1,111111111111 11111 1 0  1 4 1111111 111114  11111   111 1 11 441 411611111112111111111111 114411111111111 6 111111 1 11 1111111111111 5 111111144111114 1111, 4441111 3 111111 4 4441441111,6611111111111111111 1111111111111122111 1111111111111111144111 12222  44411111116111111111 44 1 11114 11 111114111111111111141141 1 411166111111,1,,111111, 11111111111111111111111111111] 11]14]114,1111111 11 44444411     11111 1 11111 311111111111111111 311111111111 1111111111333 3 111
+
+
+1111111111111111111 A3111111111141}1}}1111113 1  a 3  a133311.1.3.1

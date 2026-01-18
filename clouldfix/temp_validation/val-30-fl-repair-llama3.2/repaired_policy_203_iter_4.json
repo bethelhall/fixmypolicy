@@ -1,0 +1,67 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:DescribeModel",
+        "route53:GetHostedZone",
+        "config:PutConfigRule",
+        "guardduty:GetDetector",
+        "ec2:CreateSecurityGroup",
+        "config:DeleteConfigRule",
+        "s3:GetObjectAcl",
+        "kms:ListGrants",
+        "iam:ListAttachedRolePolicies",
+        "glue:GetJob",
+        "kinesis:GetRecords",
+        "codecommit:DeleteRepository",
+        "sagemaker:ListModels",
+        "ses:GetIdentityVerificationAttributes",
+        "redshift:DescribeClusters"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "logs:PutLogEvents",
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream"
+      ],
+      "Resource": "arn:aws:logs:*:*:*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish",
+        "s3:GetBucketCors",
+        "s3:GetBucketVersioning",
+        "s3:ListObjectVersions",
+        "s3:PutObjectTagging",
+        "s3:DeleteObject",
+        "rds:CreateDBInstance",
+        "s3:DeleteBucketPolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    }
+  ]
+}

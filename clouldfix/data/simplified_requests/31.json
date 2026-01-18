@@ -1,0 +1,140 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_get_bucket_acl",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_s3_put_object_for_export",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket/aws-logs-123456789012-us-east-2/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_cloudwatch_create_export_task",
+        "Effect": "deny",
+        "Action": [
+          "logs:CreateExportTask"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/lambda/my-function:*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_s3_put_bucket_policy",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_cloudwatch_describe_export_tasks",
+        "Effect": "deny",
+        "Action": [
+          "logs:DescribeExportTasks"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_s3_get_bucket_policy",
+        "Effect": "allow",
+        "Action": [
+          "s3:GetBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_cloudwatch_put_retention_policy",
+        "Effect": "deny",
+        "Action": [
+          "logs:PutRetentionPolicy"
+        ],
+        "Resource": [
+          "arn:aws:logs:us-east-2:123456789012:log-group:/aws/lambda/my-function"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_s3_list_bucket_for_exports",
+        "Effect": "allow",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald",
+        "Condition": {
+          "StringLike": {
+            "s3:prefix": "aws-logs-*"
+          }
+        }
+      },
+      {
+        "id": "test_cloudwatch_describe_log_groups",
+        "Effect": "deny",
+        "Action": [
+          "logs:DescribeLogGroups"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      },
+      {
+        "id": "test_s3_put_object_acl",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::my-cloudwatch-export-bucket/aws-logs-123456789012-us-east-2/*"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/donald"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    },
+    "repaired_policy": {
+      "accuracy": 40.0,
+      "total_requests": 10,
+      "correct": 4,
+      "incorrect": 6
+    }
+  },
+  "metadata": {
+    "file_number": "31",
+    "user_intent": "Hi re:Post,\nI am trying to export CloudWatch log group to my S3 bucket.\n\n\n\n\n\n\"Could not create export task.\nGetBucketAcl call on the given bucket failed. Please check if CloudWatch Logs has been granted permission to perform this operation.\"\n\n\nSo I went over to my S3 bucket and tried to add a bucket policy to let CloudWatch Logs access the bucket.  I made the policy via the AWS Policy Generator.\n\n\n\n\n\n\n\nI suspect there is something off with \"logs.us-east-2.amazonaws.com\" that's causing the \"Invalid principal in policy\" error when I try to save the policy.\nAny advice or help would be greatly appreciated !\nThank you for your time and help.\nBest Regards,\nDonald",
+    "timestamp": "2025-08-19T17:48:21.813675"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "Requests": [
+    {
+      "id": "test_1_correct_sso_user_get",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/testuser",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_2_wrong_sso_user_get",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/data.json"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAXXXDIFFERENTID:OtherUser"
+        }
+      }
+    },
+    {
+      "id": "test_3_correct_user_getversion",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/versioned-file.pdf"
+      ],
+      "Principal": "arn:aws:iam::987654321098:role/LambdaRole",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_4_delete_denied",
+      "Effect": "deny",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/important.doc"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/admin",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_5_wrong_bucket",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/testuser",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_6_put_object_denied",
+      "Effect": "deny",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/newfile.txt"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/SSORole/SSOUserName",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_7_no_condition_userid",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/public.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/randomuser"
+    },
+    {
+      "id": "test_8_list_bucket_denied",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/viewer",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_9_correct_user_deep_path",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/folder/subfolder/file.csv"
+      ],
+      "Principal": "arn:aws:iam::555666777888:root",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_10_both_actions_correct_user",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/archive.zip"
+      ],
+      "Principal": "arn:aws:iam::111222333444:user/service-account",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    },
+    {
+      "id": "test_11_wrong_condition_key",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/secret.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/hacker",
+      "Condition": {
+        "StringLike": {
+          "aws:sourceIp": "192.168.1.1"
+        }
+      }
+    },
+    {
+      "id": "test_12_bucket_root_path",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/reader",
+      "Condition": {
+        "StringLike": {
+          "aws:userId": "AROAJI4AVV3EXAMPLEID:SSOUserName"
+        }
+      }
+    }
+  ]
+}

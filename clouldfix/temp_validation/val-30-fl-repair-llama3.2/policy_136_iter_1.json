@@ -1,0 +1,480 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*"
+    },
+    {
+      "Sid": "AllowESCreateDomain",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "es:CreateElasticsearchDomain",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowRedshiftDeleteCluster",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "redshift:DeleteCluster",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSListAliases",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:ListAliases",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCodeCommitDeleteRepo",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "codecommit:DeleteRepository",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowIAMPutRolePolicy",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "iam:PutRolePolicy",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloud9CreateEnvironmentEC2",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "cloud9:CreateEnvironmentEC2",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSEnableKey",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:EnableKey",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueUpdateDatabase",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "glue:UpdateDatabase",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2AuthorizeSecurityGroupIngress",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "ec2:AuthorizeSecurityGroupIngress",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2DescribeSecurityGroups",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "ec2:DescribeSecurityGroups",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerListNotebookInstances",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sagemaker:ListNotebookInstances",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3GetBucketAcl",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:GetBucketAcl",
+      "Resource": "arn:aws:s3:::denied-bucket-7/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRDSCreateDBInstance",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSReceiveMessage",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::denied-bucket-3/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyLambdaInvokeFunction",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::denied-bucket-6/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCloudFormationCreateStack",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "cloudformation:CreateStack",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMCreateUser",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:s3:::denied-bucket-8/*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSDecryptKey",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "kms:Decrypt",
+      "Resource": "arn:aws:s3:::xxxxxxxx/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketVersioning",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::denied-bucket-2/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2StartInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObject",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2StopInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucket",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:RebootInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObjectTagging",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2TerminateInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketLifecycle",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucketLifecycle",
+      "Resource": "arn:aws:s3:::completely-different-bucket/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2WaitForIdleInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:WaitForIdleInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObjectTagging",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2ResetInstanceState",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:ResetInstanceState",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucketVersioning",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": "arn:aws:s3:::denied-bucket-2/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2StartInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:StartInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObject",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2StopInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:StopInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutBucket",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucket",
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RebootInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:RebootInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObjectTagging",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutObjectTagging",
+      "Resource": "arn:aws:s3:::denied-bucket-5/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2TerminateInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:TerminateInstances",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

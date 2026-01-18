@@ -1,0 +1,222 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketPolicy",
+        "s3:PutBucketPolicy",
+        "s3:GetAccelerateConfiguration",
+        "s3:PutAccelerateConfiguration"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>"
+      ]
+    },
+    {
+      "Sid": "allow_d5f88ce3",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      },
+      "Action": [
+        "kms:CancelKeyDeletion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_f40013d4",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/forbidden-role"
+        ]
+      },
+      "Action": [
+        "iam:CreateLoginProfile"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_47be808d",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      },
+      "Action": [
+        "iam:CreatePolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_406e9657",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/test-user"
+        ]
+      },
+      "Action": [
+        "sagemaker:StartNotebookInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_a28959d7",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/blocked-user"
+        ]
+      },
+      "Action": [
+        "dynamodb:Query"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_5c0a8783",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      },
+      "Action": [
+        "cloudwatch:DescribeAlarms"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_e4d0f0bd",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Action": [
+        "s3:RestoreObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>-forbidden/file.txt"
+      ],
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "true"
+        }
+      }
+    },
+    {
+      "Sid": "deny_07552923",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::999888777666:user/unauthorized"
+        ]
+      },
+      "Action": [
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_51497588",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::987654321098:user/charlie"
+        ]
+      },
+      "Action": [
+        "s3:PutBucketVersioning"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-<our_bucket_name>/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "deny_8c5fd2b7",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/temp-user"
+        ]
+      },
+      "Action": [
+        "s3:GetBucketCors"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

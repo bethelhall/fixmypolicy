@@ -1,0 +1,302 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Server access",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bucket-name",
+        "arn:aws:s3:::bucket-name/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontServicePrincipal",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucket-name/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::1234567890:distribution/asdf"
+        }
+      }
+    },
+    {
+      "Sid": "DenyListAllMyBuckets",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "NotStringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRestoreObject",
+      "Effect": "Deny",
+      "Action": "s3:RestoreObject",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCodePipeline",
+      "Effect": "Deny",
+      "Action": "codepipeline:ListPipelines",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGlueGetDatabase",
+      "Effect": "Deny",
+      "Action": "glue:GetDatabase",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySagemakerListEndpoints",
+      "Effect": "Deny",
+      "Action": "sagemaker:ListEndpoints",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAthenaGetQueryExecution",
+      "Effect": "Deny",
+      "Action": "athena:GetQueryExecution",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyWorkspaceDirectories",
+      "Effect": "Deny",
+      "Action": "workspaces:DescribeWorkspaceDirectories",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyKMSListKeys",
+      "Effect": "Deny",
+      "Action": "kms:ListKeys",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyEC2RunInstances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketPolicy",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketPolicy",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3DeleteBucketCors",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucketCors",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3PutObject",
+      "Effect": "Deny",
+      "Action": "s3:PutObject",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMCreateUser",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyIAMCreateAccessKey",
+      "Effect": "Deny",
+      "Action": "iam:CreateAccessKey",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenySESendRawEmail",
+      "Effect": "Deny",
+      "Action": "ses:SendRawEmail",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenySQSSendMessage",
+      "Effect": "Deny",
+      "Action": "sqs:SendMessage",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyCrossAccountRole",
+      "Effect": "Deny",
+      "Action": "sts:AssumeRole",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "not-arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "DenyForbiddenRole",
+      "Effect": "Deny",
+      "Action": "sts:AssumeRole",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3GetObject",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ListBucket",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3DeleteObject",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObject",
+      "Resource": "*",
+      "Principal": "*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:iam::1234567890:user/dev"
+        }
+      }
+    }
+  ]
+}

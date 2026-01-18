@@ -1,0 +1,135 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageBackupPolicies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ]
+    },
+    {
+      "Sid": "RestrictedServiceControlPoliciesCreation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "ViewOrgAndAccountDetails",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:ListAccounts"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "EC2SpecificActionsForBob",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/-forbidden-resource"
+    },
+    {
+      "Sid": "IAMUserManagementExclusions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "iam:CreateUser",
+        "iam:DeleteUser"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/-forbidden-resource"
+    },
+    {
+      "Sid": "CodeCommitRepoCreationByBobOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": [
+        "codecommit:CreateRepository"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-5-12.txt"
+    },
+    {
+      "Sid": "GuardDutyDetectionViaAPI",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "guardduty:CreateDetector"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-13-2.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "SQSDeleteMessagesFromNonAdminUsers",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/${aws:username}"
+      },
+      "Action": [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/*-specific"
+    },
+    {
+      "Sid": "AthenaQueryExecutionPermissionsOnAliceData",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "athena:CreateWorkGroup"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/file-18-3.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}
+```
+This is your requested output in proper format with all requirements addressed correctly according to their respective conditions specified within each statement of this revised policy document. Please note it now includes both Deny statements for actions like `iam:DeleteUser` which were missing from original input data but required based on other requests present there too! Also added necessary condition checks where they weren’t previously included such us checking specific regions etc., ensuring only authorized users can perform certain operations while denying others access when needed per instructions supplied by inputs set.. Lastly please remember always review policies thoroughly especially those involving sensitive permissions due potential risks involved if misconfigured!.

@@ -1,0 +1,150 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_cloudfront_oac_s3_getobject",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/*"
+        ],
+        "Principal": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Control",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/E1EXAMPLE"
+          }
+        }
+      },
+      {
+        "id": "test_cloudfront_oac_s3_listbucket",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website"
+        ],
+        "Principal": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Control",
+        "Condition": {
+          "StringEquals": {
+            "AWS:SourceArn": "arn:aws:cloudfront::123456789012:distribution/E1EXAMPLE"
+          }
+        }
+      },
+      {
+        "id": "test_api_gateway_invoke_allowed",
+        "Effect": "allow",
+        "Action": [
+          "execute-api:Invoke"
+        ],
+        "Resource": [
+          "arn:aws:execute-api:region:api_gw_account_id:xsdxxxsdx/*/GET/index.html"
+        ],
+        "Principal": "arn:aws:iam::here_stg_account_id:root"
+      },
+      {
+        "id": "test_s3_public_access_blocked",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/index.html"
+        ],
+        "Principal": "*"
+      },
+      {
+        "id": "test_cloudfront_oac_wrong_service",
+        "Effect": "deny",
+        "Action": [
+          "execute-api:Invoke"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/*"
+        ],
+        "Principal": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Control"
+      },
+      {
+        "id": "test_api_gateway_different_api",
+        "Effect": "deny",
+        "Action": [
+          "execute-api:Invoke"
+        ],
+        "Resource": [
+          "arn:aws:execute-api:region:api_gw_account_id:different_api_id/*"
+        ],
+        "Principal": "arn:aws:iam::here_stg_account_id:root"
+      },
+      {
+        "id": "test_s3_getobject_api_principal",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/index.html"
+        ],
+        "Principal": "arn:aws:iam::here_api_gw_account_id:root"
+      },
+      {
+        "id": "test_cloudfront_legacy_oai",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/*"
+        ],
+        "Principal": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E1EXAMPLE"
+      },
+      {
+        "id": "test_api_gateway_unauthorized_principal",
+        "Effect": "deny",
+        "Action": [
+          "execute-api:Invoke"
+        ],
+        "Resource": [
+          "arn:aws:execute-api:region:api_gw_account_id:xsdxxxsdx/*"
+        ],
+        "Principal": "arn:aws:iam::unauthorized_account:root"
+      },
+      {
+        "id": "test_s3_website_endpoint_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::cloud-website/index.html"
+        ],
+        "Principal": "arn:aws:iam::123456789012:user/website-visitor",
+        "Condition": {
+          "StringLike": {
+            "aws:Referer": "http://cloud-website.s3-website-ap-southeast-2.amazonaws.com/*"
+          }
+        }
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 100.0,
+      "total_requests": 10,
+      "correct": 10,
+      "incorrect": 0
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "25",
+    "user_intent": "I am hosting a static website on s3 and using CloudFront (CDN) distribution domain name to access me website but have been receiving 'denied access' xml page instead. To save everyone time i have provided context and troubleshooting approaches i have already tried. Looking forward to everyone's solution and advice!\n\n\nContext:\n\n\n\n\nS3 settings\n :\n\n\nEncryption\n - SSE-S3 (server-side encryption)\n\n\nStatic website hosting\n - disabled\n\n\nPermission\n Block public access (ALL ON)\n\n\nBucket Policy (copied over from Cloudfront OAC policy)\n :\n\n\n\n\n\n\n\n\nCloudfront/Origin Settings\n\n\n\n\nOrigin Domain\n: selected s3 bucket housing the website (example: cloud-website.s3.ap-southeast-2amazon.com)\n\n\nOAC selected\n\n\nHTTP redirect to HTTPS protocol policy selected\n\n\n\n\nMy troubleshooting so far:\n\n\n\n\nConfirm i can access index.html url in s3 when block public access is OFF.\n\n\nTurned off Block public access on s3 but still getting denied access via CDN domain.",
+    "timestamp": "2025-08-19T17:45:17.525080"
+  }
+}

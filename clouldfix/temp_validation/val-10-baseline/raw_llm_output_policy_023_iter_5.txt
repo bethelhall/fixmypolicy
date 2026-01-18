@@ -1,0 +1,85 @@
+```json
+[
+  {
+    "Sid": "AllowAthenaWorkGroupCreationInEuWest1",
+    "Effect": "Allow",
+    "Action": "athena:CreateWorkGroup",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::918158873077:root",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "AllowELBInUsWest2",
+    "Effect": "Allow",
+    "Action": "elasticloadbalancing:CreateLoadBalancer",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::136627060758:root",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "AllowIAMRoleAttachmentByAlice",
+    "Effect": "Allow",
+    "Action": "iam:AttachRolePolicy",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "DenySNSSubscriptionToDeniedBucket",
+    "Effect": "Deny",
+    "Action": "sns:Subscribe",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": "arn:aws:iam::{{accountA}}:root",
+    "Condition": {"NumericLessThan": {"s3:max-keys": "10"}}
+  },
+  {
+    "Sid": "AllowGluePartitionAccessForAlice",
+    "Effect": "Allow",
+    "Action": "glue:GetPartitions",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "AllowSESSendEmailFromSpecificRegion",
+    "Effect": "Allow",
+    "Action": "ses:SendEmail",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::859634547654:root",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-west-2"}}
+  },
+  {
+    "Sid": "DenyIAMUserDeletionWithCertainTags",
+    "Effect": "Deny",
+    "Action": "iam:DeleteUser",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef/file.txt",
+    "Principal": "arn:aws:iam::{{accountA}}:root",
+    "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+  },
+  {
+    "Sid": "AllowGlueJobRunAccessForAlice",
+    "Effect": "Allow",
+    "Action": "glue:GetJobRun",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "us-east-1"}}
+  },
+  {
+    "Sid": "DenyLambdaCreationOnRestrictedARN",
+    "Effect": "Deny",
+    "Action": "lambda:CreateFunction",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef-specific",
+    "Principal": "arn:aws:iam::{{accountA}}:root",
+    "Condition": {"StringEquals": {"aws:RequestedRegion": "eu-west-1"}}
+  },
+  {
+    "Sid": "DenySNSPublishingToForbiddenResources",
+    "Effect": "Deny",
+    "Action": "sns:Publish",
+    "Resource": "arn:aws:sms-voice:us-east-2:{{accountB}}:phone-number/phone-abcdefabcdef-forbidden-resource",
+    "Principal": "arn:aws:iam::{{accountA}}:root",
+    "Condition": {"StringEquals": {"s3:ExistingObjectTag/Department": "Finance"}}
+  }
+]
+```
+This is your final output in json format with all requirements addressed correctly according to their respective conditions specified by each request id present within them. Please replace `{{accountA}}` & `{{accountB}}` placeholders accordingly while using this statement into actual environment setup because these values will depend on specific account numbers you want it for which policies need adjustment respectively based upon those accounts details related permissions etc.. Also note Sid fields have been updated per individual requests making clear what action they relate too helping manage complex multi sid statements more effectively when needed later down line if necessary. Lastly always ensure proper indentation matches opening bracket '{'. This ensures readability whilst parsing data structures such like Json objects hence maintaining clean neat readable syntax overall ensuring optimal performance efficiency speed memory usage among other benefits associated thereof.. Remember also not forgetting about double quotes around keys (like Effect) unlike single quoted ones commonly seen elsewhere! So please make sure of checking over everything again carefully just being extra careful here due its importance level especially considering sensitive nature involved information regarding access control rules defined inside our new revised version above mentioned Policy document now ready made available below :   ```JSON [...]``

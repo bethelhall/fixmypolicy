@@ -1,0 +1,160 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_s3_list_bucket_https",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::000:user/username",
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "true"
+          }
+        }
+      },
+      {
+        "id": "test_s3_list_bucket_http",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::000:user/username",
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "false"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_object_https",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/data.txt"
+        ],
+        "Principal": "arn:aws:iam::000:user/username",
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "true"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_object_http",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/uploads/file.pdf"
+        ],
+        "Principal": "arn:aws:iam::000:user/username",
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "false"
+          }
+        }
+      },
+      {
+        "id": "test_iot_connect",
+        "Effect": "allow",
+        "Action": [
+          "iot:Connect"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:ACCOUNT_ID:client/device123"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_iot_subscribe",
+        "Effect": "allow",
+        "Action": [
+          "iot:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:ACCOUNT_ID:topicfilter/sensors/temperature"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_iot_receive",
+        "Effect": "allow",
+        "Action": [
+          "iot:Receive"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:ACCOUNT_ID:topic/devices/status"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_s3_delete_object_https",
+        "Effect": "deny",
+        "Action": [
+          "s3:DeleteObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname/old-data/*"
+        ],
+        "Principal": "arn:aws:iam::000:user/username",
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "true"
+          }
+        }
+      },
+      {
+        "id": "test_s3_get_bucket_acl",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::bucketname"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      },
+      {
+        "id": "test_iot_publish_denied",
+        "Effect": "deny",
+        "Action": [
+          "iot:Publish"
+        ],
+        "Resource": [
+          "arn:aws:iot:eu-west-1:ACCOUNT_ID:topic/commands/execute"
+        ],
+        "Principal": "arn:aws:iam::000:user/username"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    },
+    "repaired_policy": {
+      "accuracy": 70.0,
+      "total_requests": 10,
+      "correct": 7,
+      "incorrect": 3
+    }
+  },
+  "metadata": {
+    "file_number": "40",
+    "user_intent": "We're trying to lock things down on our S3 buckets, and I'm running into a weird error.\nWhen my policy looks like this:\n\n\n    ,\n    {\n        \"Effect\": \"Deny\",\n        \"Principal\": \"*\",\n        \"Action\": \"s3:*\",\n        \"Resource\": [\n            \"arn:aws:s3:::bucketname\",\n            \"arn:aws:s3:::bucketname/*\"\n        ],\n        \"Condition\": {\n            \"Bool\": {\n                \"aws:SecureTransport\": \"false\"\n            }\n        }\n    }\n\n\n\nI get an error saying:\n\n\nUser: arn:aws:iam::000:user/username is not authorized to perform: s3:ListBucket on resource: \"arn:aws:s3:::bucketname\" with an explicit deny in a resource-based policy\n\n\nIf I remove the Deny part it starts working again.\n\n\nWhat is the right way to do this?",
+    "timestamp": "2025-08-19T17:53:35.363694"
+  }
+}

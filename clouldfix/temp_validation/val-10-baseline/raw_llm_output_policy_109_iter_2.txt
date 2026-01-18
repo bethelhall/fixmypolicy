@@ -1,0 +1,122 @@
+[
+  {
+    "Sid": "DenyEC2DescribeInstancesForbidSpecificARN",
+    "Effect": "Deny",
+    "Action": "ec2:DescribeInstances",
+    "Resource": "forbidden-arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*-specific",
+    "Principal": "ssm.amazonaws.com",
+    "Condition": {
+      "StringEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "AllowLogsDeleteLogGroupFromBob",
+    "Effect": "Allow",
+    "Action": "logs:DeleteLogGroup",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-22-14",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {
+      "StringNotEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "AllowSESVerifyEmailIdentityNonProdRole",
+    "Effect": "Allow",
+    "Action": "ses:VerifyEmailIdentity",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-42-12",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {
+      "StringNotEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "AllowGlueGetTableNonProdRole",
+    "Effect": "Allow",
+    "Action": "glue:GetTable",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-47-3",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {
+      "StringNotEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "DenyIAMDeleteUserOnlySSM",
+    "Effect": "Deny",
+    "Action": "iam:DeleteUser",
+    "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+    "Principal": "ssm.amazonaws.com",
+    "Condition": {
+      "StringEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "AllowRedshiftDescribeClustersFromBob",
+    "Effect": "Allow",
+    "Action": "redshift:DescribeClusters",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-14-13",
+    "Principal": "arn:aws:iam::123456789012:user/bob",
+    "Condition": {
+      "StringEquals": {
+        "aws:RequestedRegion": "us-east-1"
+      }
+    }
+  },
+  {
+    "Sid": "AllowIamDeleteAccessKeyDifferentIP",
+    "Effect": "Allow",
+    "Action": "iam:DeleteAccessKey",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-30-7",
+    "Principal": "arn:aws:iam::123456789012:user/alice",
+    "Condition": {
+      "NotIpAddress": {
+        "aws:SourceIp": "203.0.113.0/24"
+      }
+    }
+  },
+  {
+    "Sid": "DenyDynamoDBDeleteItemOnlySSM",
+    "Effect": "Deny",
+    "Action": "dynamodb:DeleteItem",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*/file.txt",
+    "Principal": "ssm.amazonaws.com",
+    "Condition": {
+      "StringEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  },
+  {
+    "Sid": "AllowCloudFrontListDistributionsDiffRegionalRole",
+    "Effect": "Allow",
+    "Action": "cloudfront:ListDistributions",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:resource-30-4",
+    "Principal": "arn:aws:iam::123456789012:role/service-role",
+    "Condition": {
+      "StringNotEquals": {
+        "aws:RequestedRegion": ["us-west-2"]
+      }
+    }
+  },
+  {
+    "Sid": "DenySQSDeleteMessageOnlySSM",
+    "Effect": "Deny",
+    "Action": "sqs:ReceiveMessage",
+    "Resource": "arn:aws:logs:ap-northeast-1:0123456789:log-group:session-manager:log-stream:*-forbidden-resource",
+    "Principal": "ssm.amazonaws.com",
+    "Condition": {
+      "StringEquals": {
+        "aws:SourceAccount": ["0123456789"]
+      }
+    }
+  }
+]

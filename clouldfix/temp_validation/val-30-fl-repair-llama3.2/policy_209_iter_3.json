@@ -1,0 +1,273 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:GetBucketPolicy",
+        "s3:PutBucketPolicy",
+        "s3:GetAccelerateConfiguration",
+        "s3:PutAccelerateConfiguration",
+        "ses:DeleteIdentity",
+        "logs:PutLogEvents",
+        "kms:Encrypt",
+        "cloudfront:ListDistributions",
+        "glue:UpdateTable",
+        "sns:DeleteTopic",
+        "workspaces:StopWorkspaces",
+        "athena:GetDatabase",
+        "s3:DeleteObjectTagging",
+        "iam:PutRolePolicy",
+        "sqs:CreateQueue"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<our_bucket_name>/*",
+        "arn:aws:s3:::<our_bucket_name>",
+        "arn:aws:ses:::/*",
+        "arn:aws:logs:::/*",
+        "arn:aws:kms:::/*",
+        "arn:aws:cloudfront:::/*",
+        "arn:aws:glue:::/*",
+        "arn:aws:sns:::/*",
+        "arn:aws:workspaces:::/*",
+        "arn:aws:athena:::/*",
+        "arn:aws:s3:::/*",
+        "arn:aws:iam:::/*"
+      ]
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "iam:DeleteUser",
+        "iam:ListGroupsForUser"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3Actions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteObjectTagging",
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:GetBucketWebsite",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketLifecycle",
+        "s3:PutObject",
+        "s3:RestoreObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*",
+        "arn:aws:s3:::/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowS3ConditionalActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketTagging",
+        "s3:DeleteObjectTagging",
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:GetBucketWebsite",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketLifecycle",
+        "s3:PutObject",
+        "s3:RestoreObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::*",
+        "arn:aws:s3:::/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowKMSActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:RetireGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudFrontActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "cloudfront:CreateDistribution",
+        "cloudfront:UpdateDistribution",
+        "cloudfront:DeleteDistribution"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGlueActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "glue:CreateDatabase",
+        "glue:UpdateDatabase",
+        "glue:DeleteDatabase"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "sns:DeleteTopic"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowWorkSpacesActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "workspaces:StartWorkspaces",
+        "workspaces:StopWorkspaces"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "athena:CreateWorkgroup",
+        "athena:UpdateWorkgroup",
+        "athena:DeleteWorkgroup"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSQSActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sqs:CreateQueue",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowEC2Actions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "ec2:StartInstances",
+        "ec2:StopInstances",
+        "ec2:DescribeInstances"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSageMakerActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "sagemaker:CreateNotebookInstance",
+        "sagemaker:CreateTrainingJob",
+        "sagemaker:DescribeTrainingJob"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAutoscalingActions",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": [
+        "autoscaling:CreateAutoScalingGroup",
+        "autoscaling:UpdateAutoScalingGroup",
+        "autoscaling:DeleteAutoScalingGroup"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}

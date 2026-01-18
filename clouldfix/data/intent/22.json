@@ -1,0 +1,44 @@
+I am attempting to set up a dedicated user account for use by Terraform for provisioning cloud infrastructure in AWS. I have the following permission policy set up for the user that Terraform uses with the AWS CLI:
+
+
+
+
+
+
+Below is the snippet of Terraform code that attempts to create an EC2 instance:
+
+
+# specify the AMI for the web server
+data "aws_ssm_parameter" "ubantu_linux" {
+  name = "ami-0b8b44ec9a8f90422"
+}
+
+#####################################################################
+# INSTANCES
+#####################################################################
+resource "aws_instance" "nginx" {
+  count = var.aws_instance_count
+  ami                    = nonsensitive(data.aws_ssm_parameter.ubantu_linux.name)
+  instance_type          = var.aws_instance_type
+  subnet_id              = aws_subnet.public_subnets[(count.index % var.vpc_public_subnet_count)].id
+  vpc_security_group_ids = [aws_security_group.nginx_sg.id]
+  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name
+  depends_on             = [aws_iam_role_policy.allow_s3_all]
+
+}
+
+
+
+When attempting to test setting up an EC2 instance in us-east-2 region from Terraform using the "terraform plan" command, I get AccessDeniedException attempting to access the information associated with the AMI. Below is an example of a typical error message:
+
+
+Error: describing SSM parameter (ami-0b8b44ec9a8f90422): AccessDeniedException: User: arn:aws:iam::891377101976:user/terraform_robot is not authorized to perform: ssm:GetParameter on resource: arn:aws:ssm:us-east-2:891377101976:parameter/ami-0b8b44ec9a8f90422 because no identity-based policy allows the ssm:GetParameter action
+│       status code: 400, request id: b5e7b026-7b7c-4a57-b2d9-49885dfdbd75
+│
+│   with data.aws_ssm_parameter.amzn2_linux,
+│   on instances.tf line 5, in data "aws_ssm_parameter" "amzn2_linux":
+│    5: data "aws_ssm_parameter" "amzn2_linux" {
+
+
+
+What needs to be adjusted with the permissions policy to so that the user account Terraform is using has the necessary permissions?

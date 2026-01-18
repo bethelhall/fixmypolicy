@@ -1,0 +1,329 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "s3:ListBucket",
+      "Effect": "Allow",
+      "Resource": [
+        "arn:aws:s3:::<my-bucket>"
+      ],
+      "Sid": "AllowListDirectories",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "DenyMkdir",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::<my-bucket>/*/"
+    },
+    {
+      "Sid": "DenyListFilesInSubDirectory",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "AllowReadWirteInSubDirectory",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion",
+        "s3:PutObject",
+        "s3:PutObjectAcl",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionAcl",
+        "s3:PutObjectVersionTagging"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/data/partner_2/data/incoming/*",
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "AllowOnlyReadInADifferentDirectory",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/data/partner_2/data/outgoing/*",
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetDashboard"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:CreateTable"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-0.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "redshift:CreateCluster"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketCors"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-5/file-5.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/developer-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/forbidden-",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iam:AttachRolePolicy"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetMetricStatistics"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "glue:GetJobRun"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "lambda:CreateFunction"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-2/file-2.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:ImportKeyPair"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:PutBucketPolicy"
+      ],
+      "Resource": "arn:aws:s3:::forbidden-<my-bucket>/*/",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "s3:GetBucketTagging"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-1/file-1.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:GetHostedZone"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AttachVolume"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListModels"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/bob"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "workspaces:CreateWorkspaces"
+      ],
+      "Resource": "arn:aws:s3:::<my-bucket>/*/",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-4/file-4.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::123456789012:user/temp-user"
+    },
+    {
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-3/file-3.txt",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "data/partner_2/data/incoming/*"
+          ]
+        }
+      },
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    }
+  ]
+}

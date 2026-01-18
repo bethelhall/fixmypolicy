@@ -1,0 +1,62 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances",
+        "sns:Publish",
+        "route53:ListHostedZones",
+        "ec2:DescribeInstances",
+        "glue:UpdateTable",
+        "sqs:SendMessageBatch",
+        "route53:ListHostedZones",
+        "athena:GetTableMetadata",
+        "glue:BatchGetJobs"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "route53:ChangeResourceRecordSetsRecordTypes": [
+            "A",
+            "AAAA"
+          ]
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role",
+          "arn:aws:iam::999888777666:user/unauthorized",
+          "arn:aws:iam::123456789012:user/alice",
+          "arn:aws:iam::111222333444:user/david",
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      }
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:DescribeAlarms",
+        "glue:UpdateTable",
+        "sqs:SendMessageBatch",
+        "route53:ListHostedZones",
+        "athena:GetTableMetadata",
+        "glue:BatchGetJobs"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringNotEquals": {
+          "route53:ChangeResourceRecordSetsRecordTypes": [
+            "A",
+            "AAAA"
+          ]
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    }
+  ]
+}

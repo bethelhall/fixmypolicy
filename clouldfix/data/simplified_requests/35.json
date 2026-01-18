@@ -1,0 +1,145 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_sns_publish_to_topic",
+        "Effect": "deny",
+        "Action": [
+          "sns:Publish"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/app-user",
+        "Condition": {
+          "StringEquals": {
+            "sns:MessageGroupId": "test-group"
+          }
+        }
+      },
+      {
+        "id": "test_sqs_send_message_first_queue",
+        "Effect": "deny",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:service-role/sns-delivery-role"
+      },
+      {
+        "id": "test_sqs_send_message_second_queue",
+        "Effect": "deny",
+        "Action": [
+          "sqs:SendMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXX:service-role/sns-delivery-role"
+      },
+      {
+        "id": "test_rds_connect_matching_resource",
+        "Effect": "allow",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:XXXXXXXXXXXX:dbuser:db-KF12345/myuser"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/database-user"
+      },
+      {
+        "id": "test_rds_connect_wrong_region",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:af-south-1:XXXXXXXXXXXX:dbuser:db-KF12345/myuser"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/database-user"
+      },
+      {
+        "id": "test_sns_subscribe_to_topic",
+        "Effect": "deny",
+        "Action": [
+          "sns:Subscribe"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/app-user",
+        "Condition": {
+          "StringEquals": {
+            "sns:Protocol": "sqs"
+          }
+        }
+      },
+      {
+        "id": "test_sqs_receive_message",
+        "Effect": "deny",
+        "Action": [
+          "sqs:ReceiveMessage"
+        ],
+        "Resource": [
+          "arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/consumer-app"
+      },
+      {
+        "id": "test_rds_connect_different_db_cluster",
+        "Effect": "deny",
+        "Action": [
+          "rds-db:connect"
+        ],
+        "Resource": [
+          "arn:aws:rds-db:us-east-1:XXXXXXXXXXXX:dbuser:db-XY789/appuser"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/database-user"
+      },
+      {
+        "id": "test_sns_get_topic_attributes",
+        "Effect": "deny",
+        "Action": [
+          "sns:GetTopicAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXXXX:user/monitoring-user"
+      },
+      {
+        "id": "test_sqs_get_queue_attributes",
+        "Effect": "deny",
+        "Action": [
+          "sqs:GetQueueAttributes"
+        ],
+        "Resource": [
+          "arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo"
+        ],
+        "Principal": "arn:aws:iam::XXXXXXXXXX:user/monitoring-user"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "35",
+    "user_intent": "SNS topic created \narn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\n and has the following access policy set:\n\n\n\n\n\n\nThe topic is subscribed to the following two queues.\n\n\n\n\nFirst queue: \narn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo\n with the following policy:\n\n\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Service\": \"sns.amazonaws.com\"\n      },\n      \"Action\": \"sqs:SendMessage\",\n      \"Resource\": \"arn:aws:sqs:af-south-1:XXXXXXXXXXXX:first-queue.fifo\",\n      \"Condition\": {\n        \"ArnEquals\": {\n          \"aws:SourceArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\"\n        }\n      }\n    }\n  ]\n}\n\n\n\n\n\nSecond queue: \narn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\n with the following policy:\n\n\n\n\n{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Principal\": {\n        \"Service\": \"sns.amazonaws.com\"\n      },\n      \"Action\": \"sqs:SendMessage\",\n      \"Resource\": \"arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\",\n      \"Condition\": {\n        \"ArnEquals\": {\n          \"aws:SourceArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\"\n        }\n      }\n    }\n  ]\n}\n\n\n\nBut SNS is failing to send the messages to SQS queues with the following error:\n\n\n{\n    \"notification\": {\n        \"messageId\": \"1c2a9c20-977f-5552-a73b-c16037ebcac6\",\n        \"topicArn\": \"arn:aws:sns:af-south-1:XXXXXXXXXXXX:topic.fifo\",\n        \"timestamp\": \"2023-07-30 17:31:00.864\"\n    },\n    \"delivery\": {\n        \"deliveryId\": \"b69c20d5-88b6-4fc4-ba4c-b69e12585e40\",\n        \"destination\": \"arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo\",\n        \"providerResponse\": \"{\\\"sqsRequestId\\\":\\\"1bda078a-2866-5392-a525-5aca88f2ce07\\\",\\\"errorCode\\\":\\\"AccessDenied\\\",\\\"errorMessage\\\":\\\"User: sns.amazonaws.com is not authorized to perform: sqs:sendmessage on resource: arn:aws:sqs:af-south-1:XXXXXXXXXX:second-queue.fifo because no resource-based policy allows the sqs:sendmessage action\\\"}\",\n        \"dwellTimeMs\": 16,\n        \"statusCode\": 403\n    },\n    \"status\": \"FAILURE\"\n}",
+    "timestamp": "2025-08-19T17:50:35.163382"
+  }
+}

@@ -1,0 +1,324 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:GetObject",
+        "s3:GetObjectTagging",
+        "s3:GetObjectVersion",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:ListBucketVersions",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce",
+        "arn:aws:s3:::elasticmapreduce/*",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ]
+    },
+    {
+      "Sid": "allow_s3_list_bucket",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_s3_delete_object_tagging",
+      "Effect": "Allow",
+      "Action": "s3:DeleteObjectTagging",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_lambda_update_function_code",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_kinesis_get_records",
+      "Effect": "Allow",
+      "Action": "kinesis:GetRecords",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_guardduty_get_detector",
+      "Effect": "Allow",
+      "Action": "guardduty:GetDetector",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_redshift_delete_cluster",
+      "Effect": "Allow",
+      "Action": "redshift:DeleteCluster",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_sagemaker_create_endpoint",
+      "Effect": "Allow",
+      "Action": "sagemaker:CreateEndpoint",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_ec2_revoke_security_group_ingress",
+      "Effect": "Allow",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_s3_put_bucket_versioning",
+      "Effect": "Deny",
+      "Action": "s3:PutBucketVersioning",
+      "Resource": [
+        "arn:aws:s3:::different-*.elasticmapreduce/",
+        "arn:aws:s3:::different-*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::111222333444:role/developer-role",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "deny_s3_delete_bucket",
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/",
+        "arn:aws:s3:::completely-different-bucket/*"
+      ],
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_dynamodb_delete_item",
+      "Effect": "Deny",
+      "Action": "dynamodb:DeleteItem",
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/",
+        "arn:aws:s3:::completely-different-bucket/*"
+      ],
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ec2_run_instances",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-6/",
+        "arn:aws:s3:::denied-bucket-6/*"
+      ],
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ses_send_raw_email",
+      "Effect": "Deny",
+      "Action": "ses:SendRawEmail",
+      "Resource": [
+        "arn:aws:s3:::*.elasticmapreduce/",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_glue_update_table",
+      "Effect": "Deny",
+      "Action": "glue:UpdateTable",
+      "Resource": [
+        "arn:aws:s3:::*.elasticmapreduce/",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_kinesis_get_records",
+      "Effect": "Deny",
+      "Action": "kinesis:GetRecords",
+      "Resource": [
+        "arn:aws:s3:::*.elasticmapreduce/",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_guardduty_get_detector",
+      "Effect": "Deny",
+      "Action": "guardduty:GetDetector",
+      "Resource": [
+        "arn:aws:s3:::*.elasticmapreduce/",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_redshift_delete_cluster",
+      "Effect": "Deny",
+      "Action": "redshift:DeleteCluster",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_sagemaker_create_endpoint",
+      "Effect": "Deny",
+      "Action": "sagemaker:CreateEndpoint",
+      "Resource": [
+        "arn:aws:s3:::*.elasticmapreduce/",
+        "arn:aws:s3:::*.elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_ec2_revoke_security_group_ingress",
+      "Effect": "Deny",
+      "Action": "ec2:RevokeSecurityGroupIngress",
+      "Resource": [
+        "arn:aws:s3:::elasticmapreduce/",
+        "arn:aws:s3:::elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "deny_s3_list_all_my_buckets",
+      "Effect": "Deny",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": [
+        "arn:aws:s3:::different-elasticmapreduce/",
+        "arn:aws:s3:::different-elasticmapreduce/*"
+      ],
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    }
+  ]
+}

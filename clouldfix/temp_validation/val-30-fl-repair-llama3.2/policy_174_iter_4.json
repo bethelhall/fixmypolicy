@@ -1,0 +1,185 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowAccessToS3Resources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::.*"
+    },
+    {
+      "Sid": "AllowAccessToElasticLoadBalancerResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "elasticloadbalancing:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToKMSResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToGlueResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "glue:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToLambdaResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "lambda:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToEC2Resources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "ec2:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToCloud9Resources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "cloud9:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToSNSResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sns:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToDynamoDBResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "dynamodb:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToIAMResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "iam:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToConfigResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "config:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessToLogsResources",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "logs:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyAccessToS3Objects",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::.*",
+      "Condition": {
+        "Bool": {
+          "aws:SecureTransport": "false"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToS3BucketVersions",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:ListObjectVersions",
+      "Resource": "arn:aws:s3:::.*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToRDSInstances",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "rds:CreateDBInstance",
+      "Resource": "*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToEC2Volumes",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "ec2:DeleteVolume",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToCloud9Environments",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "cloud9:DeleteEnvironment",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToS3BucketTags",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::.*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToS3BucketVersionsByAdminRole",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::111222333444:user/admin-role",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::.*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyAccessToS3BucketVersionsByBlockedUser",
+      "Effect": "Deny",
+      "Principal": "arn:aws:iam::123456789012:user/blocked-user",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::.*",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:maxKeys": "10"
+        }
+      }
+    }
+  ]
+}

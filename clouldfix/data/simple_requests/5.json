@@ -1,0 +1,91 @@
+{
+  "Requests": [
+    {
+      "id": "allow_get_own_object_i123",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/AROA111EXAMPLE:i-1234567890abcdef0/test.txt"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0"
+    },
+    {
+      "id": "allow_put_own_object_i123",
+      "Effect": "allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/AROA111EXAMPLE:i-1234567890abcdef0/logs/upload.log"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0"
+    },
+    {
+      "id": "allow_delete_own_object_i123",
+      "Effect": "allow",
+      "Action": [
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/AROA111EXAMPLE:i-1234567890abcdef0/tmp/old.tmp"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0"
+    },
+    {
+      "id": "allow_list_own_prefix_i123",
+      "Effect": "allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": "AROA111EXAMPLE:i-1234567890abcdef0/*"
+        }
+      }
+    },
+    {
+      "id": "allow_get_own_object_i987",
+      "Effect": "allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/AROA111EXAMPLE:i-0fedcba9876543210/somefile.bin"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-0fedcba9876543210"
+    },
+    {
+      "id": "deny_get_roleName_folder_i123",
+      "Effect": "deny",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket/S3PerInstanceAccessRole/should-not-access.txt"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0"
+    },
+    {
+      "id": "deny_list_roleName_prefix_i123",
+      "Effect": "deny",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mybucket"
+      ],
+      "Principal": "arn:aws:sts::123456789012:assumed-role/S3PerInstanceAccessRole/i-1234567890abcdef0",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": "S3PerInstanceAccessRole/*"
+        }
+      }
+    }
+  ]
+}

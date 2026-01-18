@@ -1,0 +1,1098 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*"
+    },
+    {
+      "Sid": "Allow bob to delete file-43-13.txt in my-bucket-name/org_id",
+      "Action": "s3:DeleteObject",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-43-13.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to get file-4-17.txt in my-bucket-name/org_id",
+      "Action": "s3:GetObject",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-4-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to list identities in my-bucket-name/org_id",
+      "Action": "sqs:GetQueueAttributes",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-4-17.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to create model in my-bucket-name/org_id",
+      "Action": "sagemaker:CreateModel",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-8-8.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny test-user from deleting bucket-4",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Allow service-role to list hosted zones in my-bucket-name/org_id",
+      "Action": "route53:ListHostedZones",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-36-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny service-role from deleting bucket-7",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-7",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to delete item in my-bucket-name/org_id",
+      "Action": "dynamodb:DeleteItem",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-37-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket policy",
+      "Action": "s3:GetBucketPolicy",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::different-my-bucket-name/file.txt",
+      "Principal": "arn:aws:iam::999888777666:user/unauthorized",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to get bucket location in my-bucket-name/org_id",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-37-18.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow bob to get bucket policy in my-bucket-name/org_id",
+      "Action": "s3:GetBucketPolicy",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-31-9.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny cross-account role from deleting bucket-8",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow alice to put metric data in my-bucket-name/org_id",
+      "Action": "cloudwatch:PutMetricData",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-11-1.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny admin-role from deleting DB instance",
+      "Action": "rds:DeleteDBInstance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0",
+      "Principal": "arn:aws:iam::123456789012:role/admin-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow bob to delete workgroup in my-bucket-name/org_id",
+      "Action": "athena:DeleteWorkGroup",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/file-20-14.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny cross-account role from getting bucket cors",
+      "Action": "s3:GetBucketCors",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny test-user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny test-user from deleting bucket-6",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-6",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "Deny cross-account role from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::my-bucket-name-forbidden",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny cross-account role from getting bucket cors",
+      "Action": "s3:GetBucketCors",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8",
+      "Principal": "arn:aws:iam::555666777888:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny test-user from deleting bucket-0",
+      "Action": "s3:DeleteBucket",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-0",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from creating user",
+      "Action": "iam:CreateUser",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-2",
+      "Principal": "arn:aws:iam::111222333444:user/david",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket policy",
+      "Action": "s3:GetBucketPolicy",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-5",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-6",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-7",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-8",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-9",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-10",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-11",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-12",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-13",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-14",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-15",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-16",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-17",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-18",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-19",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-20",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-21",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-22",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-23",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-24",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-25",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-26",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-27",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-28",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-29",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-30",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-31",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-32",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-33",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-34",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-35",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-36",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-37",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-38",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-39",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-40",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-41",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-42",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-43",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-44",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-45",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-46",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-47",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-48",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-49",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-50",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-51",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-52",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-53",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-54",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-55",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-56",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-57",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-58",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-59",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-60",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-61",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-62",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-63",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-64",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-65",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-66",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket location",
+      "Action": "s3:GetBucketLocation",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-67",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket versioning",
+      "Action": "s3:GetBucketVersioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-68",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny unauthorized user from getting bucket tagging",
+      "Action": "s3:GetBucketTagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-69",
+      "Principal": "arn:aws:iam::123456789012:user/test-user",
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "

@@ -1,0 +1,161 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_ssm_port_forward_bastion",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:ec2:us-gov-west-1:123456789012:instance/i-0abc123def456789"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "ssm:SessionDocumentAccessCheck": "true",
+            "ssm:documentName": "AWS-StartPortForwardingSessionToRemoteHost"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_with_acl",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:s3:::prod-ssm/Patching/patch-report-2024.json"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:root",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_without_acl",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:s3:::prod-ssm/Patching/patch-data.log"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:root"
+      },
+      {
+        "id": "test_ssm_regular_session",
+        "Effect": "deny",
+        "Action": [
+          "ssm:StartSession"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:ec2:us-gov-west-1:123456789012:instance/i-0abc123def456789"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:user/developer",
+        "Condition": {
+          "StringEquals": {
+            "ssm:documentName": "SSM-SessionManagerRunShell"
+          }
+        }
+      },
+      {
+        "id": "test_s3_put_different_path",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:s3:::prod-ssm/Logs/system.log"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:root",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        "id": "test_ssm_describe_sessions",
+        "Effect": "deny",
+        "Action": [
+          "ssm:DescribeSessions"
+        ],
+        "Resource": [
+          "*"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:user/developer"
+      },
+      {
+        "id": "test_s3_get_object",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:s3:::prod-ssm/Patching/patch-status.json"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:root"
+      },
+      {
+        "id": "test_ssm_terminate_session",
+        "Effect": "deny",
+        "Action": [
+          "ssm:TerminateSession"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:ssm:us-gov-west-1:123456789012:session/developer-0abc123def"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:user/developer"
+      },
+      {
+        "id": "test_s3_put_wrong_principal",
+        "Effect": "deny",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:s3:::prod-ssm/Patching/update.json"
+        ],
+        "Principal": "arn:aws-us-gov:iam::987654321098:root",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "bucket-owner-full-control"
+          }
+        }
+      },
+      {
+        "id": "test_ssm_resume_session",
+        "Effect": "deny",
+        "Action": [
+          "ssm:ResumeSession"
+        ],
+        "Resource": [
+          "arn:aws-us-gov:ssm:us-gov-west-1:123456789012:session/developer-0abc123def"
+        ],
+        "Principal": "arn:aws-us-gov:iam::123456789012:user/developer"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    },
+    "repaired_policy": {
+      "accuracy": 90.0,
+      "total_requests": 10,
+      "correct": 9,
+      "incorrect": 1
+    }
+  },
+  "metadata": {
+    "file_number": "17",
+    "user_intent": "Hi there,\nI followed the \nguide\n to create a Custom Policy to allow only \nAWS-StartPortForwardingSessionToRemoteHost\n action to a bastion host.\n\n\nThis is the Policy I created and getting \nAccessDeniedExcepton\n\nHowever, if I set \nResource\n to \n*\n for \nssm:StartSession\n action I am able to start a session with \nStartPortForwardingSessionToRemoteHost\n. Can you please guide me about what I am missing? I literally followed the simple examples from the guide. Thanks",
+    "timestamp": "2025-08-19T17:40:09.123106"
+  }
+}

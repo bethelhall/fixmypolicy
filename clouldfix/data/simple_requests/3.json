@@ -1,0 +1,91 @@
+{
+  "Requests": [
+    {
+      "id": "allow_s3_kms_gdk_topic_ses_test",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "kms:EncryptionContext:aws:sns:topicArn": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        }
+      }
+    },
+    {
+      "id": "allow_s3_kms_decrypt_topic_ses_test",
+      "Effect": "allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "kms:EncryptionContext:aws:sns:topicArn": "arn:aws:sns:ap-southeast-2:123456789:sns-email-ses-test"
+        }
+      }
+    },
+    {
+      "id": "allow_s3_kms_gdk_and_decrypt_no_ctx",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey",
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "allow_s3_kms_gdk_other_topic_ctx",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "StringEquals": {
+          "kms:EncryptionContext:aws:sns:topicArn": "arn:aws:sns:ap-southeast-2:123456789:another-sns-topic"
+        }
+      }
+    },
+    {
+      "id": "allow_s3_kms_gdk_cross_region_key",
+      "Effect": "allow",
+      "Action": [
+        "kms:GenerateDataKey"
+      ],
+      "Resource": [
+        "arn:aws:kms:us-west-2:123456789:key/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
+      ],
+      "Principal": "s3.amazonaws.com"
+    },
+    {
+      "id": "allow_s3_kms_decrypt_with_bucket_sourcearn",
+      "Effect": "allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": [
+        "arn:aws:kms:ap-southeast-2:123456789:key/11111111-2222-3333-4444-555555555555"
+      ],
+      "Principal": "s3.amazonaws.com",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:s3:::Mybucket"
+        }
+      }
+    }
+  ]
+}

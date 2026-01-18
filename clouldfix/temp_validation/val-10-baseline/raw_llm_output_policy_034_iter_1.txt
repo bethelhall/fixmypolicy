@@ -1,0 +1,98 @@
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1380877761162",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::bucketname/*"
+    },
+    {
+      "Sid": "DenyPutBucketTaggingOnForbiddenBucketAndInEUWestOnly",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::bucketname-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowPutBucketTaggingOnAllowedBucketAndInUSEastOnly",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      },
+      "Action": "s3:PutBucketTagging",
+      "Resource": "arn:aws:s3:::bucketname/file-13-18.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteBucketFromDifferentBucketNameAndInUSEastOnly",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/test-role"
+      },
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::different-bucketname/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAthenaActionsWithCorrectPrincipalsAndConditions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": ["arn:aws:iam::123456789012:role/forbidden-role", "arn:aws:iam::111222333444:user/temp-user"]
+      },
+      "Action": ["athena:GetDatabase"],
+      "Resource": "arn:aws:s3:::bucketname/file-*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeletingObjectsOutsideOfDeniedIPRange",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Action": "s3:DeleteObject",
+      "Resource": "arn:aws:s3:::denied-bucket-0/file-*.txt",
+      "Condition": {
+        "NotIpAddress": {"aws:SourceIp": "203.0.113.0/24"}
+      }
+    },
+    {
+      "Sid": "DenySQSRcvMsgIfSrcIsntOverSSLandHasWrongPrinicpal",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "Bool": {"aws:SecureTransport": "false"}
+      }
+    }
+  ]
+}
+```
+This is your repaired policy in its entirety with all requirements addressed correctly according to their specifications. Please note how each Sid (statement identifier) has been named for clarity on what it controls within this document. This makes debugging easier when issues arise later down the line due to misconfigurations being hardcoded into policies without clear identifiers of purpose. It also adheres strictly by Amazon’s recommended structure which includes specifying Effect(whether Allow or Deny), Action taken if condition met,(optional Principal who can perform action,) Resource upon whom we apply our actions, Condition under which these rules will take effect. Lastly please remember not every rule needs principal specified but where applicable they should match exactly otherwise access may still grant even though you intended deny only specific users certain permissions based off sid name alone might lead one too infer incorrect conclusions about said statements functionality thus causing potential vulnerabilities leading up towards breaches hence always double check them especially during production environments!  
+Please replace `[...],` placeholder values above appropriately per actual usage scenario constraints & restrictions imposed via other existing polices already applied onto respective resources managed hereunder mentioned bucket names etc.. Also ensure proper testing prior deploying such revised version back again against live environment ensuring desired outcomes achieved while minimizing risks associated potentially involved thereby enhancing overall system robustness securely functioning optimally over time moving forward! Thankyou!!

@@ -1,0 +1,228 @@
+ 
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Restrict access to org folder",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::my-bucket-name/${aws:PrincipalTag/org_id}/*",
+      "Action": [
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:AbortMultipartUpload"
+      ]
+    },
+    {
+      "Sid": "Allow delete user",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "iam:DeleteUser",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow sqs get queue attributes",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "sqs:GetQueueAttributes",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ses list identities",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "ses:ListIdentities",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow lambda create function",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "lambda:CreateFunction",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny s3 put bucket website",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-4/*",
+      "Action": "s3:PutBucketWebsite",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Allow codecommit list repositories",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "codecommit:ListRepositories",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "Deny dynamodb delete item",
+      "Effect": "Deny",
+      "Resource": "arn:aws:dynamodb:*:*:*",
+      "Action": "dynamodb:DeleteItem",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "Allow sagemaker describe endpoint config",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "sagemaker:DescribeEndpointConfig",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow ec2 start instances",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "ec2:StartInstances",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny sns publish",
+      "Effect": "Deny",
+      "Resource": "*",
+      "Action": "sns:Publish",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "Deny s3 get bucket tagging",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-1/*",
+      "Action": "s3:GetBucketTagging",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/test-user"
+      },
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "Allow cloudwatch put metric data",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "cloudwatch:PutMetricData",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny rds delete db instance",
+      "Effect": "Deny",
+      "Resource": "arn:aws:rds::*::*",
+      "Action": "rds:DeleteDBInstance",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/admin-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Allow athena delete workgroup",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "athena:DeleteWorkGroup",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "Deny s3 get bucket versioning",
+      "Effect": "Deny",
+      "Resource": "arn:aws:s3:::denied-bucket-3/*",
+      "Action": "s3:GetBucketVersioning",
+      "Principal": {
+        "AWS": "arn:aws:iam::555666777888:role/cross-account-role"
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

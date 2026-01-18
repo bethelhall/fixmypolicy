@@ -1,0 +1,191 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EC2ActionsOnResourcesInSpecificRegionsForCertainPrincipals",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:StartInstances",
+        "ec2:CreateSecurityGroup",
+        "ec2:DeleteTags",
+        "rds:CreateDBInstance"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": [
+            "us-east-1",
+            "eu-west-1"
+          ]
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      },
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::111222333444:user/david",
+          "arn:aws:iam::555666777888:role/cross-account-role"
+        ]
+      }
+    },
+    {
+      "Sid": "KMSKeyPolicyStatements",
+      "Effect": "Allow",
+      "Action": [
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "arn:aws:kms:*:*:key/*",
+      "Principal": {
+        "AWS": "*"
+      }
+    },
+    {
+      "Sid": "AthenaQueriesAndWorkgroupsManagementByBobOrAdminRole",
+      "Effect": "Allow",
+      "Action": [
+        "athena:GetQueryExecution",
+        "athena:GetTableMetadata",
+        "athena:BatchGetNamedQuery",
+        "athena:ListWorkGroups",
+        "athena:CreateWorkGroup",
+        "athena:UpdateWorkGroup",
+        "athena:DeleteWorkGroup",
+        "athena:ListNamedQueries",
+        "athena:CreateNamedQuery",
+        "athena:UpdateNamedQuery",
+        "athena:DeleteNamedQuery"
+      ],
+      "Resource": "*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob",
+          "arn:aws:iam::123456789012:role/admin-role"
+        ]
+      }
+    },
+    {
+      "Sid": "DynamoDBCRUDOperationsAllowedToServiceRolesOnly",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:CreateTable",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Scan",
+        "dynamodb:Query",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": "arn:aws:dynamodb:*:*:table/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/*-role"
+      }
+    },
+    {
+      "Sid": "LambdaFunctionsCreationDeniedUnauthorizedUsers",
+      "Effect": "Deny",
+      "Action": "lambda:CreateFunction",
+      "Resource": "*",
+      "Condition": {
+        "StringLike": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::999888777666:user/unauthorized"
+      }
+    },
+    {
+      "Sid": "IAMPermissionsBoundaryAttachmentProhibited",
+      "Effect": "Deny",
+      "Action": "iam:AttachPermissionsBoundary",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/service-role/*"
+      }
+    },
+    {
+      "Sid": "SQSPutMessagesWithSpecifiedConditionsAllowed",
+      "Effect": "Allow",
+      "Action": "sqs:ChangeMessageVisibility",
+      "Resource": "arn:aws:sqs:*:*:queue*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      }
+    },
+    {
+      "Sid": "GlueTablesDeletionControlViaPolicies",
+      "Effect": "Deny",
+      "Action": "glue:DeleteTable",
+      "Resource": "arn:aws:glue:*:*:table/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/bob"
+      }
+    },
+    {
+      "Sid": "CrossAccountTrustRelationshipsRestrictions",
+      "Effect": "Deny",
+      "Action": "iam:AddRoleToInstanceProfile",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": false
+        }
+      }
+    },
+    {
+      "Sid": "CloudWatchLogsDeliveryControlsThroughPolicies",
+      "Effect": "Deny",
+      "Action": "logs:CreateExportTask",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/cloudwatch-logs-delivery-role"
+      },
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceVPC": "vpc-abcde012"
+        }
+      }
+    },
+    {
+      "Sid": "EKSClusterModificationRestriction",
+      "Effect": "Deny",
+      "Action": [
+        "eks:AssociateIdentityProviderConfig",
+        "eks:CreateFargateProfile",
+        "eks:DeleteFargateProfile",
+        "eks:DisassociateIdentityProviderConfig",
+        "eks:ModifyClusterConfig",
+        "eks:UpdateNodegroupConfig",
+        "eks:UpdateNodegroupVersion"
+      ],
+      "Resource": "arn:aws:eks:*:*:cluster/*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/restricted-role"
+      }
+    },
+    {
+      "Sid": "AWSServiceCatalogPortfolioSharePermissionControlled",
+      "Effect": "Deny",
+      "Action": "servicecatalog:CreatePortfolioShare",
+      "Resource": "*",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:role/portfolio-share-control-role"
+      },
+      "Condition": {
+        "Bool": {
+          "aws:MultiFactorAuthPresent": true
+        }
+      }
+    }
+  ]
+}

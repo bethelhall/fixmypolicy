@@ -1,0 +1,166 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::$BucketName"
+    },
+    {
+      "Sid": "statement2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::$BucketName/*"
+    },
+    {
+      "Sid": "statement3",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": "sns:Subscribe",
+      "Resource": "arn:aws:s3:::$BucketName/file-0.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "statement4",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::251029770824:user/$username"
+      },
+      "Action": "cloudtrail:StartLogging",
+      "Resource": "arn:aws:s3:::$BucketName/file-35-19.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement5",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::771933695752:user/$username"
+      },
+      "Action": "iam:ListGroups",
+      "Resource": "arn:aws:s3:::$BucketName/file-43-9.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement6",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/forbidden-$username"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::$BucketName/file-13-8.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement7",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:s3:::completely-different-bucket/file.txt",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "statement8",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": "s3:DeleteBucketLifecycle",
+      "Resource": "arn:aws:s3:::$BucketName-forbidden/file.txt",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "statement9",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::941205196008:user/$username"
+      },
+      "Action": "cloudsearch:DescribeDomains",
+      "Resource": "arn:aws:s3:::$BucketName/file-40-13.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement10",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::556139545044:user/$username"
+      },
+      "Action": "cloudformation:DescribeStacks",
+      "Resource": "arn:aws:s3:::$BucketName/file-33-16.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "statement11",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/forbidden-$username"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::$BucketName/file-15-11.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "statement12",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::$AccountID:user/$username"
+      },
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:s3:::different-$BucketName/file.txt",
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    }
+  ]
+}

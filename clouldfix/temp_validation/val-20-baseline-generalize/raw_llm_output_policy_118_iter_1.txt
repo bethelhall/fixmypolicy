@@ -1,0 +1,246 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListAllMyBuckets",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:ListenBucketNotification",
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:CreateBucket",
+        "s3:DeleteBucket",
+        "s3:DeleteBucketPolicy",
+        "s3:DeleteObject",
+        "s3:GetBucketNotification",
+        "s3:GetBucketPolicy",
+        "s3:GetObjectAcl",
+        "s3:GetObjectTorrent",
+        "s3:GetObjectVersion",
+        "s3:GetObjectVersionAcl",
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucketMultipartUploads",
+        "s3:ListenBucketNotification",
+        "s3:PutBucketNotification",
+        "s3:PutBucketPolicy",
+        "s3:PutBucketTagging",
+        "s3:PutBucketVersioning",
+        "s3:PutBucketWebsite",
+        "s3:PutObjectAcl",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectVersionAcl",
+        "s3:RestoreObject",
+        "s3:UpdateJobPriority",
+        "s3:UpdateJobStatus"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket",
+        "arn:aws:s3:::mytestbucket/*"
+      ],
+      "Sid": "statement1"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "sqs:GetQueueUrl",
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:ChangeMessageVisibility",
+        "sqs:GetQueueAttributes",
+        "sqs:SetQueueAttributes"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-6-0.txt",
+        "arn:aws:s3:::mytestbucket/file-6-1.txt",
+        "arn:aws:s3:::mytestbucket/file-6-2.txt",
+        "arn:aws:s3:::mytestbucket/file-6-3.txt",
+        "arn:aws:s3:::mytestbucket/file-6-4.txt",
+        "arn:aws:s3:::mytestbucket/file-6-5.txt",
+        "arn:aws:s3:::mytestbucket/file-6-6.txt",
+        "arn:aws:s3:::mytestbucket/file-6-7.txt",
+        "arn:aws:s3:::mytestbucket/file-6-8.txt",
+        "arn:aws:s3:::mytestbucket/file-6-9.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement2"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "route53:ListHostedZones"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-1-13.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      },
+      "Sid": "statement3"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/forbidden-codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-49-16.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement4"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::706422199145:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "config:DeleteConfigRule"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-42-3.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement5"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::999341094987:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "kms:EnableKey"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-33-7.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement6"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::123456789012:user/alice"
+      },
+      "Action": [
+        "glue:GetCrawlers"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket/file-15-14.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      },
+      "Sid": "statement7"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      },
+      "Sid": "statement8"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "arn:aws:s3:::different-mytestbucket/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement9"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "sqs:ReceiveMessage"
+      ],
+      "Resource": [
+        "arn:aws:s3:::mytestbucket-forbidden/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      },
+      "Sid": "statement10"
+    },
+    {
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[account A]:role/service-role/codebuild-service-role-foo-bar"
+      },
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      },
+      "Sid": "statement11"
+    }
+  ]
+}

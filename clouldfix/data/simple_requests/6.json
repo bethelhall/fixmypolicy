@@ -1,0 +1,154 @@
+{
+  "Requests": [
+    {
+      "id": "test_1_iam_identity_center_console_access",
+      "Effect": "allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret"
+      ],
+      "Principal": "arn:aws:iam::your-account-id:role/aws-reserved/sso.amazonaws.com/your-iam-identity-center-region/AWSReservedSSO_Role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-console"
+        }
+      }
+    },
+    {
+      "id": "test_2_iam_identity_center_no_vpce",
+      "Effect": "allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-west-1:123456789012:secret:prod-secret"
+      ],
+      "Principal": "arn:aws:iam::your-account-id:role/aws-reserved/sso.amazonaws.com/your-iam-identity-center-region/AWSReservedSSO_Role"
+    },
+    {
+      "id": "test_3_iam_identity_center_different_vpce",
+      "Effect": "allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-west-2:123456789012:secret:api-key"
+      ],
+      "Principal": "arn:aws:iam::your-account-id:role/aws-reserved/sso.amazonaws.com/your-iam-identity-center-region/AWSReservedSSO_Role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-othervpce"
+        }
+      }
+    },
+    {
+      "id": "test_4_iam_identity_center_wildcard_secret",
+      "Effect": "allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:*:*:secret:*"
+      ],
+      "Principal": "arn:aws:iam::your-account-id:role/aws-reserved/sso.amazonaws.com/your-iam-identity-center-region/AWSReservedSSO_Role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-123456"
+        }
+      }
+    },
+    {
+      "id": "test_5_regular_iam_user_wrong_vpce",
+      "Effect": "deny",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:database-creds"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/regular-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-wrongvpce"
+        }
+      }
+    },
+    {
+      "id": "test_6_ec2_instance_role_wrong_vpce",
+      "Effect": "deny",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:ap-south-1:123456789012:secret:app-config"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/ec2-instance-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-different"
+        }
+      }
+    },
+    {
+      "id": "test_7_lambda_role_no_vpce",
+      "Effect": "deny",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:eu-central-1:123456789012:secret:lambda-secret"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/lambda-execution-role"
+    },
+    {
+      "id": "test_8_correct_vpce_any_principal",
+      "Effect": "allow",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-east-1:123456789012:secret:shared-secret"
+      ],
+      "Principal": "arn:aws:iam::123456789012:role/any-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-myvpce"
+        }
+      }
+    },
+    {
+      "id": "test_9_federated_user_wrong_vpce",
+      "Effect": "deny",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:ca-central-1:123456789012:secret:federated-secret"
+      ],
+      "Principal": "arn:aws:sts::123456789012:federated-user/saml-user",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-federated"
+        }
+      }
+    },
+    {
+      "id": "test_10_cross_account_role_wrong_vpce",
+      "Effect": "deny",
+      "Action": [
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "arn:aws:secretsmanager:us-west-1:123456789012:secret:cross-account-secret"
+      ],
+      "Principal": "arn:aws:iam::987654321098:role/cross-account-role",
+      "Condition": {
+        "StringEquals": {
+          "aws:sourceVpce": "vpce-external"
+        }
+      }
+    }
+  ]
+}

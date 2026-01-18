@@ -1,0 +1,93 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[my-account-id]:root"
+      },
+      "Action": [
+        "s3:PutObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::[bucket-name]/*",
+        "arn:aws:s3:::[bucket-name]"
+      ]
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::[my-account-id]:root"
+      },
+      "Action": [
+        "iam:CreatePolicy",
+        "route53:GetHostedZone",
+        "autoscaling:DescribeAutoScalingGroups",
+        "athena:StartQueryExecution",
+        "s3:ListBucket",
+        "s3:GetObjectAcl",
+        "s3:DeleteBucket",
+        "iam:DeleteRole",
+        "config:GetComplianceDetailsByConfigRule",
+        "cloudformation:DescribeStacks",
+        "cloudtrail:CreateTrail",
+        "elasticbeanstalk:DescribeApplications",
+        "dynamodb:PutItem",
+        "sqs:SendMessageBatch",
+        "glue:GetCrawlers",
+        "s3:GetBucketWebsite",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1",
+          "aws:AccountId": "[my-account-id]",
+          "aws:SourceArn": "arn:aws:iam::*:*"
+        }
+      }
+    },
+    {
+      "Sid": "DenyS3Actions",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "arn:aws:iam::[my-account-id]:root"
+      },
+      "Action": [
+        "s3:GetBucketVersioning",
+        "s3:GetBucketLogging",
+        "s3:DeleteObject",
+        "s3:DeleteBucketWebsite",
+        "s3:GetBucketWebsite",
+        "s3:ListAllMyBuckets"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/*",
+        "arn:aws:s3:::denied-bucket-4/*",
+        "arn:aws:s3:::denied-bucket-5/*",
+        "arn:aws:s3:::denied-bucket-6/*",
+        "arn:aws:s3:::denied-bucket-7/*",
+        "arn:aws:s3:::completely-different-bucket/*",
+        "arn:aws:s3:::different-[bucket-name]/*"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        },
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        },
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance",
+          "aws:RequestedRegion": "eu-west-1",
+          "aws:RequestedRegion": "eu-west-1",
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    }
+  ]
+}

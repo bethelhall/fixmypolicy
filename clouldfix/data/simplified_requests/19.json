@@ -1,0 +1,183 @@
+{
+  "requests": {
+    "Requests": [
+      {
+        "id": "test_public_bucket_creation",
+        "Effect": "allow",
+        "Action": [
+          "s3:CreateBucket",
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::new-public-bucket-test"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/developer",
+        "Condition": {
+          "StringLike": {
+            "s3:x-amz-acl": "public-read"
+          }
+        }
+      },
+      {
+        "id": "test_existing_bucket_vpce_access",
+        "Effect": "deny",
+        "Action": [
+          "s3:GetObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::xxxxxxx-159170848751291/*"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/appuser",
+        "Condition": {
+          "StringNotEquals": {
+            "aws:sourceVpce": "vpce-0123456789abcdef0"
+          }
+        }
+      },
+      {
+        "id": "test_allowed_vpce_access",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObject"
+        ],
+        "Resource": [
+          "arn:aws:s3:::xxxxxxx-159170848751291/data/*"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:role/ec2-instance-role",
+        "Condition": {
+          "StringEquals": {
+            "aws:sourceVpce": "vpce-xxxxxxxxxxxxxxxxx"
+          }
+        }
+      },
+      {
+        "id": "test_public_read_acl_application",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutBucketAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::test-bucket-public"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/admin",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "public-read"
+          }
+        }
+      },
+      {
+        "id": "test_put_public_access_block",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutBucketPublicAccessBlock"
+        ],
+        "Resource": [
+          "arn:aws:s3:::company-data-bucket"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/security-admin",
+        "Condition": {
+          "Bool": {
+            "s3:BlockPublicAcls": "false"
+          }
+        }
+      },
+      {
+        "id": "test_anonymous_bucket_policy",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::web-assets-bucket"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/webmaster",
+        "Condition": {
+          "StringLike": {
+            "s3:x-amz-grant-read": "*"
+          }
+        }
+      },
+      {
+        "id": "test_cross_account_public_access",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutObjectAcl"
+        ],
+        "Resource": [
+          "arn:aws:s3:::shared-bucket/*"
+        ],
+        "Principal": "arn:aws:iam::987654321098:user/external-user",
+        "Condition": {
+          "StringEquals": {
+            "s3:x-amz-acl": "public-read-write"
+          }
+        }
+      },
+      {
+        "id": "test_vpce_list_buckets",
+        "Effect": "deny",
+        "Action": [
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::xxxxxxx-159170848751291"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:role/lambda-function",
+        "Condition": {
+          "IpAddress": {
+            "aws:SourceIp": "10.0.0.0/8"
+          }
+        }
+      },
+      {
+        "id": "test_bucket_policy_wildcard_principal",
+        "Effect": "allow",
+        "Action": [
+          "s3:PutBucketPolicy"
+        ],
+        "Resource": [
+          "arn:aws:s3:::marketing-assets"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:user/marketing-admin",
+        "Condition": {
+          "ForAnyValue:StringEquals": {
+            "s3:ExistingBucketPolicy": [
+              "Principal: *"
+            ]
+          }
+        }
+      },
+      {
+        "id": "test_delete_public_access_block",
+        "Effect": "allow",
+        "Action": [
+          "s3:DeletePublicAccessBlock"
+        ],
+        "Resource": [
+          "arn:aws:s3:::legacy-bucket"
+        ],
+        "Principal": "arn:aws:iam::159170848751291:root"
+      }
+    ]
+  },
+  "evaluation": {
+    "broken_policy": {
+      "accuracy": 18.2,
+      "total_requests": 11,
+      "correct": 2,
+      "incorrect": 9
+    },
+    "repaired_policy": {
+      "accuracy": 18.2,
+      "total_requests": 11,
+      "correct": 2,
+      "incorrect": 9
+    }
+  },
+  "metadata": {
+    "file_number": "19",
+    "user_intent": "Dear Team - Can anyone help me on best way to implement SCP to block the S3 public read access. It should not impact the existing one and only deny when someone trying to create the new bucket and add Policy/ACL for public access. I tried below but still users are able to create new bucket and can apply s3 policy for public read access.",
+    "timestamp": "2025-08-19T17:41:26.877377"
+  }
+}

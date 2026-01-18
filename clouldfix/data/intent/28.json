@@ -1,0 +1,148 @@
+Details
+
+
+I am currently building an S3 environment that meets all of the following requirements.
+
+
+Access is only possible from a specific IP address.
+Access is only possible from a specific IAM user.
+
+
+I have built an S3 environment that meets the above requirements.
+
+
+However, I am unable to build an environment that uses the AWS Backup service to periodically obtain backups. Specifically, when allocating resources in a backup plan, the bucket I created is not displayed. The following are the steps I have tried to resolve the issue.
+
+
+1.Check the IAM policy
+
+
+2.Check the bucket policy
+
+
+3.Check that the region matches
+
+
+*Please check each policies that written end of sentence.
+
+
+Ideal state
+
+
+Meet the requirements of "access is only possible from a specific IP address" and "access is only possible from a specific IAM user" and also use AWS Backup to periodically obtain backups.
+
+
+I am sorry my bad english. Thanks.
+
+
+＝＝＝＝＝＝＝
+
+
+IAM Policy
+
+
+I assigned "AmazonS3FullAccess" and "AWSBackupFullAccess". I also attached the following .json.
+
+
+
+
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}t",
+                "arn:aws:s3:::{bucket_name}/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "backup:*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListBucket",
+                "s3:PutBucketAcl",
+                "s3:GetBucketLocation",
+                "s3:GetBucketVersioning"
+            ],
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}",
+                "arn:aws:s3:::{bucket_name}/*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:DeleteObject",
+                "s3:GetBucketVersioning"
+            ],
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}",
+                "arn:aws:s3:::{bucket_name}/*"
+            ]
+        }
+    ]
+}
+
+
+
+Bucket Policy
+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}",
+                "arn:aws:s3:::{bucket_name}/*"
+            ],
+            "Condition": {
+                "StringNotEquals": {
+                    "aws:username": "{created_iam_user_name}"
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::{bucket_name}",
+                "arn:aws:s3:::{bucket_name}/*"
+            ],
+            "Condition": {
+                "NotIpAddress": {
+                    "aws:VpcSourceIp": [
+                        "124.215.101.111/32",
+                        "60.112.161.29/32"
+                    ]
+                }
+            }
+        }
+    ]
+}

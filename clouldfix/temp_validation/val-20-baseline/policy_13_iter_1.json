@@ -1,0 +1,131 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageBackupPolicies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ]
+    },
+    {
+      "Sid": "SCPManagement",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "SERVICE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "ViewOrgInfoAndAccountListing",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:ListAccounts"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DynamoDBSpecificActionsOnForbiddenResources",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "dynamodb:DeleteItem",
+        "dynamodb:PutItem"
+      ],
+      "Resource": "forbidden-*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "IAMactionsonAdminBucketsandUsers",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "iam:CreateUser",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::admin-bucket/*",
+        "arn:aws:s3:::bucket-1/file-9.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "CloudSearchOperationsInEUWest1Only",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "cloudsearch:DeleteDomain"
+      ],
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/file-18-6.txt",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "SQSSendMessagesFromNonUSWEST2accounts",
+      "Effect": "Deny",
+      "Principal": {
+        "AWS": "*"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:*:123456789012:myqueue",
+      "Condition": {
+        "StringNotEquals": {
+          "aws:SourceVPC": "true"
+        }
+      }
+    }
+  ]
+}

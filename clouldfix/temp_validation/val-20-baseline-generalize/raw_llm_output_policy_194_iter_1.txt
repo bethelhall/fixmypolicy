@@ -1,0 +1,216 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "BedrockInvokeModelStatement",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:InvokeModel"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ]
+    },
+    {
+      "Sid": "AllowCreateTable",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:CreateTable"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:1",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:2",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:3",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:4",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:5",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:6",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:7",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:8",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:9"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:role/service-role"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateTrainingJob",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:CreateTrainingJob"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGetBucketLogging",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLogging"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateDistribution",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateDistribution"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCreateWorkGroup",
+      "Effect": "Allow",
+      "Action": [
+        "athena:CreateWorkGroup"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowDeleteTags",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DeleteTags"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0"
+      ],
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::123456789012:user/bob"
+        ]
+      },
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    },
+    {
+      "Sid": "DenyInvokeFunction",
+      "Effect": "Deny",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::111222333444:user/david"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    },
+    {
+      "Sid": "DenyPublish",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "forbidden-arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0-specific"
+      ],
+      "Principal": [
+        "arn:aws:iam::999888777666:user/unauthorized"
+      ],
+      "Condition": {
+        "NumericLessThan": {
+          "s3:max-keys": "10"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteUser",
+      "Effect": "Deny",
+      "Action": [
+        "iam:DeleteUser"
+      ],
+      "Resource": [
+        "authorized/arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0/file.txt"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:user/temp-user"
+      ],
+      "Condition": {
+        "StringLike": {
+          "aws:userid": "AIDAI"
+        }
+      }
+    },
+    {
+      "Sid": "DenyDeleteDBInstance",
+      "Effect": "Deny",
+      "Action": [
+        "rds:DeleteDBInstance"
+      ],
+      "Resource": [
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.titan-embed-text-v2:0-forbidden-resource"
+      ],
+      "Principal": [
+        "arn:aws:iam::123456789012:role/admin-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

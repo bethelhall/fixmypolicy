@@ -1,0 +1,66 @@
+ 
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "UpdateShadows",
+      "Effect": "Allow",
+      "Action": [
+        "iot:UpdateThingShadow",
+        "iot:ListNamedShadowsForThing",
+        "iot:GetThingShadow"
+      ],
+      "Resource": "arn:aws:iot:[region]:[account]:thing/*"
+    },
+    {
+      "Sid": "AllowIotActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:ListAttachedUserPolicies",
+        "sagemaker:ListNotebookInstances",
+        "sqs:UntagQueue",
+        "config:DeleteConfigRule",
+        "codebuild:BatchGetBuilds",
+        "elasticbeanstalk:CreateApplication",
+        "sns:CreateTopic",
+        "s3:GetBucketWebsite",
+        "athena:StopQueryExecution",
+        "cloudfront:ListDistributions",
+        "iam:CreateRole",
+        "cloudwatch:PutMetricData",
+        "iam:CreateLoginProfile",
+        "codebuild:StopBuild",
+        "iam:PutRolePolicy",
+        "elasticbeanstalk:DescribeApplications"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "[region]"
+        }
+      }
+    },
+    {
+      "Sid": "DenyFinanceOperations",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Subscribe",
+        "dynamodb:PutItem",
+        "rds:CreateDBInstance",
+        "rds:DeleteDBInstance",
+        "dynamodb:DeleteItem",
+        "iam:CreateUser",
+        "lambda:InvokeFunction",
+        "lambda:CreateFunction",
+        "sns:Publish",
+        "ec2:RunInstances"
+      ],
+      "Resource": "arn:aws:s3:::denied-bucket-0/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:ExistingObjectTag/Department": "Finance"
+        }
+      }
+    }
+  ]
+}

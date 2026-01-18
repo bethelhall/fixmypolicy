@@ -1,0 +1,81 @@
+{
+  "Version": "2012-10-17",
+  "Id": "Cross-account account A to account B SNS, and Cloudwatch encryption key",
+  "Statement": [
+    {
+      "Sid": "AllowAccessThroughSNS",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAccessThroughCloudwatch",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowUseOfKeyFor444555666",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "Allow use of the key in Account B when Account A calls",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::444555666:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:CallerAccount": "111222333"
+        }
+      }
+    },
+    {
+      "Sid": "AllowSNSServiceForAccountB",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "sns.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowCloudwatchServiceForAccountB",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudwatch.amazonaws.com"
+      },
+      "Action": "kms:*",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": [
+            "111222333",
+            "444555666"
+          ]
+        }
+      }
+    }
+  ]
+}

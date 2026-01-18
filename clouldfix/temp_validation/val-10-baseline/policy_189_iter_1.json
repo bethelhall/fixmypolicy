@@ -1,0 +1,105 @@
+{
+  "Version": "2012-10-17",
+  "Id": "PolicyForDataLakeAndServices",
+  "Statement": [
+    {
+      "Sid": "AllowListingOfAllBuckets",
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*"
+    },
+    {
+      "Sid": "AllowListingOfSpecificBucket",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::<data lake bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "AllowGettingObjectsFromSpecificBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/*"
+      ]
+    },
+    {
+      "Sid": "AllowOperationsOnSpecificBucket",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucketMultipartUploads",
+        "s3:GetBucketLocation",
+        "s3:PutObject",
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": "arn:aws:s3:::<data lake bucket>",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "ServiceRoleStatements",
+      "Effect": "Allow",
+      "Action": [
+        "sagemaker:ListNotebookInstances",
+        "sagemaker:DescribeEndpoint",
+        "ses:VerifyEmailIdentity",
+        "athena:DeleteWorkGroup"
+      ],
+      "Resource": "*",
+      "Principal": "arn:aws:iam::123456789012:role/service-role"
+    },
+    {
+      "Sid": "DeveloperRoleDenial",
+      "Effect": "Deny",
+      "Action": "s3:GetBucketWebsite",
+      "Resource": "arn:aws:s3:::different-<data lake bucket>/file.txt",
+      "Principal": "arn:aws:iam::111222333444:role/developer-role"
+    },
+    {
+      "Sid": "UserDenials",
+      "Effect": "Deny",
+      "Action": [
+        "sns:Publish",
+        "s3:RestoreObject",
+        "s3:CreateBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::denied-bucket-0/file-0.txt",
+        "arn:aws:s3:::<data lake bucket>-forbidden/file.txt",
+        "arn:aws:s3:::completely-different-bucket/file.txt"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "OtherUserPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:DeleteAccessKey",
+        "s3:PutObject",
+        "s3:ListMultipartUploadParts"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<data lake bucket>/file-26-5.txt",
+        "arn:aws:s3:::<data lake bucket>*",
+        "arn:aws:s3:::<data lake bucket>/*"
+      ],
+      "Principal": "arn:aws:iam::123456789012:user/alice"
+    }
+  ]
+}

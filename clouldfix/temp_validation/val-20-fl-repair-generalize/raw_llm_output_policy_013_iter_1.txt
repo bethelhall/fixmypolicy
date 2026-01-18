@@ -1,0 +1,309 @@
+
+        {
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Fully_manage_backup_policies",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy",
+        "organizations:DescribePolicy",
+        "organizations:UpdatePolicy",
+        "organizations:DeletePolicy",
+        "organizations:AttachPolicy",
+        "organizations:DetachPolicy"
+      ],
+      "Resource": [
+        "arn:aws:organizations::98765432109:root/o-ididiididi/r-rrrrrrrr",
+        "arn:aws:organizations::98765432109:ou/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:account/o-ididiididi/*",
+        "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*"
+      ]
+    },
+    {
+      "Sid": "AllowServiceControlPoliciesCreation",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:CreatePolicy"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "Fully_manage_backup_policies2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "123456789012"
+      },
+      "Action": [
+        "organizations:DescribeOrganization",
+        "organizations:ListAccounts"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "allow_3fbc359a",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-10.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_687019c5",
+      "Effect": "Allow",
+      "Action": "codecommit:CreateRepository",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-5-12.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_0d95bb80",
+      "Effect": "Allow",
+      "Action": "guardduty:CreateDetector",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-13-2.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-west-2"
+        }
+      }
+    },
+    {
+      "Sid": "allow_21ae3dd5",
+      "Effect": "Allow",
+      "Action": "iam:GetAccessKeyLastUsed",
+      "Resource": "arn:aws:organizations::98765432109:ou/o-ididiididi/file-5-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-10.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_40f3f62a",
+      "Effect": "Allow",
+      "Action": "s3:PutBucketLogging",
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/file-16-11.txt",
+      "Principal": "arn:aws:iam::123456789012:user/bob",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_0465b03a",
+      "Effect": "Allow",
+      "Action": "athena:CreateWorkGroup",
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/file-18-3.txt",
+      "Principal": "arn:aws:iam::123456789012:user/alice",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        }
+      }
+    },
+    {
+      "Sid": "deny_be93b323",
+      "Effect": "Deny",
+      "Action": "ec2:DescribeInstances",
+      "Resource": "arn:aws:organizations::98765432109:account/o-ididiididi/*-forbidden-resource",
+      "Principal": "123456789012",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "deny_74fee34a",
+      "Effect": "Deny",
+      "Action": "iam:CreateUser",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/*-forbidden-resource",
+      "Principal": "123456789012",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "deny_c1bc6447",
+      "Effect": "Deny",
+      "Action": "iam:DeleteUser",
+      "Resource": "arn:aws:s3:::admin-bucket/document.txt",
+      "Principal": "123456789012",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "deny_59f418bd",
+      "Effect": "Deny",
+      "Action": "sqs:ReceiveMessage",
+      "Resource": "forbidden-arn:aws:organizations::98765432109:account/o-ididiididi/*-specific",
+      "Principal": "123456789012",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var0",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-0.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var1",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-1.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var2",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-2.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var3",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-3.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var4",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-4.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var5",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-5.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var6",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-6.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var7",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-7.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var8",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-8.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    },
+    {
+      "Sid": "allow_3fbc359a_var9",
+      "Effect": "Allow",
+      "Action": "sqs:ListQueueTags",
+      "Resource": "arn:aws:organizations::98765432109:policy/o-ididiididi/resource_control_policy/file-12-9.txt",
+      "Principal": "arn:aws:iam::123456789012:role/service-role",
+      "Condition": {
+        "StringEquals": {
+          "organizations:PolicyType": "not-RESOURCE_CONTROL_POLICY"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowLambdaCrossAccountAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/lambda_execution_role"
+      },
+      "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*"
+      ],
+      "Resource": [
+        "arn:aws:s3:::account_b_bucket_name",
+        "arn:aws:s3:::account_b_bucket_name/*"
+      ]
+    },
+    {
+      "Sid": "AllowBedrockAccess",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "bedrock.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::account_b_bucket_name/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:SourceAccount": "ACCOUNT_A"
+        }
+      }
+    },
+    {
+      "Sid": "AllowCombo2",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::ACCOUNT_A:role/forbidden-lambda_execution_role"
+      },
+      "Action": [
+        "cloudfront:DeleteDistribution",
+        "ec2:TerminateInstances",
+        "s3:PutObjectTagging",
+        "workspaces:StopWorkspaces",
+        "athena:GetQueryResults",
+        "ses:GetIdentityVerificationAttributes",
+        "ses:SendEmail",
+        "sqs:UntagQueue",
+        "glue:DeleteTable",
+        "codecommit:GetRepository",
+        "s3:DeleteBucketLifecycle",
+        "s3:DeleteBucketPolicy"
+      ],
+      "Resource": [
+        "arn:aws:s3:::account_b_bucket_name/file-3-7.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-3-6.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-4-1.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-5-5.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-15-0.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-13-19.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-23-12.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-5-0.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-12-15.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-30-15.txt",
+        "arn:aws:s3:::account_b_bucket_name/file-43-2.txt"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "eu-west-1"
+        },
+        "IpAddress": {
+          "aws:SourceIp": "203.0.113.0/24"
+        }
+      }
+    }
+  ]
+}
