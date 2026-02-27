@@ -24,8 +24,64 @@ An LLM-based tool for automatically repairing faulty AWS IAM policies using SMT-
 ### Prerequisites
 
 - Python 3.8+
-- [Quacky](https://github.com/...) (SMT-based policy analyzer) — place source in `quacky/`
-- Required Python packages:
+- Linux or macOS
+- Git, pip3, CMake, and a C++ compiler
+- [Quacky](https://github.com/william-eiers/quacky) — SMT-based policy analyzer (see setup below)
+- [ABC](https://github.com/vlab-cs-ucsb/ABC) — string constraint solver required by Quacky (see setup below)
+
+---
+
+### 1. Install ABC (String Constraint Solver)
+
+ABC is required by Quacky for model counting over string constraints.
+
+```bash
+# Install build dependencies (Ubuntu/Debian)
+sudo apt install git cmake g++ default-jdk
+
+# Clone and build ABC
+git clone https://github.com/vlab-cs-ucsb/ABC.git
+cd ABC
+# Follow INSTALL.md in the repo for platform-specific build steps
+# After building, ensure the `abc` binary is on your PATH
+```
+
+> Alternatively, use the pre-built Docker image:
+> ```bash
+> docker pull vlabucsb/abc:ubuntu
+> ```
+
+---
+
+### 2. Install Quacky (Policy Analyzer)
+
+Quacky translates IAM policies into SMT constraints and uses ABC for validation.
+
+```bash
+# Install system dependencies
+sudo apt install git python3-pip
+
+# Clone Quacky into the project root
+git clone https://github.com/william-eiers/quacky.git
+
+# Install Python dependencies
+cd quacky
+sudo pip3 install -r requirements.txt
+cd ..
+```
+
+Verify the installation:
+
+```bash
+cd quacky/src
+python3 quacky.py -p1 ../samples/iam/exp_single/iam_simplest_policy/policy.json -b 100
+```
+
+You should see solve time, satisfiability status, and analysis metrics in the output.
+
+---
+
+### 3. Install CloudFix Dependencies
 
 ```bash
 pip install pandas tqdm anthropic
