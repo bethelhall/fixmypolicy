@@ -1,4 +1,8 @@
-# Fix My Policy
+# CloudFix: Automated Policy Repair for Cloud Access Control
+
+> **Official repository** for the paper:
+> [**CloudFix: Automated Policy Repair for Cloud Access Control Policies Using Large Language Models**](https://arxiv.org/abs/2512.09957)
+> Bethel Hall, Owen Ungaro, William Eiers — *Accepted at SANER 2026*
 
 An LLM-based tool for automatically repairing faulty AWS IAM policies using SMT-based fault localization.
 
