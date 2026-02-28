@@ -51,6 +51,42 @@ Each policy is stored as a JSON file and represents a real access control config
 
 ---
 
+## validate_requests.py
+
+`validate_requests.py` (located in `quacky/src/`) is the SMT-based validation engine that CloudFix uses to check whether a policy correctly allows or denies a set of test requests.
+
+**What it does:**
+
+1. Translates the policy into SMT-LIB constraints via Quacky's translator.
+2. For each test request, asserts the action, resource, principal, and conditions into the formula and calls Z3. Satisfiable → `allow`; unsatisfiable → `deny`.
+3. Compares the solver result against the expected effect and reports accuracy.
+4. With `--identify-faulty`, performs statement-level fault localization:
+   - **Case 1** — allowed but should be denied: finds which `Allow` statements match the request.
+   - **Case 2a** — denied but should be allowed (explicit): finds which `Deny` statements block it.
+   - **Case 2b** — denied but should be allowed (implicit): no matching `Allow` statement exists.
+5. Saves an LLM-friendly fault report (`.txt`) and structured CSVs to `--output-dir`.
+
+**Usage:**
+```bash
+# Run from quacky/src/
+python validate_requests.py \
+  -p1 <policy.json> \
+  --requests <requests.json> \
+  -s \
+  [--identify-faulty --output <base_name> --output-dir <dir>]
+```
+
+| Flag | Description |
+|---|---|
+| `-p1` | Path to the policy JSON file |
+| `--requests` | Path to the test requests JSON file |
+| `-s` | Use SMT-LIB syntax (required) |
+| `--identify-faulty` | Enable statement-level fault localization |
+| `--output` | Base name for output files (default: `output`) |
+| `--output-dir` / `-od` | Directory to save reports (default: `.`) |
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -139,8 +175,24 @@ python clouldfix/code/baseline.py \
 
 ### Generating Test Requests
 
+Requests are generated per policy from `clouldfix/data/original_policy/`. Run from the `clouldfix/data/` directory:
+
 ```bash
-python clouldfix/code/request_generate.py
+cd clouldfix/data
+python ../code/request_generate.py <policy_number> <num_requests> <misclassified_percent>
+```
+
+| Argument | Description |
+|---|---|
+| `policy_number` | Policy file index (reads `original_policy/{N}.json`) |
+| `num_requests` | Total number of requests to generate |
+| `misclassified_percent` | Percentage of requests with flipped expected effects (0–100) |
+
+Output is saved to `requests/request-{num_requests}/{policy_number}.json`. The split is 60% allow / 40% deny, with each request containing exactly one action and one resource.
+
+**Example** — generate 25 requests for policy 5, with 30% misclassified:
+```bash
+python ../code/request_generate.py 5 25 30
 ```
 
 ### Evaluating Results
