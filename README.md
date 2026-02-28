@@ -10,7 +10,7 @@ An LLM-based tool for automatically repairing faulty AWS IAM policies using SMT-
 
 ## Overview
 
-![Method](clouldfix/data/method.jpg)
+<img src="clouldfix/data/method.jpg" width="750"/>
 
 *Figure: CloudFix pipeline — faulty policies are localized using SMT solving (Quacky/ABC), then iteratively repaired by an LLM until the full request suite passes validation.*
 
@@ -33,6 +33,12 @@ Each policy is stored as a JSON file and represents a real access control config
 | `clouldfix/data/original_policy/` | 282 original (ground-truth) AWS IAM policies |
 | `clouldfix/data/faulty/` | Faulty variants used as repair inputs |
 | `clouldfix/data/requests/` | Test request suites for validation |
+
+---
+
+## Prompt Design
+
+<img src="clouldfix/data/prompt.jpg" width="750"/>
 
 ---
 
