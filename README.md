@@ -16,6 +16,26 @@ An LLM-based tool for automatically repairing faulty AWS IAM policies using SMT-
 
 ---
 
+## Dataset
+
+> We release the full dataset used in our experiments as part of this repository.
+
+**282 real-world AWS IAM policies** collected from the AWS forums are available in:
+
+```
+clouldfix/data/original_policy/
+```
+
+Each policy is stored as a JSON file and represents a real access control configuration submitted by users seeking help. This dataset, along with the corresponding faulty variants and test request suites, constitutes a novel contribution for benchmarking automated policy repair tools.
+
+| Directory | Contents |
+|---|---|
+| `clouldfix/data/original_policy/` | 282 original (ground-truth) AWS IAM policies |
+| `clouldfix/data/faulty/` | Faulty variants used as repair inputs |
+| `clouldfix/data/requests/` | Test request suites for validation |
+
+---
+
 ## How It Works
 
 1. **Fault Localization** — Uses SMT solving (via Quacky) to identify which statements in a faulty policy violate the test requests.
