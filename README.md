@@ -220,6 +220,7 @@ fixmypolicy/
 │   │   ├── generalize.py            # Policy generalization helpers
 │   │   ├── prompts.py               # LLM prompt templates
 │   │   └── viz.ipynb                # Results visualization notebook
+|   |   └── validate_requests.py     # Calls Quacky/ABC for request validation
 │   │
 │   ├── data/                        # Datasets and artifacts
 │   │   ├── faulty/                  # Faulty input policies (JSON)
