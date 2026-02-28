@@ -511,7 +511,7 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
         os.chdir(CONFIG.quacky_src_dir)
         
         cmd = [
-            "python3", "validate_requests.py",
+            sys.executable, "validate_requests.py",
             "-p1", str(policy_file),
             "--requests", str(requests_file),
             "-s",

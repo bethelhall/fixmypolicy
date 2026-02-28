@@ -41,7 +41,7 @@ OUTPUT_DIR = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/results/result-fl-r
 LOG_DIR = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/logs/log-fl-repair-generalize")
 TEMP_DIR = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/temp_validation/val-{req}-fl-repair-generalize")
 QUACKY_SRC_DIR = Path("/home/bhall2/fixmypolicy/quacky/src")
-SMT_VALIDATOR_SCRIPT = Path("/home/bhall2/fixmypolicy/quacky/src/validate_requests.py")
+SMT_VALIDATOR_SCRIPT = QUACKY_SRC_DIR / "validate_requests.py"
 FAULT_LOCALIZATION_DIR = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/results/result-{req}-ollama/Quacky_output")
 
 def parse_smt_timing_from_output(output_content: str) -> dict:
@@ -430,7 +430,7 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
             accuracy_output_path = os.path.join(quacky_output_dir, f"temp_accuracy_{pid}_{timestamp}.txt")
         
         cmd_accuracy = [
-            'python', 'validate_requests.py',
+            sys.executable, 'validate_requests.py',
             '-p1', policy_file,
             '--requests', requests_file,
             '-s'
@@ -551,7 +551,7 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
             accuracy_output_path = os.path.join(quacky_output_dir, f"temp_accuracy_{pid}_{timestamp}.txt")
 
         cmd_accuracy = [
-            'python3', 'validate_requests.py',
+            sys.executable, 'validate_requests.py',
             '-p1', policy_file,
             '--requests', requests_file,
             '-s'
@@ -878,12 +878,12 @@ def run_fault_localization(policy_file: str, requests_file: str, policy_idx: int
         
         # Correct command format as specified
         cmd = [
-            'python', 'validate_requests.py',
+            sys.executable, 'validate_requests.py',
             '-p1', policy_file,
             '--requests', requests_file,
             '-s',
             '--identify-faulty',
-            '--output', output_base 
+            '--output', output_base
         ]
         
         logging.info(f"Running fault localization for policy {policy_idx} iteration {iteration}: {' '.join(cmd)}")

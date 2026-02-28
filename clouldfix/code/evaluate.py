@@ -351,7 +351,7 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
 
         # Run validator
         cmd_accuracy = [
-            "python3",
+            sys.executable,
             "validate_requests.py",
             "-p1",
             policy_file,

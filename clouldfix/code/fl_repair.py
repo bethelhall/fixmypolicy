@@ -641,7 +641,7 @@ def run_smt_validator(policy_file: str, requests_file: str, policy_idx: int = No
             output_path = os.path.join(output_dir, f"temp_accuracy_{os.getpid()}_{int(time.time())}.txt")
         
         cmd = [
-            'python3', 'validate_requests.py',
+            sys.executable, 'validate_requests.py',
             '-p1', policy_file,
             '--requests', requests_file,
             '-s',
@@ -810,7 +810,7 @@ def run_fault_localization(
         output_base = os.path.join(policy_iter_dir, f"fault_analysis_{policy_idx:03d}_iter_{iteration}")
         
         cmd = [
-            'python', 'validate_requests.py',
+            sys.executable, 'validate_requests.py',
             '-p1', policy_file,
             '--requests', requests_file,
             '-s',
