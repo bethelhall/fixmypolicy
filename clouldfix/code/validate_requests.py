@@ -362,16 +362,14 @@ def save_fault_localization_results(fault_results, args, policy_name=None, polic
     
     policy_info = f"Policy {policy_index}" if policy_index is not None else f"Policy {policy_name}" if policy_name else "Policy"
     
-    home_dir = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/results/result-{req_num}-ollama/Quacky_output")
-    if not home_dir.exists():
-        print(f"Warning: Home directory {home_dir} does not exist. Saving to current directory.")
-        home_dir = Path(".")
-    
+    home_dir = Path(args.output_dir)
+    home_dir.mkdir(parents=True, exist_ok=True)
+
     if args.output and os.path.isabs(args.output):
         base_filename = os.path.basename(args.output)
     else:
         base_filename = args.output if args.output else "policy_validation"
-    
+
     # Group results by fault type for clear categorization
     fault_groups = {
         "should_be_denied_but_explicitly_allowed": [],
@@ -862,17 +860,14 @@ def generate_reports(statement_analysis, all_results, args, policy_name=None, po
     
     policy_info = f"Policy {policy_index}" if policy_index is not None else f"Policy {policy_name}" if policy_name else "Policy"
     
-    home_dir = Path(f"/home/bhall2/fixmypolicy/FL/Experiment-2/results/result-{req_num}-ollama/Quacky_output")
+    home_dir = Path(args.output_dir)
+    home_dir.mkdir(parents=True, exist_ok=True)
 
-    if not home_dir.exists():
-        print(f"Warning: Home directory {home_dir} does not exist. Saving to current directory.")
-        home_dir = Path(".")
-    
     if args.output and os.path.isabs(args.output):
         base_filename = os.path.basename(args.output)
     else:
         base_filename = args.output if args.output else "policy_validation"
-    
+
     # Console summary
     total_statements = len(statement_analysis)
     faulty_statements = [s for s in statement_analysis if s['is_faulty']]
@@ -1281,7 +1276,8 @@ if __name__ == '__main__':
     parser.add_argument('-c'  , '--constraints'     , help = 'use resource type constraints', required = False, action = 'store_true')
     parser.add_argument('-rq' , '--requests'        , help = 'check if requests in a json-formatted list are accepted by the policy', required = False)
     parser.add_argument('--identify-faulty', help = 'identify faulty statements and create erroneous policy', action = 'store_true')
-    parser.add_argument('-rn', '--req-num',  help = 'request set identifier used to locate output directories', required = False)
+    parser.add_argument('-rn', '--req-num',   help = 'request set identifier used to locate output directories', required = False)
+    parser.add_argument('-od', '--output-dir', help = 'directory to save output reports',                         required = False, default = '.')
 
     args = parser.parse_args()
     req_num = args.req_num
