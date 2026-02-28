@@ -10,7 +10,7 @@ An LLM-based tool for automatically repairing faulty AWS IAM policies using SMT-
 
 ## Overview
 
-<img src="clouldfix/data/method.jpg" width="750"/>
+<img src="clouldfix/data/method.jpg" width="500"/>
 
 *Figure: CloudFix pipeline — faulty policies are localized using SMT solving (Quacky/ABC), then iteratively repaired by an LLM until the full request suite passes validation.*
 
